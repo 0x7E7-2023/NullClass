@@ -13,8 +13,8 @@ android {
         applicationId = "com.nullclass.app"
         minSdk = 26
         targetSdk = 36
-        versionCode = 1
-        versionName = "0.1.0"
+        versionCode = 2
+        versionName = "0.2.0"
     }
 
     // CI 打 tag 时通过环境变量注入签名（见 .github/workflows/release.yml）
@@ -68,6 +68,7 @@ dependencies {
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.activity.compose)
     implementation(libs.androidx.lifecycle.runtime.compose)
+    implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.androidx.navigation.compose)
 
     implementation(platform(libs.compose.bom))
@@ -78,6 +79,13 @@ dependencies {
     implementation(libs.hilt.android)
     ksp(libs.hilt.compiler)
     implementation(libs.hilt.navigation.compose)
+    implementation(libs.hilt.work)
+    ksp(libs.hilt.work.compiler)
+
+    implementation(libs.work.runtime.ktx)
+
+    // updateAll 扩展在 :widget 中不可传递，app 侧直接依赖
+    implementation(libs.glance.appwidget)
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.test.junit)

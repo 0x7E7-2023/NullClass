@@ -31,6 +31,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import com.nullclass.core.model.PeriodTime
 import com.nullclass.core.model.PlacedBlock
+import com.nullclass.core.model.ScheduleFormat
 import com.nullclass.core.model.Session
 import com.nullclass.core.ui.theme.courseColor
 
@@ -105,12 +106,12 @@ private fun PeriodColumn(periodTimes: List<PeriodTime>) {
                     color = MaterialTheme.colorScheme.onSurface,
                 )
                 Text(
-                    text = formatMinute(time.startMinuteOfDay),
+                    text = ScheduleFormat.minuteLabel(time.startMinuteOfDay),
                     fontSize = 9.sp,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                 )
                 Text(
-                    text = formatMinute(time.endMinuteOfDay),
+                    text = ScheduleFormat.minuteLabel(time.endMinuteOfDay),
                     fontSize = 9.sp,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                 )
@@ -189,10 +190,4 @@ private fun DayColumn(
             }
         }
     }
-}
-
-internal fun formatMinute(minuteOfDay: Int): String {
-    val hour = minuteOfDay / 60
-    val minute = minuteOfDay % 60
-    return "$hour:${minute.toString().padStart(2, '0')}"
 }

@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="widget_today_label">空课 · 今日课程</string>
+    <string name="widget_next_label">空课 · 下节课</string>
 </resources>

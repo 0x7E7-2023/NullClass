@@ -60,8 +60,8 @@ An open-source class schedule app for Android universities. Local-first: no acco
 ## 路线图 / Roadmap
 
 - [x] M1 项目骨架
-- [ ] M2 周视图课表 + 课程/学期编辑
-- [ ] M3 Glance 小组件 + 课前提醒
+- [x] M2 周视图课表 + 课程/学期编辑
+- [x] M3 Glance 小组件 + 课前提醒
 - [ ] M4 导入导出 + 二维码分享，发布首个 Release
 - [ ] M5 教务系统导入（WebView + 逐校适配）
 

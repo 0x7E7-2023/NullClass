@@ -15,7 +15,19 @@ import javax.inject.Singleton
 
 private val Context.syncDataStore by preferencesDataStore(name = "sync_settings")
 
-/** 同步设置（WebDAV 凭证、设备 ID、同步状态）。凭证为 DataStore 明文，见 docs/impl 五。 */
+/** 自动同步周期（设置页三档）。 */
+enum class AutoSyncInterval(val hours: Long, val label: String) {
+    OFF(0, "关闭"),
+    EVERY_6_HOURS(6, "每 6 小时"),
+    DAILY(24, "每天");
+
+    companion object {
+        fun fromName(name: String?): AutoSyncInterval =
+            entries.firstOrNull { it.name == name } ?: OFF
+    }
+}
+
+/** 同步设置（WebDAV 凭证、设备 ID、同步状态、自动同步周期）。凭证为 DataStore 明文，见 docs/impl 五。 */
 @Singleton
 class SyncSettingsRepository @Inject constructor(
     @ApplicationContext private val context: Context,
@@ -28,6 +40,7 @@ class SyncSettingsRepository @Inject constructor(
         val DEVICE_ID = stringPreferencesKey("device_id")
         val LAST_SYNC_AT = longPreferencesKey("last_sync_at")
         val LAST_REV = longPreferencesKey("last_rev")
+        val AUTO_SYNC_INTERVAL = stringPreferencesKey("auto_sync_interval")
     }
 
     val configFlow: Flow<WebDavConfig?> = context.syncDataStore.data.map { prefs ->
@@ -76,4 +89,12 @@ class SyncSettingsRepository @Inject constructor(
 
     suspend fun getLastRev(): Long =
         context.syncDataStore.data.first()[Keys.LAST_REV] ?: 0L
+
+    /** 自动同步周期，默认关闭。 */
+    val autoSyncInterval: Flow<AutoSyncInterval> =
+        context.syncDataStore.data.map { AutoSyncInterval.fromName(it[Keys.AUTO_SYNC_INTERVAL]) }
+
+    suspend fun setAutoSyncInterval(interval: AutoSyncInterval) {
+        context.syncDataStore.edit { it[Keys.AUTO_SYNC_INTERVAL] = interval.name }
+    }
 }

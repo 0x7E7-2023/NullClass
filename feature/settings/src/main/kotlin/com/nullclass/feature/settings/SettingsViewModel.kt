@@ -2,8 +2,11 @@ package com.nullclass.feature.settings
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.nullclass.core.data.prefs.UserPreferencesRepository
+import com.nullclass.sync.AutoSyncInterval
 import com.nullclass.sync.SyncManager
 import com.nullclass.sync.SyncResult
+import com.nullclass.sync.SyncScheduler
 import com.nullclass.sync.SyncSettingsRepository
 import com.nullclass.sync.WebDavConfig
 import com.nullclass.sync.WebDavResult
@@ -33,6 +36,8 @@ data class SettingsUiState(
 class SettingsViewModel @Inject constructor(
     private val syncManager: SyncManager,
     private val syncSettings: SyncSettingsRepository,
+    private val syncScheduler: SyncScheduler,
+    private val userPreferences: UserPreferencesRepository,
 ) : ViewModel() {
 
     private val _state = MutableStateFlow(SettingsUiState())
@@ -40,6 +45,27 @@ class SettingsViewModel @Inject constructor(
 
     val lastSyncAt: StateFlow<Long?> = syncSettings.lastSyncAtFlow
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), null)
+
+    /** 提前提醒分钟数（0 = 关闭）。 */
+    val reminderLeadMinutes: StateFlow<Int> = userPreferences.reminderLeadMinutes
+        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), UserPreferencesRepository.DEFAULT_LEAD_MINUTES)
+
+    /** 自动同步周期。 */
+    val autoSyncInterval: StateFlow<AutoSyncInterval> = syncSettings.autoSyncInterval
+        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), AutoSyncInterval.OFF)
+
+    fun setReminderLeadMinutes(value: Int) {
+        viewModelScope.launch { userPreferences.setReminderLeadMinutes(value) }
+    }
+
+    fun setAutoSyncInterval(value: AutoSyncInterval) {
+        viewModelScope.launch {
+            syncSettings.setAutoSyncInterval(value)
+            syncScheduler.apply(value)
+            // 改为开启时立即跑一次一次性同步，体感更即时
+            if (value != AutoSyncInterval.OFF) syncScheduler.syncNow()
+        }
+    }
 
     init {
         viewModelScope.launch {

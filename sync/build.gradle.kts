@@ -31,6 +31,9 @@ dependencies {
 
     implementation(libs.hilt.android)
     ksp(libs.hilt.compiler)
+    implementation(libs.hilt.work)
+    ksp(libs.hilt.work.compiler)
+    implementation(libs.work.runtime.ktx)
 
     testImplementation(libs.junit)
     testImplementation(libs.kotlin.test)

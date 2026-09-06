@@ -3,6 +3,13 @@ package com.nullclass.core.model
 /** 课表展示用文本格式化（周视图、详情、编辑器、widget 共用口径）。 */
 object ScheduleFormat {
 
+    /** 0..1439 分钟数 → "8:00" / "14:05"。 */
+    fun minuteLabel(minuteOfDay: Int): String {
+        val hour = minuteOfDay / 60
+        val minute = minuteOfDay % 60
+        return "$hour:${minute.toString().padStart(2, '0')}"
+    }
+
     /** "第1-16周"；恰好一周时 "第3周"。 */
     fun weekRange(block: ScheduleBlock): String =
         if (block.startWeek == block.endWeek) {
