@@ -44,14 +44,26 @@
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
-            <!-- 系统「用其他应用打开」.nullclass 文件 -->
+            <!-- 系统「用其他应用打开」.nullclass 文件：声明 MIME -->
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
                 <category android:name="android.intent.category.DEFAULT" />
-                <data android:mimeType="application/x-nullclass" />
-                <data android:mimeType="application/json" />
                 <data android:scheme="content" />
                 <data android:scheme="file" />
+                <data android:mimeType="application/x-nullclass" />
+                <data android:mimeType="application/json" />
+            </intent-filter>
+            <!-- 扩展名兜底（B6）：.nullclass 未注册进系统 MIME 表，文件管理器/下载器常给
+                 application/octet-stream 或不带类型，按文件后缀匹配（pathPattern 需同时声明
+                 scheme+host 才生效） -->
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <data android:scheme="content" />
+                <data android:scheme="file" />
+                <data android:host="*" />
+                <data android:mimeType="*/*" />
+                <data android:pathPattern=".*\\.nullclass" />
             </intent-filter>
         </activity>
     </application>

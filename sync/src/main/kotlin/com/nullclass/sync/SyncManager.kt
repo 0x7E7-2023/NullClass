@@ -18,6 +18,12 @@ sealed interface SyncResult {
     data class Error(val message: String) : SyncResult
 }
 
+/** 导入合并结果（confirmMerge / UI 消息用）。 */
+data class MergeImportResult(
+    val merged: ScheduleDocument,
+    val adopted: Int,
+)
+
 /**
  * 同步管理器：Pull → Merge → Apply → Push（手动/自动触发，互斥防重入）。
  * 本地库读写委托 [SnapshotCodec]（与导入导出共用同一套语义）。
@@ -64,6 +70,21 @@ class SyncManager @Inject constructor(
         } catch (e: Exception) {
             SyncResult.Error(e.message ?: e.javaClass.simpleName)
         }
+    }
+
+    /**
+     * 导入合并（B9）：与同步同一把锁串行化。
+     * 用户确认导入与后台 SyncWorker 各自做全库 dump→merge→apply 读改写，
+     * 不加锁交错时 periodTimes 的 deleteAll+insert 会把对方刚写入的学期节次表
+     * 整体清掉，且 isCurrent 归一化基于各自的过期 dump —— 谁后写谁生效。
+     */
+    suspend fun mergeImport(document: ScheduleDocument): MergeImportResult = mutex.withLock {
+        val now = System.currentTimeMillis()
+        val local = codec.dump(deviceId = null, nowMillis = now)
+        val merged = SyncEngine.merge(local, document, now)
+        val adopted = codec.countAdopted(local, merged)
+        codec.apply(merged)
+        MergeImportResult(merged = merged, adopted = adopted)
     }
 
     suspend fun testConnection(): WebDavResult {

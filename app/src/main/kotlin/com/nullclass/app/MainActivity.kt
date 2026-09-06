@@ -55,12 +55,17 @@ class MainActivity : ComponentActivity() {
         }
     }
 
-    /** 系统「用其他应用打开」.nullclass → 交给 TransferScreen 预览。 */
+    /**
+     * 系统「用其他应用打开」.nullclass → 交给 TransferScreen 预览。
+     * 只处理一次（B5）：重建（旋转/进程恢复）时 getIntent() 复用同一 Intent 实例，
+     * 消费后清掉 data 防止重复弹预览；onNewIntent 每次是新 Intent 实例，不受影响。
+     */
     private fun handleImportIntent(intent: Intent?) {
         val uri = intent?.data ?: return
         if (intent.action == Intent.ACTION_VIEW && (uri.scheme == "content" || uri.scheme == "file")) {
             PendingImport.uri.value = uri
         }
+        intent.setData(null)
     }
 
     override fun onNewIntent(intent: Intent) {

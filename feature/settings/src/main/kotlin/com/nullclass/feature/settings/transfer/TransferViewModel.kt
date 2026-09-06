@@ -9,8 +9,8 @@ import com.nullclass.importer.NullClassCodec
 import com.nullclass.importer.QrPayload
 import com.nullclass.importer.ScheduleDocument
 import com.nullclass.importer.wakeup.WakeUpParser
-import com.nullclass.sync.SyncEngine
 import com.nullclass.sync.SnapshotCodec
+import com.nullclass.sync.SyncManager
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.Dispatchers
@@ -58,6 +58,7 @@ data class TransferUiState(
 class TransferViewModel @Inject constructor(
     @ApplicationContext private val appContext: Context,
     private val codec: SnapshotCodec,
+    private val syncManager: SyncManager,
     private val termRepository: TermRepository,
 ) : ViewModel() {
 
@@ -214,19 +215,18 @@ class TransferViewModel @Inject constructor(
         viewModelScope.launch {
             _state.update { it.copy(busy = true, message = null) }
             try {
-                val local = codec.dump(deviceId = null)
-                val merged = SyncEngine.merge(local, preview.document, System.currentTimeMillis())
-                val adopted = codec.countAdopted(local, merged)
-                codec.apply(merged)
+                // 走 SyncManager 同一把互斥锁：防止与后台 SyncWorker 的
+                // dump→merge→apply 交错互相覆盖（尤其 periodTimes 整表替换，B9）
+                val result = syncManager.mergeImport(preview.document)
                 // WakeUp 作为新学期导入 → 设为当前学期方便立即查看
                 preview.activateTermId?.let { termId ->
-                    merged.terms.firstOrNull { it.id == termId }?.let { termRepository.setCurrent(it.id) }
+                    result.merged.terms.firstOrNull { it.id == termId }?.let { termRepository.setCurrent(it.id) }
                 }
                 _state.update {
                     it.copy(
                         busy = false,
                         preview = null,
-                        message = if (adopted > 0) "已导入：采纳 $adopted 条记录" else "已导入（本地数据已是最新）",
+                        message = if (result.adopted > 0) "已导入：采纳 ${result.adopted} 条记录" else "已导入（本地数据已是最新）",
                         messageIsError = false,
                     )
                 }

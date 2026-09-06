@@ -131,6 +131,53 @@ class WakeUpParserTest {
     }
 
     @Test
+    fun `step 非法 - 按 1 节保留并给出警告`() {
+        // B8：step=0 曾产生 endPeriod < startPeriod 的倒挂块
+        val raw = """
+            "3"
+            {"courseTableName":"t","startTime":"2026-09-07","maxWeek":20}
+            [{"endTime":"08:45","node":1,"startTime":"08:00"}]
+            [{"color":"#FFEF5350","courseName":"课","id":1}]
+            [{"day":1,"endWeek":20,"id":1,"room":"A","startNode":3,"startWeek":1,"step":0}]
+        """.trimIndent()
+        val result = WakeUpParser.parse(raw)
+        val block = result.blocks.single()
+        assertEquals(3, block.startPeriod)
+        assertEquals(3, block.endPeriod) // 不再倒挂
+        assertTrue(result.warnings.any { "step=0" in it })
+    }
+
+    @Test
+    fun `缺关键字段的安排行 - 跳过并警告（不再静默丢弃）`() {
+        // B8：同数组里缺 startNode 的行曾无声消失（注意行分类靠内容特征，
+        // 缺 startNode 的行必须与合法行同数组才会进入 Course 行处理）
+        val raw = """
+            "3"
+            {"courseTableName":"t","startTime":"2026-09-07","maxWeek":20}
+            [{"endTime":"08:45","node":1,"startTime":"08:00"}]
+            [{"color":"#FFEF5350","courseName":"课","id":1}]
+            [{"day":1,"endWeek":20,"id":1,"room":"A","startNode":1,"startWeek":1,"step":2},{"day":2,"endWeek":20,"id":1,"room":"B","startWeek":1,"step":2}]
+        """.trimIndent()
+        val result = WakeUpParser.parse(raw)
+        assertEquals(1, result.blocks.size)
+        assertTrue(result.warnings.any { "缺少 id/day/startNode" in it })
+    }
+
+    @Test
+    fun `startNode 非法 - 跳过并警告`() {
+        val raw = """
+            "3"
+            {"courseTableName":"t","startTime":"2026-09-07","maxWeek":20}
+            [{"endTime":"08:45","node":1,"startTime":"08:00"}]
+            [{"color":"#FFEF5350","courseName":"课","id":1}]
+            [{"day":1,"endWeek":20,"id":1,"room":"A","startNode":0,"startWeek":1,"step":2}]
+        """.trimIndent()
+        val result = WakeUpParser.parse(raw)
+        assertTrue(result.blocks.isEmpty())
+        assertTrue(result.warnings.any { "startNode=0" in it })
+    }
+
+    @Test
     fun `节次表缺失 - 退化默认模板并覆盖所需节数`() {
         val raw = """
             {"courseTableName":"t","startTime":"2026-09-07","maxWeek":20,"nodesPerDay":14}

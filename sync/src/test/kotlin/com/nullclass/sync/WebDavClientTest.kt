@@ -3,6 +3,7 @@ package com.nullclass.sync
 import com.nullclass.importer.BlockDto
 import com.nullclass.importer.CourseDto
 import com.nullclass.importer.ManifestDto
+import com.nullclass.importer.NullClassCodec
 import com.nullclass.importer.PeriodTimeDto
 import com.nullclass.importer.ScheduleDocument
 import com.nullclass.importer.TermDto
@@ -14,6 +15,7 @@ import kotlin.test.AfterTest
 import kotlin.test.BeforeTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
+import kotlin.test.assertFailsWith
 import kotlin.test.assertNull
 import kotlin.test.assertTrue
 
@@ -75,7 +77,10 @@ class WebDavClientTest {
         val snapshotRequest = server.takeRequest()
         assertEquals("/nullclass/snapshot.json", snapshotRequest.path)
         assertTrue(snapshotRequest.getHeader("Authorization")!!.startsWith("Basic "))
-        server.takeRequest()
+        // B7：snapshot 走 NullClassCodec（encodeDefaults），默认值字段必须显式写出
+        assertTrue(snapshotRequest.body.readUtf8().contains("\"formatVersion\":2"))
+        val manifestRequest = server.takeRequest()
+        assertTrue(manifestRequest.body.readUtf8().contains("\"formatVersion\":2"))
 
         // 下载回来
         server.enqueue(
@@ -93,6 +98,24 @@ class WebDavClientTest {
 
         assertEquals(6, downloaded.manifest.rev)
         assertEquals(snapshot, downloaded.snapshot)
+    }
+
+    @Test
+    fun `远端快照版本过新 - 拒绝解码`() = runTest {
+        // B7：snapshot 解码必须过 NullClassCodec 的未来版本守卫，而不是静默丢未知字段
+        server.enqueue(
+            MockResponse().setResponseCode(200).setBody(
+                """{"formatVersion":2,"deviceId":"dev","generatedAt":9,"rev":1}""",
+            ),
+        )
+        server.enqueue(
+            MockResponse().setResponseCode(200).setBody(
+                """{"formatVersion":3,"deviceId":"dev","generatedAt":1,"terms":[],"courses":[],"blocks":[],"periodTimes":[]}""",
+            ),
+        )
+
+        val error = assertFailsWith<NullClassCodec.FutureVersionException> { client.download() }
+        assertEquals(3, error.fileVersion)
     }
 
     @Test

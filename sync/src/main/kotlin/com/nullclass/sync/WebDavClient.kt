@@ -3,6 +3,7 @@ package com.nullclass.sync
 import com.nullclass.importer.BlockDto
 import com.nullclass.importer.CourseDto
 import com.nullclass.importer.ManifestDto
+import com.nullclass.importer.NullClassCodec
 import com.nullclass.importer.PeriodTimeDto
 import com.nullclass.importer.ScheduleDocument
 import com.nullclass.importer.TermDto
@@ -87,7 +88,12 @@ class WebDavClient(private val config: WebDavConfig) {
             .build()
     }
 
-    private val json = Json { ignoreUnknownKeys = true }
+    // manifest.json 专用（同步指针，不进 .nullclass 文件）；
+    // snapshot 走 NullClassCodec —— v2 格式契约唯一入口（encodeDefaults + 未来版本守卫，B7）
+    private val manifestJson = Json {
+        ignoreUnknownKeys = true
+        encodeDefaults = true
+    }
     private val jsonMedia = "application/json; charset=utf-8".toMediaType()
 
     private fun authHeader(): String = Credentials.basic(config.username, config.password)
@@ -165,7 +171,7 @@ class WebDavClient(private val config: WebDavConfig) {
         ).execute().use { response ->
             when {
                 response.code == 404 -> null
-                response.isSuccessful -> response.body?.string()?.let { json.decodeFromString<ManifestDto>(it) }
+                response.isSuccessful -> response.body?.string()?.let { manifestJson.decodeFromString<ManifestDto>(it) }
                 else -> throw IOException("下载 manifest 失败：HTTP ${response.code}")
             }
         }
@@ -181,7 +187,7 @@ class WebDavClient(private val config: WebDavConfig) {
         ).execute().use { response ->
             when {
                 response.code == 404 -> null
-                response.isSuccessful -> response.body?.string()?.let { json.decodeFromString<ScheduleDocument>(it) }
+                response.isSuccessful -> response.body?.string()?.let { NullClassCodec.decode(it) }
                 else -> throw IOException("下载快照失败：HTTP ${response.code}")
             }
         }
@@ -189,7 +195,7 @@ class WebDavClient(private val config: WebDavConfig) {
 
     /** 上传合并后的快照与 manifest（rev+1）。 */
     suspend fun upload(snapshot: ScheduleDocument, previousRev: Long) = withContext(Dispatchers.IO) {
-        val snapshotJson = json.encodeToString(snapshot)
+        val snapshotJson = NullClassCodec.encode(snapshot)
         http.newCall(
             Request.Builder()
                 .url("${config.baseUrl()}/snapshot.json")
@@ -208,7 +214,7 @@ class WebDavClient(private val config: WebDavConfig) {
             Request.Builder()
                 .url("${config.baseUrl()}/manifest.json")
                 .header("Authorization", authHeader())
-                .put(json.encodeToString(manifest).toRequestBody(jsonMedia))
+                .put(manifestJson.encodeToString(manifest).toRequestBody(jsonMedia))
                 .build(),
         ).execute().use { response ->
             if (!response.isSuccessful) throw IOException("上传 manifest 失败：HTTP ${response.code}")

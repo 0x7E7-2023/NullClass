@@ -126,10 +126,14 @@ object WakeUpParser {
 
         // ---- 节次表（WakeUp 自带的优先；缺失退化默认模板） ----
         val periodTimes: List<PeriodTimeDto> = periodRows
-            ?.mapNotNull { row ->
-                val index = row["node"]?.jsonPrimitive?.intOrNull ?: return@mapNotNull null
-                val start = parseHm(row["startTime"]?.jsonPrimitive?.contentOrNull) ?: return@mapNotNull null
-                val end = parseHm(row["endTime"]?.jsonPrimitive?.contentOrNull) ?: return@mapNotNull null
+            ?.mapIndexedNotNull { i, row ->
+                val index = row["node"]?.jsonPrimitive?.intOrNull
+                val start = parseHm(row["startTime"]?.jsonPrimitive?.contentOrNull)
+                val end = parseHm(row["endTime"]?.jsonPrimitive?.contentOrNull)
+                if (index == null || start == null || end == null) {
+                    warnings.add("节次时间第 ${i + 1} 条格式非法，已跳过") // B8：不再静默丢弃
+                    return@mapIndexedNotNull null
+                }
                 PeriodTimeDto(
                     termId = termId, periodIndex = index,
                     startMinuteOfDay = start, endMinuteOfDay = end,
@@ -178,14 +182,27 @@ object WakeUpParser {
         // ---- 安排（每条 Course 行一块）----
         val courseIdByWakeupId = nameById.keys.zip(courses.map { it.id }).toMap()
         val blocks = courseRows.mapIndexedNotNull { i, row ->
-            val wakeupId = row["id"]?.jsonPrimitive?.intOrNull ?: return@mapIndexedNotNull null
-            val day = row["day"]?.jsonPrimitive?.intOrNull ?: return@mapIndexedNotNull null
-            val startNode = row["startNode"]?.jsonPrimitive?.intOrNull ?: return@mapIndexedNotNull null
-            val step = row["step"]?.jsonPrimitive?.intOrNull ?: 1
+            val wakeupId = row["id"]?.jsonPrimitive?.intOrNull
+            val day = row["day"]?.jsonPrimitive?.intOrNull
+            val startNode = row["startNode"]?.jsonPrimitive?.intOrNull
+            if (wakeupId == null || day == null || startNode == null) {
+                warnings.add("第 ${i + 1} 条安排缺少 id/day/startNode，已跳过") // B8：不再静默丢弃
+                return@mapIndexedNotNull null
+            }
+            val rawStep = row["step"]?.jsonPrimitive?.intOrNull ?: 1
+            if (rawStep < 1) {
+                // step=0/负数会让 endPeriod = startNode+step-1 倒挂，按 1 节保留该课（B8）
+                warnings.add("第 ${i + 1} 条安排 step=$rawStep 非法，已按 1 节处理")
+            }
+            val step = rawStep.coerceAtLeast(1)
             val startWeek = (row["startWeek"]?.jsonPrimitive?.intOrNull ?: 1).coerceIn(1, totalWeeks)
             val endWeek = (row["endWeek"]?.jsonPrimitive?.intOrNull ?: totalWeeks).coerceIn(1, totalWeeks)
             if (day !in 1..7) {
                 warnings.add("第 ${i + 1} 条安排 day=$day 非法，已跳过")
+                return@mapIndexedNotNull null
+            }
+            if (startNode < 1) {
+                warnings.add("第 ${i + 1} 条安排 startNode=$startNode 非法，已跳过")
                 return@mapIndexedNotNull null
             }
             BlockDto(
@@ -229,7 +246,7 @@ object WakeUpParser {
         val nodesPerDay = settings?.get("nodesPerDay")?.jsonPrimitive?.intOrNull ?: 0
         val maxEnd = courseRows?.mapNotNull { row ->
             val start = row["startNode"]?.jsonPrimitive?.intOrNull ?: return@mapNotNull 0
-            val step = row["step"]?.jsonPrimitive?.intOrNull ?: 1
+            val step = (row["step"]?.jsonPrimitive?.intOrNull ?: 1).coerceAtLeast(1) // 与 blocks 同规则
             start + step - 1
         }?.maxOrNull() ?: 0
         return maxOf(nodesPerDay, maxEnd).coerceAtLeast(1)
