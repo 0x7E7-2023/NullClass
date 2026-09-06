@@ -29,15 +29,26 @@ data class WebDavConfig(
         if (!isHttps && !isHttp) return "地址必须以 http:// 或 https:// 开头"
         val host = normalized.removePrefix("https://").removePrefix("http://")
             .substringBefore(':').substringBefore('/')
-        val isPrivate = host == "localhost" ||
-            host.startsWith("10.") ||
-            host.startsWith("192.168.") ||
-            Regex("""^172\.(1[6-9]|2\d|3[01])\.""").containsMatchIn(host)
-        if (isHttp && !isPrivate) {
+        if (isHttp && !isPrivateHost(host)) {
             return "公网地址必须使用 https，否则密码会明文传输"
         }
         if (username.isBlank()) return "用户名不能为空"
         return null
+    }
+
+    /**
+     * 严格 IPv4 字面量 / localhost 才算私网。
+     * 整段主机名匹配（matchEntire），杜绝 "10.0.0.1.evil.com" 这类公网域名绕过（B5）。
+     */
+    internal fun isPrivateHost(host: String): Boolean {
+        if (host.equals("localhost", ignoreCase = true) || host == "127.0.0.1") return true
+        val match = Regex("""^(\d{1,3})\.(\d{1,3})\.(\d{1,3})\.(\d{1,3})$""").matchEntire(host)
+            ?: return false
+        val octets = match.destructured.toList().map { it.toIntOrNull() ?: return false }
+        if (octets.any { it !in 0..255 }) return false
+        return octets[0] == 10 ||
+            (octets[0] == 192 && octets[1] == 168) ||
+            (octets[0] == 172 && octets[1] in 16..31)
     }
 
     /** 远端目录：{url}/nullclass/。 */

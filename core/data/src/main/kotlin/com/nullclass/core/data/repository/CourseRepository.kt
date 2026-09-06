@@ -52,7 +52,13 @@ class CourseRepositoryImpl @Inject constructor(
         val now = System.currentTimeMillis()
         val courseId = course.id.ifEmpty { UUID.randomUUID().toString() }
         val withId = course.copy(id = courseId)
-        val blocksWithId = blocks.map { it.copy(courseId = courseId) }
+        // 新块同样要生成 UUID：空主键会让多条安排互相覆盖（B1）
+        val blocksWithId = blocks.map { block ->
+            block.copy(
+                id = block.id.ifEmpty { UUID.randomUUID().toString() },
+                courseId = courseId,
+            )
+        }
 
         db.withTransaction {
             // 已有记录保留原 createdAt；新记录用 now

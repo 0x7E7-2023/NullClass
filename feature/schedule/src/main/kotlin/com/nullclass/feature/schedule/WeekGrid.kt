@@ -56,32 +56,41 @@ internal fun WeekGrid(
     val totalPeriods = periodTimes.size.coerceAtLeast(1)
     val todayHighlight = MaterialTheme.colorScheme.primary.copy(alpha = 0.06f)
 
-    Row(modifier = modifier.fillMaxSize()) {
-        PeriodColumn(periodTimes)
-        for (day in 1..7) {
-            DayColumn(
-                day = day,
-                isToday = todayDayOfWeek == day,
-                blocks = layout[day].orEmpty(),
-                totalPeriods = totalPeriods,
-                todayHighlight = todayHighlight,
-                onBlockClick = onBlockClick,
-                onCellClick = onCellClick,
-                modifier = Modifier.weight(1f),
-            )
+    Box(modifier = modifier.fillMaxSize()) {
+        Row(modifier = Modifier.fillMaxSize()) {
+            PeriodColumn(periodTimes)
+            for (day in 1..7) {
+                DayColumn(
+                    day = day,
+                    isToday = todayDayOfWeek == day,
+                    blocks = layout[day].orEmpty(),
+                    totalPeriods = totalPeriods,
+                    todayHighlight = todayHighlight,
+                    onBlockClick = onBlockClick,
+                    onCellClick = onCellClick,
+                    modifier = Modifier.weight(1f),
+                )
+            }
+        }
+        // 会话分隔线（上午/下午/晚上）：整行覆盖层，y 与课块网格（PeriodCellHeight × index）严格对齐
+        periodTimes.forEachIndexed { index, time ->
+            if (index > 0 && periodTimes[index - 1].session != time.session) {
+                HorizontalDivider(
+                    modifier = Modifier
+                        .offset(y = PeriodCellHeight * index)
+                        .fillMaxWidth(),
+                    color = MaterialTheme.colorScheme.outlineVariant,
+                )
+            }
         }
     }
 }
 
-/** 左侧节次列：节次号 + 起止时间，会话切换处画分隔线。 */
+/** 左侧节次列：节次号 + 起止时间，每格严格 PeriodCellHeight 高。 */
 @Composable
 private fun PeriodColumn(periodTimes: List<PeriodTime>) {
     Column(modifier = Modifier.width(PeriodColumnWidth)) {
-        periodTimes.forEachIndexed { index, time ->
-            val sessionChanged = index == 0 || periodTimes[index - 1].session != time.session
-            if (sessionChanged && index != 0) {
-                SessionDivider()
-            }
+        periodTimes.forEach { time ->
             Column(
                 modifier = Modifier
                     .height(PeriodCellHeight)
@@ -108,17 +117,6 @@ private fun PeriodColumn(periodTimes: List<PeriodTime>) {
             }
         }
     }
-}
-
-@Composable
-private fun SessionDivider() {
-    HorizontalDivider(
-        modifier = Modifier
-            .width(28.dp)
-            .padding(vertical = 3.dp),
-        thickness = 2.dp,
-        color = MaterialTheme.colorScheme.outlineVariant,
-    )
 }
 
 @Composable

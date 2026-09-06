@@ -123,4 +123,25 @@ class WebDavClientTest {
         val lanHttp = WebDavConfig("http://192.168.1.10:5005/", "u", "p")
         assertNull(lanHttp.validate())
     }
+
+    @Test
+    fun `公网域名伪装私网 IP 前缀无法绕过`() {
+        // 反向域名攻击：主机名以 "10."/"192.168." 开头但实际是公网域名
+        val evil1 = WebDavConfig("http://10.0.0.1.evil.com/", "u", "p")
+        assertTrue(evil1.validate() != null)
+
+        val evil2 = WebDavConfig("http://192.168.attacker.example/", "u", "p")
+        assertTrue(evil2.validate() != null)
+
+        val evil3 = WebDavConfig("http://172.16.foo.bar/", "u", "p")
+        assertTrue(evil3.validate() != null)
+
+        // 真私网 IP 与 localhost 不受影响
+        assertNull(WebDavConfig("http://10.1.2.3/", "u", "p").validate())
+        assertNull(WebDavConfig("http://172.16.0.1/", "u", "p").validate())
+        assertNull(WebDavConfig("http://localhost:5005/", "u", "p").validate())
+
+        // 非法 IP 字面量不算私网
+        assertTrue(WebDavConfig("http://999.168.1.1/", "u", "p").validate() != null)
+    }
 }

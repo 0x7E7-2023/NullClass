@@ -23,6 +23,10 @@ interface PeriodTimeDao {
     @Query("DELETE FROM period_times WHERE termId = :termId")
     suspend fun deleteByTerm(termId: String)
 
+    /** 同步应用合并快照时全量替换（节次表无墓碑，按学期整体取新）。 */
+    @Query("DELETE FROM period_times")
+    suspend fun deleteAll()
+
     // ---- 同步引擎 ----
 
     @Query("SELECT * FROM period_times")

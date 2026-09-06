@@ -20,12 +20,30 @@ object SyncEngine {
             .let { normalizeCurrent(it, now) },
         courses = mergeByKey(local.courses, remote.courses, key = { it.id }, updatedAt = { it.updatedAt }),
         blocks = mergeByKey(local.blocks, remote.blocks, key = { it.id }, updatedAt = { it.updatedAt }),
-        periodTimes = mergeByKey(
-            local.periodTimes, remote.periodTimes,
-            key = { it.termId to it.periodIndex },
-            updatedAt = { it.updatedAt },
-        ),
+        periodTimes = mergePeriodTimes(local, remote),
     )
+
+    /**
+     * 节次表不逐行合并：每个学期的节次表整体随该学期 updatedAt 较新的一侧（docs/impl 2.3）。
+     * 否则编辑学期删掉的节次会被对端快照复活。
+     */
+    private fun mergePeriodTimes(local: SnapshotDto, remote: SnapshotDto): List<PeriodTimeDto> {
+        val localTermStamp = local.terms.associate { it.id to it.updatedAt }
+        val remoteTermStamp = remote.terms.associate { it.id to it.updatedAt }
+        val localByTerm = local.periodTimes.groupBy { it.termId }
+        val remoteByTerm = remote.periodTimes.groupBy { it.termId }
+
+        return (localTermStamp.keys + remoteTermStamp.keys).flatMap { termId ->
+            val localStamp = localTermStamp[termId]
+            val remoteStamp = remoteTermStamp[termId]
+            when {
+                localStamp == null -> remoteByTerm[termId].orEmpty()
+                remoteStamp == null -> localByTerm[termId].orEmpty()
+                remoteStamp > localStamp -> remoteByTerm[termId].orEmpty()
+                else -> localByTerm[termId].orEmpty() // 相等取本地
+            }
+        }
+    }
 
     /** 通用 LWW 合并：相等取本地。 */
     private fun <T, K> mergeByKey(

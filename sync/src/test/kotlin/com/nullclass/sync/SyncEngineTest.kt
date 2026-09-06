@@ -93,24 +93,60 @@ class SyncEngineTest {
     }
 
     @Test
-    fun `节次时间按 termId-periodIndex 合并`() {
+    fun `节次表随学期整体取新 学期新的一方整组胜出含删除`() {
         val local = snapshot(
+            terms = listOf(term("t1", 10)),
             periodTimes = listOf(
-                PeriodTimeDto("t1", 1, 480, 525, 0, updatedAt = 10),
+                PeriodTimeDto("t1", 1, 480, 525, 0, 10),
+                PeriodTimeDto("t1", 2, 535, 580, 0, 10),
             ),
+        )
+        // 远端编辑过学期（updatedAt 更新）且节次删到只剩 1 节
+        val remote = snapshot(
+            deviceId = "r",
+            terms = listOf(term("t1", 20)),
+            periodTimes = listOf(PeriodTimeDto("t1", 1, 480, 530, 0, 20)),
+        )
+
+        val merged = SyncEngine.merge(local, remote, now)
+
+        assertEquals(1, merged.periodTimes.size)
+        assertEquals(530, merged.periodTimes.single().endMinuteOfDay)
+    }
+
+    @Test
+    fun `学期旧的一方其节次表保留本地`() {
+        val local = snapshot(
+            terms = listOf(term("t1", 30)),
+            periodTimes = listOf(PeriodTimeDto("t1", 1, 480, 525, 0, 30)),
         )
         val remote = snapshot(
             deviceId = "r",
+            terms = listOf(term("t1", 20)),
             periodTimes = listOf(
-                PeriodTimeDto("t1", 1, 480, 530, 0, updatedAt = 20), // 更新
-                PeriodTimeDto("t1", 2, 535, 580, 0, updatedAt = 5),  // 新增
+                PeriodTimeDto("t1", 1, 480, 530, 0, 20),
+                PeriodTimeDto("t1", 2, 535, 580, 0, 20),
             ),
         )
 
         val merged = SyncEngine.merge(local, remote, now)
 
-        assertEquals(2, merged.periodTimes.size)
-        assertEquals(530, merged.periodTimes.first { it.periodIndex == 1 }.endMinuteOfDay)
+        assertEquals(1, merged.periodTimes.size)
+        assertEquals(525, merged.periodTimes.single().endMinuteOfDay)
+    }
+
+    @Test
+    fun `学期只在一侧时节次表跟随该侧`() {
+        val local = snapshot(
+            terms = listOf(term("t1", 10)),
+            periodTimes = listOf(PeriodTimeDto("t1", 1, 480, 525, 0, 10)),
+        )
+        val remote = snapshot(deviceId = "r") // 远端完全没有该学期
+
+        val merged = SyncEngine.merge(local, remote, now)
+
+        assertEquals(1, merged.periodTimes.size)
+        assertEquals("t1", merged.periodTimes.single().termId)
     }
 
     @Test

@@ -69,6 +69,9 @@ class SyncManager @Inject constructor(
             settings.setLastSync(now, previousRev + 1)
 
             SyncResult.Success(adoptedFromRemote = adopted, rev = previousRev + 1)
+        } catch (e: kotlinx.coroutines.CancellationException) {
+            // 协程取消必须重抛，不能伪装成同步失败（B4）
+            throw e
         } catch (e: Exception) {
             SyncResult.Error(e.message ?: e.javaClass.simpleName)
         }
@@ -90,12 +93,14 @@ class SyncManager @Inject constructor(
         periodTimes = periodTimeDao.getAll().map { it.toDto() },
     )
 
-    /** 合并结果写回本地库（Upsert 全量；UI 的 Flow 自动刷新）。 */
+    /** 合并结果写回本地库（Upsert 全量；节次表整体替换；UI 的 Flow 自动刷新）。 */
     private suspend fun apply(snapshot: SnapshotDto) {
         db.withTransaction {
             termDao.upsertAll(snapshot.terms.map { it.toEntity() })
             courseDao.upsertAllCourses(snapshot.courses.map { it.toEntity() })
             courseDao.upsertAllBlocks(snapshot.blocks.map { it.toEntity() })
+            // 节次表随学期整体取新：必须先清空，否则被删节次残留本地
+            periodTimeDao.deleteAll()
             periodTimeDao.upsertAll(snapshot.periodTimes.map { it.toEntity() })
         }
     }
