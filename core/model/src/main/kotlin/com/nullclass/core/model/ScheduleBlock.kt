@@ -15,10 +15,12 @@ enum class WeekType {
 /**
  * 课程的一个时间安排：第 [startWeek]..[endWeek] 周内（按 [weekType] 过滤）、
  * 周第 [dayOfWeek] 天的第 [startPeriod]..[endPeriod] 节，在 [location] 上课。
+ *
+ * 连堂大课 = 跨多节的安排（如 3..4 节），由 [SectionMath] 提供大节换算。
  */
 data class ScheduleBlock(
-    val id: Long = 0L,
-    val courseId: Long,
+    val id: String = "",
+    val courseId: String = "",
     val startWeek: Int,
     val endWeek: Int,
     val weekType: WeekType = WeekType.ALL,
@@ -47,6 +49,6 @@ data class ScheduleBlock(
             WeekType.EVEN -> week % 2 == 0
         }
 
-    /** 跨越的节数（含首尾）。 */
+    /** 跨越的节数（含首尾）。大课连堂通常为 2。 */
     val periodCount: Int get() = endPeriod - startPeriod + 1
 }

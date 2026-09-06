@@ -5,6 +5,10 @@ import androidx.room.ForeignKey
 import androidx.room.Index
 import androidx.room.PrimaryKey
 
+/**
+ * termId 为反规范化冗余列（源自 course.termId）：
+ * 周视图按 (termId, dayOfWeek) 直查课块，免 join；详见 docs/impl 1.3。
+ */
 @Entity(
     tableName = "schedule_blocks",
     foreignKeys = [
@@ -15,18 +19,26 @@ import androidx.room.PrimaryKey
             onDelete = ForeignKey.CASCADE,
         ),
     ],
-    indices = [Index("courseId")],
+    indices = [
+        Index("courseId"),
+        Index("termId", "dayOfWeek", "deletedAt"),
+        Index("deletedAt"),
+    ],
 )
 data class ScheduleBlockEntity(
-    @PrimaryKey(autoGenerate = true) val id: Long = 0L,
-    val courseId: Long,
+    @PrimaryKey val id: String,
+    val courseId: String,
+    val termId: String,
     val startWeek: Int,
     val endWeek: Int,
-    /** 对应 WeekType.name() */
+    /** WeekType.name() */
     val weekType: String,
     /** 1..7，1 = 周一 */
     val dayOfWeek: Int,
     val startPeriod: Int,
     val endPeriod: Int,
     val location: String? = null,
+    val createdAt: Long,
+    val updatedAt: Long,
+    val deletedAt: Long? = null,
 )

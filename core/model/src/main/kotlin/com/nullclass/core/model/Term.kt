@@ -2,9 +2,11 @@ package com.nullclass.core.model
 
 /**
  * 学期。课表以学期为单位组织，同一时刻只有一个「当前学期」。
+ *
+ * id 为客户端生成的 UUID（同步就绪：多设备记录天然对齐，详见 docs/impl）。
  */
 data class Term(
-    val id: Long = 0L,
+    val id: String = "",
     /** 例："2026-2027-1" */
     val name: String,
     /** 开学第一周周一的日期（epoch day，LocalDate.toEpochDay()） */
@@ -24,4 +26,7 @@ data class Term(
         val week = ((epochDay - firstDayEpochDay) / 7 + 1).toInt()
         return if (week in 1..totalWeeks) week else null
     }
+
+    /** 某周某天对应的 epoch day。 */
+    fun epochDayOf(week: Int, dayOfWeek: Int): Long = firstDayEpochDay + (week - 1) * 7L + (dayOfWeek - 1)
 }
