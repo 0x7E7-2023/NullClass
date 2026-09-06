@@ -30,6 +30,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -163,6 +164,19 @@ private fun WebViewStep(
     val context = LocalContext.current
     var status by remember { mutableStateOf("登录并打开课表页面后，点下方「提取课表」") }
     var webView by remember { mutableStateOf<WebView?>(null) }
+    val currentWebView = remember { mutableStateOf<WebView?>(null) }
+
+    // 离开组合（返回学校选择/finish）时销毁 WebView，防渲染进程与 Activity Context 泄漏
+    DisposableEffect(Unit) {
+        onDispose {
+            currentWebView.value?.apply {
+                loadUrl("about:blank")
+                (parent as? android.view.ViewGroup)?.removeView(this)
+                destroy()
+            }
+            currentWebView.value = null
+        }
+    }
 
     Column(modifier = modifier.fillMaxSize()) {
         AndroidView(
@@ -173,7 +187,12 @@ private fun WebViewStep(
                     webViewClient = WebViewClient()
                     loadUrl(adapter.loginUrl)
                     webView = this
+                    currentWebView.value = this
                 }
+            },
+            onRelease = { w ->
+                w.destroy()
+                if (currentWebView.value === w) currentWebView.value = null
             },
             modifier = Modifier
                 .fillMaxWidth()

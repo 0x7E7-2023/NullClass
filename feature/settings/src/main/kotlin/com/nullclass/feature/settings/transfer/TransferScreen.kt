@@ -283,6 +283,15 @@ private fun ImportPreviewDialog(
                         style = MaterialTheme.typography.bodyMedium,
                     )
                 }
+                if (preview.pendingDeletions > 0) {
+                    Text(
+                        "⚠ 注意：该文件会对本地 $preview.pendingDeletions 条现有记录产生删除效果" +
+                            "（合并按修改时间裁决，删除会传播）。请确认文件来源可信！",
+                        style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.error,
+                        fontWeight = FontWeight.Bold,
+                    )
+                }
                 if (preview.activateTermId != null) {
                     Text(
                         "WakeUp 课表将作为新学期导入并设为当前学期。",
