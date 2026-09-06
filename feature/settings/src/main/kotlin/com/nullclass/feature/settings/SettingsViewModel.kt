@@ -1,0 +1,112 @@
+package com.nullclass.feature.settings
+
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import com.nullclass.sync.SyncManager
+import com.nullclass.sync.SyncResult
+import com.nullclass.sync.SyncSettingsRepository
+import com.nullclass.sync.WebDavConfig
+import com.nullclass.sync.WebDavResult
+import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
+import javax.inject.Inject
+
+data class SettingsUiState(
+    val url: String = "",
+    val username: String = "",
+    val password: String = "",
+    val configured: Boolean = false,
+    val lastSyncAt: Long? = null,
+    val busy: Boolean = false,
+    /** 操作结果提示（连接测试/同步）。 */
+    val message: String? = null,
+    val messageIsError: Boolean = false,
+)
+
+@HiltViewModel
+class SettingsViewModel @Inject constructor(
+    private val syncManager: SyncManager,
+    private val syncSettings: SyncSettingsRepository,
+) : ViewModel() {
+
+    private val _state = MutableStateFlow(SettingsUiState())
+    val state = _state.asStateFlow()
+
+    val lastSyncAt: StateFlow<Long?> = syncSettings.lastSyncAtFlow
+        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), null)
+
+    init {
+        viewModelScope.launch {
+            syncSettings.getConfig()?.let { config ->
+                _state.update {
+                    it.copy(
+                        url = config.url,
+                        username = config.username,
+                        password = config.password,
+                        configured = true,
+                    )
+                }
+            }
+        }
+    }
+
+    fun setUrl(value: String) = _state.update { it.copy(url = value, message = null) }
+
+    fun setUsername(value: String) = _state.update { it.copy(username = value, message = null) }
+
+    fun setPassword(value: String) = _state.update { it.copy(password = value, message = null) }
+
+    fun dismissMessage() = _state.update { it.copy(message = null) }
+
+    fun saveConfig() {
+        val config = WebDavConfig(_state.value.url, _state.value.username, _state.value.password)
+        config.validate()?.let { error ->
+            _state.update { it.copy(message = error, messageIsError = true) }
+            return
+        }
+        viewModelScope.launch {
+            syncSettings.saveConfig(config)
+            _state.update { it.copy(configured = true, message = "已保存", messageIsError = false) }
+        }
+    }
+
+    fun testConnection() {
+        viewModelScope.launch {
+            _state.update { it.copy(busy = true, message = null) }
+            val result = syncManager.testConnection()
+            _state.update {
+                when (result) {
+                    WebDavResult.Ok -> it.copy(busy = false, message = "连接成功", messageIsError = false)
+                    is WebDavResult.Error -> it.copy(busy = false, message = result.message, messageIsError = true)
+                }
+            }
+        }
+    }
+
+    fun syncNow() {
+        viewModelScope.launch {
+            _state.update { it.copy(busy = true, message = null) }
+            when (val result = syncManager.sync()) {
+                is SyncResult.Success -> _state.update {
+                    it.copy(
+                        busy = false,
+                        message = "同步完成：采纳 ${result.adoptedFromRemote} 条远端记录",
+                        messageIsError = false,
+                    )
+                }
+                is SyncResult.NotConfigured -> _state.update {
+                    it.copy(busy = false, message = result.message, messageIsError = true)
+                }
+                is SyncResult.Error -> _state.update {
+                    it.copy(busy = false, message = result.message, messageIsError = true)
+                }
+            }
+        }
+    }
+}
