@@ -129,6 +129,11 @@ class TransferViewModel @Inject constructor(
         parseRaw({ QrPayload.decode(payload) }, source = "二维码")
     }
 
+    /** 教务导入回传的 ScheduleDocument JSON → 预览（复用同一条管线）。 */
+    fun parseExtractedDocument(json: String, source: String) {
+        parseRaw({ NullClassCodec.decode(json) }, source = source)
+    }
+
     // ---- 文件导入 ----
 
     /** SAF/Intent 打开的文件 → 预览。 */

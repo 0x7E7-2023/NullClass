@@ -88,6 +88,13 @@ fun TransferScreen(
         result.contents?.let { viewModel.parseQrPayload(it) }
     }
 
+    val jwLauncher = rememberLauncherForActivityResult(
+        ActivityResultContracts.StartActivityForResult(),
+    ) { result ->
+        val json = result.data?.getStringExtra(com.nullclass.feature.settings.jw.JwImportActivity.EXTRA_DOCUMENT_JSON)
+        if (json != null) viewModel.parseExtractedDocument(json, source = "教务导入")
+    }
+
     // 系统「用其他应用打开」.nullclass → 待导入 URI
     val pendingUri = pendingImport?.value
     LaunchedEffect(pendingUri) {
@@ -194,6 +201,22 @@ fun TransferScreen(
             OutlinedButton(onClick = {
                 openWakeUpLauncher.launch(arrayOf("*/*"))
             }, modifier = Modifier.fillMaxWidth()) { Text("选择 .wakeup_schedule 文件") }
+
+            HorizontalDivider(modifier = Modifier.padding(vertical = 8.dp))
+
+            // ---- 教务导入 ----
+            Text("从教务系统导入", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold)
+            Text(
+                "在网页里自己登录教务系统（空课不碰你的账号密码），打开课表页后一键提取。",
+                style = MaterialTheme.typography.bodySmall,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+            )
+            OutlinedButton(
+                onClick = {
+                    jwLauncher.launch(com.nullclass.feature.settings.jw.JwImportActivity.intent(context))
+                },
+                modifier = Modifier.fillMaxWidth(),
+            ) { Text("选择学校并登录提取") }
 
             // ---- 状态 ----
             if (state.busy) {

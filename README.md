@@ -40,6 +40,12 @@ An open-source class schedule app for Android universities. Local-first: no acco
 - 从 WakeUp 课表迁移：WakeUp 内备份出 `.wakeup_schedule` 文件 → 空课「导入/导出 → 从 WakeUp 迁移」
 - 多设备同步：设置里填 WebDAV（推荐坚果云等支持 HTTPS 的服务）
 
+### 求你的学校适配 / Request your school
+
+应用内支持「教务系统导入」：你在网页里自己登录教务（空课**不碰**你的账号密码），
+打开课表页后一键提取。目前覆盖学校有限，欢迎[提交适配请求](../../issues/new?template=jw-adapter-request.md)——
+附上课表页脱敏 HTML 或脚本输出，或直接 PR 一个适配器（`importer/jw/adapters/` 加一个文件即可接入）。
+
 ## 模块结构 / Modules
 
 ```
@@ -73,7 +79,7 @@ An open-source class schedule app for Android universities. Local-first: no acco
 - [x] M2 周视图课表 + 课程/学期编辑
 - [x] M3 Glance 小组件 + 课前提醒
 - [x] M4 导入导出 + 二维码分享，发布首个 Release
-- [ ] M5 教务系统导入（WebView + 逐校适配）
+- [x] M5 教务系统导入框架（WebView + 逐校适配，示例适配器已就绪，真实学校逐步接入）
 
 ## 许可证 / License
 
