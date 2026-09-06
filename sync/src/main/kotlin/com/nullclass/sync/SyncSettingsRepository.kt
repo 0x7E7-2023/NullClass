@@ -27,7 +27,7 @@ enum class AutoSyncInterval(val hours: Long, val label: String) {
     }
 }
 
-/** 同步设置（WebDAV 凭证、设备 ID、同步状态、自动同步周期）。凭证为 DataStore 明文，见 docs/impl 五。 */
+/** 同步设置（WebDAV 凭证、设备 ID、同步状态、自动同步周期）。凭证为 DataStore 明文。 */
 @Singleton
 class SyncSettingsRepository @Inject constructor(
     @ApplicationContext private val context: Context,

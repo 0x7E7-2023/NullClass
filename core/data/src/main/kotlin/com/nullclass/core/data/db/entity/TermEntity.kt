@@ -5,7 +5,7 @@ import androidx.room.Index
 import androidx.room.PrimaryKey
 
 /**
- * v2 审计三列约定（全业务表一致，见 docs/impl 1.2）：
+ * v2 审计三列约定（全业务表一致）：
  *  - updatedAt：同步 LWW 冲突判定
  *  - deletedAt：软删除墓碑，同步时传播删除；业务查询一律过滤 IS NULL
  */

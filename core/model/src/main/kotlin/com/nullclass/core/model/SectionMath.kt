@@ -3,7 +3,7 @@ package com.nullclass.core.model
 /**
  * 大节（连堂）换算：大节 N = 第 2N-1..2N 小节。
  * 例：大节 1 = 第 1..2 节，大节 2 = 第 3..4 节。
- * 大节编号不落库，由节次号派生（见 docs/impl 1.3.1）。
+ * 大节编号不落库，由节次号派生。
  */
 object SectionMath {
 

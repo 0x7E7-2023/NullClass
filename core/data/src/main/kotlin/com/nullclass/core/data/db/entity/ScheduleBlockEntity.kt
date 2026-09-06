@@ -7,7 +7,7 @@ import androidx.room.PrimaryKey
 
 /**
  * termId 为反规范化冗余列（源自 course.termId）：
- * 周视图按 (termId, dayOfWeek) 直查课块，免 join；详见 docs/impl 1.3。
+ * 周视图按 (termId, dayOfWeek) 直查课块，免 join。
  */
 @Entity(
     tableName = "schedule_blocks",

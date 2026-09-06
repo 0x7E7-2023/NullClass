@@ -10,7 +10,7 @@ import com.nullclass.importer.TermDto
 /**
  * 同步合并引擎（纯函数，无 IO，可单测）。
  *
- * 合并规则（详见 docs/impl 2.3）：
+ * 合并规则：
  *  - 记录按 id 对齐；只存在一侧 → 采用
  *  - 两边都有 → updatedAt 新者胜（LWW）；相等 → 取本地（确定性）
  *  - 一侧为墓碑且不比另一侧旧 → 结果为墓碑（删除传播）
@@ -31,7 +31,7 @@ object SyncEngine {
     )
 
     /**
-     * 节次表不逐行合并：每个学期的节次表整体随该学期 updatedAt 较新的一侧（docs/impl 2.3）。
+     * 节次表不逐行合并：每个学期的节次表整体随该学期 updatedAt 较新的一侧。
      * 否则编辑学期删掉的节次会被对端快照复活。
      */
     private fun mergePeriodTimes(local: ScheduleDocument, remote: ScheduleDocument): List<PeriodTimeDto> {
