@@ -22,3 +22,4 @@ build/
 
 # Room 导出的 schema 保留提交，但缓存不提交
 **/schemas/**/build/
+.test/
