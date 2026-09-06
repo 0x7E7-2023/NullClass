@@ -37,7 +37,16 @@ class ReminderController @Inject constructor(
                 }
                 // 编辑保存连发多条通知，防抖合并
                 .debounce(800)
-                .collect { scheduler.reschedule() }
+                .collect {
+                    try {
+                        scheduler.reschedule()
+                    } catch (e: kotlinx.coroutines.CancellationException) {
+                        throw e
+                    } catch (e: Exception) {
+                        // 单次重排失败不能杀死常驻收集协程（下次数据变化会重试）
+                        android.util.Log.w("ReminderController", "reschedule failed", e)
+                    }
+                }
         }
     }
 }

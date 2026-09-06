@@ -152,7 +152,10 @@ private fun TodayFullContent(snapshot: TodaySnapshot, nowMinuteOfDay: Int) {
         item {
             Column {
                 Text(
-                    "第${snapshot.weekNumber}周 · ${ScheduleFormat.dayOfWeekLabel(java.time.LocalDate.now().dayOfWeek.value)}",
+                    when (snapshot.weekNumber) {
+                        null -> snapshot.termName // 学期还没开始（或已结束），只显学期名
+                        else -> "第${snapshot.weekNumber}周 · ${ScheduleFormat.dayOfWeekLabel(java.time.LocalDate.now().dayOfWeek.value)}"
+                    },
                     style = TextStyle(color = WidgetAccent, fontSize = 13.sp, fontWeight = FontWeight.Medium),
                 )
                 Spacer(GlanceModifier.height(4.dp))

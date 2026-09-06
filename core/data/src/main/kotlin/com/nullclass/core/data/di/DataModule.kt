@@ -15,6 +15,7 @@ import dagger.Binds
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
+import androidx.room.RoomDatabase
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import javax.inject.Singleton
@@ -27,6 +28,9 @@ internal object DataModule {
     @Singleton
     fun provideDatabase(@ApplicationContext context: Context): NullClassDatabase =
         Room.databaseBuilder(context, NullClassDatabase::class.java, NullClassDatabase.NAME)
+            // 本应用写入频率低（编辑课表），不需要 WAL 的并发读写；rollback journal 在部分
+            // 模拟器（LDPlayer）上更稳：WAL 的跨连接失效通知与未 checkpoint 数据在这些环境不可靠
+            .setJournalMode(RoomDatabase.JournalMode.TRUNCATE)
             // v1→v2 无存量用户的破坏性迁移；v2 起必须改用显式 Migration（见 NullClassDatabase 注释）
             .fallbackToDestructiveMigration(dropAllTables = true)
             .build()
