@@ -20,6 +20,8 @@ android {
 }
 
 dependencies {
+    // 共享格式（ScheduleDocument v2）定义在 :importer；:sync 依赖它，反向不行
+    api(project(":importer"))
     api(project(":core:model"))
     implementation(project(":core:data"))
 

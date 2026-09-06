@@ -13,6 +13,7 @@ import androidx.lifecycle.lifecycleScope
 import com.nullclass.app.navigation.AppNavHost
 import com.nullclass.core.data.prefs.UserPreferencesRepository
 import com.nullclass.core.ui.theme.NullClassTheme
+import com.nullclass.feature.settings.transfer.PendingImport
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
@@ -35,6 +36,7 @@ class MainActivity : ComponentActivity() {
             }
         }
         maybeRequestNotificationPermission()
+        handleImportIntent(intent)
     }
 
     /** 首启动一次性请求通知权限（API 33+）；拒绝不打扰。 */
@@ -53,8 +55,18 @@ class MainActivity : ComponentActivity() {
         }
     }
 
+    /** 系统「用其他应用打开」.nullclass → 交给 TransferScreen 预览。 */
+    private fun handleImportIntent(intent: Intent?) {
+        val uri = intent?.data ?: return
+        if (intent.action == Intent.ACTION_VIEW && (uri.scheme == "content" || uri.scheme == "file")) {
+            PendingImport.uri.value = uri
+        }
+    }
+
     override fun onNewIntent(intent: Intent) {
         super.onNewIntent(intent)
         setIntent(intent)
+        handleImportIntent(intent)
     }
 }
+

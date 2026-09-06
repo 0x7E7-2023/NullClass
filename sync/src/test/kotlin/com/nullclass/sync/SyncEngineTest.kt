@@ -1,5 +1,12 @@
 package com.nullclass.sync
 
+import com.nullclass.importer.BlockDto
+import com.nullclass.importer.CourseDto
+import com.nullclass.importer.ManifestDto
+import com.nullclass.importer.PeriodTimeDto
+import com.nullclass.importer.ScheduleDocument
+import com.nullclass.importer.TermDto
+
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFalse
@@ -34,7 +41,7 @@ class SyncEngineTest {
         courses: List<CourseDto> = emptyList(),
         blocks: List<BlockDto> = emptyList(),
         periodTimes: List<PeriodTimeDto> = emptyList(),
-    ) = SnapshotDto(
+    ) = ScheduleDocument(
         deviceId = deviceId, generatedAt = now,
         terms = terms, courses = courses, blocks = blocks, periodTimes = periodTimes,
     )

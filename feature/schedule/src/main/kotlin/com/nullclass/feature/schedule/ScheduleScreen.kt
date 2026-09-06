@@ -60,6 +60,7 @@ import com.nullclass.core.ui.theme.courseColor
  * @param onEditCourse 编辑已有课程
  * @param onEditTerm 学期设置
  * @param onOpenSettings 应用设置（WebDAV 同步等）
+ * @param onOpenTransfer 导入/导出中心
  */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -68,6 +69,7 @@ fun ScheduleScreen(
     onEditCourse: (courseId: String) -> Unit,
     onEditTerm: (termId: String?) -> Unit,
     onOpenSettings: () -> Unit,
+    onOpenTransfer: () -> Unit = {},
     viewModel: ScheduleViewModel = hiltViewModel(),
 ) {
     val state by viewModel.uiState.collectAsState()
@@ -108,6 +110,13 @@ fun ScheduleScreen(
                         Icon(Icons.Default.MoreVert, contentDescription = "更多")
                     }
                     DropdownMenu(expanded = menuOpen, onDismissRequest = { menuOpen = false }) {
+                        DropdownMenuItem(
+                            text = { Text("导入 / 导出") },
+                            onClick = {
+                                menuOpen = false
+                                onOpenTransfer()
+                            },
+                        )
                         DropdownMenuItem(
                             text = { Text("学期设置") },
                             onClick = {

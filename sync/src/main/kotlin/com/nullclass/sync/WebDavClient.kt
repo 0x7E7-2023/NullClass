@@ -1,5 +1,12 @@
 package com.nullclass.sync
 
+import com.nullclass.importer.BlockDto
+import com.nullclass.importer.CourseDto
+import com.nullclass.importer.ManifestDto
+import com.nullclass.importer.PeriodTimeDto
+import com.nullclass.importer.ScheduleDocument
+import com.nullclass.importer.TermDto
+
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import kotlinx.serialization.json.Json
@@ -146,7 +153,7 @@ class WebDavClient(private val config: WebDavConfig) {
         Downloaded(manifest, snapshot)
     }
 
-    data class Downloaded(val manifest: ManifestDto, val snapshot: SnapshotDto)
+    data class Downloaded(val manifest: ManifestDto, val snapshot: ScheduleDocument)
 
     private suspend fun downloadManifest(): ManifestDto? = withContext(Dispatchers.IO) {
         http.newCall(
@@ -164,7 +171,7 @@ class WebDavClient(private val config: WebDavConfig) {
         }
     }
 
-    private suspend fun downloadSnapshot(): SnapshotDto? = withContext(Dispatchers.IO) {
+    private suspend fun downloadSnapshot(): ScheduleDocument? = withContext(Dispatchers.IO) {
         http.newCall(
             Request.Builder()
                 .url("${config.baseUrl()}/snapshot.json")
@@ -174,14 +181,14 @@ class WebDavClient(private val config: WebDavConfig) {
         ).execute().use { response ->
             when {
                 response.code == 404 -> null
-                response.isSuccessful -> response.body?.string()?.let { json.decodeFromString<SnapshotDto>(it) }
+                response.isSuccessful -> response.body?.string()?.let { json.decodeFromString<ScheduleDocument>(it) }
                 else -> throw IOException("下载快照失败：HTTP ${response.code}")
             }
         }
     }
 
     /** 上传合并后的快照与 manifest（rev+1）。 */
-    suspend fun upload(snapshot: SnapshotDto, previousRev: Long) = withContext(Dispatchers.IO) {
+    suspend fun upload(snapshot: ScheduleDocument, previousRev: Long) = withContext(Dispatchers.IO) {
         val snapshotJson = json.encodeToString(snapshot)
         http.newCall(
             Request.Builder()

@@ -1,6 +1,9 @@
 package com.nullclass.app.navigation
 
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -10,6 +13,8 @@ import com.nullclass.feature.edit.CourseEditScreen
 import com.nullclass.feature.edit.TermEditScreen
 import com.nullclass.feature.schedule.ScheduleScreen
 import com.nullclass.feature.settings.SettingsScreen
+import com.nullclass.feature.settings.transfer.PendingImport
+import com.nullclass.feature.settings.transfer.TransferScreen
 
 /** 全局路由表。feature 模块保持导航无关，由 :app 统一组装。 */
 object Routes {
@@ -17,6 +22,7 @@ object Routes {
     const val COURSE_EDIT = "course_edit?courseId={courseId}&day={day}&period={period}"
     const val TERM_EDIT = "term_edit?termId={termId}"
     const val SETTINGS = "settings"
+    const val TRANSFER = "transfer"
 
     /** Int 参数用 -1 表示未提供。 */
     fun courseEdit(courseId: String? = null, day: Int? = null, period: Int? = null): String =
@@ -28,6 +34,14 @@ object Routes {
 @Composable
 fun AppNavHost() {
     val navController = rememberNavController()
+    val pendingImportUri by PendingImport.uri.collectAsState()
+
+    // 「用其他应用打开」.nullclass → 直达导入页
+    LaunchedEffect(pendingImportUri) {
+        if (pendingImportUri != null && navController.currentDestination?.route != Routes.TRANSFER) {
+            navController.navigate(Routes.TRANSFER)
+        }
+    }
 
     fun back() = navController.popBackStack()
 
@@ -42,6 +56,7 @@ fun AppNavHost() {
                 },
                 onEditTerm = { termId -> navController.navigate(Routes.termEdit(termId)) },
                 onOpenSettings = { navController.navigate(Routes.SETTINGS) },
+                onOpenTransfer = { navController.navigate(Routes.TRANSFER) },
             )
         }
         composable(
@@ -71,7 +86,17 @@ fun AppNavHost() {
             )
         }
         composable(Routes.SETTINGS) {
-            SettingsScreen(onBack = ::back)
+            SettingsScreen(
+                onBack = ::back,
+                onOpenTransfer = { navController.navigate(Routes.TRANSFER) },
+            )
+        }
+        composable(Routes.TRANSFER) {
+            TransferScreen(
+                onBack = ::back,
+                pendingImport = PendingImport.uri.collectAsState(),
+                onPendingImportConsumed = { PendingImport.uri.value = null },
+            )
         }
     }
 }

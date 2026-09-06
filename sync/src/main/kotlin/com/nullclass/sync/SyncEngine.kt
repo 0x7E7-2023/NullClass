@@ -1,5 +1,12 @@
 package com.nullclass.sync
 
+import com.nullclass.importer.BlockDto
+import com.nullclass.importer.CourseDto
+import com.nullclass.importer.ManifestDto
+import com.nullclass.importer.PeriodTimeDto
+import com.nullclass.importer.ScheduleDocument
+import com.nullclass.importer.TermDto
+
 /**
  * 同步合并引擎（纯函数，无 IO，可单测）。
  *
@@ -12,7 +19,7 @@ package com.nullclass.sync
  */
 object SyncEngine {
 
-    fun merge(local: SnapshotDto, remote: SnapshotDto, now: Long): SnapshotDto = SnapshotDto(
+    fun merge(local: ScheduleDocument, remote: ScheduleDocument, now: Long): ScheduleDocument = ScheduleDocument(
         formatVersion = maxOf(local.formatVersion, remote.formatVersion),
         deviceId = local.deviceId,
         generatedAt = now,
@@ -27,7 +34,7 @@ object SyncEngine {
      * 节次表不逐行合并：每个学期的节次表整体随该学期 updatedAt 较新的一侧（docs/impl 2.3）。
      * 否则编辑学期删掉的节次会被对端快照复活。
      */
-    private fun mergePeriodTimes(local: SnapshotDto, remote: SnapshotDto): List<PeriodTimeDto> {
+    private fun mergePeriodTimes(local: ScheduleDocument, remote: ScheduleDocument): List<PeriodTimeDto> {
         val localTermStamp = local.terms.associate { it.id to it.updatedAt }
         val remoteTermStamp = remote.terms.associate { it.id to it.updatedAt }
         val localByTerm = local.periodTimes.groupBy { it.termId }

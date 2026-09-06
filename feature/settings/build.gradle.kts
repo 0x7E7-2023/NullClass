@@ -28,6 +28,7 @@ dependencies {
     implementation(project(":core:data"))
     implementation(project(":core:ui"))
     implementation(project(":sync"))
+    implementation(project(":importer"))
 
     implementation(libs.androidx.core.ktx)
     implementation(platform(libs.compose.bom))
@@ -35,6 +36,10 @@ dependencies {
     implementation(libs.compose.material3)
     implementation(libs.compose.material.icons)
     debugImplementation(libs.compose.ui.tooling)
+
+    // 二维码：zxing-core 纯 Java 生成位图；embedded 封装扫码相机
+    implementation(libs.zxing.core)
+    implementation(libs.zxing.android.embedded)
 
     implementation(libs.hilt.android)
     ksp(libs.hilt.compiler)

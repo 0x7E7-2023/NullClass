@@ -1,5 +1,12 @@
 package com.nullclass.sync
 
+import com.nullclass.importer.BlockDto
+import com.nullclass.importer.CourseDto
+import com.nullclass.importer.ManifestDto
+import com.nullclass.importer.PeriodTimeDto
+import com.nullclass.importer.ScheduleDocument
+import com.nullclass.importer.TermDto
+
 import kotlinx.coroutines.test.runTest
 import okhttp3.mockwebserver.MockResponse
 import okhttp3.mockwebserver.MockWebServer
@@ -42,7 +49,7 @@ class WebDavClientTest {
 
     @Test
     fun `上传后可下载回同内容`() = runTest {
-        val snapshot = SnapshotDto(
+        val snapshot = ScheduleDocument(
             deviceId = "dev",
             generatedAt = 100,
             terms = listOf(

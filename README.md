@@ -9,14 +9,14 @@ An open-source class schedule app for Android universities. Local-first: no acco
 
 ## 功能 / Features
 
-**开发中 / WIP**
-
-- 📅 周视图课表（滑动切周、当前周高亮）
-- 🧩 Jetpack Glance 桌面小组件（今日课程 / 下节课）
-- 🔔 课前提醒
-- 📤 课表导入导出（自有 JSON 格式 + 二维码分享）
+- 📅 周视图课表（滑动切周、当前周高亮、单双周/连堂支持）
+- 🧩 Jetpack Glance 桌面小组件（今日课程 / 下节课，自动随课表刷新）
+- 🔔 课前提醒（提前 5/15/30 分钟可配，WorkManager 低功耗调度）
+- 📤 课表导入导出（`.nullclass` 文件 + 二维码扫码分享）
+- 📥 WakeUp 课表一键迁移（`.wakeup_schedule`，连堂/单双周/节次时间/颜色全保留）
+- 🔄 WebDAV 同步（坚果云/NextCloud 自建，端到端属于你；支持定时自动同步）
 - 🎨 Material 3 + 动态取色（Material You）
-- 💚 纯本地存储（Room），隐私干净
+- 💚 纯本地存储（Room），隐私干净：无账号、无云端、无埋点
 
 ## 技术栈 / Tech Stack
 
@@ -29,6 +29,16 @@ An open-source class schedule app for Android universities. Local-first: no acco
 | 存储 | Room + DataStore |
 | 后台任务 | WorkManager |
 | 最低版本 | Android 8.0 (API 26) |
+
+## 下载 / Download
+
+从 [GitHub Releases](../../releases) 获取签名 APK。欢迎第三方 F-Droid 打包（reproducible build 意愿欢迎交流，暂不承诺）。
+
+## 数据与迁移 / Data & Migration
+
+- 课表可随时导出为 `.nullclass` 文件或二维码，发给同学即可导入（合并语义，不覆盖更新的数据）
+- 从 WakeUp 课表迁移：WakeUp 内备份出 `.wakeup_schedule` 文件 → 空课「导入/导出 → 从 WakeUp 迁移」
+- 多设备同步：设置里填 WebDAV（推荐坚果云等支持 HTTPS 的服务）
 
 ## 模块结构 / Modules
 
@@ -62,7 +72,7 @@ An open-source class schedule app for Android universities. Local-first: no acco
 - [x] M1 项目骨架
 - [x] M2 周视图课表 + 课程/学期编辑
 - [x] M3 Glance 小组件 + 课前提醒
-- [ ] M4 导入导出 + 二维码分享，发布首个 Release
+- [x] M4 导入导出 + 二维码分享，发布首个 Release
 - [ ] M5 教务系统导入（WebView + 逐校适配）
 
 ## 许可证 / License

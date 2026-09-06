@@ -56,7 +56,11 @@ import java.time.format.DateTimeFormatter
 /** 应用设置：WebDAV 同步、课前提醒、自动同步。 */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun SettingsScreen(onBack: () -> Unit, viewModel: SettingsViewModel = hiltViewModel()) {
+fun SettingsScreen(
+    onBack: () -> Unit,
+    onOpenTransfer: () -> Unit = {},
+    viewModel: SettingsViewModel = hiltViewModel(),
+) {
     val state by viewModel.state.collectAsState()
     val lastSyncAt by viewModel.lastSyncAt.collectAsState()
     val reminderLeadMinutes by viewModel.reminderLeadMinutes.collectAsState()
@@ -78,6 +82,9 @@ fun SettingsScreen(onBack: () -> Unit, viewModel: SettingsViewModel = hiltViewMo
                     IconButton(onClick = onBack) {
                         Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "返回")
                     }
+                },
+                actions = {
+                    TextButton(onClick = onOpenTransfer) { Text("导入 / 导出") }
                 },
             )
         },
