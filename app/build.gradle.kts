@@ -60,8 +60,10 @@ dependencies {
     implementation(project(":core:ui"))
     implementation(project(":feature:schedule"))
     implementation(project(":feature:edit"))
+    implementation(project(":feature:settings"))
     implementation(project(":widget"))
     implementation(project(":importer"))
+    implementation(project(":sync"))
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.activity.compose)

@@ -28,7 +28,7 @@ internal object DataModule {
     fun provideDatabase(@ApplicationContext context: Context): NullClassDatabase =
         Room.databaseBuilder(context, NullClassDatabase::class.java, NullClassDatabase.NAME)
             // v1→v2 无存量用户的破坏性迁移；v2 起必须改用显式 Migration（见 NullClassDatabase 注释）
-            .fallbackToDestructiveMigration()
+            .fallbackToDestructiveMigration(dropAllTables = true)
             .build()
 
     @Provides
