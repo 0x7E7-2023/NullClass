@@ -1,0 +1,14 @@
+* text=auto
+
+# Linux CI 上必须保持 LF
+gradlew text eol=lf
+*.sh text eol=lf
+
+# Windows 批处理
+*.bat text eol=crlf
+
+# 二进制
+*.jar binary
+*.png binary
+*.webp binary
+*.keystore binary
