@@ -1,11 +1,14 @@
 package com.nullclass.core.ui.theme
 
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.luminance
 
 /**
  * 课程色板：12 色，[Course.colorIndex] 取模循环。
- * 课块渲染用 [courseColor]（容器低饱和 + 文字高饱和，深浅色主题都可读）；
+ * 课块渲染用 [courseColor]（容器极低饱和 + 彩色边框勾勒颜色，文字用主题灰）；
+ * [CourseColor.content] 保留全饱和原色，供详情页等需要强颜色识别的场景。
  * 色板选择器直接用 [CoursePalette]。
  */
 val CoursePalette = listOf(
@@ -26,13 +29,17 @@ val CoursePalette = listOf(
 data class CourseColor(
     val container: Color,
     val content: Color,
+    val border: Color,
 )
 
 @Composable
 fun courseColor(colorIndex: Int): CourseColor {
     val base = CoursePalette[colorIndex.mod(CoursePalette.size)]
+    // 深色主题底色暗，透明度再低课块会隐形；浅色主题压到 5% 只留一点色底
+    val containerAlpha = if (MaterialTheme.colorScheme.background.luminance() < 0.5f) 0.18f else 0.15f
     return CourseColor(
-        container = base.copy(alpha = 0.18f),
+        container = base.copy(alpha = containerAlpha),
         content = base,
+        border = base.copy(alpha = 0.4f),
     )
 }

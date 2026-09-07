@@ -22,6 +22,8 @@ class UserPreferencesRepository @Inject constructor(
     private object Keys {
         val REMINDER_LEAD_MINUTES = intPreferencesKey("reminder_lead_minutes")
         val NOTIFICATION_PERMISSION_ASKED = booleanPreferencesKey("notification_permission_asked")
+        val SHOW_WEEKEND = booleanPreferencesKey("show_weekend")
+        val SHOW_TIME_IN_CARDS = booleanPreferencesKey("show_time_in_cards")
     }
 
     /** 提前提醒分钟数；0 = 关闭。默认 15。 */
@@ -40,6 +42,22 @@ class UserPreferencesRepository @Inject constructor(
 
     suspend fun setNotificationPermissionAsked() {
         context.userPrefs.edit { it[Keys.NOTIFICATION_PERMISSION_ASKED] = true }
+    }
+
+    /** 周视图是否显示周末两列。默认显示。 */
+    val showWeekend: Flow<Boolean> =
+        context.userPrefs.data.map { it[Keys.SHOW_WEEKEND] ?: true }
+
+    suspend fun setShowWeekend(value: Boolean) {
+        context.userPrefs.edit { it[Keys.SHOW_WEEKEND] = value }
+    }
+
+    /** 起止时间显示位置：false = 节次列内（默认）；true = 课块左上/右下角，节次列随之收窄。 */
+    val showTimeInCards: Flow<Boolean> =
+        context.userPrefs.data.map { it[Keys.SHOW_TIME_IN_CARDS] ?: false }
+
+    suspend fun setShowTimeInCards(value: Boolean) {
+        context.userPrefs.edit { it[Keys.SHOW_TIME_IN_CARDS] = value }
     }
 
     companion object {

@@ -28,16 +28,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 
-/**
- * 课程编辑（新建/编辑复用）。
- * 支持从周视图点空格进入时预填星期与节次（默认连堂 2 节）。
- */
+/** 课程编辑（新建/编辑复用）。新建默认周一 1-2 节、整学期每周。 */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CourseEditScreen(
     courseId: String?,
-    prefillDay: Int?,
-    prefillPeriod: Int?,
     onBack: () -> Unit,
     viewModel: CourseEditViewModel = hiltViewModel(),
 ) {

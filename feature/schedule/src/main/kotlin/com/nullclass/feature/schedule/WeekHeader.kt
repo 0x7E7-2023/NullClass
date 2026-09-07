@@ -19,22 +19,27 @@ import androidx.compose.ui.unit.sp
 import com.nullclass.core.model.Term
 import java.time.LocalDate
 
-/** 表头：一~日 + 日期。与 WeekGrid 的列宽严格对齐（spacer + 7 × weight(1f)）。 */
+/** 表头：一~日 + 日期。与 WeekGrid 的列宽严格对齐（spacer + 7 × weight(1f)）。今日列带高亮条上段，下段在 WeekGrid。 */
 @Composable
 internal fun WeekHeader(
     term: Term,
     week: Int,
     todayDayOfWeek: Int?,
+    showWeekend: Boolean,
+    showTimeInCards: Boolean,
     modifier: Modifier = Modifier,
 ) {
     Row(modifier = modifier.fillMaxWidth()) {
-        Spacer(modifier = Modifier.width(PeriodColumnWidth))
-        for (day in 1..7) {
+        Spacer(modifier = Modifier.width(periodColumnWidth(showTimeInCards)))
+        val lastDay = if (showWeekend) 7 else 5
+        for (day in 1..lastDay) {
             val epochDay = term.epochDayOf(week, day)
             val date = LocalDate.ofEpochDay(epochDay)
             val isToday = todayDayOfWeek == day
             Column(
-                modifier = Modifier.weight(1f),
+                modifier = Modifier
+                    .weight(1f)
+                    .padding(vertical = 4.dp),
                 horizontalAlignment = Alignment.CenterHorizontally,
             ) {
                 Text(
@@ -47,6 +52,7 @@ internal fun WeekHeader(
                     text = "${date.monthValue}/${date.dayOfMonth}",
                     fontSize = 10.sp,
                     color = if (isToday) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurfaceVariant,
+                    fontWeight = if (isToday) FontWeight.Bold else FontWeight.Normal,
                 )
             }
         }

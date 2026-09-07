@@ -1,5 +1,7 @@
 package com.nullclass.feature.schedule
 
+import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -19,19 +21,23 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.DateRange
 import androidx.compose.material.icons.filled.MoreVert
+import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
+import androidx.compose.material3.Checkbox
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.FilterChip
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Surface
+import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
@@ -46,6 +52,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -56,7 +63,7 @@ import com.nullclass.core.ui.theme.courseColor
 /**
  * 课表主界面。
  *
- * @param onCreateCourse 点空白格/FAB 进新建课程；空白格带预填 (day, period)
+ * @param onCreateCourse FAB 进新建课程
  * @param onEditCourse 编辑已有课程
  * @param onEditTerm 学期设置
  * @param onOpenSettings 应用设置（WebDAV 同步等）
@@ -65,7 +72,7 @@ import com.nullclass.core.ui.theme.courseColor
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ScheduleScreen(
-    onCreateCourse: (dayOfWeek: Int?, startPeriod: Int?) -> Unit,
+    onCreateCourse: () -> Unit,
     onEditCourse: (courseId: String) -> Unit,
     onEditTerm: (termId: String?) -> Unit,
     onOpenSettings: () -> Unit,
@@ -76,6 +83,7 @@ fun ScheduleScreen(
 
     var detailBlock by remember { mutableStateOf<PlacedBlock?>(null) }
     var showWeekPicker by remember { mutableStateOf(false) }
+    var showQuickSettings by remember { mutableStateOf(false) }
 
     Scaffold(
         topBar = {
@@ -103,6 +111,16 @@ fun ScheduleScreen(
                     if (ready != null && ready.selectedWeek != ready.currentWeek) {
                         TextButton(onClick = { viewModel.backToCurrentWeek() }) {
                             Text("回本周")
+                        }
+                    }
+                    if (ready != null) {
+                        IconButton(onClick = { showWeekPicker = true }) {
+                            Icon(Icons.Default.DateRange, contentDescription = "选择周次")
+                        }
+                    }
+                    if (ready != null) {
+                        IconButton(onClick = { showQuickSettings = true }) {
+                            Icon(Icons.Default.Settings, contentDescription = "设置")
                         }
                     }
                     var menuOpen by remember { mutableStateOf(false) }
@@ -140,7 +158,7 @@ fun ScheduleScreen(
         },
         floatingActionButton = {
             if (state is ScheduleUiState.Ready) {
-                FloatingActionButton(onClick = { onCreateCourse(null, null) }) {
+                FloatingActionButton(onClick = onCreateCourse) {
                     Icon(Icons.Default.Add, contentDescription = "添加课程")
                 }
             }
@@ -179,16 +197,17 @@ fun ScheduleScreen(
                     pageCount = { ready.term.totalWeeks },
                 )
 
-                // 翻页 → VM
+                // 翻页落定 → VM。用 settledPage 而非 currentPage：动画途中扫过的中间页
+                // 不回写 VM，否则 selectedWeek 抖动会重启下方翻页效果、把动画拦腰取消
                 LaunchedEffect(pagerState) {
-                    snapshotFlow { pagerState.currentPage }.collect { page ->
+                    snapshotFlow { pagerState.settledPage }.collect { page ->
                         viewModel.selectWeek(page + 1)
                     }
                 }
                 // 周次选择器/回本周 → 翻页
                 LaunchedEffect(ready.selectedWeek, ready.term.totalWeeks) {
                     val target = (ready.selectedWeek - 1).coerceIn(0, ready.term.totalWeeks - 1)
-                    if (pagerState.currentPage != target && !pagerState.isScrollInProgress) {
+                    if (pagerState.settledPage != target && !pagerState.isScrollInProgress) {
                         pagerState.animateScrollToPage(target)
                     }
                 }
@@ -198,26 +217,19 @@ fun ScheduleScreen(
                         .fillMaxSize()
                         .padding(padding),
                 ) {
-                    Row(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(horizontal = 4.dp, vertical = 4.dp),
-                        verticalAlignment = Alignment.CenterVertically,
-                    ) {
-                        WeekHeader(
-                            term = ready.term,
-                            week = ready.selectedWeek,
-                            todayDayOfWeek = if (ready.selectedWeek == ready.currentWeek) {
-                                ready.todayDayOfWeek
-                            } else {
-                                null
-                            },
-                            modifier = Modifier.weight(1f),
-                        )
-                        TextButton(onClick = { showWeekPicker = true }) {
-                            Text("选周", fontSize = 12.sp)
-                        }
-                    }
+                    WeekHeader(
+                        term = ready.term,
+                        week = ready.selectedWeek,
+                        todayDayOfWeek = if (ready.selectedWeek == ready.currentWeek) {
+                            ready.todayDayOfWeek
+                        } else {
+                            null
+                        },
+                        showWeekend = ready.showWeekend,
+                        showTimeInCards = ready.showTimeInCards,
+                        // 无水平 padding：与 WeekGrid 总宽严格一致，分栏才能逐列对齐
+                        modifier = Modifier.fillMaxWidth(),
+                    )
 
                     HorizontalPager(
                         state = pagerState,
@@ -238,8 +250,9 @@ fun ScheduleScreen(
                                 periodTimes = ready.periodTimes,
                                 layout = layout,
                                 todayDayOfWeek = if (week == ready.currentWeek) ready.todayDayOfWeek else null,
+                                showWeekend = ready.showWeekend,
+                                showTimeInCards = ready.showTimeInCards,
                                 onBlockClick = { detailBlock = it },
-                                onCellClick = { day, period -> onCreateCourse(day, period) },
                             )
                         }
                     }
@@ -274,6 +287,46 @@ fun ScheduleScreen(
                         onDismiss = { showWeekPicker = false },
                     )
                 }
+
+                if (showQuickSettings) {
+                    AlertDialog(
+                        onDismissRequest = { showQuickSettings = false },
+                        title = { Text("设置") },
+                        text = {
+                            Column {
+                                Row(
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .clickable { viewModel.setShowWeekend(!ready.showWeekend) },
+                                    horizontalArrangement = Arrangement.SpaceBetween,
+                                    verticalAlignment = Alignment.CenterVertically,
+                                ) {
+                                    Text("显示周末")
+                                    Checkbox(
+                                        checked = ready.showWeekend,
+                                        onCheckedChange = { viewModel.setShowWeekend(it) },
+                                    )
+                                }
+                                Row(
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .clickable { viewModel.setShowTimeInCards(!ready.showTimeInCards) },
+                                    horizontalArrangement = Arrangement.SpaceBetween,
+                                    verticalAlignment = Alignment.CenterVertically,
+                                ) {
+                                    Text("起止时间标在课块上")
+                                    Switch(
+                                        checked = ready.showTimeInCards,
+                                        onCheckedChange = { viewModel.setShowTimeInCards(it) },
+                                    )
+                                }
+                            }
+                        },
+                        confirmButton = {
+                            TextButton(onClick = { showQuickSettings = false }) { Text("完成") }
+                        },
+                    )
+                }
             }
         }
     }
@@ -298,15 +351,11 @@ private fun WeekPickerDialog(
                 verticalArrangement = Arrangement.spacedBy(8.dp),
             ) {
                 items((1..totalWeeks).toList()) { week ->
-                    FilterChip(
+                    WeekChip(
+                        week = week,
                         selected = week == selectedWeek,
+                        isCurrent = week == currentWeek,
                         onClick = { onSelect(week) },
-                        label = {
-                            Text(
-                                if (week == currentWeek) "$week·今" else "$week",
-                                fontSize = 12.sp,
-                            )
-                        },
                     )
                 }
             }
@@ -315,4 +364,36 @@ private fun WeekPickerDialog(
             TextButton(onClick = onDismiss) { Text("取消") }
         },
     )
+}
+
+/** 周次格子：常态无边框无填充；选中周次描边；当今周次填充背景色（两者可叠加）。 */
+@Composable
+private fun WeekChip(
+    week: Int,
+    selected: Boolean,
+    isCurrent: Boolean,
+    onClick: () -> Unit,
+) {
+    Surface(
+        onClick = onClick,
+        shape = MaterialTheme.shapes.small,
+        color = if (isCurrent) MaterialTheme.colorScheme.secondaryContainer else Color.Transparent,
+        border = if (selected) BorderStroke(1.dp, MaterialTheme.colorScheme.primary) else null,
+        modifier = Modifier.fillMaxWidth(),
+    ) {
+        Box(
+            modifier = Modifier.padding(horizontal = 12.dp, vertical = 10.dp),
+            contentAlignment = Alignment.Center,
+        ) {
+            Text(
+                "$week",
+                fontSize = 12.sp,
+                color = if (isCurrent) {
+                    MaterialTheme.colorScheme.onSecondaryContainer
+                } else {
+                    MaterialTheme.colorScheme.onSurface
+                },
+            )
+        }
+    }
 }

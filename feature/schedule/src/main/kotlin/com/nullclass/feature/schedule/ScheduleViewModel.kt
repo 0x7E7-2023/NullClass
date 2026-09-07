@@ -2,6 +2,7 @@ package com.nullclass.feature.schedule
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.nullclass.core.data.prefs.UserPreferencesRepository
 import com.nullclass.core.data.repository.CourseRepository
 import com.nullclass.core.data.repository.TermRepository
 import com.nullclass.core.model.CourseWithBlocks
@@ -39,6 +40,10 @@ sealed interface ScheduleUiState {
         val layout: Map<Int, List<PlacedBlock>>,
         /** 今天的星期（1..7）。使用方结合 currentWeek 判断是否高亮今天列。 */
         val todayDayOfWeek: Int,
+        /** 周视图是否显示周末两列。 */
+        val showWeekend: Boolean,
+        /** 起止时间标在课块角上（节次列随之收窄为仅节次号）。 */
+        val showTimeInCards: Boolean,
     ) : ScheduleUiState
 }
 
@@ -47,6 +52,7 @@ sealed interface ScheduleUiState {
 class ScheduleViewModel @Inject constructor(
     private val termRepository: TermRepository,
     private val courseRepository: CourseRepository,
+    private val userPreferencesRepository: UserPreferencesRepository,
 ) : ViewModel() {
 
     private val today: LocalDate = LocalDate.now()
@@ -67,7 +73,9 @@ class ScheduleViewModel @Inject constructor(
                     combine(
                         courseRepository.observeSchedule(term.id),
                         termRepository.observePeriodTimes(term.id),
-                    ) { schedule, periodTimes ->
+                        userPreferencesRepository.showWeekend,
+                        userPreferencesRepository.showTimeInCards,
+                    ) { schedule, periodTimes, showWeekend, showTimeInCards ->
                         ScheduleUiState.Ready(
                             term = term,
                             currentWeek = currentWeek,
@@ -76,6 +84,8 @@ class ScheduleViewModel @Inject constructor(
                             schedule = schedule,
                             layout = WeekLayout.layoutForWeek(schedule, week),
                             todayDayOfWeek = today.dayOfWeek.value,
+                            showWeekend = showWeekend,
+                            showTimeInCards = showTimeInCards,
                         )
                     }
                 }
@@ -90,6 +100,16 @@ class ScheduleViewModel @Inject constructor(
     /** 回到本周（恢复自动跟随）。 */
     fun backToCurrentWeek() {
         userSelectedWeek.value = null
+    }
+
+    /** 切换周视图周末列显示。 */
+    fun setShowWeekend(value: Boolean) {
+        viewModelScope.launch { userPreferencesRepository.setShowWeekend(value) }
+    }
+
+    /** 切换起止时间显示位置（节次列内 ↔ 课块角上）。 */
+    fun setShowTimeInCards(value: Boolean) {
+        viewModelScope.launch { userPreferencesRepository.setShowTimeInCards(value) }
     }
 
     fun deleteCourse(courseId: String) {

@@ -19,14 +19,12 @@ import com.nullclass.feature.settings.transfer.TransferScreen
 /** 全局路由表。feature 模块保持导航无关，由 :app 统一组装。 */
 object Routes {
     const val SCHEDULE = "schedule"
-    const val COURSE_EDIT = "course_edit?courseId={courseId}&day={day}&period={period}"
+    const val COURSE_EDIT = "course_edit?courseId={courseId}"
     const val TERM_EDIT = "term_edit?termId={termId}"
     const val SETTINGS = "settings"
     const val TRANSFER = "transfer"
 
-    /** Int 参数用 -1 表示未提供。 */
-    fun courseEdit(courseId: String? = null, day: Int? = null, period: Int? = null): String =
-        "course_edit?courseId=${courseId ?: ""}&day=${day ?: -1}&period=${period ?: -1}"
+    fun courseEdit(courseId: String? = null): String = "course_edit?courseId=${courseId ?: ""}"
 
     fun termEdit(termId: String? = null): String = "term_edit?termId=${termId ?: ""}"
 }
@@ -48,9 +46,7 @@ fun AppNavHost() {
     NavHost(navController = navController, startDestination = Routes.SCHEDULE) {
         composable(Routes.SCHEDULE) {
             ScheduleScreen(
-                onCreateCourse = { day, period ->
-                    navController.navigate(Routes.courseEdit(day = day, period = period))
-                },
+                onCreateCourse = { navController.navigate(Routes.courseEdit()) },
                 onEditCourse = { courseId ->
                     navController.navigate(Routes.courseEdit(courseId = courseId))
                 },
@@ -63,14 +59,10 @@ fun AppNavHost() {
             route = Routes.COURSE_EDIT,
             arguments = listOf(
                 navArgument("courseId") { type = NavType.StringType; defaultValue = "" },
-                navArgument("day") { type = NavType.IntType; defaultValue = -1 },
-                navArgument("period") { type = NavType.IntType; defaultValue = -1 },
             ),
         ) { entry ->
             CourseEditScreen(
                 courseId = entry.arguments?.getString("courseId")?.takeIf { it.isNotBlank() },
-                prefillDay = entry.arguments?.getInt("day")?.takeIf { it > 0 },
-                prefillPeriod = entry.arguments?.getInt("period")?.takeIf { it > 0 },
                 onBack = ::back,
             )
         }

@@ -1,8 +1,9 @@
 package com.nullclass.feature.schedule
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.gestures.detectTapGestures
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -19,11 +20,11 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.material3.HorizontalDivider
@@ -38,11 +39,11 @@ import com.nullclass.core.ui.theme.courseColor
 /** 单节行高。课块高度 = 行高 × 跨节数。 */
 internal val PeriodCellHeight = 56.dp
 
-/** 左侧节次列宽度（表头 spacer 与此对齐）。 */
-internal val PeriodColumnWidth = 44.dp
+/** 左侧节次列宽度（表头 spacer 与此对齐）。起止时间标在课块上时只留节次号，收窄。 */
+internal fun periodColumnWidth(showTimeInCards: Boolean): Dp = if (showTimeInCards) 28.dp else 44.dp
 
 /**
- * 周视图主体：左侧节次列 + 7 天列。
+ * 周视图主体：左侧节次列 + 5/7 天列（周末可隐藏）。
  * 外层负责纵向滚动与按周翻页。
  */
 @Composable
@@ -50,25 +51,30 @@ internal fun WeekGrid(
     periodTimes: List<PeriodTime>,
     layout: Map<Int, List<PlacedBlock>>,
     todayDayOfWeek: Int?,
+    showWeekend: Boolean,
+    showTimeInCards: Boolean,
     onBlockClick: (PlacedBlock) -> Unit,
-    onCellClick: (dayOfWeek: Int, period: Int) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     val totalPeriods = periodTimes.size.coerceAtLeast(1)
-    val todayHighlight = MaterialTheme.colorScheme.primary.copy(alpha = 0.06f)
+    val lastDay = if (showWeekend) 7 else 5
 
     Box(modifier = modifier.fillMaxSize()) {
-        Row(modifier = Modifier.fillMaxSize()) {
-            PeriodColumn(periodTimes)
-            for (day in 1..7) {
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                // 纵向滚动链路 maxHeight = 无穷，fillMaxHeight 会失效、列高塌成课块堆高度；
+                // 显式钉为「节数 × 行高」，今日高亮条与空白格点击区才能铺满整张网格
+                .height(PeriodCellHeight * totalPeriods),
+        ) {
+            PeriodColumn(periodTimes, showTimeInCards)
+            for (day in 1..lastDay) {
                 DayColumn(
-                    day = day,
                     isToday = todayDayOfWeek == day,
                     blocks = layout[day].orEmpty(),
-                    totalPeriods = totalPeriods,
-                    todayHighlight = todayHighlight,
+                    periodTimes = periodTimes,
+                    showTimeInCards = showTimeInCards,
                     onBlockClick = onBlockClick,
-                    onCellClick = onCellClick,
                     modifier = Modifier.weight(1f),
                 )
             }
@@ -87,10 +93,10 @@ internal fun WeekGrid(
     }
 }
 
-/** 左侧节次列：节次号 + 起止时间，每格严格 PeriodCellHeight 高。 */
+/** 左侧节次列：节次号（时间标在课块上时）或 节次号 + 起止时间，每格严格 PeriodCellHeight 高。 */
 @Composable
-private fun PeriodColumn(periodTimes: List<PeriodTime>) {
-    Column(modifier = Modifier.width(PeriodColumnWidth)) {
+private fun PeriodColumn(periodTimes: List<PeriodTime>, showTimeInCards: Boolean) {
+    Column(modifier = Modifier.width(periodColumnWidth(showTimeInCards))) {
         periodTimes.forEach { time ->
             Column(
                 modifier = Modifier
@@ -98,6 +104,7 @@ private fun PeriodColumn(periodTimes: List<PeriodTime>) {
                     .fillMaxWidth()
                     .padding(horizontal = 4.dp, vertical = 4.dp),
                 horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.Center,
             ) {
                 Text(
                     text = time.periodIndex.toString(),
@@ -105,16 +112,18 @@ private fun PeriodColumn(periodTimes: List<PeriodTime>) {
                     fontWeight = FontWeight.SemiBold,
                     color = MaterialTheme.colorScheme.onSurface,
                 )
-                Text(
-                    text = ScheduleFormat.minuteLabel(time.startMinuteOfDay),
-                    fontSize = 9.sp,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant,
-                )
-                Text(
-                    text = ScheduleFormat.minuteLabel(time.endMinuteOfDay),
-                    fontSize = 9.sp,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant,
-                )
+                if (!showTimeInCards) {
+                    Text(
+                        text = ScheduleFormat.minuteLabel(time.startMinuteOfDay),
+                        fontSize = 9.sp,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    )
+                    Text(
+                        text = ScheduleFormat.minuteLabel(time.endMinuteOfDay),
+                        fontSize = 9.sp,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    )
+                }
             }
         }
     }
@@ -122,32 +131,17 @@ private fun PeriodColumn(periodTimes: List<PeriodTime>) {
 
 @Composable
 private fun DayColumn(
-    day: Int,
     isToday: Boolean,
     blocks: List<PlacedBlock>,
-    totalPeriods: Int,
-    todayHighlight: androidx.compose.ui.graphics.Color,
+    periodTimes: List<PeriodTime>,
+    showTimeInCards: Boolean,
     onBlockClick: (PlacedBlock) -> Unit,
-    onCellClick: (dayOfWeek: Int, period: Int) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     val density = LocalDensity.current
-    val cellHeightPx = with(density) { PeriodCellHeight.toPx() }
+    val hairline = with(density) { 1.toDp() } // 1 物理像素，屏上最细的描边
 
-    Box(
-        modifier = modifier
-            .fillMaxHeight()
-            .background(if (isToday) todayHighlight else androidx.compose.ui.graphics.Color.Transparent)
-            .pointerInput(day, totalPeriods, cellHeightPx) {
-                detectTapGestures { offset ->
-                    // 点空白格：换算出节次后预填进编辑页（课块自身的点击在子组件消费，不会到这里）
-                    val period = (offset.y / cellHeightPx).toInt() + 1
-                    if (period in 1..totalPeriods) {
-                        onCellClick(day, period)
-                    }
-                }
-            },
-    ) {
+    Box(modifier = modifier.fillMaxHeight()) {
         blocks.forEach { placed ->
             val color = courseColor(placed.course.colorIndex)
             Box(
@@ -158,6 +152,7 @@ private fun DayColumn(
                     .padding(1.5.dp)
                     .clip(RoundedCornerShape(8.dp))
                     .background(color.container)
+                    .border(hairline, color.border, RoundedCornerShape(8.dp))
                     .clickable { onBlockClick(placed) },
                 contentAlignment = Alignment.Center,
             ) {
@@ -167,10 +162,10 @@ private fun DayColumn(
                 ) {
                     Text(
                         text = placed.course.name,
-                        fontSize = 10.sp,
-                        lineHeight = 12.sp,
+                        fontSize = 11.sp,
+                        lineHeight = 13.sp,
                         fontWeight = FontWeight.SemiBold,
-                        color = color.content,
+                        color = MaterialTheme.colorScheme.onSurface,
                         textAlign = TextAlign.Center,
                         maxLines = 3,
                         overflow = TextOverflow.Ellipsis,
@@ -180,14 +175,50 @@ private fun DayColumn(
                             text = placed.block.location!!,
                             fontSize = 9.sp,
                             lineHeight = 11.sp,
-                            color = color.content.copy(alpha = 0.8f),
+                            color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.75f),
                             textAlign = TextAlign.Center,
                             maxLines = 2,
                             overflow = TextOverflow.Ellipsis,
                         )
                     }
                 }
+                if (showTimeInCards) {
+                    CornerTime(
+                        label = periodTimes.getOrNull(placed.block.startPeriod - 1)
+                            ?.let { ScheduleFormat.minuteLabel(it.startMinuteOfDay) },
+                        color = MaterialTheme.colorScheme.onSurface,
+                        modifier = Modifier
+                            .align(Alignment.TopStart)
+                            .padding(start = 3.dp, top = 1.dp),
+                    )
+                    CornerTime(
+                        label = periodTimes.getOrNull(placed.block.startPeriod + placed.block.periodCount - 2)
+                            ?.let { ScheduleFormat.minuteLabel(it.endMinuteOfDay) },
+                        color = MaterialTheme.colorScheme.onSurface,
+                        modifier = Modifier
+                            .align(Alignment.BottomEnd)
+                            .padding(end = 3.dp, bottom = 1.dp),
+                    )
+                }
             }
         }
     }
+}
+
+/** 课块角上的起止时间标注；label 为 null（节次超出节次表）时不显示。align 由调用点在 BoxScope 内应用。 */
+@Composable
+private fun CornerTime(
+    label: String?,
+    color: androidx.compose.ui.graphics.Color,
+    modifier: Modifier = Modifier,
+) {
+    if (label == null) return
+    Text(
+        text = label,
+        fontSize = 8.sp,
+        lineHeight = 9.sp,
+        color = color.copy(alpha = 0.7f),
+        maxLines = 1,
+        modifier = modifier,
+    )
 }

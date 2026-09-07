@@ -52,8 +52,6 @@ class CourseEditViewModel @Inject constructor(
 ) : ViewModel() {
 
     private val courseId: String? = savedStateHandle.get<String>("courseId")?.takeIf { it.isNotBlank() }
-    private val prefillDay: Int? = savedStateHandle.get<Int>("day")?.takeIf { it > 0 }
-    private val prefillPeriod: Int? = savedStateHandle.get<Int>("period")?.takeIf { it > 0 }
 
     private val _state = MutableStateFlow(CourseEditUiState())
     val state = _state.asStateFlow()
@@ -99,9 +97,9 @@ class CourseEditViewModel @Inject constructor(
                 }
             }
 
-            // 新建：预填点击的格子，默认连堂 2 节、整学期每周
-            val start = (prefillPeriod ?: 1).coerceIn(1, totalPeriods)
-            val end = (start + 1).coerceAtMost(totalPeriods)
+            // 新建：默认周一 1-2 节、整学期每周
+            val start = 1
+            val end = 2.coerceAtMost(totalPeriods)
             _state.update {
                 it.copy(
                     loading = false,
@@ -113,7 +111,7 @@ class CourseEditViewModel @Inject constructor(
                         EditableBlock(
                             startWeek = 1,
                             endWeek = term.totalWeeks,
-                            dayOfWeek = prefillDay ?: 1,
+                            dayOfWeek = 1,
                             startPeriod = start,
                             endPeriod = end,
                         ),
@@ -164,6 +162,10 @@ class CourseEditViewModel @Inject constructor(
                 _state.update { it.copy(error = "至少添加一条时间安排") }
                 return
             }
+            s.blocks.firstOverlappingPair() != null -> {
+                _state.update { it.copy(error = "有两条时间安排在同一时段重叠，请调整或删除多余的一条") }
+                return
+            }
         }
         viewModelScope.launch {
             try {
@@ -195,4 +197,23 @@ class CourseEditViewModel @Inject constructor(
             }
         }
     }
+}
+
+/** 同课程两条安排的时段重叠：同一天、节次区间相交，且在各自周型下存在共同出现的周。 */
+private fun List<EditableBlock>.firstOverlappingPair(): Pair<EditableBlock, EditableBlock>? {
+    for (i in indices) for (j in i + 1 until size) {
+        val a = this[i]
+        val b = this[j]
+        if (a.dayOfWeek != b.dayOfWeek) continue
+        if (a.startPeriod > b.endPeriod || b.startPeriod > a.endPeriod) continue
+        val sharedWeeks = maxOf(a.startWeek, b.startWeek)..minOf(a.endWeek, b.endWeek)
+        if (sharedWeeks.any { w -> a.occursIn(w) && b.occursIn(w) }) return a to b
+    }
+    return null
+}
+
+private fun EditableBlock.occursIn(week: Int): Boolean = when (weekType) {
+    WeekType.ALL -> true
+    WeekType.ODD -> week % 2 == 1
+    WeekType.EVEN -> week % 2 == 0
 }
