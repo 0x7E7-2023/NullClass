@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!-- 深色模式跟随：首帧前的窗口背景与浅色主题区分开，避免启动/手势动画闪白。 -->
 <resources>
-    <!-- Compose 全权接管界面，这里只需一个无 ActionBar 的基础主题做启动瞬间 -->
-    <style name="Theme.NullClass" parent="android:Theme.Material.Light.NoActionBar">
+    <style name="Theme.NullClass" parent="android:Theme.Material.NoActionBar">
         <item name="android:windowBackground">@color/window_background</item>
         <item name="android:windowLayoutInDisplayCutoutMode">shortEdges</item>
     </style>

@@ -8,6 +8,10 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
+import androidx.compose.ui.Modifier
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.lifecycleScope
 import com.nullclass.app.navigation.AppNavHost
@@ -32,7 +36,16 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             NullClassTheme {
-                AppNavHost()
+                // 垫一层不透明背景：预测返回手势的 pop 过渡中，上一页从透明淡入、
+                // 当前页缩小，两层半透明叠加时会透出 window 背景（浅色主题下是白色，
+                // 深色模式就是刺眼的白边）。垫上 colorScheme.background 后透出的
+                // 恰好是各页面 Scaffold 同色背景，过渡浑然一体。
+                Surface(
+                    modifier = Modifier.fillMaxSize(),
+                    color = MaterialTheme.colorScheme.background,
+                ) {
+                    AppNavHost()
+                }
             }
         }
         maybeRequestNotificationPermission()

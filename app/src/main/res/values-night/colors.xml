@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- 深色模式：白色 windowBackground 会在预测返回手势（页面淡入/缩小半透明叠加）时
+     从 NavHost 后面漏出白边，启动瞬间也会闪白，这里换成深色背景。 -->
+<resources>
+    <color name="window_background">#1A1B21</color>
+</resources>

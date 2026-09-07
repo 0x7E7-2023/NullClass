@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- windowBackground 只在首帧前 / 系统级窗口动画（如跨 Activity 预测返回）时可见，
+     颜色跟随 Compose 主题背景（Color.kt 的 LightBackground/DarkBackground）。 -->
+<resources>
+    <color name="window_background">#FCF8FF</color>
+</resources>
