@@ -53,11 +53,20 @@ internal fun WeekGrid(
     todayDayOfWeek: Int?,
     showWeekend: Boolean,
     showTimeInCards: Boolean,
+    nowMinuteOfDay: Int?,
     onBlockClick: (PlacedBlock) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     val totalPeriods = periodTimes.size.coerceAtLeast(1)
     val lastDay = if (showWeekend) 7 else 5
+    // 当前时间线：仅本周页；今天逢周末仅在显示周末时画；时刻须在节次表跨度内
+    val nowLineY = todayDayOfWeek?.let { today ->
+        if (today <= 5 || showWeekend) {
+            nowMinuteOfDay?.let { nowLineYDp(periodTimes, it) }
+        } else {
+            null
+        }
+    }
 
     Box(modifier = modifier.fillMaxSize()) {
         Row(
@@ -90,10 +99,20 @@ internal fun WeekGrid(
                 )
             }
         }
+        // 当前时间线：横贯网格，压在分隔线之上
+        nowLineY?.let { y ->
+            HorizontalDivider(
+                modifier = Modifier
+                    .offset(y = y - 0.5.dp)
+                    .fillMaxWidth(),
+                thickness = 1.dp,
+                color = MaterialTheme.colorScheme.primary,
+            )
+        }
     }
 }
 
-/** 左侧节次列：节次号（时间标在课块上时）或 节次号 + 起止时间，每格严格 PeriodCellHeight 高。 */
+/** 左侧节次列：起-号-止 紧贴堆叠（时间标在课块上时仅节次号），每格严格 PeriodCellHeight 高。 */
 @Composable
 private fun PeriodColumn(periodTimes: List<PeriodTime>, showTimeInCards: Boolean) {
     Column(modifier = Modifier.width(periodColumnWidth(showTimeInCards))) {
@@ -106,22 +125,27 @@ private fun PeriodColumn(periodTimes: List<PeriodTime>, showTimeInCards: Boolean
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.Center,
             ) {
+                if (!showTimeInCards) {
+                    Text(
+                        text = ScheduleFormat.minuteLabel(time.startMinuteOfDay),
+                        fontSize = 9.sp,
+                        lineHeight = 10.sp,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.65f),
+                    )
+                }
                 Text(
                     text = time.periodIndex.toString(),
                     fontSize = 12.sp,
+                    lineHeight = 14.sp,
                     fontWeight = FontWeight.SemiBold,
                     color = MaterialTheme.colorScheme.onSurface,
                 )
                 if (!showTimeInCards) {
                     Text(
-                        text = ScheduleFormat.minuteLabel(time.startMinuteOfDay),
-                        fontSize = 9.sp,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant,
-                    )
-                    Text(
                         text = ScheduleFormat.minuteLabel(time.endMinuteOfDay),
                         fontSize = 9.sp,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        lineHeight = 10.sp,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.65f),
                     )
                 }
             }
@@ -203,6 +227,22 @@ private fun DayColumn(
             }
         }
     }
+}
+
+/** 当前时刻在节次网格中的纵向偏移；空表或时刻不在首节开始～末节结束之间时返回 null。 */
+private fun nowLineYDp(periodTimes: List<PeriodTime>, nowMinute: Int): Dp? {
+    if (periodTimes.isEmpty()) return null
+    if (nowMinute < periodTimes.first().startMinuteOfDay || nowMinute > periodTimes.last().endMinuteOfDay) {
+        return null
+    }
+    for ((index, time) in periodTimes.withIndex()) {
+        if (nowMinute <= time.endMinuteOfDay) {
+            val span = (time.endMinuteOfDay - time.startMinuteOfDay).coerceAtLeast(1)
+            val fraction = ((nowMinute - time.startMinuteOfDay).toFloat() / span).coerceIn(0f, 1f)
+            return PeriodCellHeight * (index + fraction)
+        }
+    }
+    return null
 }
 
 /** 课块角上的起止时间标注；label 为 null（节次超出节次表）时不显示。align 由调用点在 BoxScope 内应用。 */

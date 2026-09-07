@@ -47,6 +47,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.produceState
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshotFlow
@@ -59,6 +60,8 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.nullclass.core.model.PlacedBlock
 import com.nullclass.core.ui.theme.courseColor
+import kotlinx.coroutines.delay
+import java.time.LocalTime
 
 /**
  * 课表主界面。
@@ -192,6 +195,7 @@ fun ScheduleScreen(
 
             is ScheduleUiState.Ready -> {
                 val ready = s
+                val nowMinute = rememberNowMinute()
                 val pagerState = rememberPagerState(
                     initialPage = (ready.selectedWeek - 1).coerceIn(0, ready.term.totalWeeks - 1),
                     pageCount = { ready.term.totalWeeks },
@@ -252,6 +256,7 @@ fun ScheduleScreen(
                                 todayDayOfWeek = if (week == ready.currentWeek) ready.todayDayOfWeek else null,
                                 showWeekend = ready.showWeekend,
                                 showTimeInCards = ready.showTimeInCards,
+                                nowMinuteOfDay = if (week == ready.currentWeek) nowMinute else null,
                                 onBlockClick = { detailBlock = it },
                             )
                         }
@@ -291,7 +296,7 @@ fun ScheduleScreen(
                 if (showQuickSettings) {
                     AlertDialog(
                         onDismissRequest = { showQuickSettings = false },
-                        title = { Text("设置") },
+                        title = { Text("显示设置") },
                         text = {
                             Column {
                                 Row(
@@ -396,4 +401,17 @@ private fun WeekChip(
             )
         }
     }
+}
+
+/** 当前分钟数（0..1439），每 30 秒刷新，驱动「当前时间线」；首帧前为 -1（视为跨度外不画）。 */
+@Composable
+private fun rememberNowMinute(): Int {
+    val state = produceState(-1) {
+        while (true) {
+            val now = LocalTime.now()
+            value = now.hour * 60 + now.minute
+            delay(30_000)
+        }
+    }
+    return state.value
 }
