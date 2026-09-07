@@ -29,6 +29,8 @@ dependencies {
     implementation(project(":core:ui"))
     implementation(project(":sync"))
     implementation(project(":importer"))
+    // 设置页「添加桌面小组件」需要引用两个小组件 Receiver 做类型安全 pin
+    implementation(project(":widget"))
 
     implementation(libs.androidx.core.ktx)
     implementation(platform(libs.compose.bom))

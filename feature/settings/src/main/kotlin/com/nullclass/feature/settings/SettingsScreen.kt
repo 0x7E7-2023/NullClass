@@ -1,6 +1,8 @@
 package com.nullclass.feature.settings
 
 import android.Manifest
+import android.appwidget.AppWidgetManager
+import android.content.ComponentName
 import android.content.Context
 import android.content.pm.PackageManager
 import android.os.Build
@@ -49,6 +51,8 @@ import androidx.compose.ui.unit.sp
 import androidx.core.content.ContextCompat
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.nullclass.sync.AutoSyncInterval
+import com.nullclass.widget.NextClassWidgetReceiver
+import com.nullclass.widget.TodayWidgetReceiver
 import java.time.Instant
 import java.time.ZoneId
 import java.time.format.DateTimeFormatter
@@ -228,6 +232,34 @@ fun SettingsScreen(
                 onSelect = viewModel::setAutoSyncInterval,
             )
 
+            HorizontalDivider(modifier = Modifier.padding(vertical = 8.dp))
+
+            // ---- 桌面小组件 ----
+            Text("桌面小组件", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold)
+            val widgetManager = remember { context.getSystemService(AppWidgetManager::class.java) }
+            val pinSupported = remember { widgetManager?.isRequestPinAppWidgetSupported == true }
+            Text(
+                if (pinSupported) {
+                    "点按后系统弹出添加确认，一键把课表钉到桌面，不用去小部件列表里翻找。"
+                } else {
+                    "当前桌面不支持一键添加，请长按桌面空白处，从「添加小工具」中手动添加。"
+                },
+                style = MaterialTheme.typography.bodySmall,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+            )
+            Row(horizontalArrangement = Arrangement.spacedBy(12.dp), modifier = Modifier.fillMaxWidth()) {
+                OutlinedButton(
+                    onClick = { requestPinWidget(context, TodayWidgetReceiver::class.java) },
+                    enabled = pinSupported,
+                    modifier = Modifier.weight(1f),
+                ) { Text("今日课程 3×2") }
+                OutlinedButton(
+                    onClick = { requestPinWidget(context, NextClassWidgetReceiver::class.java) },
+                    enabled = pinSupported,
+                    modifier = Modifier.weight(1f),
+                ) { Text("下节课 2×1") }
+            }
+
             Text(
                 "空课 · 本地优先，无账号、无埋点。",
                 style = MaterialTheme.typography.bodySmall,
@@ -271,8 +303,14 @@ private fun AutoSyncSelector(selected: AutoSyncInterval, onSelect: (AutoSyncInte
     }
 }
 
-private fun isNotificationGranted(context: Context): Boolean =
-    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+/** 请求系统把小组件钉到桌面：launcher 弹「添加到桌面」确认层。 */
+private fun requestPinWidget(context: Context, provider: Class<*>) {
+    val manager = context.getSystemService(AppWidgetManager::class.java) ?: return
+    // 成功回调 PendingIntent 在部分桌面（MIUI 等）不会被调用，不依赖它做任何事
+    manager.requestPinAppWidget(ComponentName(context, provider), null, null)
+}
+
+private fun isNotificationGranted(context: Context): Boolean =    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
         ContextCompat.checkSelfPermission(
             context,
             Manifest.permission.POST_NOTIFICATIONS,
