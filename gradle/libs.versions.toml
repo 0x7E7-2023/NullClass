@@ -6,9 +6,7 @@ composeBom = "2026.08.00"
 coreKtx = "1.19.0"
 activityCompose = "1.13.0"
 lifecycle = "2.11.0"
-# 2.10.0 曾因「保存学期白屏卡死」被降级；后查明真凶是连点保存触发多次
-# popBackStack 把返回栈弹空（已修），非 2.10 手势状态机。升级可随时重新评估。
-navigationCompose = "2.9.8"
+navigationCompose = "2.10.0"
 room = "2.8.4"
 datastore = "1.2.1"
 hilt = "2.60.1"
