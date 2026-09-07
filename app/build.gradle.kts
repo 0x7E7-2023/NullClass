@@ -13,8 +13,8 @@ android {
         applicationId = "com.nullclass.app"
         minSdk = 26
         targetSdk = 36
-        versionCode = 5
-        versionName = "0.4.1"
+        versionCode = 6
+        versionName = "0.4.2"
     }
 
     // CI 打 tag 时通过环境变量注入签名（见 .github/workflows/release.yml）
@@ -31,6 +31,11 @@ android {
     }
 
     buildTypes {
+        debug {
+            // 独立包名并行安装：debug 调试不打扰真机正式版数据
+            applicationIdSuffix = ".debug"
+            versionNameSuffix = "-debug"
+        }
         release {
             isMinifyEnabled = true
             isShrinkResources = true

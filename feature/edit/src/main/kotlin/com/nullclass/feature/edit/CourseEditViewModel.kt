@@ -42,6 +42,8 @@ data class CourseEditUiState(
     val blocks: List<EditableBlock> = emptyList(),
     /** 保存失败的就地错误提示。 */
     val error: String? = null,
+    /** 保存进行中（或已保存成功等待离开）：期间按钮禁用，防连点多次 popBackStack。 */
+    val saving: Boolean = false,
 )
 
 @HiltViewModel
@@ -153,6 +155,9 @@ class CourseEditViewModel @Inject constructor(
 
     fun save(onSaved: () -> Unit) {
         val s = _state.value
+        // 防连点：保存中/已保存成功（等待离开页面）时忽略再次点击，
+        // 避免退出转场期间连点触发多次 popBackStack 把返回栈弹空。
+        if (s.saving) return
         when {
             s.name.isBlank() -> {
                 _state.update { it.copy(error = "课程名不能为空") }
@@ -168,6 +173,7 @@ class CourseEditViewModel @Inject constructor(
             }
         }
         viewModelScope.launch {
+            _state.update { it.copy(saving = true) }
             try {
                 val course = Course(
                     id = courseId.orEmpty(),
@@ -193,7 +199,8 @@ class CourseEditViewModel @Inject constructor(
                 courseRepository.upsertCourseWithBlocks(course, blocks)
                 onSaved()
             } catch (e: IllegalArgumentException) {
-                _state.update { it.copy(error = e.message ?: "输入不合法") }
+                // 保存失败要允许重试
+                _state.update { it.copy(saving = false, error = e.message ?: "输入不合法") }
             }
         }
     }

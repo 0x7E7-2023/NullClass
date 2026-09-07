@@ -67,7 +67,7 @@ fun TermEditScreen(
                 actions = {
                     TextButton(
                         onClick = { viewModel.save(onBack) },
-                        enabled = !state.loading,
+                        enabled = !state.loading && !state.saving,
                     ) { Text("保存") }
                 },
             )
@@ -161,10 +161,11 @@ fun TermEditScreen(
 
             Button(
                 onClick = { viewModel.save(onBack) },
+                enabled = !state.saving,
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(vertical = 12.dp),
-            ) { Text("保存") }
+            ) { Text(if (state.saving) "保存中…" else "保存") }
 
             androidx.compose.foundation.layout.Spacer(Modifier.padding(bottom = 24.dp))
         }

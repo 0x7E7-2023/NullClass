@@ -37,6 +37,8 @@ data class TermEditUiState(
     val previousTermName: String? = null,
     val copyFromPrevious: Boolean = false,
     val error: String? = null,
+    /** 保存进行中（或已保存成功等待离开）：期间按钮禁用，防连点多次 popBackStack。 */
+    val saving: Boolean = false,
 )
 
 @HiltViewModel
@@ -156,6 +158,10 @@ class TermEditViewModel @Inject constructor(
 
     fun save(onSaved: () -> Unit) {
         val s = _state.value
+        // 防连点：保存中/已保存成功（等待离开页面）时忽略再次点击。
+        // 保存成功后本页即将 popBackStack，但退出转场期间按钮仍可点，
+        // 连点会触发多次 popBackStack 把返回栈弹空（白屏卡死根因）。
+        if (s.saving) return
         if (s.name.isBlank()) {
             _state.update { it.copy(error = "学期名不能为空") }
             return
@@ -183,6 +189,7 @@ class TermEditViewModel @Inject constructor(
             }
         }
         if (parsed.size != s.periods.size || parsed.isEmpty()) return
+        _state.update { it.copy(saving = true) }
 
         viewModelScope.launch {
             try {
@@ -200,7 +207,8 @@ class TermEditViewModel @Inject constructor(
                 }
                 onSaved()
             } catch (e: IllegalArgumentException) {
-                _state.update { it.copy(error = e.message ?: "输入不合法") }
+                // 保存失败要允许重试
+                _state.update { it.copy(saving = false, error = e.message ?: "输入不合法") }
             }
         }
     }

@@ -41,7 +41,15 @@ fun AppNavHost() {
         }
     }
 
-    fun back() = navController.popBackStack()
+    fun back() {
+        // 防弹空：popBackStack() 会把栈顶弹掉、包括 start destination。
+        // 保存/返回按钮在退出转场（默认 700ms fade）期间仍可点击，连点会逐层下探
+        // 把返回栈清空 → NavHost 渲染空 → 永久卡在纯色背景页（v0.4.x 白屏卡死根因）。
+        // 栈里只剩当前页时不再弹，由系统返回手势走正常退出。
+        if (navController.previousBackStackEntry != null) {
+            navController.popBackStack()
+        }
+    }
 
     NavHost(navController = navController, startDestination = Routes.SCHEDULE) {
         composable(Routes.SCHEDULE) {

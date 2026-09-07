@@ -50,8 +50,8 @@ fun CourseEditScreen(
                 actions = {
                     TextButton(
                         onClick = { viewModel.save(onBack) },
-                        enabled = !state.loading && !state.termMissing,
-                    ) { Text("保存") }
+                        enabled = !state.loading && !state.termMissing && !state.saving,
+                    ) { Text(if (state.saving) "保存中…" else "保存") }
                 },
             )
         },
@@ -119,10 +119,11 @@ fun CourseEditScreen(
 
                 Button(
                     onClick = { viewModel.save(onBack) },
+                    enabled = !state.saving,
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(vertical = 12.dp),
-                ) { Text("保存") }
+                ) { Text(if (state.saving) "保存中…" else "保存") }
 
                 androidx.compose.foundation.layout.Spacer(Modifier.padding(bottom = 24.dp))
             }
