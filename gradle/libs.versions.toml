@@ -6,7 +6,10 @@ composeBom = "2026.08.00"
 coreKtx = "1.19.0"
 activityCompose = "1.13.0"
 lifecycle = "2.11.0"
-navigationCompose = "2.10.0"
+# 2.10.0 手势返回降级：其全新的 NavHostEventHandler+SeekableTransitionState 在
+# 手势 pop 后污染转场状态，之后任意 popBackStack()（如学期编辑保存返回）卡成白屏。
+# 2.9.x 用旧版 PredictiveBackHandler 实现，无此状态机。等 2.10.1+ 修复后再评估升级。
+navigationCompose = "2.9.8"
 room = "2.8.4"
 datastore = "1.2.1"
 hilt = "2.60.1"
