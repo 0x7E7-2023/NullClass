@@ -59,6 +59,7 @@ internal fun WeekGrid(
 ) {
     val totalPeriods = periodTimes.size.coerceAtLeast(1)
     val lastDay = if (showWeekend) 7 else 5
+    val hairline = with(LocalDensity.current) { 1.toDp() }
     // 当前时间线：仅本周页；今天逢周末仅在显示周末时画；时刻须在节次表跨度内
     val nowLineY = todayDayOfWeek?.let { today ->
         if (today <= 5 || showWeekend) {
@@ -103,9 +104,9 @@ internal fun WeekGrid(
         nowLineY?.let { y ->
             HorizontalDivider(
                 modifier = Modifier
-                    .offset(y = y - 0.5.dp)
+                    .offset(y = y - hairline / 2)
                     .fillMaxWidth(),
-                thickness = 1.dp,
+                thickness = hairline,
                 color = MaterialTheme.colorScheme.primary,
             )
         }

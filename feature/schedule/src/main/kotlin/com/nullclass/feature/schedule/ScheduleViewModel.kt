@@ -44,6 +44,8 @@ sealed interface ScheduleUiState {
         val showWeekend: Boolean,
         /** 起止时间标在课块角上（节次列随之收窄为仅节次号）。 */
         val showTimeInCards: Boolean,
+        /** 周视图是否画当前时间线。 */
+        val showNowLine: Boolean,
     ) : ScheduleUiState
 }
 
@@ -75,7 +77,8 @@ class ScheduleViewModel @Inject constructor(
                         termRepository.observePeriodTimes(term.id),
                         userPreferencesRepository.showWeekend,
                         userPreferencesRepository.showTimeInCards,
-                    ) { schedule, periodTimes, showWeekend, showTimeInCards ->
+                        userPreferencesRepository.showNowLine,
+                    ) { schedule, periodTimes, showWeekend, showTimeInCards, showNowLine ->
                         ScheduleUiState.Ready(
                             term = term,
                             currentWeek = currentWeek,
@@ -86,6 +89,7 @@ class ScheduleViewModel @Inject constructor(
                             todayDayOfWeek = today.dayOfWeek.value,
                             showWeekend = showWeekend,
                             showTimeInCards = showTimeInCards,
+                            showNowLine = showNowLine,
                         )
                     }
                 }
@@ -110,6 +114,11 @@ class ScheduleViewModel @Inject constructor(
     /** 切换起止时间显示位置（节次列内 ↔ 课块角上）。 */
     fun setShowTimeInCards(value: Boolean) {
         viewModelScope.launch { userPreferencesRepository.setShowTimeInCards(value) }
+    }
+
+    /** 切换当前时间线显示。 */
+    fun setShowNowLine(value: Boolean) {
+        viewModelScope.launch { userPreferencesRepository.setShowNowLine(value) }
     }
 
     fun deleteCourse(courseId: String) {

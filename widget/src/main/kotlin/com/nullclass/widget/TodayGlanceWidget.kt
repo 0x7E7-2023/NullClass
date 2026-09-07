@@ -8,7 +8,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.glance.GlanceId
 import androidx.glance.GlanceModifier
-import androidx.glance.LocalSize
 import androidx.glance.action.clickable
 import androidx.glance.appwidget.GlanceAppWidget
 import androidx.glance.appwidget.SizeMode
@@ -45,6 +44,7 @@ class TodayGlanceWidget : GlanceAppWidget() {
 
     override val sizeMode = SizeMode.Responsive(
         setOf(
+            DpSize(110.dp, 110.dp),
             DpSize(180.dp, 110.dp),
             DpSize(250.dp, 180.dp),
             DpSize(320.dp, 220.dp),
@@ -66,12 +66,8 @@ internal val WidgetOnBackgroundVariant = ColorProvider(day = Color(0xFF6B6E76), 
 internal val WidgetAccent = ColorProvider(day = Color(0xFF4F46E5), night = Color(0xFFBEC2FF))
 internal val WidgetDivider = ColorProvider(day = Color(0xFFE3E3E8), night = Color(0xFF2E3038))
 
-/** 小于该宽度只渲染「下一节」紧凑版。 */
-internal val CompactWidth = 220.dp
-
 @Composable
 internal fun TodayWidgetContent(snapshot: TodaySnapshot, nowMinuteOfDay: Int) {
-    val size = LocalSize.current
     Box(
         modifier = GlanceModifier
             .fillMaxSize()
@@ -80,55 +76,11 @@ internal fun TodayWidgetContent(snapshot: TodaySnapshot, nowMinuteOfDay: Int) {
             .padding(12.dp)
             .clickable(actionRunCallback<OpenAppAction>()),
     ) {
-        if (size.width < CompactWidth) {
-            TodayCompactContent(snapshot, nowMinuteOfDay)
-        } else {
-            TodayFullContent(snapshot, nowMinuteOfDay)
-        }
+        TodayFullContent(snapshot, nowMinuteOfDay)
     }
 }
 
-/** 小尺寸：只显示下一节 + 剩余计数。 */
-@Composable
-private fun TodayCompactContent(snapshot: TodaySnapshot, nowMinuteOfDay: Int) {
-    val next = snapshot.nextUp(nowMinuteOfDay)
-    Column(modifier = GlanceModifier.fillMaxSize(), verticalAlignment = Alignment.CenterVertically) {
-        when {
-            snapshot.termName.isEmpty() -> GuidanceText("空课 · 请先在应用中创建学期")
-            next == null && snapshot.blocks.isEmpty() -> GuidanceText("今天没有课 🎉")
-            next == null -> GuidanceText("今天课程已结束")
-            else -> {
-                Text(
-                    if (snapshot.inProgress(next, nowMinuteOfDay)) "进行中" else "下一节",
-                    style = TextStyle(color = WidgetAccent, fontSize = 11.sp, fontWeight = FontWeight.Medium),
-                )
-                Text(
-                    next.placed.course.name,
-                    style = TextStyle(color = WidgetOnBackground, fontSize = 15.sp, fontWeight = FontWeight.Bold),
-                    maxLines = 1,
-                )
-                Text(
-                    listOfNotNull(
-                        next.startTime,
-                        next.placed.block.location?.takeIf { it.isNotBlank() },
-                    ).joinToString(" · "),
-                    style = TextStyle(color = WidgetOnBackgroundVariant, fontSize = 11.sp),
-                    maxLines = 1,
-                )
-                val remaining = snapshot.blocks.count { it.endMinuteOfDay > nowMinuteOfDay } - 1
-                if (remaining > 0) {
-                    Spacer(GlanceModifier.height(2.dp))
-                    Text(
-                        "还有 ${remaining + 1} 节",
-                        style = TextStyle(color = WidgetOnBackgroundVariant, fontSize = 10.sp),
-                    )
-                }
-            }
-        }
-    }
-}
-
-/** 中大尺寸：标题行 + 完整列表（标题作为 LazyColumn 首 item，避免嵌套测量问题）。 */
+/** 标题行 + 完整列表（标题作为 LazyColumn 首 item，避免嵌套测量问题）。 */
 @Composable
 private fun TodayFullContent(snapshot: TodaySnapshot, nowMinuteOfDay: Int) {
     if (snapshot.termName.isEmpty()) {
@@ -245,12 +197,5 @@ private fun TodayRow(
                 style = TextStyle(color = WidgetAccent, fontSize = 10.sp, fontWeight = FontWeight.Medium),
             )
         }
-    }
-}
-
-@Composable
-private fun GuidanceText(text: String) {
-    Box(modifier = GlanceModifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-        Text(text, style = TextStyle(color = WidgetOnBackgroundVariant, fontSize = 12.sp))
     }
 }

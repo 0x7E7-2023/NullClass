@@ -256,7 +256,7 @@ fun ScheduleScreen(
                                 todayDayOfWeek = if (week == ready.currentWeek) ready.todayDayOfWeek else null,
                                 showWeekend = ready.showWeekend,
                                 showTimeInCards = ready.showTimeInCards,
-                                nowMinuteOfDay = if (week == ready.currentWeek) nowMinute else null,
+                                nowMinuteOfDay = if (week == ready.currentWeek && ready.showNowLine) nowMinute else null,
                                 onBlockClick = { detailBlock = it },
                             )
                         }
@@ -299,6 +299,19 @@ fun ScheduleScreen(
                         title = { Text("显示设置") },
                         text = {
                             Column {
+                                Row(
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .clickable { viewModel.setShowNowLine(!ready.showNowLine) },
+                                    horizontalArrangement = Arrangement.SpaceBetween,
+                                    verticalAlignment = Alignment.CenterVertically,
+                                ) {
+                                    Text("显示时间线")
+                                    Checkbox(
+                                        checked = ready.showNowLine,
+                                        onCheckedChange = { viewModel.setShowNowLine(it) },
+                                    )
+                                }
                                 Row(
                                     modifier = Modifier
                                         .fillMaxWidth()

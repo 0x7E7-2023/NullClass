@@ -24,6 +24,7 @@ class UserPreferencesRepository @Inject constructor(
         val NOTIFICATION_PERMISSION_ASKED = booleanPreferencesKey("notification_permission_asked")
         val SHOW_WEEKEND = booleanPreferencesKey("show_weekend")
         val SHOW_TIME_IN_CARDS = booleanPreferencesKey("show_time_in_cards")
+        val SHOW_NOW_LINE = booleanPreferencesKey("show_now_line")
     }
 
     /** 提前提醒分钟数；0 = 关闭。默认 15。 */
@@ -58,6 +59,14 @@ class UserPreferencesRepository @Inject constructor(
 
     suspend fun setShowTimeInCards(value: Boolean) {
         context.userPrefs.edit { it[Keys.SHOW_TIME_IN_CARDS] = value }
+    }
+
+    /** 周视图是否画当前时间线。默认显示。 */
+    val showNowLine: Flow<Boolean> =
+        context.userPrefs.data.map { it[Keys.SHOW_NOW_LINE] ?: true }
+
+    suspend fun setShowNowLine(value: Boolean) {
+        context.userPrefs.edit { it[Keys.SHOW_NOW_LINE] = value }
     }
 
     companion object {

@@ -88,7 +88,7 @@ internal fun NextClassWidgetContent(snapshot: TodaySnapshot, nowMinuteOfDay: Int
                     Spacer(GlanceModifier.height(2.dp))
                     Text(
                         listOfNotNull(
-                            next.startTime,
+                            if (snapshot.inProgress(next, nowMinuteOfDay)) "${next.endTime} 结束" else next.startTime,
                             next.placed.block.location?.takeIf { it.isNotBlank() },
                         ).joinToString(" · "),
                         style = TextStyle(color = WidgetOnBackgroundVariant, fontSize = 11.sp),
