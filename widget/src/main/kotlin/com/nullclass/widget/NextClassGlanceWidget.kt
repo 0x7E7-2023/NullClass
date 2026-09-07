@@ -23,6 +23,7 @@ import androidx.glance.layout.padding
 import androidx.glance.text.FontWeight
 import androidx.glance.text.Text
 import androidx.glance.text.TextStyle
+import com.nullclass.core.model.TodaySnapshot
 import com.nullclass.core.ui.theme.courseColor
 import java.time.LocalTime
 

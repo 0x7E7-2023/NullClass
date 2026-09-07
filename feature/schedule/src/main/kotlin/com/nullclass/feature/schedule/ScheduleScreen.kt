@@ -22,14 +22,11 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.DateRange
-import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.Checkbox
 import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.DropdownMenu
-import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
@@ -47,7 +44,6 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.produceState
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshotFlow
@@ -60,17 +56,13 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.nullclass.core.model.PlacedBlock
 import com.nullclass.core.ui.theme.courseColor
-import kotlinx.coroutines.delay
-import java.time.LocalTime
 
 /**
- * 课表主界面。
+ * 课表主界面（中间 Tab）。
  *
  * @param onCreateCourse FAB 进新建课程
  * @param onEditCourse 编辑已有课程
- * @param onEditTerm 学期设置
- * @param onOpenSettings 应用设置（WebDAV 同步等）
- * @param onOpenTransfer 导入/导出中心
+ * @param onEditTerm 学期设置（无学期时引导创建）
  */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -78,8 +70,6 @@ fun ScheduleScreen(
     onCreateCourse: () -> Unit,
     onEditCourse: (courseId: String) -> Unit,
     onEditTerm: (termId: String?) -> Unit,
-    onOpenSettings: () -> Unit,
-    onOpenTransfer: () -> Unit = {},
     viewModel: ScheduleViewModel = hiltViewModel(),
 ) {
     val state by viewModel.uiState.collectAsState()
@@ -123,35 +113,8 @@ fun ScheduleScreen(
                     }
                     if (ready != null) {
                         IconButton(onClick = { showQuickSettings = true }) {
-                            Icon(Icons.Default.Settings, contentDescription = "设置")
+                            Icon(Icons.Default.Settings, contentDescription = "显示设置")
                         }
-                    }
-                    var menuOpen by remember { mutableStateOf(false) }
-                    IconButton(onClick = { menuOpen = true }) {
-                        Icon(Icons.Default.MoreVert, contentDescription = "更多")
-                    }
-                    DropdownMenu(expanded = menuOpen, onDismissRequest = { menuOpen = false }) {
-                        DropdownMenuItem(
-                            text = { Text("导入 / 导出") },
-                            onClick = {
-                                menuOpen = false
-                                onOpenTransfer()
-                            },
-                        )
-                        DropdownMenuItem(
-                            text = { Text("学期设置") },
-                            onClick = {
-                                menuOpen = false
-                                onEditTerm((state as? ScheduleUiState.Ready)?.term?.id)
-                            },
-                        )
-                        DropdownMenuItem(
-                            text = { Text("设置") },
-                            onClick = {
-                                menuOpen = false
-                                onOpenSettings()
-                            },
-                        )
                     }
                 },
                 colors = TopAppBarDefaults.topAppBarColors(
@@ -416,15 +379,4 @@ private fun WeekChip(
     }
 }
 
-/** 当前分钟数（0..1439），每 30 秒刷新，驱动「当前时间线」；首帧前为 -1（视为跨度外不画）。 */
-@Composable
-private fun rememberNowMinute(): Int {
-    val state = produceState(-1) {
-        while (true) {
-            val now = LocalTime.now()
-            value = now.hour * 60 + now.minute
-            delay(30_000)
-        }
-    }
-    return state.value
-}
+/** 当前分钟数与今日页共用，见 NowMinute.kt 的 rememberNowMinute()。 */

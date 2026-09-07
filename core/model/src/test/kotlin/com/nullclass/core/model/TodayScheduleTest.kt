@@ -1,18 +1,12 @@
-package com.nullclass.widget
+package com.nullclass.core.model
 
-import com.nullclass.core.model.Course
-import com.nullclass.core.model.CourseWithBlocks
-import com.nullclass.core.model.PeriodTime
-import com.nullclass.core.model.ScheduleBlock
-import com.nullclass.core.model.Session
-import com.nullclass.core.model.Term
 import java.time.LocalDate
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertNull
 import kotlin.test.assertTrue
 
-class TodaySnapshotTest {
+class TodayScheduleTest {
 
     // 2026-09-07 周一开学，20 周；2026-09-09 是第 1 周周三
     private val term = Term(
