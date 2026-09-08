@@ -185,6 +185,9 @@ if (__ncCapabilities.ocr) {
 - 桥只接受图片、**只回传文本与坐标**，不返回图片字节，也不能当通用 fetch 用。
 - `__ncOcrGrid` 返回 `reliable: false` 时**不得据此生成课表**——要么改返回 `kind:"image"` 交给应用的校对流程，要么 `__ncError`。
 - 图片可以是 URL（宿主带 Cookie 下载）或 `data:image/...;base64,...`（你自己从 canvas / `<img>` 取的）。
+- `__ncCapabilities.ocr` 为 `true` 的条件是「设备打包了 OCR **且**桥已注入到当前页面」。
+  宿主在跑用到 OCR 的脚本前会等桥就绪，但适配器仍必须处理 `false`（降级或明确报错），不要假设它一定是 `true`。
+- `__ncOcr` / `__ncOcrGrid` resolve 的是**对象**（`r.boxes` / `g.cells`），不是 JSON 字符串。
 
 ## 6. 库（第三方适配器仓库）
 

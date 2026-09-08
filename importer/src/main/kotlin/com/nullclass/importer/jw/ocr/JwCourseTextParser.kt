@@ -22,6 +22,10 @@ object JwCourseTextParser {
     fun parseWeeks(raw: String?, totalWeeks: Int = 30): WeekSpec? {
         val text = raw?.trim().orEmpty()
         if (text.isEmpty()) return null
+        // 必须出现「周」：否则教室号会被当成周次范围。真实格子常写成
+        // 「课名 / 教师 / 教室 / 周次」，而 "教1-101"、"教3-201" 里的数字段
+        // 正好是合法的周次形状 → 会把 1-16 周静默改成 1-10 周。
+        if (!text.contains('周')) return null
         val type = when {
             text.contains('单') -> "ODD"
             text.contains('双') -> "EVEN"
@@ -93,7 +97,9 @@ object JwCourseTextParser {
     }
 
     /** 课表里常见的教室写法：教学楼、实验楼、A101、1-101 等。 */
-    private val LOCATION_HINT = Regex("(楼|馆|室|教室|机房|操场|体育馆|报告厅|校区|[A-Za-z]\\s?\\d{2,4}|\\d{1,2}\\s?[-—]\\s?\\d{3,4})")
+    private val LOCATION_HINT = Regex(
+        "(楼|馆|室|教室|机房|中心|操场|体育馆|报告厅|校区|[A-Za-z]\\s?\\d{2,4}|\\d{1,2}\\s?[-—]\\s?\\d{3,4})",
+    )
 
     fun looksLikeLocation(raw: String?): Boolean {
         val text = raw?.trim().orEmpty()

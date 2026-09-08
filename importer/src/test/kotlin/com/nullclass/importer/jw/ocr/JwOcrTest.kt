@@ -20,6 +20,10 @@ class JwOcrTest {
         assertEquals(JwCourseTextParser.WeekSpec(1, 16, "ALL"), JwCourseTextParser.parseWeeks("1-16周", totalWeeks = 20))
         assertNull(JwCourseTextParser.parseWeeks(""))
         assertNull(JwCourseTextParser.parseWeeks("单周"))
+        // 教室号不能当周次：「教1-101」里的 1-10、「教3-201」里的 3-20 都是合法周次形状
+        assertNull(JwCourseTextParser.parseWeeks("教1-101"))
+        assertNull(JwCourseTextParser.parseWeeks("教3-201"))
+        assertNull(JwCourseTextParser.parseWeeks("教4-102"))
         // 超出学期总周数 → 不猜，返回 null
         assertNull(JwCourseTextParser.parseWeeks("1-30周", totalWeeks = 16))
     }
@@ -41,6 +45,7 @@ class JwOcrTest {
         assertNull(JwCourseTextParser.parseDayOfWeek("节次"))
         assertTrue(JwCourseTextParser.looksLikeLocation("教1-101"))
         assertTrue(JwCourseTextParser.looksLikeLocation("实验楼404"))
+        assertTrue(JwCourseTextParser.looksLikeLocation("计算中心A"))
         assertFalse(JwCourseTextParser.looksLikeLocation("高等数学"))
         assertTrue(JwCourseTextParser.looksLikeTeacher("张三"))
         assertFalse(JwCourseTextParser.looksLikeTeacher("高等数学A(一)"))
@@ -171,6 +176,33 @@ class JwOcrTest {
         assertNull(JwCourseTextParser.parsePeriodLabel("1-16周(单)"))
         assertEquals(3..4, JwCourseTextParser.parsePeriodLabel("3-4"))
         assertEquals(5..5, JwCourseTextParser.parsePeriodLabel("第5节"))
+    }
+
+    @Test
+    fun `教室号排在周次之前时 周次与教室都要正确`() {
+        // 真实教务格子常见顺序是「课名 / 教师 / 教室 / 周次」——
+        // 教室号在周次之前，早期实现会把 "教1-101" 读成 1-10 周并丢掉教室
+        val boxes = mutableListOf<OcrBox>()
+        listOf("周一", "周二", "周三", "周四", "周五").forEachIndexed { index, label ->
+            boxes += OcrBox(label, 120 + index * 100, 10, 170 + index * 100, 40)
+        }
+        listOf(1, 2, 3, 4).forEachIndexed { index, period ->
+            val center = 110 + index * 200
+            boxes += OcrBox("$period", 20, center - 15, 60, center + 15)
+        }
+        boxes += OcrBox("高等数学", 130, 60, 230, 80)
+        boxes += OcrBox("张三", 130, 80, 230, 100)
+        boxes += OcrBox("教1-101", 130, 100, 230, 120)
+        boxes += OcrBox("1-16周", 130, 120, 230, 140)
+
+        val table = JwTableAligner.align(OcrPage(800, 800, boxes))
+        val result = JwOcrScheduleBuilder.build(table, "T", 20000, 20)
+        val block = result.payload.terms.single().courses.single().blocks.single()
+
+        assertEquals(1, block.startWeek)
+        assertEquals(16, block.endWeek)
+        assertEquals("教1-101", block.location)
+        assertFalse(result.issues.any { it.contains("没识别出周次") }, result.issues.toString())
     }
 
     @Test

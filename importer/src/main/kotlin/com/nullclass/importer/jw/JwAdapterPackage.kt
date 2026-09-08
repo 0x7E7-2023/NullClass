@@ -36,10 +36,27 @@ data class JwAdapter(
     fun allowedHosts(loginHost: String?): List<String> =
         (listOfNotNull(loginHost) + manifest.allowHosts).map { it.lowercase() }.distinct()
 
+    /**
+     * 相等性必须**带上内容**：只比 key + 来源的话，用同一个 key 重装（库更新）
+     * 得到的新对象与旧对象相等 → `MutableStateFlow` 判定状态没变、不发新值 →
+     * 界面继续用旧脚本，直到杀进程才生效。用户会以为「更新了却没生效」。
+     */
     override fun equals(other: Any?): Boolean =
-        other is JwAdapter && other.key == key && other.source == source
+        other is JwAdapter &&
+            other.key == key &&
+            other.source == source &&
+            other.manifest == manifest &&
+            other.extractScript == extractScript &&
+            other.parseScript == parseScript
 
-    override fun hashCode(): Int = key.hashCode() * 31 + source.hashCode()
+    override fun hashCode(): Int {
+        var result = key.hashCode()
+        result = 31 * result + source.hashCode()
+        result = 31 * result + manifest.hashCode()
+        result = 31 * result + extractScript.hashCode()
+        result = 31 * result + (parseScript?.hashCode() ?: 0)
+        return result
+    }
 
     override fun toString(): String = "JwAdapter(${source.name.lowercase()}:$key@${manifest.version})"
 }

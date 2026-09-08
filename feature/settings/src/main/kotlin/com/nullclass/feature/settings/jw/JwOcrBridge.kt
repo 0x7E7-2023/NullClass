@@ -1,16 +1,20 @@
 package com.nullclass.feature.settings.jw
 
 import android.content.Context
+import android.os.SystemClock
 import android.webkit.WebView
 import androidx.webkit.WebMessageCompat
 import androidx.webkit.WebViewCompat
 import androidx.webkit.WebViewFeature
+import com.nullclass.importer.jw.JwManifest
 import com.nullclass.importer.jw.JwScriptContract
 import com.nullclass.importer.jw.ocr.JwTableAligner
 import com.nullclass.importer.jw.ocr.OcrPage
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.TimeoutCancellationException
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.suspendCancellableCoroutine
 import kotlinx.coroutines.withTimeout
 import org.json.JSONArray
 import org.json.JSONObject
@@ -32,9 +36,33 @@ class JwOcrBridge(
 
     private val calls = AtomicInteger(0)
 
+    /** 桥是否真的挂上了（特性不支持或注入失败时为 false，此时不必等它出现）。 */
+    @Volatile
+    private var attached: Boolean = false
+
     /** 每次提取开始时重置计数。 */
     fun reset() {
         calls.set(0)
+    }
+
+    /**
+     * 等桥对象出现在页面里再跑脚本。
+     *
+     * `addWebMessageListener` 的对象是**异步**注入到渲染进程的：`onPageFinished`
+     * 立刻自动提取时，`window.ncBridge` 可能还没到位 —— 适配器会看到
+     * `__ncCapabilities.ocr === false` 然后直接放弃（真机上复现过）。
+     */
+    suspend fun awaitReady(timeoutMs: Long = 3_000L) {
+        if (!attached) return
+        val deadline = SystemClock.uptimeMillis() + timeoutMs
+        val probe = "typeof window[${JwScriptContract.jsStringLiteral(JwScriptContract.BRIDGE_NAME)}] !== 'undefined'"
+        while (SystemClock.uptimeMillis() < deadline) {
+            val present = suspendCancellableCoroutine { cont ->
+                webView.evaluateJavascript(probe) { value -> cont.resume(value == "true", null) }
+            }
+            if (present) return
+            delay(50L)
+        }
     }
 
     /** 注入桥（只在支持 WebMessageListener 的 WebView 上；否则能力位保持 false）。 */
@@ -51,6 +79,7 @@ class JwOcrBridge(
                 originRules,
                 listener,
             )
+            attached = true
         }
     }
 
@@ -134,10 +163,29 @@ class JwOcrBridge(
         /**
          * 白名单里的每个域名都生成一条 origin 规则 —— 登录页与课表页可能不同源
          * （CAS 单点登录尤其常见），只绑一个 origin 会让课表页上拿不到 `__ncOcr`。
+         *
+         * **端口必须带上**：`addWebMessageListener` 的规则是 origin（`scheme://host[:port]`），
+         * 省略端口只表示默认端口。教务系统跑在 8080/8081 这类非默认端口上很常见，
+         * 规则少写端口会导致桥根本不注入（页面里 `window.ncBridge` 是 undefined）。
+         * `allowHosts` 按规范只写主机名、拿不到端口，所以 http/https 的默认端口都发一条。
          */
-        fun originRules(loginUrl: String, allowedHosts: List<String>): Set<String> {
-            val scheme = runCatching { java.net.URI(loginUrl).scheme?.lowercase() }.getOrNull() ?: "https"
-            return allowedHosts.map { "$scheme://${it.lowercase()}" }.toSet()
+        fun originRules(manifest: JwManifest, allowedHosts: List<String>): Set<String> {
+            val rules = linkedSetOf<String>()
+            fun addUrl(url: String?) {
+                val uri = runCatching { java.net.URI(url) }.getOrNull() ?: return
+                val scheme = uri.scheme?.lowercase() ?: return
+                if (scheme != "http" && scheme != "https") return
+                val host = uri.host?.lowercase() ?: return
+                rules += if (uri.port > 0) "$scheme://$host:${uri.port}" else "$scheme://$host"
+            }
+            addUrl(manifest.loginUrl)
+            addUrl(manifest.scheduleUrlHint)
+            allowedHosts.forEach { host ->
+                val lower = host.lowercase()
+                rules += "https://$lower"
+                rules += "http://$lower"
+            }
+            return rules
         }
     }
 }

@@ -98,6 +98,7 @@ object JwScriptContract {
             .replace("__NC_INPUT__", inputJson?.let { jsStringLiteral(it) } ?: "null")
             .replace("__NC_SPEC__", SPEC_VERSION.toString())
             .replace("__NC_OCR_ENABLED__", ocrEnabled.toString())
+            .replace("__NC_BRIDGE_NAME__", jsStringLiteral(BRIDGE_NAME))
             .replace("__NC_OCR_MAX_PIXELS__", OCR_MAX_PIXELS.toString())
             .replace("__NC_OCR_MAX_CALLS__", OCR_MAX_CALLS.toString())
             .replace("__NC_PREAMBLE__", buildPreamble(allowedHosts))
@@ -185,7 +186,11 @@ object JwScriptContract {
     var entry = __ncPending[id];
     if (!entry) return;
     delete __ncPending[id];
-    if (ok) { entry.resolve(payload); } else { entry.reject(new Error(String(payload || '识别失败'))); }
+    if (ok) {
+      // 规范 §5 承诺的是对象（r.boxes / g.cells），宿主传过来的是 JSON 字符串 —— 必须解析
+      try { entry.resolve(JSON.parse(payload)); }
+      catch (e) { entry.reject(new Error('OCR 返回的数据无法解析：' + String(e && e.message ? e.message : e))); }
+    } else { entry.reject(new Error(String(payload || '识别失败'))); }
   };
   function __ncCall(type, input, options) {
     return new Promise(function (resolve, reject) {
@@ -222,7 +227,7 @@ object JwScriptContract {
     };
     window.$GLOBAL_CAPABILITIES = {
       specVersion: __NC_SPEC__,
-      ocr: __NC_OCR_ENABLED__,
+      ocr: __NC_OCR_ENABLED__ && (typeof window[__NC_BRIDGE_NAME__] !== 'undefined'),
       ocrMaxPixels: __NC_OCR_MAX_PIXELS__,
       ocrMaxCalls: __NC_OCR_MAX_CALLS__
     };

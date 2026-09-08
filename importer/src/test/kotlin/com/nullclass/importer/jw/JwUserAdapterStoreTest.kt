@@ -67,6 +67,17 @@ class JwUserAdapterStoreTest {
     }
 
     @Test
+    fun `同 key 重装后内容变了就不相等`() {
+        val first = adapter()
+        val updated = first.copy(extractScript = "(function(){return '{\"v\":2}';})()")
+        // 只比 key+来源的话，重装同一 key 会被判成「状态没变」→ StateFlow 不发新值 →
+        // 界面继续用旧脚本，直到杀进程才生效
+        assertFalse(first == updated, "脚本变了必须不相等")
+        assertEquals(first, adapter())
+        assertEquals(first.hashCode(), adapter().hashCode())
+    }
+
+    @Test
     fun `损坏的目录只影响自己 不炸整个列表`() {
         val store = JwUserAdapterStore(tempDir, appVersionCode = 11)
         store.install(listOf(adapter()), installedAt = 1L)

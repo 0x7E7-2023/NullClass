@@ -105,11 +105,16 @@ fun JwWebViewStep(
     }
     val startUrl = preferredUrl ?: adapter.manifest.scheduleUrlHint ?: adapter.manifest.loginUrl
 
-    // 能力探测放到后台：加载 OCR 引擎不该卡住首屏
+    // 能力探测放到后台：加载 OCR 引擎不该卡住首屏。
+    // 提取前必须等它出结果 —— 首次加载模型要几秒，自动提取很容易跑在它前面，
+    // 那样运行器会按「没有 OCR」构建脚本，适配器看到的 __ncCapabilities.ocr 就是 false。
+    val ocrProbe = remember(adapter.key) { kotlinx.coroutines.CompletableDeferred<Boolean>() }
     LaunchedEffect(adapter.key) {
-        ocrEnabled = withContext(Dispatchers.IO) {
+        val available = withContext(Dispatchers.IO) {
             runCatching { OcrEngines.default(context).available }.getOrDefault(false)
         }
+        ocrEnabled = available
+        ocrProbe.complete(available)
     }
 
     fun extract() {
@@ -122,7 +127,12 @@ fun JwWebViewStep(
         status = "提取中…"
         scope.launch {
             try {
-                val runner = JwScriptRunner(view, gate.allowedHosts, ocrEnabled = ocrEnabled)
+                // ① 等 OCR 能力探测出结果：首次要加载 ONNX 模型，自动提取很容易跑在它前面，
+                //    那样脚本会被按「没有 OCR」构建，适配器看到的 __ncCapabilities.ocr 就是 false
+                val ocrAvailable = ocrProbe.await()
+                // ② 桥对象也是异步注入的，用到 OCR 的脚本再等它出现
+                if (ocrAvailable && adapter.usesOcrBridge()) ocrBridge?.awaitReady()
+                val runner = JwScriptRunner(view, gate.allowedHosts, ocrEnabled = ocrAvailable)
                 val extracted = runner.run(adapter.extractScript)
                 val payloadJson = adapter.parseScript?.let { runner.run(it, extracted) } ?: extracted
                 val payload = JwPayloadCodec.decode(payloadJson)
@@ -222,14 +232,16 @@ fun JwWebViewStep(
                             }
                         }
                     }
-                    loadUrl(startUrl)
                     webView = this
-                    val rules = JwOcrBridge.originRules(adapter.manifest.loginUrl, gate.allowedHosts)
+                    // 桥在 loadUrl 之前注册（注册后才创建的文档才会注入对象）；
+                    // 注入本身是异步的，自动提取还得再等它到位 —— 见 extract() 里的 awaitReady
+                    val rules = JwOcrBridge.originRules(adapter.manifest, gate.allowedHosts)
                     if (rules.isNotEmpty()) {
                         val bridge = JwOcrBridge(context, this, gate.allowedHosts, scope)
                         bridge.attach(rules)
                         ocrBridge = bridge
                     }
+                    loadUrl(startUrl)
                 }
             },
             modifier = Modifier
@@ -359,3 +371,15 @@ private fun OcrReviewDialog(
 }
 
 private fun hostOf(url: String): String? = runCatching { java.net.URI(url).host?.lowercase() }.getOrNull()
+
+/**
+ * 脚本是否用到了 OCR 全局。
+ *
+ * 只对这类脚本等桥：桥是异步注入的（真机上要几秒），而 `__ncCapabilities.ocr`
+ * 会因为桥还没到位而报 false，适配器就会误判成「设备不支持 OCR」。
+ * 纯 DOM 抓取的适配器不该为此白等。
+ */
+private fun JwAdapter.usesOcrBridge(): Boolean {
+    val source = extractScript + (parseScript ?: "")
+    return source.contains("__ncOcr") || source.contains("__ncCapabilities")
+}

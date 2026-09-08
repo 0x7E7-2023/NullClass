@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  教务系统里有大量学校仍是 http-only（正方老版本、青果内网部署等）。
+  适配器规范明确允许 http 的 loginUrl（UI 上会打「不安全连接」标记），
+  但 Android 9+ 默认全应用禁止明文，结果这些学校在 WebView 里根本打不开
+  （net::ERR_CLEARTEXT_NOT_PERMITTED），库拉取与图片下载也一并失败。
+  这里显式放开明文。可达域仍由适配器网络白名单约束（同源 + allowHosts），
+  库地址仍强制 https（debug 构建才放行 http）。
+-->
+<network-security-config>
+    <base-config cleartextTrafficPermitted="true">
+        <trust-anchors>
+            <certificates src="system" />
+        </trust-anchors>
+    </base-config>
+</network-security-config>

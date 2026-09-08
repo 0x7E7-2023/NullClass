@@ -6,6 +6,30 @@
 
 ## [Unreleased]
 
+### 修复
+
+- **http 教务系统打不开**：Android 9+ 默认全应用禁止明文流量，而规范明确允许 http 的 `loginUrl`
+  （大量学校仍是 http-only），结果 WebView 直接报 `ERR_CLEARTEXT_NOT_PERMITTED`，
+  从链接添加适配器库也一并失败。补 `network_security_config` 显式放开明文。
+- **图片课表周次被教室号顶掉**：`parseWeeks` 的周次正则里「周」是可选的，于是「教1-101」
+  被当成 1-10 周、「教3-201」被当成 3-20 周；真实格子常是「课名/教师/教室/周次」，
+  教室行在周次行之前时就会静默写错周次。改为必须出现「周」才认（与规范 §4 一致），
+  并补上「计算中心A」这类教室的识别。
+- **`__ncOcr` 回传的是字符串不是对象**：桥把宿主传来的 JSON 字符串直接 resolve，
+  按规范写的适配器拿到 `undefined`。改为解析成对象再 resolve。
+- **OCR 桥对非默认端口从不注入**：`addWebMessageListener` 的 origin 规则丢了端口
+  （规则 `http://host` 匹配不上 origin `http://host:8080`），教务系统跑在 8080/8081 时
+  适配器完全拿不到 `__ncOcr`。origin 规则改为带端口，并按各 URL 自己的 scheme 生成。
+- **`__ncCapabilities.ocr` 会撒谎**：能力位只看 OCR 引擎是否可用，不看桥是否真的注入。
+  改为同时要求页面上存在桥对象。
+- **一键刷新时适配器拿不到 OCR**：OCR 能力探测（首次要加载 ONNX 模型）在后台进行，
+  而自动提取在 `onPageFinished` 就开跑 —— 运行器按「没有 OCR」构建脚本，
+  适配器看到的 `__ncCapabilities.ocr` 是 false，直接放弃。提取前改为等能力探测出结果，
+  并等桥对象真正注入页面（桥也改为在 `loadUrl` 前注册）。
+- **从库更新已安装适配器不生效**：`JwAdapter.equals` 只比 key + 来源，同 key 重装后
+  `MutableStateFlow` 认为状态没变、不发新值，界面继续用旧脚本直到杀进程。
+  `equals`/`hashCode` 改为带上 manifest 与脚本内容。
+
 ## [0.5.0] - 2026-09-08
 
 ### 新增

@@ -38,6 +38,31 @@ class JwScriptContractTest {
     }
 
     @Test
+    fun `能力位只在桥真的注入时才为 true`() {
+        // origin 规则写错（例如漏端口）时桥不会注入，此时 __ncCapabilities.ocr 必须是 false，
+        // 否则适配器会拿到「能力位说可用、实际 window.ncBridge 是 undefined」的迷惑错误。
+        val withBridge = runner(ocrEnabled = true)
+        assertTrue(
+            withBridge.contains("""typeof window["ncBridge"] !== 'undefined'"""),
+            "能力位必须回查桥对象是否真的存在",
+        )
+        val withoutBridge = runner(ocrEnabled = false)
+        assertFalse(
+            withoutBridge.contains("window.__ncOcr = function"),
+            "未启用 OCR 时不应注入桥实现",
+        )
+    }
+
+    @Test
+    fun `OCR 桥回传的 JSON 字符串必须解析成对象再 resolve`() {
+        // 规范 §5 里适配器拿到的是对象（r.boxes / g.cells），
+        // 宿主 buildOcrReplyScript 传的是 JSON 字符串，忘了 JSON.parse 就会让
+        // 所有按规范写的适配器拿到 undefined。
+        val js = runner(ocrEnabled = true)
+        assertTrue(js.contains("entry.resolve(JSON.parse(payload))"), "回传值必须解析成对象")
+    }
+
+    @Test
     fun `__ncError 是函数 错误写在独立槽位`() {
         val js = runner()
         assertTrue(js.contains("window.__ncError = function"), "__ncError 必须是可调用的函数")
