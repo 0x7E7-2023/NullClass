@@ -395,7 +395,7 @@ __ncOcrGrid(image, { rows, cols }).then(function (g) { /* g.cells[row][col] */ }
 网络闸门（`fetch` / `XHR` / `img` / `sendBeacon` / `WebSocket` 全部拦下，同源请求放行，
 收集器零命中）、OCR 调用限额（第 9 次被拒）、内置 key 冲突拒绝、zip 炸弹与缺脚本拒绝。
 
-**发现并修复的 7 个问题**（详见 CHANGELOG `[Unreleased]`）：
+**发现并修复的 7 个问题**（详见 CHANGELOG `[0.5.0]` 的「修复」）：
 
 1. http 教务页打不开 —— 缺 network security config，平台默认禁明文，与「允许 http loginUrl」的规范冲突；
 2. 图片课表周次被教室号顶掉 —— `parseWeeks` 的「周」可选，`教1-101` → 1-10 周（静默错周）；
