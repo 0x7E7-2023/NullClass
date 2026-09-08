@@ -12,3 +12,5 @@ gradlew text eol=lf
 *.png binary
 *.webp binary
 *.keystore binary
+# OCR 模型（ONNX protobuf，禁止行尾/编码转换）
+*.onnx binary

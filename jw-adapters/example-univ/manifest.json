@@ -1,0 +1,21 @@
+{
+  "specVersion": 1,
+  "key": "example-univ",
+  "name": "示例大学（演示适配器）",
+  "version": "1.0.0",
+  "author": "NullClass",
+  "homepage": "https://github.com/0x7E7-2023/NullClass",
+  "loginUrl": "https://jw.example.edu.cn/",
+  "scheduleUrlHint": "https://jw.example.edu.cn/xkcx/kb",
+  "minAppVersionCode": 11,
+  "extract": "extract.js",
+  "parse": "parse.js",
+  "allowHosts": [],
+  "fixtures": [
+    {
+      "name": "通用表格课表",
+      "extracted": "fixtures/basic.extracted.json",
+      "expected": "fixtures/basic.expected.json"
+    }
+  ]
+}

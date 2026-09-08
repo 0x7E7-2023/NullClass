@@ -3,7 +3,7 @@ package com.nullclass.feature.edit
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.nullclass.core.data.DefaultPeriodTimes
+import com.nullclass.core.model.DefaultPeriodTimes
 import com.nullclass.core.data.repository.CourseRepository
 import com.nullclass.core.data.repository.TermRepository
 import com.nullclass.core.model.PeriodTime

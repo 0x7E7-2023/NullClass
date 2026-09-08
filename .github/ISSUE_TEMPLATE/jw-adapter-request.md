@@ -24,6 +24,9 @@ assignees: ''
 - [ ] 课表页「另存为 HTML」后附上（隐去姓名/学号）
 - [ ] 浏览器控制台执行下方通用脚本，附输出 JSON（隐去姓名/学号）
 
+> 想直接写适配器？见 [`docs/jw-adapter-spec.md`](../../blob/main/docs/jw-adapter-spec.md)——
+> 一个目录 + 两段 JS 即可，CI 会帮你跑回归。
+
 ```js
 (function(){var rows=[];var t=document.querySelectorAll('table');
 for(var i=0;i<t.length;i++){var trs=t[i].querySelectorAll('tr');

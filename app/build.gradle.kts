@@ -13,8 +13,22 @@ android {
         applicationId = "com.nullclass.app"
         minSdk = 26
         targetSdk = 36
-        versionCode = 10
-        versionName = "0.4.6"
+        versionCode = 11
+        versionName = "0.5.0"
+    }
+
+    /**
+     * OCR 引擎（ONNX Runtime）的 .so 是体积大头，必须按 ABI 拆包：
+     * 不拆的话四个 ABI 全进一个 APK，release 会从 3MB 涨到 129MB。
+     * 保留 universal 兜底（模拟器 / 未知 ABI）。
+     */
+    splits {
+        abi {
+            isEnable = true
+            reset()
+            include("arm64-v8a", "armeabi-v7a", "x86_64")
+            isUniversalApk = true
+        }
     }
 
     // CI 打 tag 时通过环境变量注入签名（见 .github/workflows/release.yml）

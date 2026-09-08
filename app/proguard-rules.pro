@@ -14,3 +14,8 @@
     public static int v(...);
     public static int d(...);
 }
+
+# ONNX Runtime：官方 AAR 的 proguard 规则只覆盖遥测类，JNI 入口必须整体保留
+-keep class ai.onnxruntime.** { *; }
+-dontwarn ai.onnxruntime.**
+

@@ -29,10 +29,12 @@ dependencies {
     implementation(project(":core:ui"))
     implementation(project(":sync"))
     implementation(project(":importer"))
+    implementation(project(":ocr"))
     // 设置页「添加桌面小组件」需要引用两个小组件 Receiver 做类型安全 pin
     implementation(project(":widget"))
 
     implementation(libs.androidx.core.ktx)
+    implementation(libs.androidx.webkit)
     implementation(platform(libs.compose.bom))
     implementation(libs.compose.ui)
     implementation(libs.compose.material3)
@@ -42,6 +44,11 @@ dependencies {
     // 二维码：zxing-core 纯 Java 生成位图；embedded 封装扫码相机
     implementation(libs.zxing.core)
     implementation(libs.zxing.android.embedded)
+
+    // 适配器库拉取 / 图片课表取图
+    implementation(libs.okhttp)
+    // 一键刷新记忆（上次学校 + 课表页地址）
+    implementation(libs.datastore.preferences)
 
     implementation(libs.hilt.android)
     ksp(libs.hilt.compiler)

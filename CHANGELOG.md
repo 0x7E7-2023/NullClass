@@ -6,9 +6,36 @@
 
 ## [Unreleased]
 
-### 计划
+## [0.5.0] - 2026-09-08
 
-- 首个真实学校教务适配器
+### 新增
+
+- **教务适配器平台化**：适配器从「写死在应用里的 Kotlin 接口」改为**一份可被第三方维护的包**
+  （`manifest.json` + `extract.js` + 可选 `parse.js` + fixtures），同一份产物支持三种来源：
+  - 内置：本仓库 `jw-adapters/`，构建时打进 APK
+  - 社区：任何人 fork 的同构仓库，应用内粘 `index.json` 链接即可拉取安装
+  - 用户添加：单个学校目录的 zip，SAF 选文件导入
+- **适配器脚本契约升级**：支持异步（Promise / `__ncDone`）、多步请求；结果分块取回，
+  修掉 `evaluateJavascript` 对超长字符串静默截断的隐患；脚本用 `new Function` 编译，语法错误可回报
+- **网络白名单**：提取期间只放行同源与 `allowHosts` 声明的域，其余子资源/导航/JS 网络 API 全部拦截；
+  提取结束后可在界面上一键恢复网页网络
+- **一键刷新**：保留登录态，记住上次的学校与课表页地址，重进导入页直接加载并自动提取
+- **图片课表 OCR**：随包内置 PP-OCRv6 tiny（det 1.8MB + rec 4.5MB，完全离线），
+  课表是图片的学校也能导入；表格结构层做表头锚定 + 网格吸附 + 硬失败判定
+- **第三方可调用的 OCR 桥**：`__ncOcr` / `__ncOcrGrid`，带调用次数与像素限额、能力发现
+- 适配器管理界面：内置/用户分区、详情、脚本全文查看、删除、从链接添加、安装前风险确认
+- `docs/jw-adapter-spec.md`：适配器规范（包格式、脚本契约、载荷、库、测试、安全红线）
+
+### 变更
+
+- `DefaultPeriodTimes` 从 `:core:data` 移到 `:core:model`（`:importer` 需要同一张节次表）
+- 新模块 `:ocr`（ONNX Runtime + PP-OCRv6 tiny 模型），release 按 ABI 拆包
+  （arm64-v8a / armeabi-v7a / x86_64 + universal）
+- `importer` 的 CI 新增 Rhino 回归门：对 `jw-adapters/` 下每个适配器**实跑 `parse.js`** 比对 fixture
+
+### 移除
+
+- `JwAdapter` Kotlin 接口与 `JwAdapterRegistry`（能力由适配器包与 `JwAdapterRepository` 取代）
 
 ## [0.4.6] - 2026-09-08
 

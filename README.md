@@ -15,6 +15,7 @@ An open-source class schedule app for Android universities. Local-first: no acco
 - 🔔 课前提醒（提前 5/15/30 分钟可配，WorkManager 低功耗调度）
 - 📤 课表导入导出（`.nullclass` 文件 + 二维码扫码分享）
 - 📥 WakeUp 课表一键迁移（`.wakeup_schedule`，连堂/单双周/节次时间/颜色全保留）
+- 🏫 教务系统导入（WebView 手工登录 + 社区适配器包；课表是图片的学校也能识别）
 - 🔄 WebDAV 同步（坚果云/NextCloud 自建，端到端属于你；支持定时自动同步）
 - 🎨 Material 3 + 动态取色（Material You）
 - 💚 纯本地存储（Room），隐私干净：无账号、无云端、无埋点
@@ -44,8 +45,28 @@ An open-source class schedule app for Android universities. Local-first: no acco
 ### 求你的学校适配 / Request your school
 
 应用内支持「教务系统导入」：你在网页里自己登录教务（空课**不碰**你的账号密码），
-打开课表页后一键提取。目前覆盖学校有限，欢迎[提交适配请求](../../issues/new?template=jw-adapter-request.md)——
-附上课表页脱敏 HTML 或脚本输出，或直接 PR 一个适配器（`importer/jw/adapters/` 加一个文件即可接入）。
+打开课表页后一键提取；保留登录态，学校改了课表可以「一键刷新」。
+
+适配器**不需要写 Kotlin**——一个目录 + 两段 JS 就是一个适配器：
+
+```
+jw-adapters/<school-key>/
+  manifest.json     学校名、登录页、脚本名、白名单域名
+  extract.js        在已登录的教务页面里抓数据
+  parse.js          把抓到的数据转成课表
+  fixtures/         回归用例（CI 会实跑 parse.js 比对）
+```
+
+三种用法：
+
+- **合并进主线**：往本仓库 `jw-adapters/` 加一个目录 + 在 `index.json` 加一条，提 PR。
+  维护者会逐个人工审计脚本；合并后随版本内置。
+- **自己维护一个库**：fork 这个目录结构托管到你的仓库，别人在应用里粘你的 `index.json` 链接即可安装。
+- **自己导入**：把目录打成 zip，在应用里「导入适配器包」——这类适配器**不经过审计**，
+  安装界面会明确提示它会读取你已登录的教务页面内容，并支持查看脚本全文。
+
+规范见 [`docs/jw-adapter-spec.md`](docs/jw-adapter-spec.md)，示例见 [`jw-adapters/example-univ`](jw-adapters/example-univ)。
+没有适配器？[提交适配请求](../../issues/new?template=jw-adapter-request.md)，附上课表页脱敏 HTML 或脚本输出。
 
 ## 模块结构 / Modules
 
@@ -58,8 +79,9 @@ An open-source class schedule app for Android universities. Local-first: no acco
 :feature:edit      课程/学期编辑
 :feature:settings  设置与「我的」页、导入导出界面、教务导入 WebView 宿主
 :widget            Glance 桌面小组件
-:importer          课表导入导出引擎（分享格式、外部格式适配）
+:importer          课表导入导出引擎（分享格式、外部格式适配、教务适配器运行时）
 :sync              WebDAV 同步引擎（快照编解码、LWW 合并、定时调度）
+:ocr               离线 OCR 引擎（ONNX Runtime + PP-OCRv6 tiny，图片课表识别）
 ```
 
 ## 构建 / Build
@@ -83,7 +105,8 @@ An open-source class schedule app for Android universities. Local-first: no acco
 - [x] M3 Glance 小组件 + 课前提醒
 - [x] M4 导入导出 + 二维码分享，发布首个 Release
 - [x] M5 教务系统导入框架（WebView + 逐校适配，示例适配器已就绪，真实学校逐步接入）
-- [ ] M6 首个真实学校教务适配器 + 交互持续打磨（进行中）
+- [x] M6 适配器平台化（包规范 + 社区库 + 用户导入 + 图片课表 OCR）
+- [ ] M7 首个真实学校适配器 + 交互持续打磨（进行中）
 
 ## 许可证 / License
 

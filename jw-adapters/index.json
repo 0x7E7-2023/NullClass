@@ -1,0 +1,13 @@
+{
+  "specVersion": 1,
+  "name": "NullClass 官方适配器库",
+  "homepage": "https://github.com/0x7E7-2023/NullClass",
+  "adapters": [
+    {
+      "key": "example-univ",
+      "name": "示例大学（演示适配器）",
+      "version": "1.0.0",
+      "path": "example-univ"
+    }
+  ]
+}

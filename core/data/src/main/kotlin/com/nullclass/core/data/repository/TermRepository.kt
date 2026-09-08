@@ -1,7 +1,7 @@
 package com.nullclass.core.data.repository
 
 import androidx.room.withTransaction
-import com.nullclass.core.data.DefaultPeriodTimes
+import com.nullclass.core.model.DefaultPeriodTimes
 import com.nullclass.core.data.db.NullClassDatabase
 import com.nullclass.core.data.db.dao.PeriodTimeDao
 import com.nullclass.core.data.db.dao.TermDao

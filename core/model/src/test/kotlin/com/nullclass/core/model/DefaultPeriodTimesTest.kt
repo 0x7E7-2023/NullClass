@@ -1,6 +1,5 @@
-package com.nullclass.core.data
+package com.nullclass.core.model
 
-import com.nullclass.core.model.Session
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertTrue
@@ -40,7 +39,7 @@ class DefaultPeriodTimesTest {
 
         // 12 节 = 6 大节；每大节两小节共享同一会话
         repeat(6) { section ->
-            val pair = times.filter { com.nullclass.core.model.SectionMath.sectionIndex(it.periodIndex) == section + 1 }
+            val pair = times.filter { SectionMath.sectionIndex(it.periodIndex) == section + 1 }
             assertEquals(2, pair.size)
             assertEquals(pair[0].session, pair[1].session)
         }
