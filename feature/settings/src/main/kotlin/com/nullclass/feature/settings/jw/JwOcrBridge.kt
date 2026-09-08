@@ -6,7 +6,6 @@ import android.webkit.WebView
 import androidx.webkit.WebMessageCompat
 import androidx.webkit.WebViewCompat
 import androidx.webkit.WebViewFeature
-import com.nullclass.importer.jw.JwManifest
 import com.nullclass.importer.jw.JwScriptContract
 import com.nullclass.importer.jw.ocr.JwTableAligner
 import com.nullclass.importer.jw.ocr.OcrPage
