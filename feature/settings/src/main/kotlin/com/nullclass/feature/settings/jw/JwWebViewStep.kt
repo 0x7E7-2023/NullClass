@@ -127,11 +127,14 @@ fun JwWebViewStep(
         status = "提取中…"
         scope.launch {
             try {
-                // ① 等 OCR 能力探测出结果：首次要加载 ONNX 模型，自动提取很容易跑在它前面，
-                //    那样脚本会被按「没有 OCR」构建，适配器看到的 __ncCapabilities.ocr 就是 false
-                val ocrAvailable = ocrProbe.await()
-                // ② 桥对象也是异步注入的，用到 OCR 的脚本再等它出现
-                if (ocrAvailable && adapter.usesOcrBridge()) ocrBridge?.awaitReady()
+                // 用到 OCR 的脚本才等：① 能力探测（首次要加载 ONNX 模型，自动提取很容易跑在它
+                // 前面，那样脚本会被按「没有 OCR」构建）② 桥对象注入。纯 DOM 适配器不必白等。
+                val usesOcr = adapter.usesOcrBridge()
+                val ocrAvailable = if (usesOcr) {
+                    ocrProbe.await().also { if (it) ocrBridge?.awaitReady() }
+                } else {
+                    false
+                }
                 val runner = JwScriptRunner(view, gate.allowedHosts, ocrEnabled = ocrAvailable)
                 val extracted = runner.run(adapter.extractScript)
                 val payloadJson = adapter.parseScript?.let { runner.run(it, extracted) } ?: extracted
