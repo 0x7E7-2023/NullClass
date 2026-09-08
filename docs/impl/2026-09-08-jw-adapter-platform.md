@@ -186,9 +186,12 @@ example-univ/
 | DNS prefetch / preconnect 外发 | 防不住（不回调拦截器，WebView 无开关） |
 | WebSocket / Service Worker | 提取窗口内可拦，**存活期内防不住**；SW 可持久化在数据目录跨实例存活 |
 | WebRTC / STUN | 防不住（无开关） |
-| 302 / 开放重定向绕白名单 | `shouldInterceptRequest` 对重定向后续 URL 的覆盖需**实现前实测确认**（见开放问题） |
+| 302 / 开放重定向绕白名单 | **已确认防不住**：官方文档明写 `shouldInterceptRequest` 只对初始资源 URL 回调，重定向后续 URL 不再回调；Chromium 团队亦确认 WebSocket / Service Worker 从不经过该回调 |
 | 登录期表单劫持 | 保留登录态 = 同一 WebView 长期存活，风险存在 |
 | 运行时从同源 eval 攻击者可控内容 | 防不住；「查看脚本全文」只是可审计，不是安全承诺 |
+
+> 结论：网络闸门能挡住「直接外发」，挡不住「借白名单域的重定向外发」。真正要根治需要进程级网络管控
+> （VpnService / 只放行白名单 SNI 的本地代理），本轮不做。
 
 ### 6. 登录态与一键刷新
 
@@ -360,7 +363,7 @@ __ncOcrGrid(image, { rows, cols }).then(function (g) { /* g.cells[row][col] */ }
 **决策门（阻塞 Task 4）**：30–50 张真实青果课表截图的块级精确匹配率与系统性偏移发生率——**需要你提供样本**。
 
 **开放问题（实现前/后需实测）**
-1. `shouldInterceptRequest` 对重定向后续 URL、WebSocket、Service Worker 是否回调——调研为高可信引述但缺一手 URL，**实现前亲自核**；若不成立，白名单强度需重估。
+1. ~~`shouldInterceptRequest` 对重定向后续 URL、WebSocket、Service Worker 是否回调~~ —— **已核实：不回调**（Android 官方文档 + Chromium 团队），已记入残余风险表。
 2. `lw.PPOCR.C` 的 AAR 净增量与 `.so` 16KB 对齐（仅当走备选时需要）。
 3. PP-OCRv6 tiny 的 6904 字字典在真实课表上漏多少教师名/楼名。
 4. 真实设备上首次识别耗时与内存（官方称测试图约 0.6s，课表整图远大于测试图）。
