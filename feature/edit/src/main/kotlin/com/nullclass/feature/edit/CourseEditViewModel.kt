@@ -6,9 +6,13 @@ import androidx.lifecycle.viewModelScope
 import com.nullclass.core.data.repository.CourseRepository
 import com.nullclass.core.data.repository.TermRepository
 import com.nullclass.core.model.Course
+import com.nullclass.core.model.CourseConflict
 import com.nullclass.core.model.ScheduleBlock
+import com.nullclass.core.model.ScheduleConflicts
+import com.nullclass.core.model.ScheduleFormat
 import com.nullclass.core.model.WeekType
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
@@ -196,15 +200,41 @@ class CourseEditViewModel @Inject constructor(
                         location = b.location.trim().takeIf { it.isNotBlank() },
                     )
                 }
+                // 查重：与同学期其他课程的时段冲突必须拦下（编辑时排除自身）
+                val conflicts = ScheduleConflicts.find(
+                    newBlocks = blocks,
+                    existing = courseRepository.getSchedule(s.termId),
+                    ignoreCourseId = courseId,
+                )
+                if (conflicts.isNotEmpty()) {
+                    _state.update { it.copy(saving = false, error = conflicts.toConflictMessage()) }
+                    return@launch
+                }
                 courseRepository.upsertCourseWithBlocks(course, blocks)
                 onSaved()
-            } catch (e: IllegalArgumentException) {
-                // 保存失败要允许重试
-                _state.update { it.copy(saving = false, error = e.message ?: "输入不合法") }
+            } catch (e: CancellationException) {
+                throw e
+            } catch (e: Exception) {
+                // 保存失败要允许重试（含查重读库失败）
+                _state.update { it.copy(saving = false, error = e.message ?: "保存失败，请重试") }
             }
         }
     }
 }
+
+/** 冲突提示文案：一行一处，最多列 [MAX_CONFLICT_LINES] 处，避免弹窗过长。 */
+private fun List<CourseConflict>.toConflictMessage(): String {
+    val lines = map { "与《${it.course.name}》冲突：${ScheduleFormat.blockSummary(it.existingBlock)}" }
+        .distinct()
+    val shown = lines.take(MAX_CONFLICT_LINES)
+    return buildString {
+        append("时间冲突，请调整后再保存：\n")
+        append(shown.joinToString("\n"))
+        if (lines.size > shown.size) append("\n…另有 ${lines.size - shown.size} 处冲突")
+    }
+}
+
+private const val MAX_CONFLICT_LINES = 3
 
 /** 同课程两条安排的时段重叠：同一天、节次区间相交，且在各自周型下存在共同出现的周。 */
 private fun List<EditableBlock>.firstOverlappingPair(): Pair<EditableBlock, EditableBlock>? {

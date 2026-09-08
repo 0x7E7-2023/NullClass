@@ -22,6 +22,9 @@ interface CourseRepository {
     /** 取一门课（编辑页回填用）。 */
     suspend fun getCourse(courseId: String): CourseWithBlocks?
 
+    /** 一次性取某学期全量课表（保存前查重用）。 */
+    suspend fun getSchedule(termId: String): List<CourseWithBlocks>
+
     /**
      * 新增或更新一门课及其全部时间安排，返回课程 id。
      * 事务内：保存课程 + 保存块 + 不在 blocks 里的旧块置墓碑。
@@ -46,6 +49,9 @@ class CourseRepositoryImpl @Inject constructor(
 
     override suspend fun getCourse(courseId: String): CourseWithBlocks? =
         courseDao.getCourseWithBlocks(courseId)?.toModel()
+
+    override suspend fun getSchedule(termId: String): List<CourseWithBlocks> =
+        courseDao.getSchedule(termId).map { it.toModel() }
 
     override suspend fun upsertCourseWithBlocks(course: Course, blocks: List<ScheduleBlock>): String {
         require(blocks.all { it.courseId == course.id }) { "block.courseId must match course.id" }

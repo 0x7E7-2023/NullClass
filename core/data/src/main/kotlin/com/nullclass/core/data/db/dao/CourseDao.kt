@@ -18,6 +18,11 @@ interface CourseDao {
     @Query("SELECT * FROM courses WHERE termId = :termId AND deletedAt IS NULL ORDER BY name")
     fun observeSchedule(termId: String): Flow<List<CourseWithBlocksEntity>>
 
+    /** 一次性取某学期全量课表（保存前查重用，不做 Flow 观察）。 */
+    @Transaction
+    @Query("SELECT * FROM courses WHERE termId = :termId AND deletedAt IS NULL ORDER BY name")
+    suspend fun getSchedule(termId: String): List<CourseWithBlocksEntity>
+
     @Transaction
     @Query(
         "SELECT * FROM courses WHERE id = :courseId AND deletedAt IS NULL",
