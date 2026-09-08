@@ -383,3 +383,28 @@ __ncOcrGrid(image, { rows, cols }).then(function (g) { /* g.cells[row][col] */ }
 - ORT 1.29.0 体积：本机解包 Gradle 缓存 AAR 实测（arm64 31MB / v7a 22MB / x86 37MB / x86_64 37MB）；
   当前仓库 release 3,118,103 B（2.97 MiB），无 ABI splits。
 - `lw.PPOCR.C`：GitHub 仓库与 Release 实存，README 自述 `Android ARM64 Native Preview`、experimental、v0.1.0-preview.2。
+
+## 实机验证（2026-09-08 晚，雷电模拟器 x86_64 / Android 14 / WebView 146）
+
+方法：本机起一个 Python 假教务站点（登录 + 课表 DOM + 课表图片 + 适配器库 `index.json`），
+`adb reverse tcp:8777` 给模拟器访问；另起 8778 当「外发收集器」，用来证明网络闸门。
+测试适配器覆盖：DOM 抓取、异步接口取数、图片课表、调 OCR 桥、外发探测。
+
+**跑通的链路**：zip 导入（单个 / 多适配器包）、从链接添加库、提取→解析→预览→合并、
+一键刷新（复用登录态）、图片课表 OCR→核对→合并、第三方调 `__ncOcr` / `__ncOcrGrid`、
+网络闸门（`fetch` / `XHR` / `img` / `sendBeacon` / `WebSocket` 全部拦下，同源请求放行，
+收集器零命中）、OCR 调用限额（第 9 次被拒）、内置 key 冲突拒绝、zip 炸弹与缺脚本拒绝。
+
+**发现并修复的 7 个问题**（详见 CHANGELOG `[Unreleased]`）：
+
+1. http 教务页打不开 —— 缺 network security config，平台默认禁明文，与「允许 http loginUrl」的规范冲突；
+2. 图片课表周次被教室号顶掉 —— `parseWeeks` 的「周」可选，`教1-101` → 1-10 周（静默错周）；
+3. `__ncOcr` 回传 JSON 字符串而非规范承诺的对象；
+4. OCR 桥 origin 规则漏端口 —— 非默认端口（8080 等）永不注入；
+5. `__ncCapabilities.ocr` 只看引擎不看桥，会撒谎；
+6. 一键刷新时 OCR 能力探测（加载 ONNX 模型）未完成，脚本被按「无 OCR」构建；
+7. 同 key 重装适配器后 `JwAdapter.equals` 判等 → StateFlow 不发新值 → 界面继续用旧脚本。
+
+**仍未验证**：`__ncOcrGrid` 的 `reliable:false` 阻断路径；内置 `jw-adapters/example-univ`
+的完整提取链路（其 `loginUrl` 指向不存在的域名，只能用用户适配器替代跑通同一引擎）；
+OCR 决策门（需真实青果课表截图）。
