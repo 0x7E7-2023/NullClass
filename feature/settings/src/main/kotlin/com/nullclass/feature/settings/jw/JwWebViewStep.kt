@@ -37,6 +37,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
 import com.nullclass.importer.NullClassCodec
 import com.nullclass.importer.jw.JwAdapter
+import com.nullclass.importer.jw.JwOriginRules
 import com.nullclass.importer.jw.JwPayloadCodec
 import com.nullclass.importer.jw.JwScheduleNormalizer
 import com.nullclass.importer.jw.JwSchedulePayload
@@ -238,7 +239,7 @@ fun JwWebViewStep(
                     webView = this
                     // 桥在 loadUrl 之前注册（注册后才创建的文档才会注入对象）；
                     // 注入本身是异步的，自动提取还得再等它到位 —— 见 extract() 里的 awaitReady
-                    val rules = JwOcrBridge.originRules(adapter.manifest, gate.allowedHosts)
+                    val rules = JwOriginRules.forAdapter(adapter.manifest, gate.allowedHosts)
                     if (rules.isNotEmpty()) {
                         val bridge = JwOcrBridge(context, this, gate.allowedHosts, scope)
                         bridge.attach(rules)

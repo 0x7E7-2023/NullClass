@@ -159,33 +159,5 @@ class JwOcrBridge(
     companion object {
         private const val TYPE_OCR = "ocr"
         private const val TYPE_OCR_GRID = "ocrGrid"
-
-        /**
-         * 白名单里的每个域名都生成一条 origin 规则 —— 登录页与课表页可能不同源
-         * （CAS 单点登录尤其常见），只绑一个 origin 会让课表页上拿不到 `__ncOcr`。
-         *
-         * **端口必须带上**：`addWebMessageListener` 的规则是 origin（`scheme://host[:port]`），
-         * 省略端口只表示默认端口。教务系统跑在 8080/8081 这类非默认端口上很常见，
-         * 规则少写端口会导致桥根本不注入（页面里 `window.ncBridge` 是 undefined）。
-         * `allowHosts` 按规范只写主机名、拿不到端口，所以 http/https 的默认端口都发一条。
-         */
-        fun originRules(manifest: JwManifest, allowedHosts: List<String>): Set<String> {
-            val rules = linkedSetOf<String>()
-            fun addUrl(url: String?) {
-                val uri = runCatching { java.net.URI(url) }.getOrNull() ?: return
-                val scheme = uri.scheme?.lowercase() ?: return
-                if (scheme != "http" && scheme != "https") return
-                val host = uri.host?.lowercase() ?: return
-                rules += if (uri.port > 0) "$scheme://$host:${uri.port}" else "$scheme://$host"
-            }
-            addUrl(manifest.loginUrl)
-            addUrl(manifest.scheduleUrlHint)
-            allowedHosts.forEach { host ->
-                val lower = host.lowercase()
-                rules += "https://$lower"
-                rules += "http://$lower"
-            }
-            return rules
-        }
     }
 }
