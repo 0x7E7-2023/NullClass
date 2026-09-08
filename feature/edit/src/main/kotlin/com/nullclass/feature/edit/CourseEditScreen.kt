@@ -26,7 +26,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 
 /** 课程编辑（新建/编辑复用）。新建默认周一 1-2 节、整学期每周。 */
 @OptIn(ExperimentalMaterial3Api::class)
