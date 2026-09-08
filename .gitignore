@@ -1,11 +1,15 @@
 *.iml
 .gradle/
+.kotlin/
 /local.properties
 .idea/
 .DS_Store
 captures/
 .externalNativeBuild/
 .cxx/
+
+# 本地开发数据库（设备/模拟器拉回来的调试库，永不提交）
+/local_*.db
 
 # 构建产物
 build/

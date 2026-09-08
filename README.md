@@ -10,6 +10,7 @@ An open-source class schedule app for Android universities. Local-first: no acco
 ## 功能 / Features
 
 - 📅 周视图课表（滑动切周、当前周高亮、单双周/连堂支持）
+- 🗂️ 底部三 Tab（今日 / 课表 / 我的）：今日页按上午/下午/晚上分组，进行中高亮、已结束置灰
 - 🧩 Jetpack Glance 桌面小组件（今日课程 / 下节课，自动随课表刷新）
 - 🔔 课前提醒（提前 5/15/30 分钟可配，WorkManager 低功耗调度）
 - 📤 课表导入导出（`.nullclass` 文件 + 二维码扫码分享）
@@ -53,10 +54,12 @@ An open-source class schedule app for Android universities. Local-first: no acco
 :core:model        纯 Kotlin 领域模型
 :core:data         Room 数据库 + Repository + DataStore
 :core:ui           主题与通用 Compose 组件
-:feature:schedule  课表主界面（周视图）
+:feature:schedule  课表主界面（周视图 + 今日页）
 :feature:edit      课程/学期编辑
+:feature:settings  设置与「我的」页、导入导出界面、教务导入 WebView 宿主
 :widget            Glance 桌面小组件
 :importer          课表导入导出引擎（分享格式、外部格式适配）
+:sync              WebDAV 同步引擎（快照编解码、LWW 合并、定时调度）
 ```
 
 ## 构建 / Build
@@ -80,6 +83,7 @@ An open-source class schedule app for Android universities. Local-first: no acco
 - [x] M3 Glance 小组件 + 课前提醒
 - [x] M4 导入导出 + 二维码分享，发布首个 Release
 - [x] M5 教务系统导入框架（WebView + 逐校适配，示例适配器已就绪，真实学校逐步接入）
+- [ ] M6 首个真实学校教务适配器 + 交互持续打磨（进行中）
 
 ## 许可证 / License
 
