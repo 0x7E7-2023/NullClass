@@ -22,7 +22,7 @@ java {
  * - 同一个目录也能直接托管成第三方库（含 index.json）
  */
 val jwLibraryDir: File = rootProject.layout.projectDirectory.dir("jw-adapters").asFile
-val syncJwLibrary by tasks.registering(Sync::class) {
+val syncJwLibrary = tasks.register<Sync>("syncJwLibrary") {
     from(jwLibraryDir)
     into(layout.buildDirectory.dir("generated/jwLibrary/jw-adapters"))
     exclude("**/.DS_Store", "**/.git/**")
