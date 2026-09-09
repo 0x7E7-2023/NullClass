@@ -27,6 +27,25 @@ data class ScheduleDocument(
     }
 }
 
+/**
+ * 导入来源标记（[ScheduleDocument.deviceId] 的取值约定）。
+ *
+ * `jw-*`（教务适配器）与 [WAKEUP_IMPORT]（WakeUp 迁移）这类来源**每次导入都重新生成
+ * 记录 UUID**，纯按 ID 合并会让重复导入变成复制一份——:sync 的 ImportAligner 靠这个标记
+ * 决定要不要先做「同名学期对齐」。其余来源（`.nullclass` 备份 / 扫码，deviceId = 导出
+ * 设备）沿用记录原有 ID，走纯 LWW 即可。
+ */
+object ImportProvenance {
+    /** 教务适配器：`jw-<schoolKey>`。 */
+    const val JW_PREFIX = "jw-"
+
+    /** WakeUp 迁移。 */
+    const val WAKEUP_IMPORT = "wakeup-import"
+
+    fun isFreshIdImport(deviceId: String): Boolean =
+        deviceId.startsWith(JW_PREFIX) || deviceId == WAKEUP_IMPORT
+}
+
 @Serializable
 data class TermDto(
     val id: String,

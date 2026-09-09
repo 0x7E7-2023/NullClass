@@ -1,6 +1,7 @@
 package com.nullclass.importer.wakeup
 
 import com.nullclass.importer.BlockDto
+import com.nullclass.importer.ImportProvenance
 import com.nullclass.importer.CourseDto
 import com.nullclass.importer.PeriodTimeDto
 import com.nullclass.importer.TermDto
@@ -231,7 +232,7 @@ object WakeUpParser {
     fun parseToDocument(raw: String): ScheduleDocument {
         val result = parse(raw)
         return ScheduleDocument(
-            deviceId = "wakeup-import",
+            deviceId = ImportProvenance.WAKEUP_IMPORT,
             generatedAt = System.currentTimeMillis(),
             terms = listOf(result.term),
             courses = result.courses,

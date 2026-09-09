@@ -81,8 +81,11 @@ class SyncManager @Inject constructor(
     suspend fun mergeImport(document: ScheduleDocument): MergeImportResult = mutex.withLock {
         val now = System.currentTimeMillis()
         val local = codec.dump(deviceId = null, nowMillis = now)
-        val merged = SyncEngine.merge(local, document, now)
-        val adopted = codec.countAdopted(local, merged)
+        // 适配器/WakeUp 每次导入都生成全新 UUID，纯按 ID 合并会让「一键刷新」复制一份课表；
+        // 先按名字对齐到本地记录（详见 ImportAligner），再走常规 LWW。
+        val aligned = ImportAligner.align(local, document, now)
+        val merged = SyncEngine.merge(aligned.local, aligned.incoming, now)
+        val adopted = codec.countAdopted(aligned.local, merged)
         codec.apply(merged)
         MergeImportResult(merged = merged, adopted = adopted)
     }

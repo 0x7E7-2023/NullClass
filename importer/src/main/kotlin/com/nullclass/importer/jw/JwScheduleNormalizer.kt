@@ -3,6 +3,7 @@ package com.nullclass.importer.jw
 import com.nullclass.core.model.DefaultPeriodTimes
 import com.nullclass.importer.BlockDto
 import com.nullclass.importer.CourseDto
+import com.nullclass.importer.ImportProvenance
 import com.nullclass.importer.PeriodTimeDto
 import com.nullclass.importer.ScheduleDocument
 import com.nullclass.importer.TermDto
@@ -103,7 +104,7 @@ object JwScheduleNormalizer {
         }
 
         return ScheduleDocument(
-            deviceId = "jw-$schoolKey",
+            deviceId = ImportProvenance.JW_PREFIX + schoolKey,
             generatedAt = now,
             terms = terms,
             courses = courses,
