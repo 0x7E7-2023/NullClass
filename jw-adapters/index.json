@@ -4,6 +4,12 @@
   "homepage": "https://github.com/0x7E7-2023/NullClass",
   "adapters": [
     {
+      "key": "dlutci",
+      "name": "大连工程学院（原大连理工大学城市学院）",
+      "version": "1.0.0",
+      "path": "dlutci"
+    },
+    {
       "key": "example-univ",
       "name": "示例大学（演示适配器）",
       "version": "1.0.0",

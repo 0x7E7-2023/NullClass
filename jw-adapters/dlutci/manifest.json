@@ -1,0 +1,20 @@
+{
+  "specVersion": 1,
+  "key": "dlutci",
+  "name": "大连工程学院（原大连理工大学城市学院）",
+  "version": "1.0.0",
+  "author": "NullClass",
+  "homepage": "https://github.com/0x7E7-2023/NullClass",
+  "loginUrl": "https://jw.dlutci.edu.cn/",
+  "minAppVersionCode": 11,
+  "extract": "extract.js",
+  "parse": "parse.js",
+  "allowHosts": [],
+  "fixtures": [
+    {
+      "name": "2026-2027 学年第一学期",
+      "extracted": "fixtures/2026-2027-1.extracted.json",
+      "expected": "fixtures/2026-2027-1.expected.json"
+    }
+  ]
+}
