@@ -1,5 +1,6 @@
 package com.nullclass.importer.jw
 
+import com.nullclass.core.model.CourseColorKeywords
 import com.nullclass.core.model.DefaultPeriodTimes
 import com.nullclass.importer.BlockDto
 import com.nullclass.importer.CourseDto
@@ -37,7 +38,7 @@ object JwScheduleNormalizer {
         val courses = mutableListOf<CourseDto>()
         val blocks = mutableListOf<BlockDto>()
         val periodTimes = mutableListOf<PeriodTimeDto>()
-        var colorCursor = 0
+        var unmatchedColorCursor = 0
 
         payload.terms.forEach { term ->
             val termId = UUID.randomUUID().toString()
@@ -80,7 +81,7 @@ object JwScheduleNormalizer {
                     name = course.name.trim(),
                     teacher = course.teacher?.trim()?.takeIf { it.isNotEmpty() },
                     note = course.note?.trim()?.takeIf { it.isNotEmpty() },
-                    colorIndex = if (colorCount > 0) colorCursor++ % colorCount else 0,
+                    colorIndex = colorIndexFor(course.name, colorCount) { unmatchedColorCursor++ },
                     createdAt = now,
                     updatedAt = now,
                 )
@@ -129,6 +130,17 @@ object JwScheduleNormalizer {
         updatedAt = now,
     )
 
-    /** 颜色池大小，与 :core:ui CoursePalette 对齐；取不到时由调用方传 0 表示不轮转。 */
-    const val DEFAULT_COLOR_COUNT = 12
+    /**
+     * 命中课名关键词则用对应档；否则沿用顺序轮转。
+     * [colorCount] ≤ 0 表示不上色（测试用）。
+     */
+    private fun colorIndexFor(name: String, colorCount: Int, nextUnmatched: () -> Int): Int {
+        if (colorCount <= 0) return 0
+        val matched = CourseColorKeywords.match(name)
+        if (matched != null && matched < colorCount) return matched
+        return nextUnmatched() % colorCount
+    }
+
+    /** 颜色池大小，与 :core:ui CoursePalette / [CourseColorKeywords.SIZE] 对齐。 */
+    const val DEFAULT_COLOR_COUNT = CourseColorKeywords.SIZE
 }

@@ -50,6 +50,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.core.content.ContextCompat
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
+import com.nullclass.core.model.WidgetFontSize
 import com.nullclass.sync.AutoSyncInterval
 import com.nullclass.widget.NextClassWidgetReceiver
 import com.nullclass.widget.TodayWidgetReceiver
@@ -69,6 +70,7 @@ fun SettingsScreen(
     val lastSyncAt by viewModel.lastSyncAt.collectAsState()
     val reminderLeadMinutes by viewModel.reminderLeadMinutes.collectAsState()
     val autoSyncInterval by viewModel.autoSyncInterval.collectAsState()
+    val widgetFontSize by viewModel.widgetFontSize.collectAsState()
 
     val context = LocalContext.current
     var notificationGranted by remember {
@@ -99,7 +101,8 @@ fun SettingsScreen(
                 .fillMaxSize()
                 .padding(padding)
                 .verticalScroll(rememberScrollState())
-                .padding(horizontal = 16.dp),
+                .padding(horizontal = 16.dp)
+                .padding(bottom = 24.dp),
             verticalArrangement = Arrangement.spacedBy(12.dp),
         ) {
             Text("WebDAV 同步", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold)
@@ -247,6 +250,10 @@ fun SettingsScreen(
                 style = MaterialTheme.typography.bodySmall,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
             )
+            WidgetFontSizeSelector(
+                selected = widgetFontSize,
+                onSelect = viewModel::setWidgetFontSize,
+            )
             Row(horizontalArrangement = Arrangement.spacedBy(12.dp), modifier = Modifier.fillMaxWidth()) {
                 OutlinedButton(
                     onClick = { requestPinWidget(context, TodayWidgetReceiver::class.java) },
@@ -259,13 +266,6 @@ fun SettingsScreen(
                     modifier = Modifier.weight(1f),
                 ) { Text("下节课 2×1") }
             }
-
-            Text(
-                "空课 · 本地优先，无账号、无埋点。",
-                style = MaterialTheme.typography.bodySmall,
-                color = MaterialTheme.colorScheme.onSurfaceVariant,
-                modifier = Modifier.padding(top = 16.dp, bottom = 24.dp),
-            )
         }
     }
 }
@@ -282,6 +282,25 @@ private fun ReminderLeadSelector(selected: Int, onSelect: (Int) -> Unit) {
                 shape = SegmentedButtonDefaults.itemShape(index, ReminderOptions.size),
             ) {
                 Text(if (minutes == 0) "关闭" else "${minutes}分钟", fontSize = 13.sp)
+            }
+        }
+    }
+}
+
+@Composable
+private fun WidgetFontSizeSelector(
+    selected: WidgetFontSize,
+    onSelect: (WidgetFontSize) -> Unit,
+) {
+    val options = WidgetFontSize.entries
+    SingleChoiceSegmentedButtonRow(modifier = Modifier.fillMaxWidth()) {
+        options.forEachIndexed { index, size ->
+            SegmentedButton(
+                selected = selected == size,
+                onClick = { onSelect(size) },
+                shape = SegmentedButtonDefaults.itemShape(index, options.size),
+            ) {
+                Text(size.label, fontSize = 13.sp)
             }
         }
     }

@@ -3,6 +3,7 @@ package com.nullclass.feature.settings
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.nullclass.core.data.prefs.UserPreferencesRepository
+import com.nullclass.core.model.WidgetFontSize
 import com.nullclass.sync.AutoSyncInterval
 import com.nullclass.sync.SyncManager
 import com.nullclass.sync.SyncResult
@@ -54,8 +55,16 @@ class SettingsViewModel @Inject constructor(
     val autoSyncInterval: StateFlow<AutoSyncInterval> = syncSettings.autoSyncInterval
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), AutoSyncInterval.OFF)
 
+    /** 桌面小组件字号档。 */
+    val widgetFontSize: StateFlow<WidgetFontSize> = userPreferences.widgetFontSize
+        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), WidgetFontSize.STANDARD)
+
     fun setReminderLeadMinutes(value: Int) {
         viewModelScope.launch { userPreferences.setReminderLeadMinutes(value) }
+    }
+
+    fun setWidgetFontSize(value: WidgetFontSize) {
+        viewModelScope.launch { userPreferences.setWidgetFontSize(value) }
     }
 
     fun setAutoSyncInterval(value: AutoSyncInterval) {

@@ -7,6 +7,7 @@ import androidx.compose.ui.graphics.luminance
 
 /**
  * 课程色板：12 色，[Course.colorIndex] 取模循环。
+ * 教务导入的下标由 [com.nullclass.core.model.CourseColorKeywords] 按课名关键词写入。
  * 课块渲染用 [courseColor]（容器极低饱和 + 彩色边框勾勒颜色，文字用主题灰）；
  * [CourseColor.content] 保留全饱和原色，供详情页等需要强颜色识别的场景。
  * 色板选择器直接用 [CoursePalette]。

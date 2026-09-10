@@ -1,5 +1,6 @@
 package com.nullclass.importer.jw
 
+import com.nullclass.core.model.CourseColorKeywords
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
@@ -71,8 +72,8 @@ class JwPayloadAndNormalizerTest {
         assertEquals(12, document.periodTimes.size)
         assertEquals(term.id, document.courses[0].termId)
         assertEquals(document.courses[0].id, document.blocks[0].courseId)
-        assertEquals(0, document.courses[0].colorIndex)
-        assertEquals(1, document.courses[1].colorIndex)
+        assertEquals(CourseColorKeywords.MATH, document.courses[0].colorIndex)
+        assertEquals(CourseColorKeywords.LANGUAGE, document.courses[1].colorIndex)
         assertEquals("张三", document.courses[0].teacher)
         assertNull(document.courses[1].teacher)
         assertEquals("ODD", document.blocks[1].weekType)
@@ -103,7 +104,7 @@ class JwPayloadAndNormalizerTest {
     }
 
     @Test
-    fun `颜色下标循环`() {
+    fun `未命中课名颜色下标循环`() {
         val many = buildString {
             append("""{"specVersion":1,"kind":"schedule","terms":[{"name":"T","firstDay":"2026-09-07","totalWeeks":30,"courses":[""")
             repeat(15) { index ->

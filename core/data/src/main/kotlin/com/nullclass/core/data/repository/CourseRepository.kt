@@ -34,6 +34,12 @@ interface CourseRepository {
     /** 软删除一门课（级联墓碑其时间安排）。 */
     suspend fun deleteCourse(courseId: String)
 
+    /**
+     * 清空某学期全部课程与时间安排（软删除，会随同步传播）。
+     * 学期本身和节次时间表不动。返回墓碑掉的课程数。
+     */
+    suspend fun clearTermCourses(termId: String): Int
+
     /** 把 [fromTermId] 的全部课程深拷贝到 [toTermId]（新 UUID），返回复制的课程数。 */
     suspend fun copyCoursesFromTerm(fromTermId: String, toTermId: String): Int
 }
@@ -94,6 +100,15 @@ class CourseRepositoryImpl @Inject constructor(
         db.withTransaction {
             courseDao.tombstoneCourse(courseId, now)
             courseDao.tombstoneBlocksOfCourse(courseId, now)
+        }
+    }
+
+    override suspend fun clearTermCourses(termId: String): Int {
+        val now = System.currentTimeMillis()
+        return db.withTransaction {
+            val count = courseDao.tombstoneCoursesOfTerm(termId, now)
+            courseDao.tombstoneBlocksOfTerm(termId, now)
+            count
         }
     }
 

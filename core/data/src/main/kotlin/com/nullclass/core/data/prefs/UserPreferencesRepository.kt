@@ -4,7 +4,9 @@ import android.content.Context
 import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.intPreferencesKey
+import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
+import com.nullclass.core.model.WidgetFontSize
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
@@ -25,6 +27,7 @@ class UserPreferencesRepository @Inject constructor(
         val SHOW_WEEKEND = booleanPreferencesKey("show_weekend")
         val SHOW_TIME_IN_CARDS = booleanPreferencesKey("show_time_in_cards")
         val SHOW_NOW_LINE = booleanPreferencesKey("show_now_line")
+        val WIDGET_FONT_SIZE = stringPreferencesKey("widget_font_size")
     }
 
     /** 提前提醒分钟数；0 = 关闭。默认 15。 */
@@ -67,6 +70,14 @@ class UserPreferencesRepository @Inject constructor(
 
     suspend fun setShowNowLine(value: Boolean) {
         context.userPrefs.edit { it[Keys.SHOW_NOW_LINE] = value }
+    }
+
+    /** 桌面小组件字号档。默认标准；未知值回落标准。 */
+    val widgetFontSize: Flow<WidgetFontSize> =
+        context.userPrefs.data.map { WidgetFontSize.fromName(it[Keys.WIDGET_FONT_SIZE]) }
+
+    suspend fun setWidgetFontSize(value: WidgetFontSize) {
+        context.userPrefs.edit { it[Keys.WIDGET_FONT_SIZE] = value.name }
     }
 
     companion object {

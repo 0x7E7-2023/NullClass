@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -129,6 +130,9 @@ fun ScheduleScreen(
                 }
             }
         },
+        // 顶栏自己吃状态栏 inset；底栏在外层 NavHost，这里再垫 navigationBars
+        // 会在课表和底栏之间多出一横条空白。
+        contentWindowInsets = WindowInsets(0),
         containerColor = MaterialTheme.colorScheme.background,
     ) { padding ->
         when (val s = state) {

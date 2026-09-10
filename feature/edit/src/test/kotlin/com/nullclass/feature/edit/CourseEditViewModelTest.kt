@@ -203,5 +203,7 @@ private class FakeCourseRepository : CourseRepository {
 
     override suspend fun deleteCourse(courseId: String) = Unit
 
+    override suspend fun clearTermCourses(termId: String): Int = 0
+
     override suspend fun copyCoursesFromTerm(fromTermId: String, toTermId: String): Int = 0
 }

@@ -11,6 +11,6 @@ data class Course(
     val teacher: String? = null,
     /** 备注（教材、考核方式等），UI 展示用 */
     val note: String? = null,
-    /** 预设色板下标，由 UI 层统一映射为颜色，保证视觉一致 */
+    /** 预设色板下标，由 UI 层统一映射为颜色；教务导入按课名关键词写入，可手改 */
     val colorIndex: Int = 0,
 )

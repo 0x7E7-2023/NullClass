@@ -15,6 +15,7 @@ import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.DatePicker
 import androidx.compose.material3.DatePickerDialog
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -44,7 +45,7 @@ import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import com.nullclass.core.model.Session
 import java.time.LocalDate
 
-/** 学期编辑：基本信息 + 节次时间表 + （新建时）从上学期复制课程。 */
+/** 学期编辑：基本信息 + 节次时间表 + （新建时）从上学期复制课程 + 清空本学期课程。 */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun TermEditScreen(
@@ -54,6 +55,7 @@ fun TermEditScreen(
 ) {
     val state by viewModel.state.collectAsState()
     var showDatePicker by remember { mutableStateOf(false) }
+    var showClearConfirm by remember { mutableStateOf(false) }
 
     Scaffold(
         topBar = {
@@ -67,7 +69,7 @@ fun TermEditScreen(
                 actions = {
                     TextButton(
                         onClick = { viewModel.save(onBack) },
-                        enabled = !state.loading && !state.saving,
+                        enabled = !state.loading && !state.saving && !state.clearing,
                     ) { Text("保存") }
                 },
             )
@@ -161,11 +163,35 @@ fun TermEditScreen(
 
             Button(
                 onClick = { viewModel.save(onBack) },
-                enabled = !state.saving,
+                enabled = !state.saving && !state.clearing,
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(vertical = 12.dp),
             ) { Text(if (state.saving) "保存中…" else "保存") }
+
+            if (!state.isNew) {
+                Text(
+                    "清空本学期全部课程，学期和节次时间保留。删除会同步到其他设备。",
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                )
+                OutlinedButton(
+                    onClick = { showClearConfirm = true },
+                    enabled = !state.saving && !state.clearing && state.courseCount > 0,
+                    modifier = Modifier.fillMaxWidth(),
+                    colors = ButtonDefaults.outlinedButtonColors(
+                        contentColor = MaterialTheme.colorScheme.error,
+                    ),
+                ) {
+                    Text(
+                        when {
+                            state.clearing -> "清空中…"
+                            state.courseCount == 0 -> "本学期没有课程"
+                            else -> "清空本学期课程"
+                        },
+                    )
+                }
+            }
 
             androidx.compose.foundation.layout.Spacer(Modifier.padding(bottom = 24.dp))
         }
@@ -191,6 +217,27 @@ fun TermEditScreen(
         ) {
             DatePicker(state = pickerState)
         }
+    }
+
+    if (showClearConfirm) {
+        AlertDialog(
+            onDismissRequest = { showClearConfirm = false },
+            title = { Text("清空本学期课程") },
+            text = {
+                Text("将删除本学期的全部 ${state.courseCount} 门课，学期和节次时间保留。删除会同步到其他设备。")
+            },
+            confirmButton = {
+                TextButton(
+                    onClick = {
+                        showClearConfirm = false
+                        viewModel.clearCourses()
+                    },
+                ) { Text("清空", color = MaterialTheme.colorScheme.error) }
+            },
+            dismissButton = {
+                TextButton(onClick = { showClearConfirm = false }) { Text("取消") }
+            },
+        )
     }
 
     state.error?.let { message ->

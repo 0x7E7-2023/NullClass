@@ -63,6 +63,19 @@ interface CourseDao {
     )
     suspend fun tombstoneStaleBlocks(courseId: String, keepIds: List<String>, now: Long)
 
+    /** 清空学期课表：软删除该学期全部课程，返回墓碑条数。 */
+    @Query(
+        "UPDATE courses SET deletedAt = :now, updatedAt = :now " +
+            "WHERE termId = :termId AND deletedAt IS NULL",
+    )
+    suspend fun tombstoneCoursesOfTerm(termId: String, now: Long): Int
+
+    @Query(
+        "UPDATE schedule_blocks SET deletedAt = :now, updatedAt = :now " +
+            "WHERE termId = :termId AND deletedAt IS NULL",
+    )
+    suspend fun tombstoneBlocksOfTerm(termId: String, now: Long)
+
     // ---- 跨学期复制 ----
 
     @Query("SELECT * FROM courses WHERE termId = :fromTermId AND deletedAt IS NULL")

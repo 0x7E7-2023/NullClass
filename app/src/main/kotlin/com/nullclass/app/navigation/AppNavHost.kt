@@ -1,6 +1,7 @@
 package com.nullclass.app.navigation
 
 import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.consumeWindowInsets
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.DateRange
@@ -29,6 +30,7 @@ import com.nullclass.feature.edit.CourseEditScreen
 import com.nullclass.feature.edit.TermEditScreen
 import com.nullclass.feature.schedule.ScheduleScreen
 import com.nullclass.feature.schedule.TodayScreen
+import com.nullclass.feature.settings.AboutScreen
 import com.nullclass.feature.settings.ProfileScreen
 import com.nullclass.feature.settings.SettingsScreen
 import com.nullclass.feature.settings.transfer.PendingImport
@@ -42,6 +44,7 @@ object Routes {
     const val COURSE_EDIT = "course_edit?courseId={courseId}"
     const val TERM_EDIT = "term_edit?termId={termId}"
     const val SETTINGS = "settings"
+    const val ABOUT = "about"
     const val TRANSFER = "transfer"
 
     fun courseEdit(courseId: String? = null): String = "course_edit?courseId=${courseId ?: ""}"
@@ -92,7 +95,9 @@ fun AppNavHost() {
     Scaffold(
         containerColor = MaterialTheme.colorScheme.background,
         // 外层不声明 systemBars：否则 contentPadding 带状态栏高度，内层各页 TopAppBar
-        // 再消费一遍同一 inset → 顶部双倍空隙（底栏高度不依赖 inset，只垫条高即可）
+        // 再消费一遍同一 inset → 顶部双倍空隙。底栏高度由 bottomBar 测量垫上
+        // （已含系统导航栏）；再 consumeWindowInsets，避免内层 Scaffold 把
+        // navigationBars 又垫一次——课表网格和底栏之间会多出一横条空白。
         contentWindowInsets = WindowInsets(0),
         bottomBar = {
             if (showTabBar) {
@@ -123,7 +128,9 @@ fun AppNavHost() {
         NavHost(
             navController = navController,
             startDestination = Routes.SCHEDULE,
-            modifier = Modifier.padding(padding),
+            modifier = Modifier
+                .padding(padding)
+                .consumeWindowInsets(padding),
         ) {
             composable(Routes.TODAY) {
                 TodayScreen(
@@ -147,6 +154,7 @@ fun AppNavHost() {
                     onEditTerm = { termId -> navController.navigate(Routes.termEdit(termId)) },
                     onOpenTransfer = { navController.navigate(Routes.TRANSFER) },
                     onOpenSettings = { navController.navigate(Routes.SETTINGS) },
+                    onOpenAbout = { navController.navigate(Routes.ABOUT) },
                 )
             }
             composable(
@@ -176,6 +184,9 @@ fun AppNavHost() {
                     onBack = ::back,
                     onOpenTransfer = { navController.navigate(Routes.TRANSFER) },
                 )
+            }
+            composable(Routes.ABOUT) {
+                AboutScreen(onBack = ::back)
             }
             composable(Routes.TRANSFER) {
                 TransferScreen(

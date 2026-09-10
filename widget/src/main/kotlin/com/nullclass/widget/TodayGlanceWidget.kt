@@ -2,10 +2,11 @@ package com.nullclass.widget
 
 import android.content.Context
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.glance.GlanceId
 import androidx.glance.GlanceModifier
 import androidx.glance.action.clickable
@@ -32,6 +33,8 @@ import androidx.glance.text.Text
 import androidx.glance.text.TextStyle
 import com.nullclass.core.model.ScheduleFormat
 import com.nullclass.core.model.TodaySnapshot
+import com.nullclass.core.model.WidgetFontSize
+import kotlinx.coroutines.flow.first
 import com.nullclass.core.ui.theme.courseColor
 import java.time.LocalTime
 
@@ -55,8 +58,17 @@ class TodayGlanceWidget : GlanceAppWidget() {
     override suspend fun provideGlance(context: Context, id: GlanceId) {
         val entryPoint = widgetEntryPoint(context)
         val snapshot = buildTodaySnapshot(entryPoint.termRepository(), entryPoint.courseRepository())
+        val prefs = entryPoint.userPreferences()
+        // updateAll 在 Glance 会话还活着时不会重跑 provideGlance，字号必须在
+        // composition 里 collect，否则改第二档会继续用第一次读到的值。
+        val initialFont = prefs.widgetFontSize.first()
         provideContent {
-            TodayWidgetContent(snapshot, LocalTime.now().let { it.hour * 60 + it.minute })
+            val fontSize by prefs.widgetFontSize.collectAsState(initialFont)
+            TodayWidgetContent(
+                snapshot,
+                LocalTime.now().let { it.hour * 60 + it.minute },
+                fontSize,
+            )
         }
     }
 }
@@ -68,7 +80,11 @@ internal val WidgetAccent = ColorProvider(day = Color(0xFF4F46E5), night = Color
 internal val WidgetDivider = ColorProvider(day = Color(0xFFE3E3E8), night = Color(0xFF2E3038))
 
 @Composable
-internal fun TodayWidgetContent(snapshot: TodaySnapshot, nowMinuteOfDay: Int) {
+internal fun TodayWidgetContent(
+    snapshot: TodaySnapshot,
+    nowMinuteOfDay: Int,
+    fontSize: WidgetFontSize = WidgetFontSize.STANDARD,
+) {
     Box(
         modifier = GlanceModifier
             .fillMaxSize()
@@ -77,24 +93,28 @@ internal fun TodayWidgetContent(snapshot: TodaySnapshot, nowMinuteOfDay: Int) {
             .padding(12.dp)
             .clickable(actionRunCallback<OpenAppAction>()),
     ) {
-        TodayFullContent(snapshot, nowMinuteOfDay)
+        TodayFullContent(snapshot, nowMinuteOfDay, fontSize)
     }
 }
 
 /** 标题行 + 完整列表（标题作为 LazyColumn 首 item，避免嵌套测量问题）。 */
 @Composable
-private fun TodayFullContent(snapshot: TodaySnapshot, nowMinuteOfDay: Int) {
+private fun TodayFullContent(
+    snapshot: TodaySnapshot,
+    nowMinuteOfDay: Int,
+    fontSize: WidgetFontSize,
+) {
     if (snapshot.termName.isEmpty()) {
         Column(modifier = GlanceModifier.fillMaxSize()) {
             Text(
                 "空课",
-                style = TextStyle(color = WidgetAccent, fontSize = 13.sp, fontWeight = FontWeight.Medium),
+                style = TextStyle(color = WidgetAccent, fontSize = fontSize.sp(13), fontWeight = FontWeight.Medium),
             )
             Spacer(GlanceModifier.height(6.dp))
             Box(GlanceModifier.fillMaxSize(), contentAlignment = Alignment.Center) {
                 Text(
                     "请先在应用中创建学期",
-                    style = TextStyle(color = WidgetOnBackgroundVariant, fontSize = 12.sp),
+                    style = TextStyle(color = WidgetOnBackgroundVariant, fontSize = fontSize.sp(12)),
                 )
             }
         }
@@ -109,7 +129,7 @@ private fun TodayFullContent(snapshot: TodaySnapshot, nowMinuteOfDay: Int) {
                         null -> snapshot.termName // 学期还没开始（或已结束），只显学期名
                         else -> "第${snapshot.weekNumber}周 · ${ScheduleFormat.dayOfWeekLabel(java.time.LocalDate.now().dayOfWeek.value)}"
                     },
-                    style = TextStyle(color = WidgetAccent, fontSize = 13.sp, fontWeight = FontWeight.Medium),
+                    style = TextStyle(color = WidgetAccent, fontSize = fontSize.sp(13), fontWeight = FontWeight.Medium),
                 )
                 Spacer(GlanceModifier.height(4.dp))
                 Box(GlanceModifier.fillMaxWidth().height(1.dp).background(WidgetDivider)) {}
@@ -122,18 +142,18 @@ private fun TodayFullContent(snapshot: TodaySnapshot, nowMinuteOfDay: Int) {
                     GlanceModifier.fillMaxWidth().padding(vertical = 16.dp),
                     contentAlignment = Alignment.Center,
                 ) {
-                    Text("今天没有课 🎉", style = TextStyle(color = WidgetOnBackgroundVariant, fontSize = 12.sp))
+                    Text("今天没有课 🎉", style = TextStyle(color = WidgetOnBackgroundVariant, fontSize = fontSize.sp(12)))
                 }
             }
         } else {
             items(snapshot.blocks.size) { index ->
-                TodayRow(snapshot.blocks[index], snapshot, nowMinuteOfDay)
+                TodayRow(snapshot.blocks[index], snapshot, nowMinuteOfDay, fontSize)
             }
             if (snapshot.nextUp(nowMinuteOfDay) == null) {
                 item {
                     Text(
-                        "今天课程已结束",
-                        style = TextStyle(color = WidgetOnBackgroundVariant, fontSize = 11.sp),
+                        "今天课程已结束 😴",
+                        style = TextStyle(color = WidgetOnBackgroundVariant, fontSize = fontSize.sp(11)),
                         modifier = GlanceModifier.padding(top = 4.dp),
                     )
                 }
@@ -147,6 +167,7 @@ private fun TodayRow(
     entry: TodaySnapshot.TodayEntry,
     snapshot: TodaySnapshot,
     nowMinuteOfDay: Int,
+    fontSize: WidgetFontSize,
 ) {
     val isNext = snapshot.nextUp(nowMinuteOfDay)?.placed?.block?.id == entry.placed.block.id
     val isInProgress = snapshot.inProgress(entry, nowMinuteOfDay)
@@ -164,12 +185,12 @@ private fun TodayRow(
             .padding(horizontal = 6.dp, vertical = 4.dp),
         verticalAlignment = Alignment.CenterVertically,
     ) {
-        Column(modifier = GlanceModifier.width(38.dp)) {
+        Column(modifier = GlanceModifier.width(fontSize.dp(38))) {
             Text(
                 entry.startTime,
                 style = TextStyle(
                     color = if (isNext) WidgetAccent else WidgetOnBackgroundVariant,
-                    fontSize = 11.sp,
+                    fontSize = fontSize.sp(11),
                     fontWeight = if (isNext) FontWeight.Bold else FontWeight.Normal,
                 ),
             )
@@ -177,7 +198,7 @@ private fun TodayRow(
             // 上课中的行用「剩X分」替代下课时间（下课时间可由开始时间+剩余推出）
             Text(
                 if (isInProgress) "剩${snapshot.remainingMinutes(entry, nowMinuteOfDay)}分" else entry.endTime,
-                style = TextStyle(color = WidgetOnBackgroundVariant, fontSize = 9.sp),
+                style = TextStyle(color = WidgetOnBackgroundVariant, fontSize = fontSize.sp(9)),
             )
         }
         Spacer(GlanceModifier.width(6.dp))
@@ -186,19 +207,19 @@ private fun TodayRow(
                 entry.placed.course.name,
                 style = TextStyle(
                     color = WidgetOnBackground,
-                    fontSize = 12.sp,
+                    fontSize = fontSize.sp(12),
                     fontWeight = if (isNext) FontWeight.Bold else FontWeight.Medium,
                 ),
                 maxLines = 1,
             )
             entry.placed.block.location?.takeIf { it.isNotBlank() }?.let {
-                Text(it, style = TextStyle(color = WidgetOnBackgroundVariant, fontSize = 10.sp), maxLines = 1)
+                Text(it, style = TextStyle(color = WidgetOnBackgroundVariant, fontSize = fontSize.sp(10)), maxLines = 1)
             }
         }
         if (isNext) {
             Text(
                 if (isInProgress) "上课中" else "下一节",
-                style = TextStyle(color = WidgetAccent, fontSize = 10.sp, fontWeight = FontWeight.Medium),
+                style = TextStyle(color = WidgetAccent, fontSize = fontSize.sp(10), fontWeight = FontWeight.Medium),
                 maxLines = 1,
             )
         }

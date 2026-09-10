@@ -12,6 +12,7 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
 import androidx.compose.material.icons.filled.DateRange
+import androidx.compose.material.icons.filled.Info
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material.icons.filled.Share
 import androidx.compose.material3.Icon
@@ -30,7 +31,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 
 /**
- * 「我的」Tab：入口中枢——学期卡片、导入/导出、应用设置（子页）。
+ * 「我的」Tab：入口中枢——学期卡片、导入/导出、应用设置、关于（子页）。
  * 长表单类内容（WebDAV、提醒、小组件）保留在应用设置子页，中枢只做导航聚合。
  */
 @Composable
@@ -38,6 +39,7 @@ fun ProfileScreen(
     onEditTerm: (termId: String?) -> Unit,
     onOpenTransfer: () -> Unit,
     onOpenSettings: () -> Unit,
+    onOpenAbout: () -> Unit,
     viewModel: ProfileViewModel = hiltViewModel(),
 ) {
     val state by viewModel.uiState.collectAsState()
@@ -48,7 +50,8 @@ fun ProfileScreen(
                 .fillMaxSize()
                 .padding(padding)
                 .verticalScroll(rememberScrollState())
-                .padding(horizontal = 16.dp),
+                .padding(horizontal = 16.dp)
+                .padding(bottom = 24.dp),
         ) {
             Text(
                 "我的",
@@ -111,14 +114,13 @@ fun ProfileScreen(
                     subtitle = "WebDAV 同步、课前提醒、桌面小组件",
                     onClick = onOpenSettings,
                 )
+                EntryRow(
+                    icon = Icons.Default.Info,
+                    title = "关于",
+                    subtitle = "版本、开源许可、反馈",
+                    onClick = onOpenAbout,
+                )
             }
-
-            Text(
-                "空课 · 本地优先，无账号、无埋点。",
-                style = MaterialTheme.typography.bodySmall,
-                color = MaterialTheme.colorScheme.onSurfaceVariant,
-                modifier = Modifier.padding(top = 24.dp, bottom = 24.dp),
-            )
         }
     }
 }

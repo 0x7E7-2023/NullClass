@@ -2,6 +2,7 @@ package com.nullclass.app
 
 import android.content.Context
 import androidx.glance.appwidget.updateAll
+import com.nullclass.core.data.prefs.UserPreferencesRepository
 import com.nullclass.core.data.repository.CourseRepository
 import com.nullclass.core.data.repository.TermRepository
 import com.nullclass.core.model.TodaySnapshot
@@ -11,9 +12,9 @@ import com.nullclass.widget.buildTodaySnapshot
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.debounce
+import kotlinx.coroutines.flow.drop
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flowOf
@@ -37,6 +38,7 @@ class WidgetAutoUpdater @Inject constructor(
     @ApplicationContext private val context: Context,
     private val termRepository: TermRepository,
     private val courseRepository: CourseRepository,
+    private val userPreferences: UserPreferencesRepository,
 ) {
 
     private val todayWidget = TodayGlanceWidget()
@@ -65,6 +67,14 @@ class WidgetAutoUpdater @Inject constructor(
                     todayWidget.updateAll(context)
                     nextClassWidget.updateAll(context)
                 }
+        }
+        // 字号档：设置页改完立即重绘。跳过首帧——启动时数据轨已经会 push 一次。
+        scope.launch(Dispatchers.Default) {
+            userPreferences.widgetFontSize.drop(1).collect {
+                dataVersion.value++
+                todayWidget.updateAll(context)
+                nextClassWidget.updateAll(context)
+            }
         }
         scope.launch(Dispatchers.Default) {
             var lastKey: String? = null

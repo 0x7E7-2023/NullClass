@@ -36,9 +36,12 @@ data class TermEditUiState(
     /** 存在上学期时显示「复制课程」。 */
     val previousTermName: String? = null,
     val copyFromPrevious: Boolean = false,
+    /** 已有学期的课程数，清空按钮用。 */
+    val courseCount: Int = 0,
     val error: String? = null,
     /** 保存进行中（或已保存成功等待离开）：期间按钮禁用，防连点多次 popBackStack。 */
     val saving: Boolean = false,
+    val clearing: Boolean = false,
 )
 
 @HiltViewModel
@@ -65,6 +68,7 @@ class TermEditViewModel @Inject constructor(
                             name = term.name,
                             firstDayEpochDay = term.firstDayEpochDay,
                             totalWeeks = term.totalWeeks,
+                            courseCount = courseRepository.getSchedule(term.id).size,
                             periods = termRepository.getPeriodTimes(term.id).map { p ->
                                 EditablePeriod(
                                     periodIndex = p.periodIndex,
@@ -155,6 +159,18 @@ class TermEditViewModel @Inject constructor(
     fun setCopyFromPrevious(value: Boolean) = _state.update { it.copy(copyFromPrevious = value) }
 
     fun dismissError() = _state.update { it.copy(error = null) }
+
+    /** 清空本学期课程（软删除）。学期与节次表不动。 */
+    fun clearCourses() {
+        val s = _state.value
+        val id = termId
+        if (s.isNew || s.saving || s.clearing || id == null) return
+        _state.update { it.copy(clearing = true) }
+        viewModelScope.launch {
+            courseRepository.clearTermCourses(id)
+            _state.update { it.copy(clearing = false, courseCount = 0) }
+        }
+    }
 
     fun save(onSaved: () -> Unit) {
         val s = _state.value
