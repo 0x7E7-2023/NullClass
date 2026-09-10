@@ -134,7 +134,15 @@ object JwScriptContract {
     var host = __ncHostOf(url);
     if (host === null) return false;
     for (var i = 0; i < __ncHosts.length; i++) {
-      if (__ncHosts[i] === host) return true;
+      var pattern = __ncHosts[i];
+      if (pattern.length >= 2 && pattern.charAt(0) === '*' && pattern.charAt(1) === '.') {
+        var suffix = pattern.slice(2);
+        if (host === suffix) return true;
+        if (suffix && host.length > suffix.length + 1 &&
+            host.slice(host.length - suffix.length - 1) === '.' + suffix) return true;
+      } else if (pattern === host) {
+        return true;
+      }
     }
     return false;
   }

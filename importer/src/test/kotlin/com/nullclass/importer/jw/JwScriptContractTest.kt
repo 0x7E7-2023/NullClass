@@ -81,6 +81,25 @@ class JwScriptContractTest {
     }
 
     @Test
+    fun `沙箱 preamble 含后缀通配且语法合法`() {
+        val js = JwScriptContract.buildRunner(
+            script = "(function(){ return '{}'; })()",
+            inputJson = null,
+            allowedHosts = listOf("*.ustc.edu.cn", "jw.ustc.edu.cn"),
+            ocrEnabled = false,
+        )
+        assertTrue(js.contains("pattern.charAt(0) === '*'"), "JS 沙箱必须实现 *.host 通配")
+        assertTrue(js.contains("*.ustc.edu.cn"), js)
+        val context = Context.enter()
+        try {
+            context.languageVersion = Context.VERSION_ES6
+            context.compileString(js, "wildcard-preamble", 1, null)
+        } finally {
+            Context.exit()
+        }
+    }
+
+    @Test
     fun `脚本内容被当作字面量而不是拼接进源码`() {
         // 脚本里带引号与换行也不能破坏外层包装
         val js = JwScriptContract.buildRunner(

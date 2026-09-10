@@ -100,6 +100,15 @@ class JwManifestTest {
     }
 
     @Test
+    fun `allowHosts 接受三段后缀通配 拒绝公后缀`() {
+        JwManifestCodec.validate(manifest(allowHosts = listOf("*.ustc.edu.cn")), 11)
+        val tooBroad = assertFailsWith<JwManifestException> {
+            JwManifestCodec.validate(manifest(allowHosts = listOf("*.edu.cn")), 11)
+        }
+        assertTrue(tooBroad.message!!.contains("通配"), tooBroad.message)
+    }
+
+    @Test
     fun `json 编码解码往返一致`() {
         val original = manifest(allowHosts = listOf("jw.example.edu.cn"))
         val decoded = JwManifestCodec.decode(JwManifestCodec.encode(original))

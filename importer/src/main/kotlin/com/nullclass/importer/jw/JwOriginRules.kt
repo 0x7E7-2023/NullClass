@@ -18,6 +18,8 @@ object JwOriginRules {
         addUrl(rules, manifest.scheduleUrlHint)
         allowedHosts.forEach { host ->
             val lower = host.lowercase()
+            // addWebMessageListener 的 origin 规则不接受 *.host 通配，OCR 桥只注入到具体页面。
+            if (lower.startsWith("*.")) return@forEach
             rules += "https://$lower"
             rules += "http://$lower"
         }

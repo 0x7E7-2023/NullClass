@@ -5,6 +5,7 @@ import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.util.Base64
 import android.webkit.CookieManager
+import com.nullclass.importer.jw.JwHostAllowlist
 import com.nullclass.importer.jw.JwImageRef
 import com.nullclass.importer.jw.ocr.OcrPage
 import com.nullclass.ocr.OcrEngines
@@ -80,7 +81,7 @@ object JwImageOcr {
         val scheme = uri.scheme?.lowercase()
         if (scheme != "http" && scheme != "https") return null
         val host = uri.host?.lowercase() ?: return null
-        if (allowedHosts.none { it.equals(host, ignoreCase = true) }) return null
+        if (!JwHostAllowlist.matches(host, allowedHosts)) return null
 
         val cookie = CookieManager.getInstance().getCookie(url)
         val request = Request.Builder()

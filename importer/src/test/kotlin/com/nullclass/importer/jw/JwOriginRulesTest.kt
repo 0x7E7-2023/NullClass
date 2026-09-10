@@ -53,6 +53,17 @@ class JwOriginRulesTest {
     }
 
     @Test
+    fun `后缀通配不写进 origin 规则`() {
+        val rules = JwOriginRules.forAdapter(
+            manifest("https://jw.ustc.edu.cn/"),
+            allowedHosts = listOf("*.ustc.edu.cn", "passport.ustc.edu.cn"),
+        )
+        assertTrue(rules.none { "*" in it }, rules.toString())
+        assertTrue("https://passport.ustc.edu.cn" in rules, rules.toString())
+        assertTrue("https://jw.ustc.edu.cn" in rules, rules.toString())
+    }
+
+    @Test
     fun `非 http 协议与非法地址被忽略`() {
         val rules = JwOriginRules.forAdapter(
             manifest("file:///android_asset/index.html", "javascript:alert(1)"),

@@ -49,7 +49,6 @@ object JwManifestCodec {
 
     private val KEY_REGEX = Regex("^[a-z0-9][a-z0-9-]{1,39}$")
     private val VERSION_REGEX = Regex("^\\d+\\.\\d+\\.\\d+$")
-    private val HOST_REGEX = Regex("^[a-zA-Z0-9]([a-zA-Z0-9-]*[a-zA-Z0-9])?(\\.[a-zA-Z0-9]([a-zA-Z0-9-]*[a-zA-Z0-9])?)+$")
 
     fun decode(raw: String): JwManifest = try {
         json.decodeFromString<JwManifest>(raw)
@@ -94,9 +93,7 @@ object JwManifestCodec {
         requireScriptPath(manifest.extract, "extract")
         manifest.parse?.let { requireScriptPath(it, "parse") }
         manifest.allowHosts.forEach { host ->
-            if (!HOST_REGEX.matches(host)) {
-                throw JwManifestException("allowHosts 中的「$host」不是合法域名（只写主机名，不带协议与路径）")
-            }
+            JwHostAllowlist.errorOf(host)?.let { throw JwManifestException(it) }
         }
         manifest.fixtures.forEach { fixture ->
             if (fixture.name.isBlank()) throw JwManifestException("fixtures 中有用例缺少 name")

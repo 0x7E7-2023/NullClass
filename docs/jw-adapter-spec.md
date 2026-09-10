@@ -38,7 +38,7 @@
   "minAppVersionCode": 11,
   "extract": "extract.js",
   "parse": "parse.js",
-  "allowHosts": ["cas.example.edu.cn"],
+  "allowHosts": ["cas.example.edu.cn", "*.example.edu.cn"],
   "fixtures": [
     { "name": "基本表格", "extracted": "fixtures/basic.extracted.json", "expected": "fixtures/basic.expected.json" }
   ]
@@ -56,7 +56,7 @@
 | `minAppVersionCode` | | 高于应用 versionCode 时明确报错而不是行为诡异 |
 | `extract` | ✔ | 包内相对路径，`.js` |
 | `parse` | | 同上；省略时 extract 输出即载荷 |
-| `allowHosts` | | 需要额外请求的域名（只写主机名）。**安装前会展示给用户** |
+| `allowHosts` | | 需要额外请求的域名（只写主机名）。允许 `*.学校.edu.cn` 这种至少三段的后缀通配（匹配该域及其所有子域）；`*.edu.cn` 会被拒绝。**安装前会展示给用户** |
 | `fixtures` | | 回归用例；进主线必须带 |
 
 未知字段会被忽略（向前兼容）。
@@ -105,7 +105,7 @@
 
 ### 3.3 网络
 
-- **允许**：与 `loginUrl` 同源，以及 `allowHosts` 里声明的域。
+- **允许**：与 `loginUrl` 同源，以及 `allowHosts` 里声明的域（含 `*.学校.edu.cn` 后缀通配）。
 - **拦截**：其余域名在提取期间会被拦掉（子资源、导航、JS 层 `fetch`/`XHR`/`WebSocket`/`sendBeacon` 都有包装）。
 - 提取结束后 JS 层白名单继续生效（同源照常），但不再拦子资源/导航——否则会打断教务页面自身。
 - 沙箱是**纵深防御，不是安全边界**：同源读取（成绩、学籍、localStorage 令牌）挡不住，这是适配器能力的本质；
