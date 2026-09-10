@@ -32,6 +32,14 @@ data class TodaySnapshot(
     fun inProgress(entry: TodayEntry, nowMinuteOfDay: Int): Boolean =
         nowMinuteOfDay >= entry.startMinuteOfDay && nowMinuteOfDay < entry.endMinuteOfDay
 
+    /** 当前正在上的那节课；课间、今天没课或时间跨度外为 null。重叠课取最先开始的一节。 */
+    fun inProgress(nowMinuteOfDay: Int): TodayEntry? =
+        blocks.firstOrNull { inProgress(it, nowMinuteOfDay) }
+
+    /** [entry] 距下课还剩多少分钟；仅上课中有意义，其余场合夹在 [0, 课长] 内。 */
+    fun remainingMinutes(entry: TodayEntry, nowMinuteOfDay: Int): Int =
+        (entry.endMinuteOfDay - nowMinuteOfDay).coerceIn(0, entry.endMinuteOfDay - entry.startMinuteOfDay)
+
     companion object {
         val EMPTY = TodaySnapshot(termName = "", weekNumber = null, blocks = emptyList())
     }

@@ -10,6 +10,17 @@ object ScheduleFormat {
         return "$hour:${minute.toString().padStart(2, '0')}"
     }
 
+    /** 上课中倒计时的分钟数文案："45分钟" / "1小时" / "1小时20分钟"（「还剩」前缀由调用方拼）。 */
+    fun remainingLabel(minutes: Int): String {
+        val hours = minutes / 60
+        val mins = minutes % 60
+        return when {
+            hours == 0 -> "${mins}分钟"
+            mins == 0 -> "${hours}小时"
+            else -> "${hours}小时${mins}分钟"
+        }
+    }
+
     /** "第1-16周"；恰好一周时 "第3周"。 */
     fun weekRange(block: ScheduleBlock): String =
         if (block.startWeek == block.endWeek) {

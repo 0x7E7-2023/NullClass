@@ -149,6 +149,7 @@ private fun TodayRow(
     nowMinuteOfDay: Int,
 ) {
     val isNext = snapshot.nextUp(nowMinuteOfDay)?.placed?.block?.id == entry.placed.block.id
+    val isInProgress = snapshot.inProgress(entry, nowMinuteOfDay)
     val color = courseColor(entry.placed.course.colorIndex)
     val rowBackground = if (isNext) {
         ColorProvider(day = color.content.copy(alpha = 0.14f), night = color.content.copy(alpha = 0.24f))
@@ -172,8 +173,10 @@ private fun TodayRow(
                     fontWeight = if (isNext) FontWeight.Bold else FontWeight.Normal,
                 ),
             )
+            // Glance Text 无省略号能力，列宽只放得下 3-4 字符：
+            // 上课中的行用「剩X分」替代下课时间（下课时间可由开始时间+剩余推出）
             Text(
-                entry.endTime,
+                if (isInProgress) "剩${snapshot.remainingMinutes(entry, nowMinuteOfDay)}分" else entry.endTime,
                 style = TextStyle(color = WidgetOnBackgroundVariant, fontSize = 9.sp),
             )
         }
@@ -194,8 +197,9 @@ private fun TodayRow(
         }
         if (isNext) {
             Text(
-                if (snapshot.inProgress(entry, nowMinuteOfDay)) "进行中" else "下一节",
+                if (isInProgress) "上课中" else "下一节",
                 style = TextStyle(color = WidgetAccent, fontSize = 10.sp, fontWeight = FontWeight.Medium),
+                maxLines = 1,
             )
         }
     }

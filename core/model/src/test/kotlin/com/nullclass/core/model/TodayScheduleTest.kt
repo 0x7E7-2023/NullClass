@@ -63,6 +63,39 @@ class TodayScheduleTest {
     }
 
     @Test
+    fun `inProgress - 返回正在上的课，课间与跨度外为 null`() {
+        val today = LocalDate.of(2026, 9, 9)
+        val schedule = schedule(
+            ScheduleBlock(id = "b1", courseId = "c1", startWeek = 1, endWeek = 20, dayOfWeek = 3, startPeriod = 1, endPeriod = 2), // 8:00-9:40
+            ScheduleBlock(id = "b2", courseId = "c1", startWeek = 1, endWeek = 20, dayOfWeek = 3, startPeriod = 3, endPeriod = 3), // 14:00-14:45
+        )
+        val snapshot = assembleTodaySnapshot(term, schedule, times, today)
+        // 7:59 还没上、9:41 已下课 → 课间 null
+        assertNull(snapshot.inProgress(7 * 60 + 59))
+        assertNull(snapshot.inProgress(9 * 60 + 41))
+        // 8:00 起算上课中，9:40 整分钟已算下课
+        assertEquals("b1", snapshot.inProgress(8 * 60)?.placed?.block?.id)
+        assertEquals("b1", snapshot.inProgress(9 * 60 + 39)?.placed?.block?.id)
+        assertNull(snapshot.inProgress(9 * 60 + 40))
+        assertEquals("b2", snapshot.inProgress(14 * 60 + 30)?.placed?.block?.id)
+    }
+
+    @Test
+    fun `remainingMinutes - 距下课的分钟数，跨度外夹在课长内`() {
+        val today = LocalDate.of(2026, 9, 9)
+        val schedule = schedule(
+            ScheduleBlock(id = "b1", courseId = "c1", startWeek = 1, endWeek = 20, dayOfWeek = 3, startPeriod = 1, endPeriod = 2), // 8:00-9:40，100 分钟
+        )
+        val snapshot = assembleTodaySnapshot(term, schedule, times, today)
+        val b1 = snapshot.blocks[0]
+        assertEquals(100, snapshot.remainingMinutes(b1, 8 * 60))
+        assertEquals(1, snapshot.remainingMinutes(b1, 9 * 60 + 39))
+        // 课前超量夹回课长、课后负值夹回 0（该值仅上课中被使用，此处只验证不越界）
+        assertEquals(100, snapshot.remainingMinutes(b1, 6 * 60))
+        assertEquals(0, snapshot.remainingMinutes(b1, 15 * 60))
+    }
+
+    @Test
     fun `学期外日期 - 空快照带学期名`() {
         val snapshot = assembleTodaySnapshot(
             term, schedule(), times,

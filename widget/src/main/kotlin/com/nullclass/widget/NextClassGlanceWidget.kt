@@ -68,9 +68,10 @@ internal fun NextClassWidgetContent(snapshot: TodaySnapshot, nowMinuteOfDay: Int
             )
             else -> {
                 val color = courseColor(next.placed.course.colorIndex)
+                val inProgress = snapshot.inProgress(next, nowMinuteOfDay)
                 Column(horizontalAlignment = Alignment.CenterHorizontally) {
                     Text(
-                        if (snapshot.inProgress(next, nowMinuteOfDay)) "进行中" else "下一节",
+                        if (inProgress) "上课中" else "下一节",
                         style = TextStyle(color = WidgetAccent, fontSize = 10.sp, fontWeight = FontWeight.Medium),
                     )
                     Spacer(GlanceModifier.height(2.dp))
@@ -89,7 +90,8 @@ internal fun NextClassWidgetContent(snapshot: TodaySnapshot, nowMinuteOfDay: Int
                     Spacer(GlanceModifier.height(2.dp))
                     Text(
                         listOfNotNull(
-                            if (snapshot.inProgress(next, nowMinuteOfDay)) "${next.endTime} 结束" else next.startTime,
+                            // Glance 无省略号，保持短于原「9:40 结束」口径：纯分钟数
+                            if (inProgress) "还剩${snapshot.remainingMinutes(next, nowMinuteOfDay)}分" else next.startTime,
                             next.placed.block.location?.takeIf { it.isNotBlank() },
                         ).joinToString(" · "),
                         style = TextStyle(color = WidgetOnBackgroundVariant, fontSize = 11.sp),

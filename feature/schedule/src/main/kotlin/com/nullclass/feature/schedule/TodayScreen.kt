@@ -1,5 +1,6 @@
 package com.nullclass.feature.schedule
 
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -7,6 +8,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -18,6 +20,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
@@ -94,6 +97,14 @@ fun TodayScreen(
                 ) {
                     TodayHeader(snapshot = ready.snapshot, nowMinute = nowMinute)
 
+                    ready.snapshot.inProgress(nowMinute)?.let { ongoing ->
+                        InClassCard(
+                            entry = ongoing,
+                            remaining = ready.snapshot.remainingMinutes(ongoing, nowMinute),
+                            onClick = { detailBlock = ongoing.placed },
+                        )
+                    }
+
                     if (ready.snapshot.blocks.isEmpty()) {
                         EmptyDay(weekNumber = ready.snapshot.weekNumber)
                     } else {
@@ -161,10 +172,7 @@ private fun TodayHeader(snapshot: TodaySnapshot, nowMinute: Int) {
         )
         val status = when {
             nowMinute < 0 || snapshot.blocks.isEmpty() -> null
-            snapshot.blocks.any { snapshot.inProgress(it, nowMinute) } ->
-                snapshot.blocks.first { snapshot.inProgress(it, nowMinute) }.let {
-                    "正在上：${it.placed.course.name}"
-                }
+            snapshot.inProgress(nowMinute) != null -> null // 上课中状态交给 InClassCard，头部不再重复
             else -> snapshot.nextUp(nowMinute)?.let { "下一节：${it.placed.course.name} · ${it.startTime} 开始" }
         }
         status?.let {
@@ -172,6 +180,82 @@ private fun TodayHeader(snapshot: TodaySnapshot, nowMinute: Int) {
                 it,
                 style = MaterialTheme.typography.bodySmall,
                 color = MaterialTheme.colorScheme.primary,
+                modifier = Modifier.padding(top = 4.dp),
+            )
+        }
+    }
+}
+
+/**
+ * 上课中卡片：置顶实时展示正在上的课——课程色描边、已上进度条、「还剩 X 分钟」倒计时。
+ * [rememberNowMinute] 每 30 秒一拍，倒计时与进度随之下走。
+ */
+@Composable
+private fun InClassCard(
+    entry: TodaySnapshot.TodayEntry,
+    remaining: Int,
+    onClick: () -> Unit,
+) {
+    val color = courseColor(entry.placed.course.colorIndex)
+    val total = (entry.endMinuteOfDay - entry.startMinuteOfDay).coerceAtLeast(1)
+    Surface(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(top = 12.dp)
+            .clickable(onClick = onClick),
+        shape = MaterialTheme.shapes.medium,
+        color = MaterialTheme.colorScheme.secondaryContainer,
+        border = BorderStroke(1.dp, color.content.copy(alpha = 0.45f)),
+    ) {
+        Column(Modifier.padding(horizontal = 16.dp, vertical = 12.dp)) {
+            Row(modifier = Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
+                Text(
+                    "上课中",
+                    style = MaterialTheme.typography.labelSmall,
+                    color = MaterialTheme.colorScheme.primary,
+                    modifier = Modifier
+                        .background(
+                            MaterialTheme.colorScheme.primary.copy(alpha = 0.12f),
+                            RoundedCornerShape(4.dp),
+                        )
+                        .padding(horizontal = 6.dp, vertical = 2.dp),
+                )
+                Spacer(Modifier.weight(1f))
+                Text(
+                    "还剩 ${ScheduleFormat.remainingLabel(remaining)}",
+                    style = MaterialTheme.typography.labelLarge,
+                    color = MaterialTheme.colorScheme.primary,
+                    fontWeight = FontWeight.Bold,
+                )
+            }
+            Spacer(Modifier.height(8.dp))
+            Text(
+                entry.placed.course.name,
+                style = MaterialTheme.typography.titleMedium,
+                fontWeight = FontWeight.Bold,
+            )
+            Text(
+                buildList {
+                    add(ScheduleFormat.periodRange(entry.placed.block))
+                    entry.placed.block.location?.takeIf { it.isNotBlank() }?.let { add(it) }
+                    add("${entry.startTime} - ${entry.endTime}")
+                }.joinToString(" · "),
+                style = MaterialTheme.typography.bodySmall,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+            )
+            Spacer(Modifier.height(10.dp))
+            LinearProgressIndicator(
+                progress = { (total - remaining).toFloat() / total },
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(6.dp)
+                    .clip(RoundedCornerShape(3.dp)),
+                trackColor = MaterialTheme.colorScheme.primary.copy(alpha = 0.15f),
+            )
+            Text(
+                "${entry.endTime} 下课",
+                style = MaterialTheme.typography.labelSmall,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
                 modifier = Modifier.padding(top = 4.dp),
             )
         }
