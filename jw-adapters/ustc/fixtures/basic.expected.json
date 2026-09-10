@@ -1,0 +1,180 @@
+{
+  "specVersion": 1,
+  "kind": "schedule",
+  "ocrAssisted": false,
+  "terms": [
+    {
+      "name": "2026-2027学年第1学期",
+      "firstDay": "2026-08-31",
+      "totalWeeks": 18,
+      "periodTimes": [
+        {
+          "periodIndex": 1,
+          "start": "07:50",
+          "end": "08:35"
+        },
+        {
+          "periodIndex": 2,
+          "start": "08:40",
+          "end": "09:25"
+        },
+        {
+          "periodIndex": 3,
+          "start": "09:45",
+          "end": "10:30"
+        },
+        {
+          "periodIndex": 4,
+          "start": "10:35",
+          "end": "11:20"
+        },
+        {
+          "periodIndex": 5,
+          "start": "11:25",
+          "end": "12:10"
+        },
+        {
+          "periodIndex": 6,
+          "start": "14:00",
+          "end": "14:45"
+        },
+        {
+          "periodIndex": 7,
+          "start": "14:50",
+          "end": "15:35"
+        },
+        {
+          "periodIndex": 8,
+          "start": "15:55",
+          "end": "16:40"
+        },
+        {
+          "periodIndex": 9,
+          "start": "16:45",
+          "end": "17:30"
+        },
+        {
+          "periodIndex": 10,
+          "start": "17:35",
+          "end": "18:20"
+        },
+        {
+          "periodIndex": 11,
+          "start": "19:30",
+          "end": "20:15"
+        },
+        {
+          "periodIndex": 12,
+          "start": "20:20",
+          "end": "21:05"
+        },
+        {
+          "periodIndex": 13,
+          "start": "21:10",
+          "end": "21:55"
+        }
+      ],
+      "courses": [
+        {
+          "name": "大学生心理学",
+          "teacher": "徐晓飞",
+          "blocks": [
+            {
+              "dayOfWeek": 1,
+              "startPeriod": 8,
+              "endPeriod": 10,
+              "startWeek": 2,
+              "endWeek": 5,
+              "weekType": "ALL",
+              "location": "第三教学楼 3C103"
+            },
+            {
+              "dayOfWeek": 1,
+              "startPeriod": 8,
+              "endPeriod": 10,
+              "startWeek": 7,
+              "endWeek": 14,
+              "weekType": "ALL",
+              "location": "第三教学楼 3C103"
+            }
+          ]
+        },
+        {
+          "name": "基础体育",
+          "teacher": "李朴",
+          "blocks": [
+            {
+              "dayOfWeek": 1,
+              "startPeriod": 6,
+              "endPeriod": 7,
+              "startWeek": 2,
+              "endWeek": 5,
+              "weekType": "ALL",
+              "location": "西区操场（男生）"
+            },
+            {
+              "dayOfWeek": 1,
+              "startPeriod": 6,
+              "endPeriod": 7,
+              "startWeek": 7,
+              "endWeek": 18,
+              "weekType": "ALL",
+              "location": "西区操场（男生）"
+            }
+          ]
+        },
+        {
+          "name": "化学原理B",
+          "teacher": "时亮",
+          "blocks": [
+            {
+              "dayOfWeek": 2,
+              "startPeriod": 3,
+              "endPeriod": 4,
+              "startWeek": 2,
+              "endWeek": 5,
+              "weekType": "ALL",
+              "location": "第三教学楼 3A111"
+            },
+            {
+              "dayOfWeek": 2,
+              "startPeriod": 3,
+              "endPeriod": 4,
+              "startWeek": 7,
+              "endWeek": 15,
+              "weekType": "ALL",
+              "location": "第三教学楼 3A111"
+            },
+            {
+              "dayOfWeek": 4,
+              "startPeriod": 6,
+              "endPeriod": 7,
+              "startWeek": 2,
+              "endWeek": 4,
+              "weekType": "ALL",
+              "location": "第三教学楼 3A111"
+            },
+            {
+              "dayOfWeek": 4,
+              "startPeriod": 6,
+              "endPeriod": 7,
+              "startWeek": 6,
+              "endWeek": 14,
+              "weekType": "ALL",
+              "location": "第三教学楼 3A111"
+            },
+            {
+              "dayOfWeek": 6,
+              "startPeriod": 3,
+              "endPeriod": 4,
+              "startWeek": 6,
+              "endWeek": 6,
+              "weekType": "ALL",
+              "location": "第三教学楼 3A111"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

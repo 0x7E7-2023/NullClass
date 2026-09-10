@@ -14,6 +14,12 @@
       "name": "示例大学（演示适配器）",
       "version": "1.0.0",
       "path": "example-univ"
+    },
+    {
+      "key": "ustc",
+      "name": "中国科学技术大学",
+      "version": "1.0.0",
+      "path": "ustc"
     }
   ]
 }
