@@ -6,6 +6,26 @@
 
 ## [Unreleased]
 
+## [0.7.0] - 2026-09-10
+
+### 新增
+
+- **中国科学技术大学教务适配器**（`jw.ustc.edu.cn` 综合教务），随 APK 内置。
+  已登录后从首页即可提取：解析课表页拿到 studentId / 学期，再走
+  `/for-std/course-table/get-data` 与 `/for-std/course-table/datum` 取选课与排课。
+  作息时间按科大 13 节写入 `periodTimes`。fixture 为真实抓取（学号等敏感字段已剔除）。
+  真机验证通过。
+- **`allowHosts` 支持后缀通配**：`*.ustc.edu.cn` 匹配该域及其所有子域；通配后缀至少三段，
+  拒绝 `*.edu.cn`。JS 沙箱、提取期原生闸门、OCR 下图共用同一套匹配。
+  科大适配器声明 `*.ustc.edu.cn`，登录页打到 `analytics.ustc.edu.cn` 不再被沙箱误杀。
+- **提取失败日志**：界面可复制；debug 包同时写入 logcat（tag `NullClass.Jw`）和
+  `files/jw-last-error.log`（`adb shell run-as` 可读）。电脑版 / 手机版 UA 可切换。
+
+### 修复
+
+- **科大 `get-data` 返回 HTML**：提取请求 `Accept` 优先 `text/html` 时，教务按内容协商给网页，
+  JSON 解析失败并误报「登录状态可能已失效」。JSON 接口改为明确要 `application/json`。
+
 ## [0.6.0] - 2026-09-09
 
 ### 新增
