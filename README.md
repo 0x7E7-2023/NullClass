@@ -66,8 +66,10 @@ jw-adapters/<school-key>/
 - **自己导入**：把目录打成 zip，在应用里「导入适配器包」——这类适配器**不经过审计**，
   安装界面会明确提示它会读取你已登录的教务页面内容，并支持查看脚本全文。
 
-规范见 [`docs/jw-adapter-spec.md`](docs/jw-adapter-spec.md)，示例见 [`jw-adapters/example-univ`](jw-adapters/example-univ)。
-没有适配器？[提交适配请求](../../issues/new?template=jw-adapter-request.md)，附上课表页脱敏 HTML 或脚本输出。
+规范见 [`docs/jw-adapter-spec.md`](docs/jw-adapter-spec.md)，现成例子见 [`jw-adapters/ustc`](jw-adapters/ustc)
+与 [`jw-adapters/dlutci`](jw-adapters/dlutci)；没有适配器的学校用内置的 **通用适配器**
+（自己填教务地址，应用读页面文字自己还原表格，课表是图片的走离线 OCR）。
+[提交适配请求](../../issues/new?template=jw-adapter-request.md)，附上课表页脱敏 HTML 或脚本输出。
 
 ## 模块结构 / Modules
 

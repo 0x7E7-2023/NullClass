@@ -1,0 +1,27 @@
+{
+  "specVersion": 1,
+  "key": "universal",
+  "name": "通用适配器",
+  "version": "1.0.0",
+  "author": "NullClass",
+  "homepage": "https://github.com/0x7E-2023/NullClass",
+  "loginUrl": "",
+  "startUrlPrompt": true,
+  "fallback": true,
+  "minAppVersionCode": 16,
+  "extract": "extract.js",
+  "parse": "parse.js",
+  "allowHosts": [],
+  "fixtures": [
+    {
+      "name": "表格课表页 → 文本块载荷",
+      "extracted": "fixtures/dom-table.extracted.json",
+      "expected": "fixtures/dom-table.expected.json"
+    },
+    {
+      "name": "图片课表页 → OCR 载荷",
+      "extracted": "fixtures/image-schedule.extracted.json",
+      "expected": "fixtures/image-schedule.expected.json"
+    }
+  ]
+}

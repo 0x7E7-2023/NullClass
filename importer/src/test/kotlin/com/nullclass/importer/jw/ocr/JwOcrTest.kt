@@ -176,6 +176,34 @@ class JwOcrTest {
         assertNull(JwCourseTextParser.parsePeriodLabel("1-16周(单)"))
         assertEquals(3..4, JwCourseTextParser.parsePeriodLabel("3-4"))
         assertEquals(5..5, JwCourseTextParser.parsePeriodLabel("第5节"))
+        // 节次与上课时间叠在同一格（多行文本用换行拼接）时，逐行找
+        assertEquals(3..4, JwCourseTextParser.parsePeriodLabel("3-4\n10:00-10:45"))
+        assertEquals(2..2, JwCourseTextParser.parsePeriodLabel("第2节\n08:55-09:40"))
+        assertEquals(1..2, JwCourseTextParser.parsePeriodLabel("上午\n1-2\n08:00-08:45"))
+        // 时间不能当节次：整行"08:00-08:45"里没有纯节次标注
+        assertNull(JwCourseTextParser.parsePeriodLabel("08:00-08:45"))
+        assertNull(JwCourseTextParser.parsePeriodLabel("1-16周\n3-4周"))
+    }
+
+    @Test
+    fun `总周数取表里最大的周次`() {
+        val table = JwTableAligner.align(syntheticPage())
+        // 合成表里最大周次是 1-16 周，默认 20 更大时保持默认
+        assertEquals(20, JwOcrScheduleBuilder.inferTotalWeeks(table))
+        val longTerm = AlignedTable(
+            rowAnchors = listOf(0),
+            rowPeriods = listOf(1),
+            rowEndPeriods = listOf(1),
+            colAnchors = listOf(0),
+            colDays = listOf(1),
+            cells = listOf(listOf("高等数学\n1-22周\n教1-101"), listOf("大学英语\n2-16双周")),
+            reliable = true,
+            warnings = emptyList(),
+        )
+        // 表里出现 22 周 → 总周数抬到 22（默认 20 是下限，不是上限）
+        assertEquals(22, JwOcrScheduleBuilder.inferTotalWeeks(longTerm))
+        assertEquals(30, JwOcrScheduleBuilder.inferTotalWeeks(longTerm, fallback = 30))
+        assertEquals(18, JwOcrScheduleBuilder.inferTotalWeeks(longTerm, maxWeeks = 18))
     }
 
     @Test

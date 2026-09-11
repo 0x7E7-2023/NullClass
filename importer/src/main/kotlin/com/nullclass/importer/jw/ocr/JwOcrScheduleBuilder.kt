@@ -18,11 +18,40 @@ data class JwOcrBuildResult(
 
 object JwOcrScheduleBuilder {
 
+    /** 学期总周数的默认值（识别不出更长的周次时用它）。 */
+    const val DEFAULT_TOTAL_WEEKS = 20
+
+    /**
+     * 从整张表的文本里推断学期总周数：取所有能解析出的周次里的最大结束周
+     * （不低于 [fallback]，不高于 [maxWeeks]）。
+     *
+     * 为什么要推断：总周数给小了，`1-18周` 这种课会因为「超出总周数」被判为认不出周次，
+     * 静默退回整学期。给大了只是课表尾部多几周空白，代价小得多。
+     */
+    fun inferTotalWeeks(
+        table: AlignedTable,
+        fallback: Int = DEFAULT_TOTAL_WEEKS,
+        maxWeeks: Int = 30,
+    ): Int {
+        var best = fallback.coerceIn(1, maxWeeks)
+        table.cells.forEach { row ->
+            row.forEach { cell ->
+                cell.split('\n').forEach { line ->
+                    val spec = JwCourseTextParser.parseWeeks(line, maxWeeks) ?: return@forEach
+                    if (spec.endWeek > best) best = spec.endWeek
+                }
+            }
+        }
+        return best
+    }
+
     fun build(
         table: AlignedTable,
         termName: String,
         firstDayEpochDay: Long,
         totalWeeks: Int,
+        /** 文本框来自 OCR 时置 true（导入预览会追加重核提示）；来自页面文本块时为 false。 */
+        ocrAssisted: Boolean = true,
     ): JwOcrBuildResult {
         val issues = mutableListOf<String>()
         val byName = LinkedHashMap<String, MutableList<JwBlock>>()
@@ -92,7 +121,7 @@ object JwOcrScheduleBuilder {
 
         val payload = JwSchedulePayload(
             kind = JwSchedulePayload.KIND_SCHEDULE,
-            ocrAssisted = true,
+            ocrAssisted = ocrAssisted,
             terms = listOf(
                 JwTerm(
                     name = termName,

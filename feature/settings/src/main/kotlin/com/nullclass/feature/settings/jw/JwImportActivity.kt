@@ -95,9 +95,31 @@ private fun JwImportScreen(
     val state by viewModel.state.collectAsState()
     val context = LocalContext.current
     var selected by remember { mutableStateOf<JwAdapter?>(null) }
+    /** 通用适配器（startUrlPrompt）手输的教务地址。 */
+    var startUrl by remember { mutableStateOf<String?>(null) }
+    var pendingStartUrl by remember { mutableStateOf<JwAdapter?>(null) }
 
     val zipLauncher = rememberLauncherForActivityResult(ActivityResultContracts.OpenDocument()) { uri ->
         uri?.let { viewModel.importZip(it, it.lastPathSegment?.substringAfterLast('/')) }
+    }
+
+    /** 上次成功的课表页地址；只对「上次就是这个适配器」有意义。 */
+    fun rememberedUrl(adapter: JwAdapter): String? =
+        if (adapter.key == state.lastAdapterKey) state.lastScheduleUrl else null
+
+    /**
+     * 选中一个适配器。
+     *
+     * @param askAddress 列表里点选时为 true：通用适配器**每次都问一次地址**（预填上次的），
+     *   否则用户永远换不了学校、也修不了失效的地址——WebView 里没有地址栏可跳转。
+     *   「一键刷新」按钮走 false：它本来就是「照上次再来一遍」，有地址就直接进。
+     */
+    fun pick(adapter: JwAdapter, askAddress: Boolean) {
+        if (adapter.promptsForStartUrl && (askAddress || rememberedUrl(adapter) == null)) {
+            pendingStartUrl = adapter
+        } else {
+            selected = adapter
+        }
     }
 
     Scaffold(
@@ -117,7 +139,8 @@ private fun JwImportScreen(
         if (adapter == null) {
             SchoolPicker(
                 state = state,
-                onPick = { selected = it },
+                onPick = { pick(it, askAddress = true) },
+                onRefresh = { pick(it, askAddress = false) },
                 onImportZip = { zipLauncher.launch(arrayOf("application/zip", "application/octet-stream", "*/*")) },
                 onLoadLibrary = viewModel::loadLibrary,
                 onShowDetails = viewModel::showDetails,
@@ -128,7 +151,11 @@ private fun JwImportScreen(
             JwWebViewStep(
                 adapter = adapter,
                 autoExtract = state.autoExtract && adapter.key == state.lastAdapterKey,
-                preferredUrl = if (adapter.key == state.lastAdapterKey) state.lastScheduleUrl else null,
+                preferredUrl = when {
+                    adapter.key == state.lastAdapterKey -> state.lastScheduleUrl
+                    adapter.promptsForStartUrl -> startUrl
+                    else -> null
+                },
                 onExtracted = { documentJson, loadedUrl ->
                     viewModel.rememberRefresh(adapter.key, loadedUrl)
                     onFinishWithDocument(documentJson)
@@ -136,6 +163,18 @@ private fun JwImportScreen(
                 modifier = Modifier.padding(padding),
             )
         }
+    }
+
+    pendingStartUrl?.let { adapter ->
+        StartUrlDialog(
+            initial = startUrl ?: rememberedUrl(adapter).orEmpty(),
+            onSubmit = { url ->
+                startUrl = url
+                selected = adapter
+                pendingStartUrl = null
+            },
+            onDismiss = { pendingStartUrl = null },
+        )
     }
 
     if (state.pendingInstall.isNotEmpty()) {
@@ -181,6 +220,7 @@ private fun JwImportScreen(
 private fun SchoolPicker(
     state: JwUiState,
     onPick: (JwAdapter) -> Unit,
+    onRefresh: (JwAdapter) -> Unit,
     onImportZip: () -> Unit,
     onLoadLibrary: (String) -> Unit,
     onShowDetails: (JwAdapter) -> Unit,
@@ -208,7 +248,7 @@ private fun SchoolPicker(
         )
 
         if (lastAdapter != null) {
-            Button(onClick = { onPick(lastAdapter) }, modifier = Modifier.fillMaxWidth()) {
+            Button(onClick = { onRefresh(lastAdapter) }, modifier = Modifier.fillMaxWidth()) {
                 Text("一键刷新：${lastAdapter.displayName}")
             }
             Text(
@@ -222,9 +262,11 @@ private fun SchoolPicker(
             modifier = Modifier.weight(1f),
             verticalArrangement = Arrangement.spacedBy(8.dp),
         ) {
-            if (state.builtin.isNotEmpty()) {
+            val schools = state.builtin.filter { !it.isFallback }
+            val fallbacks = state.builtin.filter { it.isFallback }
+            if (schools.isNotEmpty()) {
                 item { SectionLabel("内置适配器") }
-                items(state.builtin, key = { "b-${it.key}" }) { adapter ->
+                items(schools, key = { "b-${it.key}" }) { adapter ->
                     AdapterRow(adapter, badge = null, onPick = onPick, onDetails = onShowDetails)
                 }
             }
@@ -255,6 +297,21 @@ private fun SchoolPicker(
                         )
                     }
                     TextButton(onClick = { onDelete(JwAdapterPlaceholder.of(broken.key)) }) { Text("删除") }
+                }
+            }
+            // 兜底适配器置底：找得到学校的人不该被它分散注意力
+            if (fallbacks.isNotEmpty()) {
+                item { SectionLabel("找不到你的学校？") }
+                item {
+                    Text(
+                        "通用适配器不认学校：填上你的教务地址，登录后由空课读页面文字自己还原出表格" +
+                            "（课表是图片/画布画的则走离线 OCR）。结果会先给你核对，确认后才导入。",
+                        style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    )
+                }
+                items(fallbacks, key = { "f-${it.key}" }) { adapter ->
+                    AdapterRow(adapter, badge = "通用", onPick = onPick, onDetails = onShowDetails)
                 }
             }
         }
@@ -319,9 +376,71 @@ private fun AdapterRow(
     }
 }
 
+/**
+ * 通用适配器的入口：先问学校地址（它不认学校，没有可内置的登录页）。
+ *
+ * 地址会被记成「一键刷新」的入口，所以下次预填在这里，直接「打开」即可；换学校就改掉它。
+ */
 @Composable
-private fun LinkDialog(onSubmit: (String) -> Unit, onDismiss: () -> Unit) {
-    var url by remember { mutableStateOf("") }
+private fun StartUrlDialog(
+    initial: String,
+    onSubmit: (String) -> Unit,
+    onDismiss: () -> Unit,
+) {
+    var url by remember { mutableStateOf(initial) }
+    val normalized = normalizeStartUrl(url)
+    AlertDialog(
+        onDismissRequest = onDismiss,
+        title = { Text("输入教务系统网址") },
+        text = {
+            Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                Text(
+                    "填学校教务系统的登录页或课表页地址，例如 jw.example.edu.cn。" +
+                        "登录、验证码、扫码都在下一页里由你自己完成，空课不碰你的账号密码。",
+                    style = MaterialTheme.typography.bodySmall,
+                )
+                androidx.compose.material3.OutlinedTextField(
+                    value = url,
+                    onValueChange = { url = it },
+                    singleLine = true,
+                    label = { Text("教务系统地址") },
+                    isError = url.isNotBlank() && normalized == null,
+                    supportingText = {
+                        Text(
+                            if (url.isBlank()) {
+                                "不确定？在浏览器里打开学校教务系统，把地址栏整条复制过来"
+                            } else if (normalized == null) {
+                                "这个地址看不懂，检查一下有没有多余的空格或中文"
+                            } else {
+                                "将打开：$normalized（只支持 http/https；很多学校只有 http，打不开就换个协议试试）"
+                            },
+                            style = MaterialTheme.typography.bodySmall,
+                        )
+                    },
+                    modifier = Modifier.fillMaxWidth(),
+                )
+            }
+        },
+        confirmButton = {
+            TextButton(onClick = { normalized?.let(onSubmit) }, enabled = normalized != null) { Text("打开") }
+        },
+        dismissButton = { TextButton(onClick = onDismiss) { Text("取消") } },
+    )
+}
+
+/** 补全协议并做基本校验；不合法返回 null。 */
+private fun normalizeStartUrl(raw: String): String? {
+    val text = raw.trim()
+    if (text.isEmpty()) return null
+    val withScheme = if (text.startsWith("http://") || text.startsWith("https://")) text else "https://$text"
+    val uri = runCatching { java.net.URI(withScheme) }.getOrNull() ?: return null
+    if (uri.host.isNullOrBlank()) return null
+    if (!uri.scheme.equals("http", true) && !uri.scheme.equals("https", true)) return null
+    return withScheme
+}
+
+@Composable
+private fun LinkDialog(onSubmit: (String) -> Unit, onDismiss: () -> Unit) {    var url by remember { mutableStateOf("") }
     AlertDialog(
         onDismissRequest = onDismiss,
         title = { Text("从适配器库添加") },

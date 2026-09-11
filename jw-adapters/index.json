@@ -1,7 +1,7 @@
 {
   "specVersion": 1,
   "name": "NullClass 官方适配器库",
-  "homepage": "https://github.com/0x7E7-2023/NullClass",
+  "homepage": "https://github.com/0x7E-2023/NullClass",
   "adapters": [
     {
       "key": "dlutci",
@@ -10,16 +10,16 @@
       "path": "dlutci"
     },
     {
-      "key": "example-univ",
-      "name": "示例大学（演示适配器）",
-      "version": "1.0.0",
-      "path": "example-univ"
-    },
-    {
       "key": "ustc",
       "name": "中国科学技术大学",
       "version": "1.0.0",
       "path": "ustc"
+    },
+    {
+      "key": "universal",
+      "name": "通用适配器",
+      "version": "1.0.0",
+      "path": "universal"
     }
   ]
 }

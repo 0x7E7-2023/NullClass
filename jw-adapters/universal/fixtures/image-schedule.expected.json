@@ -1,0 +1,11 @@
+{
+  "specVersion": 1,
+  "kind": "image",
+  "ocrAssisted": true,
+  "images": [
+    {
+      "url": "https://jw.example.edu.cn/kb.png",
+      "hint": "课表图片"
+    }
+  ]
+}

@@ -14,18 +14,48 @@ import java.time.LocalDate
 @Serializable
 data class JwSchedulePayload(
     val specVersion: Int = JwManifest.SPEC_VERSION,
-    /** "schedule"（默认）| "image"。 */
+    /** "schedule"（默认）| "image" | "boxes"。 */
     val kind: String = KIND_SCHEDULE,
     /** 由图片识别生成的载荷：应用会在导入预览里追加核对提示。 */
     val ocrAssisted: Boolean = false,
     val terms: List<JwTerm> = emptyList(),
     val images: List<JwImageRef> = emptyList(),
+    /** [KIND_BOXES]：页面文本块（CSS 像素，左上原点）。 */
+    val boxes: List<JwTextBox> = emptyList(),
+    /** [KIND_BOXES]：文本块所在区域的尺寸；缺省时按文本块的外接框推断。 */
+    val pageWidth: Int? = null,
+    val pageHeight: Int? = null,
 ) {
     companion object {
         const val KIND_SCHEDULE = "schedule"
         const val KIND_IMAGE = "image"
+
+        /**
+         * 页面文本块：适配器自己量出来的「文字 + 坐标」，应用用表格结构层还原课表。
+         *
+         * 给「不认学校」的通用适配器用：它不做任何页面结构假设，只把页面读成一张文本框清单，
+         * 之后的行列还原与 OCR 课表**共用同一套算法**（[com.nullclass.importer.jw.ocr.JwTableAligner]），
+         * 区别只在文本框是量出来的（文字精确）还是 OCR 认出来的。
+         */
+        const val KIND_BOXES = "boxes"
+
+        /** 单次载荷允许的文本块数量上限。 */
+        const val MAX_BOXES = 20_000
+
+        /** 单个文本块的长度上限（超出部分由适配器自己截断）。 */
+        const val MAX_BOX_TEXT = 120
     }
 }
+
+/** 一个页面文本块：坐标与尺寸都是 CSS 像素。 */
+@Serializable
+data class JwTextBox(
+    val text: String,
+    val x: Int,
+    val y: Int,
+    val w: Int = 0,
+    val h: Int = 0,
+)
 
 @Serializable
 data class JwTerm(
@@ -116,7 +146,30 @@ object JwPayloadCodec {
                     }
                 }
             }
-            else -> throw JwPackageException("不认识的载荷类型 kind=\"${payload.kind}\"（支持 schedule / image）")
+            JwSchedulePayload.KIND_BOXES -> {
+                if (payload.boxes.isEmpty()) throw JwPackageException("文本块载荷里没有任何文本块")
+                if (payload.boxes.size > JwSchedulePayload.MAX_BOXES) {
+                    throw JwPackageException(
+                        "文本块太多（${payload.boxes.size} 个，上限 ${JwSchedulePayload.MAX_BOXES} 个）",
+                    )
+                }
+                payload.boxes.forEachIndexed { index, box ->
+                    val at = "第 ${index + 1} 个文本块"
+                    if (box.text.isBlank()) throw JwPackageException("$at 的 text 是空的")
+                    if (box.text.length > JwSchedulePayload.MAX_BOX_TEXT) {
+                        throw JwPackageException("$at 的 text 过长（最多 ${JwSchedulePayload.MAX_BOX_TEXT} 字）")
+                    }
+                    if (box.w < 0 || box.h < 0) throw JwPackageException("$at 的宽高为负（w=${box.w}, h=${box.h}）")
+                }
+                listOfNotNull(payload.pageWidth, payload.pageHeight).forEach { size ->
+                    if (size !in 1..MAX_PAGE_SIZE) {
+                        throw JwPackageException("文本块载荷的区域尺寸 $size 超出 1..$MAX_PAGE_SIZE")
+                    }
+                }
+            }
+            else -> throw JwPackageException(
+                "不认识的载荷类型 kind=\"${payload.kind}\"（支持 schedule / image / boxes）",
+            )
         }
     }
 
@@ -174,4 +227,7 @@ object JwPayloadCodec {
     }
 
     private val WEEK_TYPES = setOf("ALL", "ODD", "EVEN")
+
+    /** 文本块载荷的区域尺寸上限（CSS 像素）。 */
+    private const val MAX_PAGE_SIZE = 200_000
 }

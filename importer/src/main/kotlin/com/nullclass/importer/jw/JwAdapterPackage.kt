@@ -32,6 +32,12 @@ data class JwAdapter(
     val key: String get() = manifest.key
     val displayName: String get() = manifest.name
 
+    /** 学校地址由用户现场输入（通用适配器），应用要先弹输入框。 */
+    val promptsForStartUrl: Boolean get() = manifest.startUrlPrompt
+
+    /** 兜底适配器：列表置底展示。 */
+    val isFallback: Boolean get() = manifest.fallback
+
     /** 允许发请求的域名：同源主机 + 清单声明。 */
     fun allowedHosts(loginHost: String?): List<String> =
         (listOfNotNull(loginHost) + manifest.allowHosts).map { it.lowercase() }.distinct()

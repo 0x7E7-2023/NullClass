@@ -16,6 +16,8 @@ class JwManifestTest {
         extract: String = "extract.js",
         parse: String? = "parse.js",
         allowHosts: List<String> = emptyList(),
+        startUrlPrompt: Boolean = false,
+        fallback: Boolean = false,
     ) = JwManifest(
         specVersion = specVersion,
         key = key,
@@ -26,6 +28,8 @@ class JwManifestTest {
         extract = extract,
         parse = parse,
         allowHosts = allowHosts,
+        startUrlPrompt = startUrlPrompt,
+        fallback = fallback,
     )
 
     @Test
@@ -75,6 +79,30 @@ class JwManifestTest {
         assertFailsWith<JwManifestException> { JwManifestCodec.validate(manifest(loginUrl = "https:///a"), 11) }
         // http 允许（国内教务现实），不报错
         JwManifestCodec.validate(manifest(loginUrl = "http://jw.example.edu.cn/"), 11)
+    }
+
+    @Test
+    fun `地址由用户输入的适配器可以没有 loginUrl`() {
+        // 通用适配器不认学校：loginUrl 留空 + startUrlPrompt
+        JwManifestCodec.validate(manifest(loginUrl = "", startUrlPrompt = true), 11)
+        // 留了地址就照常校验
+        assertFailsWith<JwManifestException> {
+            JwManifestCodec.validate(manifest(loginUrl = "ftp://x.cn/", startUrlPrompt = true), 11)
+        }
+        // 没声明 startUrlPrompt 就必须有地址
+        val error = assertFailsWith<JwManifestException> {
+            JwManifestCodec.validate(manifest(loginUrl = ""), 11)
+        }
+        assertTrue(error.message!!.contains("loginUrl"), error.message)
+    }
+
+    @Test
+    fun `兜底与地址提示字段能往返`() {
+        val original = manifest(startUrlPrompt = true, fallback = true, loginUrl = "")
+        val decoded = JwManifestCodec.decode(JwManifestCodec.encode(original))
+        assertEquals(original, decoded)
+        assertTrue(decoded.startUrlPrompt)
+        assertTrue(decoded.fallback)
     }
 
     @Test

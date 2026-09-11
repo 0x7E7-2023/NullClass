@@ -67,9 +67,23 @@ object JwCourseTextParser {
      * 节次**列**里的纯节次标注："3" / "3-4" / "第3-4节"。
      * 与 [parsePeriods] 的区别：这里要求整段文本就是节次标注（`1-16周` 不算），
      * 因为节次列是行锚点的唯一来源，认错一行会让整行课程静默错位。
+     *
+     * 单元格里若混了别的行（常见写法是「节次」与「上课时间」叠在一格，"3\n10:00-10:45"，
+     * 多行文本用换行拼接），逐行找第一行纯节次标注——不这么做的话整张表都找不到行锚点。
+     * "08:00" 这类时间不会命中（正则不接受冒号）。
      */
     fun parsePeriodLabel(raw: String?): IntRange? {
-        val text = raw?.trim()?.removePrefix("第")?.removeSuffix("节")?.trim().orEmpty()
+        val text = raw?.trim().orEmpty()
+        if (text.isEmpty()) return null
+        parsePeriodLabelLine(text)?.let { return it }
+        if (!text.contains('\n')) return null
+        return text.lineSequence()
+            .map { it.trim() }
+            .firstNotNullOfOrNull { line -> parsePeriodLabelLine(line) }
+    }
+
+    private fun parsePeriodLabelLine(raw: String): IntRange? {
+        val text = raw.trim().removePrefix("第").removeSuffix("节").trim()
         if (text.isEmpty()) return null
         val match = PERIOD_LABEL.matchEntire(text) ?: return null
         val start = match.groupValues[1].toIntOrNull() ?: return null

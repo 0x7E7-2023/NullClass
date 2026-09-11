@@ -17,8 +17,22 @@ data class JwManifest(
     val version: String,
     val author: String? = null,
     val homepage: String? = null,
-    val loginUrl: String,
+    /**
+     * 登录页或课表页。**声明 [startUrlPrompt] 时可以留空**——通用适配器不认学校，
+     * 地址由用户在应用里输入。
+     */
+    val loginUrl: String = "",
     val scheduleUrlHint: String? = null,
+    /**
+     * 地址由用户现场输入（应用会先弹一个输入框，并把地址记成「一键刷新」的入口）。
+     * 用于不针对具体学校的通用适配器：它没有已知的教务域名。
+     */
+    val startUrlPrompt: Boolean = false,
+    /**
+     * 置底展示。这类适配器是「兜底手段」而非某所学校，应用会把它们排在列表最下方，
+     * 并附上说明——正常找得到学校的用户不该被它分散注意力。
+     */
+    val fallback: Boolean = false,
     val minAppVersionCode: Int = 0,
     val extract: String = DEFAULT_EXTRACT,
     val parse: String? = null,
@@ -83,7 +97,13 @@ object JwManifestCodec {
         if (!VERSION_REGEX.matches(manifest.version)) {
             throw JwManifestException("适配器版本「${manifest.version}」不合法（应为 x.y.z）")
         }
-        validateUrl(manifest.loginUrl, "loginUrl")
+        if (manifest.loginUrl.isBlank()) {
+            if (!manifest.startUrlPrompt) {
+                throw JwManifestException("适配器缺少 loginUrl（或声明 startUrlPrompt: true 让用户输入学校地址）")
+            }
+        } else {
+            validateUrl(manifest.loginUrl, "loginUrl")
+        }
         manifest.scheduleUrlHint?.let { validateUrl(it, "scheduleUrlHint") }
         if (manifest.minAppVersionCode > appVersionCode) {
             throw JwManifestException(

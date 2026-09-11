@@ -60,6 +60,40 @@ class JwPayloadAndNormalizerTest {
     }
 
     @Test
+    fun `文本块载荷需要文字与合法的区域尺寸`() {
+        val payload = JwPayloadCodec.decode(
+            """{"specVersion":1,"kind":"boxes","pageWidth":900,"pageHeight":460,
+               "boxes":[{"text":"周一","x":110,"y":6,"w":32,"h":20}]}""".trimIndent(),
+        )
+        assertEquals(JwSchedulePayload.KIND_BOXES, payload.kind)
+        assertEquals(1, payload.boxes.size)
+        assertEquals("周一", payload.boxes.single().text)
+
+        val noBoxes = assertFailsWith<JwPackageException> {
+            JwPayloadCodec.decode("""{"kind":"boxes"}""")
+        }
+        assertTrue(noBoxes.message!!.contains("文本块"), noBoxes.message)
+        val emptyText = assertFailsWith<JwPackageException> {
+            JwPayloadCodec.decode("""{"kind":"boxes","boxes":[{"text":"  ","x":1,"y":1}]}""")
+        }
+        assertTrue(emptyText.message!!.contains("text"), emptyText.message)
+        val badSize = assertFailsWith<JwPackageException> {
+            JwPayloadCodec.decode("""{"kind":"boxes","pageWidth":0,"boxes":[{"text":"周一","x":1,"y":1}]}""")
+        }
+        assertTrue(badSize.message!!.contains("尺寸"), badSize.message)
+        val badBox = assertFailsWith<JwPackageException> {
+            JwPayloadCodec.decode("""{"kind":"boxes","boxes":[{"text":"周一","x":1,"y":1,"w":-2}]}""")
+        }
+        assertTrue(badBox.message!!.contains("负"), badBox.message)
+    }
+
+    @Test
+    fun `不认识的载荷类型会被点名`() {
+        val error = assertFailsWith<JwPackageException> { JwPayloadCodec.decode("""{"kind":"nope"}""") }
+        assertTrue(error.message!!.contains("nope"), error.message)
+    }
+
+    @Test
     fun `归一化补齐 id 时间戳与默认节次表`() {
         val document = JwScheduleNormalizer.normalize(JwPayloadCodec.decode(validPayload), "demo-univ", now = 1234L)
 

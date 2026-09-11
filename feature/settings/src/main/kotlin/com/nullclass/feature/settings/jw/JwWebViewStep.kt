@@ -47,9 +47,11 @@ import com.nullclass.importer.NullClassCodec
 import com.nullclass.importer.jw.JwAdapter
 import com.nullclass.importer.jw.JwHostAllowlist
 import com.nullclass.importer.jw.JwOriginRules
+import com.nullclass.importer.jw.JwPackageException
 import com.nullclass.importer.jw.JwPayloadCodec
 import com.nullclass.importer.jw.JwScheduleNormalizer
 import com.nullclass.importer.jw.JwSchedulePayload
+import com.nullclass.importer.jw.ocr.JwBoxes
 import com.nullclass.importer.jw.ocr.JwOcrBuildResult
 import com.nullclass.importer.jw.ocr.JwOcrScheduleBuilder
 import com.nullclass.importer.jw.ocr.JwTableAligner
@@ -65,6 +67,7 @@ import java.time.temporal.TemporalAdjusters
 import java.util.Collections
 import java.util.Date
 import java.util.Locale
+import java.util.concurrent.CopyOnWriteArrayList
 
 /**
  * 提取期的网络闸门。
@@ -77,14 +80,29 @@ class JwNetworkGate {
     @Volatile
     var frozen: Boolean = false
 
-    @Volatile
-    var allowedHosts: List<String> = emptyList()
+    /**
+     * 可变：通用适配器（[JwManifest.startUrlPrompt]）没有已知域名，用户实际打开的那个页面
+     * 就是「同源」，导航到哪里就把哪个域加进来——否则提取期间连课表页自己的子资源都会被拦掉。
+     * 第三方域照旧拦截。
+     *
+     * 必须线程安全：写入在 UI 线程（onPageFinished），读取在 WebView 的请求拦截线程
+     * （`shouldInterceptRequest`）与 IO 线程（图片下载按域名放行）。普通 ArrayList 在
+     * 提取进行中被追加会抛 ConcurrentModificationException，而拦截回调里没人接得住。
+     */
+    val allowedHosts: MutableList<String> = CopyOnWriteArrayList()
 
     private val blockedHosts = Collections.synchronizedSet(mutableSetOf<String>())
 
     fun allows(url: String?): Boolean {
         val host = hostOf(url) ?: return false
         return JwHostAllowlist.matches(host, allowedHosts)
+    }
+
+    /** 把当前页面的域补进白名单；已在白名单内则不动。 */
+    fun allowCurrentHost(url: String?) {
+        val host = hostOf(url) ?: return
+        if (host.isBlank() || JwHostAllowlist.matches(host, allowedHosts)) return
+        allowedHosts += host
     }
 
     /** 提取开始时清掉上一轮拦截记录，避免重复刷屏。 */
@@ -125,7 +143,15 @@ fun JwWebViewStep(
 ) {
     val context = LocalContext.current
     val scope = rememberCoroutineScope()
-    var status by remember { mutableStateOf("登录并打开课表页面后，点下方「提取课表」") }
+    var status by remember {
+        mutableStateOf(
+            if (adapter.promptsForStartUrl) {
+                "登录并打开课表页面后，点「提取课表」。通用适配器会读整页文字自己还原表格"
+            } else {
+                "登录并打开课表页面后，点下方「提取课表」"
+            },
+        )
+    }
     var isDesktopMode by remember { mutableStateOf(true) }
     var defaultUserAgent by remember { mutableStateOf<String?>(null) }
     var lastErrorLog by remember { mutableStateOf<String?>(null) }
@@ -140,10 +166,16 @@ fun JwWebViewStep(
 
     val gate = remember(adapter.key) {
         JwNetworkGate().apply {
-            allowedHosts = adapter.allowedHosts(hostOf(adapter.manifest.loginUrl))
+            allowedHosts += adapter.allowedHosts(hostOf(adapter.manifest.loginUrl))
         }
     }
     val startUrl = preferredUrl ?: adapter.manifest.scheduleUrlHint ?: adapter.manifest.loginUrl
+
+    /** 一键刷新要回到「刚才成功提取的那一页」，而不是重新登录一遍。 */
+    fun rememberableUrl(): String {
+        val live = webView?.url
+        return if (live != null && live.startsWith("http")) live else startUrl
+    }
 
     // 能力探测放到后台：加载 OCR 引擎不该卡住首屏。
     // 提取前必须等它出结果 —— 首次加载模型要几秒，自动提取很容易跑在它前面，
@@ -236,6 +268,14 @@ fun JwWebViewStep(
                             }
                         }
                     }
+                    JwSchedulePayload.KIND_BOXES -> {
+                        // 通用适配器：适配器已把页面量成「文字 + 坐标」，这里走与 OCR 完全相同的
+                        // 表格结构层。文字是精确的，没有识别误差。
+                        status = "分析表格结构…"
+                        ocrReview = buildBoxesReview(adapter, view.title, payload)
+                        status = "结构还原完成，请核对后导入"
+                        lastErrorLog = null
+                    }
                     else -> {
                         val document = JwScheduleNormalizer.normalize(
                             payload = payload,
@@ -245,7 +285,7 @@ fun JwWebViewStep(
                         status = "提取成功"
                         lastErrorLog = null
                         JwExtractLog.i("提取成功 key=${adapter.key} terms=${document.terms.size}")
-                        onExtracted(NullClassCodec.encode(document), startUrl)
+                        onExtracted(NullClassCodec.encode(document), rememberableUrl())
                     }
                 }
             } catch (e: Exception) {
@@ -348,6 +388,9 @@ fun JwWebViewStep(
 
                         override fun onPageFinished(view: WebView?, url: String?) {
                             super.onPageFinished(view, url)
+                            // 通用适配器没有已知域名：用户自己打开的页面就是同源，导航到哪就放行到哪。
+                            // 只在「地址由用户输入」的适配器上这么做，其余仍严格按 manifest 白名单。
+                            if (adapter.promptsForStartUrl) gate.allowCurrentHost(url)
                             if (autoExtract && !autoTriggered) {
                                 autoTriggered = true
                                 status = "页面已加载，自动提取中…"
@@ -364,7 +407,12 @@ fun JwWebViewStep(
                         bridge.attach(rules)
                         ocrBridge = bridge
                     }
-                    loadUrl(startUrl)
+                    if (startUrl.isBlank()) {
+                        // startUrlPrompt 适配器理论上不会走到这（地址在进入本页前就填好了）
+                        status = "没有可打开的地址，请返回重新选择学校并填写教务地址"
+                    } else {
+                        loadUrl(startUrl)
+                    }
                 }
             },
             update = { view ->
@@ -455,7 +503,7 @@ fun JwWebViewStep(
                     now = System.currentTimeMillis(),
                 )
                 ocrReview = null
-                onExtracted(NullClassCodec.encode(document), startUrl)
+                onExtracted(NullClassCodec.encode(document), rememberableUrl())
             },
             onDismiss = {
                 ocrReview = null
@@ -465,10 +513,52 @@ fun JwWebViewStep(
     }
 }
 
+/**
+ * 页面文本块 → 课表载荷 + 待核对项。
+ *
+ * 与 OCR 课表走的是**同一套**表格结构还原（星期表头 + 节次列锚定），差别只在输入：
+ * 这里的文本框是适配器从 DOM 量出来的，文字精确；OCR 那条是识别出来的。
+ */
+private fun buildBoxesReview(
+    adapter: JwAdapter,
+    title: String?,
+    payload: JwSchedulePayload,
+): JwOcrBuildResult {
+    val table = JwTableAligner.align(JwBoxes.toOcrPage(payload))
+    if (!table.reliable) {
+        throw JwPackageException(
+            "这一页里找不出课表结构：${table.warnings.joinToString("；")}。" +
+                "请确认已打开课表页面（长表格建议切到电脑版、让整张表完整显示）后重试",
+        )
+    }
+    val built = JwOcrScheduleBuilder.build(
+        table = table,
+        termName = pageTermName(adapter, title),
+        firstDayEpochDay = LocalDate.now()
+            .with(TemporalAdjusters.previousOrSame(DayOfWeek.MONDAY))
+            .toEpochDay(),
+        totalWeeks = JwOcrScheduleBuilder.inferTotalWeeks(table),
+        ocrAssisted = false,
+    )
+    if (built.payload.terms.single().courses.isEmpty()) {
+        throw JwPackageException("这一页里没有解析出任何课程，请确认打开的是课表页面")
+    }
+    return built
+}
+
+/** 学期名：页面标题本身就是学期名就用它（用户一眼能认出），否则退回适配器名。 */
+private fun pageTermName(adapter: JwAdapter, title: String?): String {
+    val clean = title?.replace(Regex("\\s+"), " ")?.trim()?.take(30).orEmpty()
+    return if (clean.length >= 3 && (clean.contains("学期") || clean.contains("学年"))) {
+        clean
+    } else {
+        "${adapter.displayName}（自动识别）"
+    }
+}
+
 /** 图片课表的**确认闸门**：识别结果先给用户看，确认后才归一化入库。 */
 @Composable
-private fun OcrReviewDialog(
-    review: JwOcrBuildResult,
+private fun OcrReviewDialog(    review: JwOcrBuildResult,
     onConfirm: () -> Unit,
     onDismiss: () -> Unit,
 ) {
@@ -488,7 +578,7 @@ private fun OcrReviewDialog(
             ) {
                 Text("识别到 $courseCount 门课程、$blockCount 条安排。", fontWeight = FontWeight.Bold)
                 Text(
-                    "学期名、开始日期与总周数用的是默认值（本周周一 / 20 周），导入后可在学期编辑里改。",
+                    "学期名与开学日期用的是默认值（页面标题 / 本周周一），导入后可在学期编辑里改。",
                     style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                 )
@@ -516,7 +606,7 @@ private fun OcrReviewDialog(
                     }
                 }
                 Text(
-                    "图片识别可能整行错位。导入后请到课表里抽查几门课的位置。",
+                    "识别是按格子的位置还原的，可能整行错位。导入后请到课表里抽查几门课的位置。",
                     style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                 )

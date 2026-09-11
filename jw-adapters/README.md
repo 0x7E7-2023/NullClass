@@ -20,7 +20,7 @@ jw-adapters/
 
 ## 提交一个适配器
 
-1. 复制 `example-univ/` 改个 `key`（小写字母/数字/连字符，2-40 字符），改 `manifest.json`；
+1. 复制 `ustc/` 或 `dlutci/`（两个真实学校的适配器）改个 `key`（小写字母/数字/连字符，2-40 字符），改 `manifest.json`；
 2. 写 `extract.js`（DOM 抓取或同源请求）与 `parse.js`；
 3. 在浏览器里跑通，把**脱敏后的** extract 输出与期望载荷放进 `fixtures/`；
 4. 在 `index.json` 里加一条；
@@ -28,6 +28,12 @@ jw-adapters/
 6. 提 PR。
 
 完整规范（契约、字段、安全规则、审计要求）见 [`docs/jw-adapter-spec.md`](../docs/jw-adapter-spec.md)。
+
+## 通用适配器（`universal`）
+
+`universal/` 是**兜底手段**，不是写新适配器时的模板：它不认学校，地址由用户现场输入，
+靠「把页面量成文字 + 坐标，交给应用的表格结构层还原」来支持任意学校。
+写具体学校的适配器时请照 `ustc/`、`dlutci/` 的样子做——又快又准，也不用让用户自己填地址。
 
 ## 注意
 

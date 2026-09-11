@@ -59,15 +59,19 @@ class JwLibraryHarnessTest {
                 val expected = Json.parseToJsonElement(
                     JwPackageReader.readFixture(dir, fixture.expected).toString(Charsets.UTF_8),
                 )
-                val actualRaw = evalParseScript(adapter.parseScript!!, extracted)
+                val actualRaw = adapter.parseScript?.let { evalParseScript(it, extracted) } ?: extracted
                 val actual = Json.parseToJsonElement(actualRaw)
                 assertEquals(
                     expected,
                     actual,
                     "适配器 ${adapter.key} 的用例「${fixture.name}」输出与期望不符\n实际：$actualRaw",
                 )
-                // 期望载荷本身必须能被应用校验并通过归一化
-                JwScheduleNormalizer.normalize(JwPayloadCodec.decode(actualRaw), adapter.key, now = 0L)
+                // 期望载荷本身必须能被应用校验并通过归一化。
+                // boxes（页面文本块）与 image（交给 OCR）载荷里没有课表数据，归一化对它们不适用。
+                val decoded = JwPayloadCodec.decode(actualRaw)
+                if (decoded.kind == JwSchedulePayload.KIND_SCHEDULE) {
+                    JwScheduleNormalizer.normalize(decoded, adapter.key, now = 0L)
+                }
                 cases++
             }
         }
