@@ -49,6 +49,8 @@ import kotlin.math.roundToInt
  *
  * 刷新双轨：App 活着时由 :app 的 WidgetAutoUpdater 推（Room Flow 触发），
  * 进程死后靠 DailyMaintenanceWorker 每 24h 兜底（跨天必须发生）。
+ * 标题行右侧带「更新于 HH:mm」（宽度够时显示）：跨天兜底失灵时用户能一眼
+ * 看出数据是几点算的，而不是默默信一个昨天的课表。
  */
 class TodayGlanceWidget : GlanceAppWidget() {
 
@@ -67,8 +69,13 @@ class TodayGlanceWidget : GlanceAppWidget() {
                 snapshot,
                 LocalTime.now().let { it.hour * 60 + it.minute },
                 fontSize,
+                updatedAtLabel = LocalTime.now().format(TimeFormat),
             )
         }
+    }
+
+    private companion object {
+        val TimeFormat = java.time.format.DateTimeFormatter.ofPattern("HH:mm")
     }
 }
 
@@ -83,6 +90,7 @@ internal fun TodayWidgetContent(
     snapshot: TodaySnapshot,
     nowMinuteOfDay: Int,
     fontSize: WidgetFontSize = WidgetFontSize.STANDARD,
+    updatedAtLabel: String? = null,
 ) {
     Box(
         modifier = GlanceModifier
@@ -92,7 +100,7 @@ internal fun TodayWidgetContent(
             .padding(12.dp)
             .clickable(actionRunCallback<OpenAppAction>()),
     ) {
-        TodayFullContent(snapshot, nowMinuteOfDay, fontSize)
+        TodayFullContent(snapshot, nowMinuteOfDay, fontSize, updatedAtLabel)
     }
 }
 
@@ -102,6 +110,7 @@ private fun TodayFullContent(
     snapshot: TodaySnapshot,
     nowMinuteOfDay: Int,
     fontSize: WidgetFontSize,
+    updatedAtLabel: String? = null,
 ) {
     if (snapshot.termName.isEmpty()) {
         Column(modifier = GlanceModifier.fillMaxSize()) {
@@ -128,13 +137,27 @@ private fun TodayFullContent(
         widgetCourseRowBudget(heightDp, fontSize, fontScale),
     )
     Column(modifier = GlanceModifier.fillMaxSize()) {
-        Text(
-            when (snapshot.weekNumber) {
-                null -> snapshot.termName // 学期还没开始（或已结束），只显学期名
-                else -> "第${snapshot.weekNumber}周 · ${ScheduleFormat.dayOfWeekLabel(java.time.LocalDate.now().dayOfWeek.value)}"
-            },
-            style = TextStyle(color = WidgetAccent, fontSize = fontSize.sp(13), fontWeight = FontWeight.Medium),
-        )
+        // 窄位（3 格宽）放不下时间戳，只有中/大尺寸显示「更新于 HH:mm」
+        val wideEnough = LocalSize.current.width >= 220.dp
+        Row(modifier = GlanceModifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
+            Text(
+                when (snapshot.weekNumber) {
+                    null -> snapshot.termName // 学期还没开始（或已结束），只显学期名
+                    else -> "第${snapshot.weekNumber}周 · ${ScheduleFormat.dayOfWeekLabel(java.time.LocalDate.now().dayOfWeek.value)}"
+                },
+                style = TextStyle(color = WidgetAccent, fontSize = fontSize.sp(13), fontWeight = FontWeight.Medium),
+                modifier = GlanceModifier.defaultWeight(),
+                maxLines = 1,
+            )
+            if (wideEnough && updatedAtLabel != null) {
+                Spacer(GlanceModifier.width(6.dp))
+                Text(
+                    "更新于$updatedAtLabel",
+                    style = TextStyle(color = WidgetOnBackgroundVariant, fontSize = fontSize.sp(10)),
+                    maxLines = 1,
+                )
+            }
+        }
         Spacer(GlanceModifier.height(4.dp))
         Box(GlanceModifier.fillMaxWidth().height(1.dp).background(WidgetDivider)) {}
         Spacer(GlanceModifier.height(4.dp))

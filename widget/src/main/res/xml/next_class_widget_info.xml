@@ -9,5 +9,7 @@
     android:targetCellHeight="1"
     android:resizeMode="horizontal|vertical"
     android:widgetCategory="home_screen"
-    android:updatePeriodMillis="0"
+    android:updatePeriodMillis="1800000"
     android:initialLayout="@layout/glance_default_loading_layout" />
+<!-- updatePeriodMillis=30 分钟：系统级兜底刷新（系统允许的最短周期）。进程死后跨天陈旧
+     上限从「下一次每日维护(≤24h)」降到 30 分钟；App 活着时 WidgetAutoUpdater 推得更勤，这只是最后防线。 -->

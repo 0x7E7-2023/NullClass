@@ -15,6 +15,56 @@ data class UpcomingClass(
  */
 object ReminderPlanner {
 
+    /** 迟发补发的窗口：开课超过此时长的课不再补「已开始」通知（太晚没有意义）。 */
+    const val LATE_CATCHUP_WINDOW_MS: Long = 30L * 60_000
+
+    /**
+     * 已发送键匹配容差。键是 blockId:startAt（墙钟 epoch），时区切换后同一节课
+     * 重算出的 epoch 会漂移（最大约 26h），精确匹配失效 → TIMEZONE_CHANGED 触发
+     * 重排时重复通知。容差取 24h 覆盖现实中的时区漂移；同一 block 的课每周最多
+     * 一次（间隔 ≥7 天），不会误伤上周/下周的课。
+     */
+    const val SENT_KEY_TOLERANCE_MS: Long = 24L * 3600 * 1000
+
+    /**
+     * 「这一节课」的提醒是否已经发过：同 blockId 且 startAt 相差在
+     * [SENT_KEY_TOLERANCE_MS] 内的已发送键都算（同时覆盖时钟回拨场景——epoch 不变
+     * 的精确匹配是它的特例）。
+     */
+    fun isAlreadySent(upcoming: UpcomingClass, sentKeys: Set<String>): Boolean {
+        val prefix = "${upcoming.block.id}:"
+        val start = upcoming.startAtMillis
+        return sentKeys.any { key ->
+            if (!key.startsWith(prefix)) return@any false
+            val epoch = key.removePrefix(prefix).toLongOrNull() ?: return@any false
+            kotlin.math.abs(epoch - start) < SENT_KEY_TOLERANCE_MS
+        }
+    }
+
+    /**
+     * 迟发补发判定：提醒时刻已过（没赶上）的一节课要不要补发「已开始」通知。
+     *
+     * - 课还没开始（还在提前量窗口内）→ 不补：调度方会把任务重新入队立即发
+     * - 已开课但下课了 → 不补（下课了才知道没意义）
+     * - 开课超过 [LATE_CATCHUP_WINDOW_MS] → 不补（迟太久）
+     * - 已发过 → 不补（[isAlreadySent] 容差匹配，防止每次重排都复活已划掉的通知）
+     */
+    fun shouldSendLate(
+        upcoming: UpcomingClass,
+        nowMillis: Long,
+        sentKeys: Set<String>,
+        windowMs: Long = LATE_CATCHUP_WINDOW_MS,
+    ): Boolean {
+        if (upcoming.startAtMillis > nowMillis) return false
+        if (upcoming.endAtMillis <= nowMillis) return false
+        if (nowMillis - upcoming.startAtMillis > windowMs) return false
+        return !isAlreadySent(upcoming, sentKeys)
+    }
+
+    /** 通知 tag（也是已发送去重键）：blockId:startAt。 */
+    fun reminderTag(upcoming: UpcomingClass): String =
+        "${upcoming.block.id}:${upcoming.startAtMillis}"
+
     /**
      * 排算 [fromMillis, fromMillis + horizonDays 天] 内的全部上课时刻，按开始时间升序。
      *

@@ -6,6 +6,7 @@ import android.content.ComponentName
 import android.content.Context
 import android.content.pm.PackageManager
 import android.os.Build
+import android.os.PowerManager
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
@@ -36,6 +37,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -50,6 +52,9 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.core.content.ContextCompat
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleEventObserver
+import androidx.lifecycle.LifecycleOwner
 import com.nullclass.core.model.WidgetFontSize
 import com.nullclass.sync.AutoSyncInterval
 import com.nullclass.widget.NextClassWidgetReceiver
@@ -223,6 +228,35 @@ fun SettingsScreen(
 
             HorizontalDivider(modifier = Modifier.padding(vertical = 8.dp))
 
+            // ---- 后台可靠性 ----
+            Text("后台可靠性", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold)
+            Text(
+                "系统的省电策略（Doze / 厂商后台管控）可能推迟提醒与小组件刷新。" +
+                    "建议把空课排除在电池优化之外；小米/华为/vivo 等厂商还需单独允许自启动。",
+                style = MaterialTheme.typography.bodySmall,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+            )
+            BatteryReliabilityStatus(context)
+            val autostartPage = remember { BackgroundReliability.resolvedAutostartActivity(context) }
+            if (autostartPage != null) {
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.spacedBy(8.dp),
+                ) {
+                    Text(
+                        "厂商自启动：请在系统里允许空课自启动",
+                        style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        modifier = Modifier.weight(1f),
+                    )
+                    TextButton(onClick = { BackgroundReliability.startAutostartSettings(context) }) {
+                        Text("去设置")
+                    }
+                }
+            }
+
+            HorizontalDivider(modifier = Modifier.padding(vertical = 8.dp))
+
             // ---- 自动同步 ----
             Text("自动同步", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold)
             Text(
@@ -266,6 +300,43 @@ fun SettingsScreen(
                     modifier = Modifier.weight(1f),
                 ) { Text("下节课 2×1") }
             }
+        }
+    }
+}
+
+/** 电池优化豁免状态行；从系统设置页返回时（ON_RESUME）重新读取。 */
+@Composable
+private fun BatteryReliabilityStatus(context: Context) {
+    val powerManager = remember { context.getSystemService(PowerManager::class.java) }
+    var batteryIgnored by remember {
+        mutableStateOf(powerManager?.isIgnoringBatteryOptimizations(context.packageName) == true)
+    }
+    DisposableEffect(context) {
+        val observer = LifecycleEventObserver { _, event ->
+            if (event == Lifecycle.Event.ON_RESUME) {
+                batteryIgnored = powerManager?.isIgnoringBatteryOptimizations(context.packageName) == true
+            }
+        }
+        val lifecycle = (context as? LifecycleOwner)?.lifecycle
+        lifecycle?.addObserver(observer)
+        onDispose { lifecycle?.removeObserver(observer) }
+    }
+    Row(
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.spacedBy(8.dp),
+    ) {
+        Text(
+            if (batteryIgnored) "电池优化：已豁免 ✓" else "电池优化：未豁免，后台刷新可能被推迟",
+            style = MaterialTheme.typography.bodySmall,
+            color = if (batteryIgnored) {
+                MaterialTheme.colorScheme.primary
+            } else {
+                MaterialTheme.colorScheme.error
+            },
+            modifier = Modifier.weight(1f),
+        )
+        TextButton(onClick = { BackgroundReliability.startBatteryOptimizationSettings(context) }) {
+            Text("去设置")
         }
     }
 }

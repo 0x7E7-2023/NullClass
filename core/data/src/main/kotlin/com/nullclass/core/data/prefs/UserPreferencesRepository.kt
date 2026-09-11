@@ -5,6 +5,7 @@ import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.intPreferencesKey
 import androidx.datastore.preferences.core.stringPreferencesKey
+import androidx.datastore.preferences.core.stringSetPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
 import com.nullclass.core.model.WidgetFontSize
 import dagger.hilt.android.qualifiers.ApplicationContext
@@ -28,6 +29,7 @@ class UserPreferencesRepository @Inject constructor(
         val SHOW_TIME_IN_CARDS = booleanPreferencesKey("show_time_in_cards")
         val SHOW_NOW_LINE = booleanPreferencesKey("show_now_line")
         val WIDGET_FONT_SIZE = stringPreferencesKey("widget_font_size")
+        val SENT_REMINDER_KEYS = stringSetPreferencesKey("sent_reminder_keys")
     }
 
     /** 提前提醒分钟数；0 = 关闭。默认 15。 */
@@ -80,7 +82,28 @@ class UserPreferencesRepository @Inject constructor(
         context.userPrefs.edit { it[Keys.WIDGET_FONT_SIZE] = value.name }
     }
 
+    /**
+     * 已实际发出的提醒通知 tag 集合（「blockId:startAt」），迟发补发用它去重，
+     * 防止每次重排都复活用户已划掉的通知。写入时顺手清掉 24h 前的旧键，集合不会无限膨胀。
+     */
+    val sentReminderKeys: Flow<Set<String>> =
+        context.userPrefs.data.map { it[Keys.SENT_REMINDER_KEYS] ?: emptySet() }
+
+    suspend fun markRemindersSent(keys: Collection<String>) {
+        if (keys.isEmpty()) return
+        context.userPrefs.edit { prefs ->
+            val now = System.currentTimeMillis()
+            val (keep, _) = (prefs[Keys.SENT_REMINDER_KEYS] ?: emptySet()).partition { key ->
+                // 解析不出时间戳的脏数据直接淘汰
+                val startAt = key.substringAfterLast(':', "").toLongOrNull() ?: return@partition false
+                startAt > now - PRUNE_AFTER_MS
+            }
+            prefs[Keys.SENT_REMINDER_KEYS] = (keep + keys).toSet()
+        }
+    }
+
     companion object {
         const val DEFAULT_LEAD_MINUTES = 15
+        private const val PRUNE_AFTER_MS = 24L * 3600 * 1000
     }
 }

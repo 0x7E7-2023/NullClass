@@ -1,27 +1,22 @@
 package com.nullclass.app.notification
 
-import android.Manifest
-import android.app.Notification
-import android.app.PendingIntent
 import android.content.Context
-import android.content.pm.PackageManager
-import androidx.core.app.NotificationCompat
-import androidx.core.app.NotificationManagerCompat
-import androidx.core.content.ContextCompat
 import androidx.hilt.work.HiltWorker
 import androidx.work.CoroutineWorker
 import androidx.work.WorkerParameters
+import com.nullclass.core.data.prefs.UserPreferencesRepository
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedInject
 
 /**
  * 课前提醒通知本体：每条提醒一个 Worker（ReminderScheduler 入队，幂等 uniqueWork）。
- * 未授权 POST_NOTIFICATIONS 时静默成功（设置页保留重试入口）。
+ * 发出后落「已发送」键，迟发补发用它去重。
  */
 @HiltWorker
 class ClassStartWorker @AssistedInject constructor(
     @Assisted appContext: Context,
     @Assisted params: WorkerParameters,
+    private val userPrefs: UserPreferencesRepository,
 ) : CoroutineWorker(appContext, params) {
 
     override suspend fun doWork(): Result {
@@ -29,50 +24,19 @@ class ClassStartWorker @AssistedInject constructor(
         val location = inputData.getString(KEY_LOCATION).orEmpty()
         val periodLabel = inputData.getString(KEY_PERIOD_LABEL).orEmpty()
         val startTimeLabel = inputData.getString(KEY_START_TIME_LABEL).orEmpty()
-
-        if (ContextCompat.checkSelfPermission(
-                applicationContext,
-                Manifest.permission.POST_NOTIFICATIONS,
-            ) != PackageManager.PERMISSION_GRANTED
-        ) {
-            return Result.success()
-        }
-
-        val contentIntent = applicationContext.packageManager
-            .getLaunchIntentForPackage(applicationContext.packageName)
-            ?.apply { addFlags(android.content.Intent.FLAG_ACTIVITY_NEW_TASK) }
-            ?.let { intent ->
-                PendingIntent.getActivity(
-                    applicationContext,
-                    0,
-                    intent,
-                    PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE,
-                )
-            }
+        val tag = notificationTag()
 
         val text = listOf(periodLabel, location).filter { it.isNotBlank() }.joinToString(" · ")
-        val notification: Notification = NotificationCompat.Builder(
-            applicationContext,
-            NotificationChannels.CLASS_REMINDER,
-        )
-            .setSmallIcon(com.nullclass.app.R.drawable.ic_notification)
-            .setContentTitle("$startTimeLabel · $name")
-            .setContentText(text)
-            .setStyle(NotificationCompat.BigTextStyle().bigText(text))
-            .setContentIntent(contentIntent)
-            .setAutoCancel(true)
-            .build()
-
-        // 同一节课重排可能残留旧通知，用 blockId+startAt 做 tag 保证覆盖
-        NotificationManagerCompat.from(applicationContext)
-            .notify(notificationTag(), notificationId(), notification)
+        // 未授权 POST_NOTIFICATIONS 时不落键：静默成功但不算「已发送」，
+        // 之后授权了还能由迟发补发补上「已开始」
+        if (ReminderNotifier.post(applicationContext, tag, "$startTimeLabel · $name", text)) {
+            userPrefs.markRemindersSent(listOf(tag))
+        }
         return Result.success()
     }
 
     private fun notificationTag(): String =
         "${inputData.getString(KEY_BLOCK_ID)}:${inputData.getLong(KEY_START_AT, 0)}"
-
-    private fun notificationId(): Int = notificationTag().hashCode()
 
     companion object {
         const val KEY_COURSE_NAME = "courseName"

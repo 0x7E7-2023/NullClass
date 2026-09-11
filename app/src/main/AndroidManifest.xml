@@ -3,6 +3,22 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
+    <!-- 开机对账（SystemEventReceiver）：normal 权限，安装即授予，无任何用户操作 -->
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
+
+    <!-- 厂商自启动页跳转（BackgroundReliability）需要包可见性：Android 11+ 不声明
+         <queries> 时 PackageManager 解析别家 Activity 一律 NameNotFoundException，
+         自启动入口会静默消失。只是可见性声明，不是权限。 -->
+    <queries>
+        <package android:name="com.miui.securitycenter" />          <!-- 小米 -->
+        <package android:name="com.huawei.systemmanager" />          <!-- 华为 -->
+        <package android:name="com.hihonor.systemmanager" />         <!-- 荣耀 -->
+        <package android:name="com.coloros.safecenter" />            <!-- OPPO / 一加 -->
+        <package android:name="com.oppo.safe" />                     <!-- 旧 OPPO -->
+        <package android:name="com.vivo.permissionmanager" />        <!-- vivo -->
+        <package android:name="com.iqoo.secure" />                   <!-- iQOO -->
+        <package android:name="com.meizu.safe" />                    <!-- 魅族 -->
+    </queries>
 
     <application
         android:name=".NullClassApplication"
@@ -36,6 +52,19 @@
                 android:name="android.support.FILE_PROVIDER_PATHS"
                 android:resource="@xml/file_paths" />
         </provider>
+
+        <!-- 系统事件对账：开机/应用更新/改时间/换时区 → 刷小组件 + 重排提醒。
+             全部是 protected broadcast，exported=false 只收系统的。 -->
+        <receiver
+            android:name=".notification.SystemEventReceiver"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
+                <action android:name="android.intent.action.MY_PACKAGE_REPLACED" />
+                <action android:name="android.intent.action.TIME_SET" />
+                <action android:name="android.intent.action.TIMEZONE_CHANGED" />
+            </intent-filter>
+        </receiver>
 
         <activity
             android:name=".MainActivity"

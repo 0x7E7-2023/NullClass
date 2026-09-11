@@ -139,4 +139,55 @@ class ReminderPlannerTest {
         assertEquals(mondayMillis(1, 10, 0), out[0].startAtMillis)
         assertEquals(mondayMillis(1, 11, 40), out[0].endAtMillis)
     }
+
+    @Test
+    fun `迟发判定 - 已开课未下课且未发过才补`() {
+        val schedule = listOf(
+            course(ScheduleBlock(id = "b1", courseId = "c1", startWeek = 1, endWeek = 20, dayOfWeek = 1, startPeriod = 1, endPeriod = 2)), // 8:00-9:40
+        )
+        val upcoming = ReminderPlanner.upcoming(term, schedule, times, mondayMillis(1, 8, 0), horizonDays = 0, zone = zone)[0]
+        val tag = ReminderPlanner.reminderTag(upcoming)
+
+        // 8:20 进行中、未发过 → 补
+        assertTrue(ReminderPlanner.shouldSendLate(upcoming, mondayMillis(1, 8, 20), emptySet()))
+        // 未开始（还在提前量窗口内，remindAt 已过但课没开）→ 不补
+        assertTrue(!ReminderPlanner.shouldSendLate(upcoming, mondayMillis(1, 7, 50), emptySet()))
+        // 已下课 → 不补
+        assertTrue(!ReminderPlanner.shouldSendLate(upcoming, mondayMillis(1, 10, 0), emptySet()))
+        // 开课超过 30 分钟 → 不补
+        assertTrue(!ReminderPlanner.shouldSendLate(upcoming, mondayMillis(1, 8, 31), emptySet()))
+        // 已发过（幂等）→ 不补
+        assertTrue(!ReminderPlanner.shouldSendLate(upcoming, mondayMillis(1, 8, 20), setOf(tag)))
+    }
+
+    @Test
+    fun `已发送键容差匹配 - 时区切换后同一节课不算漏发`() {
+        val schedule = listOf(
+            course(ScheduleBlock(id = "b1", courseId = "c1", startWeek = 1, endWeek = 20, dayOfWeek = 1, startPeriod = 1, endPeriod = 2)), // 8:00-9:40
+        )
+        val upcoming = ReminderPlanner.upcoming(term, schedule, times, mondayMillis(1, 8, 0), horizonDays = 0, zone = zone)[0]
+        val tag = ReminderPlanner.reminderTag(upcoming)
+
+        // 时区东行 8h：同一节课新算出的 startAt epoch 早 8 小时
+        val shifted = upcoming.copy(
+            startAtMillis = upcoming.startAtMillis - 8 * 3600_000L,
+            endAtMillis = upcoming.endAtMillis - 8 * 3600_000L,
+        )
+        assertTrue(ReminderPlanner.isAlreadySent(shifted, setOf(tag)))
+        // 换算后的「已开课 20 分钟」也不补（否则就是重复的「已开始」）
+        assertTrue(
+            !ReminderPlanner.shouldSendLate(shifted, mondayMillis(1, 8, 20) - 8 * 3600_000L, setOf(tag)),
+        )
+
+        // 上周的同一 block（相差整周）不算已发——每周才一次课，容差不该跨周
+        val lastWeek = upcoming.copy(
+            startAtMillis = upcoming.startAtMillis - 7L * 24 * 3600 * 1000,
+            endAtMillis = upcoming.endAtMillis - 7L * 24 * 3600 * 1000,
+        )
+        assertTrue(!ReminderPlanner.isAlreadySent(lastWeek, setOf(tag)))
+
+        // 同一时刻的别的 block 不算已发
+        val otherBlock = upcoming.copy(block = upcoming.block.copy(id = "b2"))
+        assertTrue(!ReminderPlanner.isAlreadySent(otherBlock, setOf(tag)))
+    }
 }
