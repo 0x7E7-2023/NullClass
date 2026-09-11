@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- 格子公式 min = 70×n − 30。最小宽度 110dp = 2 格，添加时默认 3×2。 -->
+<!-- 格子公式 min = 70×n − 30。最小 180dp×110dp = 3×2（2 格宽时间列会把课名挤没，窄位用「下节课」）。添加时默认 3×2。 -->
 <appwidget-provider xmlns:android="http://schemas.android.com/apk/res/android"
-    android:minWidth="110dp"
+    android:minWidth="180dp"
     android:minHeight="110dp"
-    android:minResizeWidth="110dp"
+    android:minResizeWidth="180dp"
     android:minResizeHeight="110dp"
     android:targetCellWidth="3"
     android:targetCellHeight="2"

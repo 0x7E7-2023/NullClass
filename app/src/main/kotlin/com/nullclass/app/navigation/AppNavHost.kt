@@ -28,6 +28,7 @@ import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.nullclass.feature.edit.CourseEditScreen
 import com.nullclass.feature.edit.TermEditScreen
+import com.nullclass.feature.edit.TermListScreen
 import com.nullclass.feature.schedule.ScheduleScreen
 import com.nullclass.feature.schedule.TodayScreen
 import com.nullclass.feature.settings.AboutScreen
@@ -43,6 +44,7 @@ object Routes {
     const val PROFILE = "profile"
     const val COURSE_EDIT = "course_edit?courseId={courseId}"
     const val TERM_EDIT = "term_edit?termId={termId}"
+    const val TERM_LIST = "term_list"
     const val SETTINGS = "settings"
     const val ABOUT = "about"
     const val TRANSFER = "transfer"
@@ -152,6 +154,7 @@ fun AppNavHost() {
             composable(Routes.PROFILE) {
                 ProfileScreen(
                     onEditTerm = { termId -> navController.navigate(Routes.termEdit(termId)) },
+                    onOpenTermList = { navController.navigate(Routes.TERM_LIST) },
                     onOpenTransfer = { navController.navigate(Routes.TRANSFER) },
                     onOpenSettings = { navController.navigate(Routes.SETTINGS) },
                     onOpenAbout = { navController.navigate(Routes.ABOUT) },
@@ -166,6 +169,12 @@ fun AppNavHost() {
                 CourseEditScreen(
                     courseId = entry.arguments?.getString("courseId")?.takeIf { it.isNotBlank() },
                     onBack = ::back,
+                )
+            }
+            composable(Routes.TERM_LIST) {
+                TermListScreen(
+                    onBack = ::back,
+                    onCreateTerm = { navController.navigate(Routes.termEdit()) },
                 )
             }
             composable(

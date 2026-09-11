@@ -31,12 +31,13 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 
 /**
- * 「我的」Tab：入口中枢——学期卡片、导入/导出、应用设置、关于（子页）。
+ * 「我的」Tab：入口中枢——学期卡片、学期管理、导入/导出、应用设置、关于（子页）。
  * 长表单类内容（WebDAV、提醒、小组件）保留在应用设置子页，中枢只做导航聚合。
  */
 @Composable
 fun ProfileScreen(
     onEditTerm: (termId: String?) -> Unit,
+    onOpenTermList: () -> Unit,
     onOpenTransfer: () -> Unit,
     onOpenSettings: () -> Unit,
     onOpenAbout: () -> Unit,
@@ -98,9 +99,9 @@ fun ProfileScreen(
             ) {
                 EntryRow(
                     icon = Icons.Default.DateRange,
-                    title = "学期设置",
-                    subtitle = "开学日期、总周数、节次时间",
-                    onClick = { onEditTerm(state.term?.id) },
+                    title = "学期管理",
+                    subtitle = "切换、新建、删除",
+                    onClick = onOpenTermList,
                 )
                 EntryRow(
                     icon = Icons.Default.Share,

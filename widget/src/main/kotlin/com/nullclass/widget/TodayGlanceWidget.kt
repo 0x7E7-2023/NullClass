@@ -5,16 +5,16 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
 import androidx.glance.GlanceId
 import androidx.glance.GlanceModifier
+import androidx.glance.LocalContext
+import androidx.glance.LocalSize
 import androidx.glance.action.clickable
 import androidx.glance.appwidget.GlanceAppWidget
 import androidx.glance.appwidget.SizeMode
 import androidx.glance.appwidget.action.actionRunCallback
 import androidx.glance.appwidget.cornerRadius
-import androidx.glance.appwidget.lazy.LazyColumn
 import androidx.glance.appwidget.provideContent
 import androidx.glance.background
 import androidx.glance.color.ColorProvider
@@ -34,26 +34,25 @@ import androidx.glance.text.TextStyle
 import com.nullclass.core.model.ScheduleFormat
 import com.nullclass.core.model.TodaySnapshot
 import com.nullclass.core.model.WidgetFontSize
-import kotlinx.coroutines.flow.first
+import com.nullclass.core.model.buildWidgetAgenda
+import com.nullclass.core.model.widgetCourseRowBudget
 import com.nullclass.core.ui.theme.courseColor
+import kotlinx.coroutines.flow.first
 import java.time.LocalTime
+import kotlin.math.roundToInt
 
 /**
- * 「今日课程」小组件：标题（周次+星期）+ 今日课程列表，下一节/进行中高亮。
+ * 「今日课程」小组件：标题（周次+星期）+ 未结束的课。
+ *
+ * 按高度和字号配额截断（[widgetCourseRowBudget]），已上完的丢掉，同课连堂合并。
+ * 配额留出的空白里靠左另起一行「还剩 n 节」，不为脚注少排一门课。
  *
  * 刷新双轨：App 活着时由 :app 的 WidgetAutoUpdater 推（Room Flow 触发），
  * 进程死后靠 DailyMaintenanceWorker 每 24h 兜底（跨天必须发生）。
  */
 class TodayGlanceWidget : GlanceAppWidget() {
 
-    override val sizeMode = SizeMode.Responsive(
-        setOf(
-            DpSize(110.dp, 110.dp),
-            DpSize(180.dp, 110.dp),
-            DpSize(250.dp, 180.dp),
-            DpSize(320.dp, 220.dp),
-        ),
-    )
+    override val sizeMode = SizeMode.Exact
 
     override suspend fun provideGlance(context: Context, id: GlanceId) {
         val entryPoint = widgetEntryPoint(context)
@@ -97,7 +96,7 @@ internal fun TodayWidgetContent(
     }
 }
 
-/** 标题行 + 完整列表（标题作为 LazyColumn 首 item，避免嵌套测量问题）。 */
+/** 标题 + 配额内的课。高度常数与 [widgetCourseRowBudget] 对齐。 */
 @Composable
 private fun TodayFullContent(
     snapshot: TodaySnapshot,
@@ -121,40 +120,46 @@ private fun TodayFullContent(
         return
     }
 
-    LazyColumn(modifier = GlanceModifier.fillMaxSize()) {
-        item {
-            Column {
-                Text(
-                    when (snapshot.weekNumber) {
-                        null -> snapshot.termName // 学期还没开始（或已结束），只显学期名
-                        else -> "第${snapshot.weekNumber}周 · ${ScheduleFormat.dayOfWeekLabel(java.time.LocalDate.now().dayOfWeek.value)}"
-                    },
-                    style = TextStyle(color = WidgetAccent, fontSize = fontSize.sp(13), fontWeight = FontWeight.Medium),
-                )
-                Spacer(GlanceModifier.height(4.dp))
-                Box(GlanceModifier.fillMaxWidth().height(1.dp).background(WidgetDivider)) {}
-                Spacer(GlanceModifier.height(4.dp))
+    val heightDp = LocalSize.current.height.value.roundToInt()
+    val fontScale = LocalContext.current.resources.configuration.fontScale
+    val agenda = buildWidgetAgenda(
+        snapshot,
+        nowMinuteOfDay,
+        widgetCourseRowBudget(heightDp, fontSize, fontScale),
+    )
+    Column(modifier = GlanceModifier.fillMaxSize()) {
+        Text(
+            when (snapshot.weekNumber) {
+                null -> snapshot.termName // 学期还没开始（或已结束），只显学期名
+                else -> "第${snapshot.weekNumber}周 · ${ScheduleFormat.dayOfWeekLabel(java.time.LocalDate.now().dayOfWeek.value)}"
+            },
+            style = TextStyle(color = WidgetAccent, fontSize = fontSize.sp(13), fontWeight = FontWeight.Medium),
+        )
+        Spacer(GlanceModifier.height(4.dp))
+        Box(GlanceModifier.fillMaxWidth().height(1.dp).background(WidgetDivider)) {}
+        Spacer(GlanceModifier.height(4.dp))
+
+        when {
+            snapshot.blocks.isEmpty() -> Box(
+                GlanceModifier.fillMaxWidth().padding(vertical = 16.dp),
+                contentAlignment = Alignment.Center,
+            ) {
+                Text("今天没有课 🎉", style = TextStyle(color = WidgetOnBackgroundVariant, fontSize = fontSize.sp(12)))
             }
-        }
-        if (snapshot.blocks.isEmpty()) {
-            item {
-                Box(
-                    GlanceModifier.fillMaxWidth().padding(vertical = 16.dp),
-                    contentAlignment = Alignment.Center,
-                ) {
-                    Text("今天没有课 🎉", style = TextStyle(color = WidgetOnBackgroundVariant, fontSize = fontSize.sp(12)))
+            agenda.rows.isEmpty() -> Text(
+                "今天课程已结束 😴",
+                style = TextStyle(color = WidgetOnBackgroundVariant, fontSize = fontSize.sp(11)),
+                modifier = GlanceModifier.padding(top = 4.dp),
+            )
+            else -> {
+                agenda.rows.forEachIndexed { index, entry ->
+                    TodayRow(entry, snapshot, nowMinuteOfDay, fontSize, isNext = index == 0)
                 }
-            }
-        } else {
-            items(snapshot.blocks.size) { index ->
-                TodayRow(snapshot.blocks[index], snapshot, nowMinuteOfDay, fontSize)
-            }
-            if (snapshot.nextUp(nowMinuteOfDay) == null) {
-                item {
+                if (agenda.hiddenUpcoming > 0) {
                     Text(
-                        "今天课程已结束 😴",
+                        "还剩${agenda.hiddenUpcoming}节",
                         style = TextStyle(color = WidgetOnBackgroundVariant, fontSize = fontSize.sp(11)),
-                        modifier = GlanceModifier.padding(top = 4.dp),
+                        modifier = GlanceModifier.padding(start = 6.dp, top = 4.dp),
                     )
                 }
             }
@@ -168,8 +173,8 @@ private fun TodayRow(
     snapshot: TodaySnapshot,
     nowMinuteOfDay: Int,
     fontSize: WidgetFontSize,
+    isNext: Boolean,
 ) {
-    val isNext = snapshot.nextUp(nowMinuteOfDay)?.placed?.block?.id == entry.placed.block.id
     val isInProgress = snapshot.inProgress(entry, nowMinuteOfDay)
     val color = courseColor(entry.placed.course.colorIndex)
     val rowBackground = if (isNext) {

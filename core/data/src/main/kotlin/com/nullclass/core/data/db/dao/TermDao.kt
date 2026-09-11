@@ -31,6 +31,13 @@ interface TermDao {
     )
     suspend fun getPreviousTerm(beforeEpochDay: Long): TermEntity?
 
+    /** 开学日最晚的未删学期（删除当前后回退用，与同步合并归一化一致）。 */
+    @Query(
+        "SELECT * FROM terms WHERE deletedAt IS NULL " +
+            "ORDER BY firstDayEpochDay DESC LIMIT 1",
+    )
+    suspend fun getLatestByFirstDay(): TermEntity?
+
     // ---- 写入 ----
 
     @Upsert

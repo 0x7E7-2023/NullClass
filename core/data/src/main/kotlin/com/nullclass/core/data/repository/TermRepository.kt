@@ -40,7 +40,10 @@ interface TermRepository {
 
     suspend fun getPeriodTimes(termId: String): List<PeriodTime>
 
-    /** 软删除学期（级联墓碑其课程与时间安排）。 */
+    /**
+     * 软删除学期（级联墓碑其课程与时间安排）。
+     * 若删的是当前学期，激活开学日最晚的剩余学期；删光则没有当前学期。
+     */
     suspend fun deleteTerm(termId: String)
 }
 
@@ -111,6 +114,11 @@ class TermRepositoryImpl @Inject constructor(
             termDao.tombstoneTerm(termId, now)
             termDao.tombstoneCoursesOfTerm(termId, now)
             termDao.tombstoneBlocksOfTerm(termId, now)
+            if (termDao.getCurrent() == null) {
+                termDao.getLatestByFirstDay()?.let { next ->
+                    termDao.setCurrent(next.id, now)
+                }
+            }
         }
     }
 }
