@@ -4,7 +4,7 @@
 格式遵循 [Keep a Changelog](https://keepachangelog.com/zh-CN/1.1.0/)，
 版本遵循 [语义化版本](https://semver.org/lang/zh-CN/)。
 
-## [Unreleased]
+## [0.9.0] - 2026-09-12
 
 ### 新增
 
@@ -52,6 +52,10 @@
 - **适配器规范 §5 拆成 §5.1 OCR / §5.2 提问**，并写明**提问只应出现在 `extract.js`** ——
   `parse.js` 在 CI 里用 Rhino 跑，那里没有桥也没有用户，它必须是纯函数。
 - 脚本桥拆成三块：传输与路由、OCR、提问各管各的（两个通道各有各的 pending 表，串了就是永不 settle）。
+- 版本升到 **0.9.0（versionCode 19）**：同步格式仍是 formatVersion 2，旧版备份 / WebDAV 快照
+  与新版互通。新增的 `warnings`（见「新增」）是**可加字段**，所以这批移植适配器的
+  `minAppVersionCode` 一律写 11 —— 老版本忽略它、导入照常成功，只是看不到那几句核对提示；
+  这一项卡的是「老版本整个不认」的结构性能力（例如 `kind:"boxes"` 这类载荷种类），不卡客套提醒。
 
 ## [0.8.2] - 2026-09-12
 
