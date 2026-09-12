@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
@@ -42,6 +43,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
@@ -106,6 +108,14 @@ fun TermEditScreen(
                 selected = firstDay.dayOfWeek.value,
                 onSelect = viewModel::setWeekStartDay,
             )
+            if (firstDay.dayOfWeek.value != 1 && firstDay.dayOfWeek.value != 7) {
+                Text(
+                    "当前从${ScheduleFormat.dayOfWeekLabel(firstDay.dayOfWeek.value)}算起，" +
+                        "两个选项都不亮；保持原样就行，点任一个会把它挪到最近的周一 / 周日。",
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                )
+            }
 
             OutlinedButton(onClick = { showDatePicker = true }, modifier = Modifier.fillMaxWidth()) {
                 Text("第 1 周第 1 天：${firstDay.year}年${firstDay.monthValue}月${firstDay.dayOfMonth}日")
@@ -157,6 +167,49 @@ fun TermEditScreen(
                         onCheckedChange = viewModel::setCopyFromPrevious,
                     )
                 }
+            }
+
+            // 快速设定：只按「单节课时长 + 大节内课间」重排，各大节的开课时刻原地不动
+            Text("快速设定", style = MaterialTheme.typography.labelLarge)
+            Row(
+                horizontalArrangement = Arrangement.spacedBy(8.dp),
+                modifier = Modifier.fillMaxWidth(),
+            ) {
+                OutlinedTextField(
+                    value = state.quickLessonText,
+                    onValueChange = viewModel::setQuickLessonText,
+                    label = { Text("单节课") },
+                    suffix = { Text("分钟") },
+                    singleLine = true,
+                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+                    modifier = Modifier.weight(1f),
+                )
+                OutlinedTextField(
+                    value = state.quickBreakText,
+                    onValueChange = viewModel::setQuickBreakText,
+                    label = { Text("课间休息") },
+                    suffix = { Text("分钟") },
+                    singleLine = true,
+                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+                    modifier = Modifier.weight(1f),
+                )
+            }
+            Text(
+                "课间休息指一个大节里两节之间的休息（默认模板是 10 分钟）；大节与大节之间的休息" +
+                    "（上午大课间那种，20 分钟）不归它管 —— 套用时只按每个大节现有的开课时刻重排内部，" +
+                    "所以对着默认模板套 45 + 10 等于没改。",
+                style = MaterialTheme.typography.bodySmall,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+            )
+            OutlinedButton(onClick = viewModel::applyQuickTimes, modifier = Modifier.fillMaxWidth()) {
+                Text("套用")
+            }
+            state.quickNotice?.let { notice ->
+                Text(
+                    notice,
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.error,
+                )
             }
 
             // 节次时间表
@@ -276,15 +329,16 @@ fun TermEditScreen(
 
 @Composable
 private fun WeekStartDaySelector(selected: Int, onSelect: (Int) -> Unit) {
-    // 固定按周一~周日排：这是「选一个起始日」的选择器，不该跟着选中项自己重排
+    // 只给周一 / 周日：学校的教学周几乎只有这两种排法，中间那五天真要改，直接改第 1 周的日期更直接
+    val options = listOf(1 to "周一", 7 to "周日")
     SingleChoiceSegmentedButtonRow(modifier = Modifier.fillMaxWidth()) {
-        (1..7).forEach { day ->
+        options.forEachIndexed { index, (dayOfWeek, label) ->
             SegmentedButton(
-                selected = selected == day,
-                onClick = { onSelect(day) },
-                shape = SegmentedButtonDefaults.itemShape(day - 1, 7),
+                selected = selected == dayOfWeek,
+                onClick = { onSelect(dayOfWeek) },
+                shape = SegmentedButtonDefaults.itemShape(index, options.size),
             ) {
-                Text(ScheduleFormat.dayOfWeekShortLabel(day), fontSize = 13.sp)
+                Text(label, fontSize = 13.sp)
             }
         }
     }

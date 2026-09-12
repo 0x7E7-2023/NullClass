@@ -6,9 +6,12 @@ import androidx.lifecycle.viewModelScope
 import com.nullclass.core.model.DefaultPeriodTimes
 import com.nullclass.core.data.repository.CourseRepository
 import com.nullclass.core.data.repository.TermRepository
+import com.nullclass.core.model.MINUTES_PER_DAY
 import com.nullclass.core.model.PeriodTime
+import com.nullclass.core.model.RetimeResult
 import com.nullclass.core.model.Term
 import com.nullclass.core.model.nearestWeekday
+import com.nullclass.core.model.retimeSections
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -17,6 +20,13 @@ import kotlinx.coroutines.launch
 import java.time.DayOfWeek
 import java.time.LocalDate
 import javax.inject.Inject
+
+/**
+ * 「快速设定」的取值范围与默认值。默认值与默认节次模板一致（45 分钟一节、大节内课间 10 分钟），
+ * 所以对着新建学期的默认模板点「套用」是恒等变换，不会把好好的模板改坏。
+ */
+private const val DEFAULT_LESSON_MINUTES = 45
+private const val DEFAULT_BREAK_MINUTES = 10
 
 /** 编辑器内的节次（时间用文本承载，保存时解析校验）。 */
 data class EditablePeriod(
@@ -34,6 +44,11 @@ data class TermEditUiState(
     val firstDayEpochDay: Long = 0L,
     val totalWeeks: Int = 20,
     val periods: List<EditablePeriod> = emptyList(),
+    /** 「快速设定」的两个输入（分钟，文本便于直接改写）。只用来生成，不跟随手改的行；套用时才解析。 */
+    val quickLessonText: String = DEFAULT_LESSON_MINUTES.toString(),
+    val quickBreakText: String = DEFAULT_BREAK_MINUTES.toString(),
+    /** 快速设定的就地提示（时间改不动时的原因），比弹窗更贴着手上的操作。 */
+    val quickNotice: String? = null,
     /** 存在上学期时显示「复制课程」。 */
     val previousTermName: String? = null,
     val copyFromPrevious: Boolean = false,
@@ -62,6 +77,15 @@ class TermEditViewModel @Inject constructor(
             if (termId != null) {
                 val term = termRepository.getById(termId)
                 if (term != null) {
+                    val periods = termRepository.getPeriodTimes(term.id).map { p ->
+                        EditablePeriod(
+                            periodIndex = p.periodIndex,
+                            startText = minuteLabel(p.startMinuteOfDay),
+                            endText = minuteLabel(p.endMinuteOfDay),
+                            session = p.session,
+                        )
+                    }
+                    val (lesson, breakMinutes) = quickDefaults(periods)
                     _state.update {
                         it.copy(
                             loading = false,
@@ -70,14 +94,9 @@ class TermEditViewModel @Inject constructor(
                             firstDayEpochDay = term.firstDayEpochDay,
                             totalWeeks = term.totalWeeks,
                             courseCount = courseRepository.getSchedule(term.id).size,
-                            periods = termRepository.getPeriodTimes(term.id).map { p ->
-                                EditablePeriod(
-                                    periodIndex = p.periodIndex,
-                                    startText = minuteLabel(p.startMinuteOfDay),
-                                    endText = minuteLabel(p.endMinuteOfDay),
-                                    session = p.session,
-                                )
-                            },
+                            periods = periods,
+                            quickLessonText = lesson.toString(),
+                            quickBreakText = breakMinutes.toString(),
                         )
                     }
                     return@launch
@@ -87,20 +106,23 @@ class TermEditViewModel @Inject constructor(
             val nextMonday = LocalDate.now().let {
                 if (it.dayOfWeek == DayOfWeek.MONDAY) it else it.with(java.time.temporal.TemporalAdjusters.next(DayOfWeek.MONDAY))
             }
+            val periods = DefaultPeriodTimes.create("").map { p ->
+                EditablePeriod(
+                    periodIndex = p.periodIndex,
+                    startText = minuteLabel(p.startMinuteOfDay),
+                    endText = minuteLabel(p.endMinuteOfDay),
+                    session = p.session,
+                )
+            }
             _state.update {
                 it.copy(
                     loading = false,
                     isNew = true,
                     firstDayEpochDay = nextMonday.toEpochDay(),
                     totalWeeks = 20,
-                    periods = DefaultPeriodTimes.create("").map { p ->
-                        EditablePeriod(
-                            periodIndex = p.periodIndex,
-                            startText = minuteLabel(p.startMinuteOfDay),
-                            endText = minuteLabel(p.endMinuteOfDay),
-                            session = p.session,
-                        )
-                    },
+                    periods = periods,
+                    quickLessonText = DEFAULT_LESSON_MINUTES.toString(),
+                    quickBreakText = DEFAULT_BREAK_MINUTES.toString(),
                 )
             }
             // 是否有上学期可复制
@@ -154,20 +176,108 @@ class TermEditViewModel @Inject constructor(
         )
     }
 
-    fun resetDefaultPeriods() = _state.update {
-        it.copy(
-            periods = DefaultPeriodTimes.create("").map { p ->
-                EditablePeriod(
-                    periodIndex = p.periodIndex,
-                    startText = minuteLabel(p.startMinuteOfDay),
-                    endText = minuteLabel(p.endMinuteOfDay),
-                    session = p.session,
-                )
-            },
-        )
+    fun resetDefaultPeriods() {
+        val periods = DefaultPeriodTimes.create("").map { p ->
+            EditablePeriod(
+                periodIndex = p.periodIndex,
+                startText = minuteLabel(p.startMinuteOfDay),
+                endText = minuteLabel(p.endMinuteOfDay),
+                session = p.session,
+            )
+        }
+        _state.update {
+            it.copy(
+                periods = periods,
+                quickLessonText = DEFAULT_LESSON_MINUTES.toString(),
+                quickBreakText = DEFAULT_BREAK_MINUTES.toString(),
+                quickNotice = null,
+            )
+        }
     }
 
     fun setCopyFromPrevious(value: Boolean) = _state.update { it.copy(copyFromPrevious = value) }
+
+    /** 输入框只收数字（最多 3 位）：敲进字母后干瞪眼比直接拦下来更让人摸不着头脑。 */
+    fun setQuickLessonText(value: String) = _state.update {
+        if (value.length > 3 || !value.all(Char::isDigit)) it
+        else it.copy(quickLessonText = value, quickNotice = null)
+    }
+
+    fun setQuickBreakText(value: String) = _state.update {
+        if (value.length > 3 || !value.all(Char::isDigit)) it
+        else it.copy(quickBreakText = value, quickNotice = null)
+    }
+
+    /**
+     * 快速设定：按「单节时长 + 大节内课间」重排全部节次，**大节的开课时刻不动**
+     * （大节与大节之间的休息因此原样保留）。见 [retimeSections]。
+     */
+    fun applyQuickTimes() {
+        val state = _state.value
+        val lesson = state.quickLessonText.toIntOrNull()?.takeIf { it in QUICK_LESSON_RANGE }
+        val breakMinutes = state.quickBreakText.toIntOrNull()?.takeIf { it in QUICK_BREAK_RANGE }
+        if (lesson == null || breakMinutes == null) {
+            _state.update {
+                it.copy(
+                    quickNotice = "单节课请填 ${QUICK_LESSON_RANGE.first}~${QUICK_LESSON_RANGE.last} 分钟，" +
+                        "课间休息请填 ${QUICK_BREAK_RANGE.first}~${QUICK_BREAK_RANGE.last} 分钟。",
+                )
+            }
+            return
+        }
+        // 节次表是按文本编辑的：先用与保存同一套解析校验一遍，免得拿半截输入去重排
+        val parsed = state.periods.mapIndexed { index, period ->
+            val start = parseMinute(period.startText)
+            val end = parseMinute(period.endText)
+            if (start == null || end == null || start >= end) {
+                _state.update {
+                    it.copy(
+                        quickNotice = "第 ${index + 1} 节的时间不是有效的 HH:mm（开始要早于结束），" +
+                            "先改好再用快速设定。",
+                    )
+                }
+                return
+            }
+            PeriodTime(
+                periodIndex = index + 1,
+                startMinuteOfDay = start,
+                endMinuteOfDay = end,
+                session = period.session,
+            )
+        }
+
+        when (val result = retimeSections(parsed, lesson, breakMinutes)) {
+            is RetimeResult.Ok -> _state.update {
+                it.copy(
+                    periods = result.periods.map { timed ->
+                        EditablePeriod(
+                            periodIndex = timed.periodIndex,
+                            startText = minuteLabel(timed.startMinuteOfDay),
+                            endText = minuteLabel(timed.endMinuteOfDay),
+                            session = timed.session,
+                        )
+                    },
+                    quickNotice = null,
+                )
+            }
+
+            is RetimeResult.Overflow -> _state.update {
+                it.copy(
+                    quickNotice = "按每节 $lesson 分钟、课间 $breakMinutes 分钟排，第 ${result.section} 大节要到 " +
+                        "${minuteLabel(result.endMinuteOfDay)}，而下一个大节 ${minuteLabel(result.nextStartMinuteOfDay)} " +
+                        "就开课了 —— 把单节时长或课间休息调小一点。",
+                )
+            }
+
+            is RetimeResult.OutOfDay -> _state.update {
+                it.copy(
+                    quickNotice = "按每节 $lesson 分钟、课间 $breakMinutes 分钟排，第 ${result.section} 大节要到 " +
+                        "${minuteLabel(result.endMinuteOfDay)}，已经排到第二天了 —— " +
+                        "那一大节开得太晚，把单节时长或课间休息调小一点。",
+                )
+            }
+        }
+    }
 
     fun dismissError() = _state.update { it.copy(error = null) }
 
@@ -241,20 +351,49 @@ class TermEditViewModel @Inject constructor(
     }
 
     companion object {
+        /** 快速设定输入框能接受的分钟数范围（套用时校验，越界就地提示）。 */
+        internal val QUICK_LESSON_RANGE = 5..180
+        internal val QUICK_BREAK_RANGE = 0..180
+
         internal fun minuteLabel(minuteOfDay: Int): String {
             val hour = minuteOfDay / 60
             val minute = minuteOfDay % 60
             return "${hour.toString().padStart(2, '0')}:${minute.toString().padStart(2, '0')}"
         }
 
-        /** "8:00"/"08:00" → 分钟数；不合法返回 null。 */
+        /**
+         * "8:00"/"08:00" → 分钟数；不合法返回 null。
+         *
+         * 多认一个 "24:00"（= [MINUTES_PER_DAY]）：模型本来就允许 `endMinuteOfDay = 1440`
+         * （当天最后一刻），`minuteLabel(1440)` 写出来正是这个串 —— 不认它，界面上显示得出的值
+         * 就再也存不回去（快速设定排到 24:00 的行会卡在保存那一步）。起始时间填 24:00 不要紧，
+         * 它必然撞上「开始要早于结束」那一关。
+         */
         internal fun parseMinute(text: String): Int? {
             val regex = Regex("""^\s*(\d{1,2}):(\d{2})\s*$""")
             val match = regex.matchEntire(text.trim()) ?: return null
             val hour = match.groupValues[1].toIntOrNull() ?: return null
             val minute = match.groupValues[2].toIntOrNull() ?: return null
-            if (hour !in 0..23 || minute !in 0..59) return null
+            if (minute !in 0..59) return null
+            if (hour == 24) return if (minute == 0) MINUTES_PER_DAY else null
+            if (hour !in 0..23) return null
             return hour * 60 + minute
         }
+    }
+
+    /**
+     * 从现有节次推「快速设定」那两格的初值（第 1 节的时长、第 1 节与第 2 节之间的空档），
+     * 打开编辑页时它们就跟现状对上；推不出来（时间没填好）就用默认值。
+     */
+    private fun quickDefaults(periods: List<EditablePeriod>): Pair<Int, Int> {
+        val fallback = DEFAULT_LESSON_MINUTES to DEFAULT_BREAK_MINUTES
+        val first = periods.getOrNull(0) ?: return fallback
+        val start = parseMinute(first.startText) ?: return fallback
+        val end = parseMinute(first.endText) ?: return fallback
+        if (end <= start) return fallback
+        val lesson = (end - start).coerceIn(QUICK_LESSON_RANGE)
+        val secondStart = periods.getOrNull(1)?.let { parseMinute(it.startText) }
+            ?: return lesson to DEFAULT_BREAK_MINUTES
+        return lesson to (secondStart - end).coerceIn(QUICK_BREAK_RANGE)
     }
 }
