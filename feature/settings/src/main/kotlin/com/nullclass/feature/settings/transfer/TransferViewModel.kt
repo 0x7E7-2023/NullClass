@@ -223,10 +223,16 @@ class TransferViewModel @Inject constructor(
                     result.merged.terms.firstOrNull { it.id == termId }?.let { termRepository.setCurrent(it.id) }
                 }
                 _state.update {
+                    val newTimetables = result.newTimetableNames
+                    val suffix = when {
+                        newTimetables.isEmpty() -> ""
+                        newTimetables.size == 1 -> "，新增课表「${newTimetables.single()}」（我的 → 课表管理切换）"
+                        else -> "，新增 ${newTimetables.size} 张课表（我的 → 课表管理切换）"
+                    }
                     it.copy(
                         busy = false,
                         preview = null,
-                        message = if (result.adopted > 0) "已导入：采纳 ${result.adopted} 条记录" else "已导入（本地数据已是最新）",
+                        message = (if (result.adopted > 0) "已导入：采纳 ${result.adopted} 条记录" else "已导入（本地数据已是最新）") + suffix,
                         messageIsError = false,
                     )
                 }
@@ -291,7 +297,8 @@ class TransferViewModel @Inject constructor(
             val aliveIds = localAlive.filter { !dead(it) }.map(id).toSet()
             return imported.count { dead(it) && id(it) in aliveIds }
         }
-        return pending(document.terms, local.terms, { it.id }, { it.deletedAt != null }) +
+        return pending(document.timetables, local.timetables, { it.id }, { it.deletedAt != null }) +
+            pending(document.terms, local.terms, { it.id }, { it.deletedAt != null }) +
             pending(document.courses, local.courses, { it.id }, { it.deletedAt != null }) +
             pending(document.blocks, local.blocks, { it.id }, { it.deletedAt != null })
     }

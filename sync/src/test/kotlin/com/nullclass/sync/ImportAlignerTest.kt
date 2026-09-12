@@ -20,9 +20,11 @@ class ImportAlignerTest {
         isCurrent: Boolean = false,
         updatedAt: Long = 1,
         deletedAt: Long? = null,
+        timetableId: String = "tt",
     ) = TermDto(
         id = id, name = name, firstDayEpochDay = 20696, totalWeeks = 22,
         isCurrent = isCurrent, createdAt = 1, updatedAt = updatedAt, deletedAt = deletedAt,
+        timetableId = timetableId,
     )
 
     private fun course(
@@ -87,7 +89,7 @@ class ImportAlignerTest {
             blocks = listOf(block("b2", "c2", "t2")),
         )
 
-        val aligned = ImportAligner.align(local, incoming, now)
+        val aligned = ImportAligner.align(local, incoming, now, targetTimetableId = "tt")
 
         assertEquals("t1", aligned.incoming.terms.single().id)
         assertEquals("c1", aligned.incoming.courses.single().id)
@@ -113,7 +115,7 @@ class ImportAlignerTest {
             periodTimes = listOf(period("t2"), period("t2", periodIndex = 2)),
         )
 
-        val aligned = ImportAligner.align(local, incoming, now)
+        val aligned = ImportAligner.align(local, incoming, now, targetTimetableId = "tt")
 
         assertEquals("t1", aligned.incoming.periodTimes[0].termId)
         assertEquals("t1", aligned.incoming.periodTimes[1].termId)
@@ -135,7 +137,7 @@ class ImportAlignerTest {
             blocks = listOf(block("b2", "c2", "t2", location = "汇智楼307")),
         )
 
-        val aligned = ImportAligner.align(local, incoming, now)
+        val aligned = ImportAligner.align(local, incoming, now, targetTimetableId = "tt")
 
         val keptCourse = aligned.incoming.courses.single()
         assertEquals("c1", keptCourse.id)
@@ -162,7 +164,7 @@ class ImportAlignerTest {
             blocks = listOf(block("b3", "c3", "t2")),
         )
 
-        val aligned = ImportAligner.align(local, incoming, now)
+        val aligned = ImportAligner.align(local, incoming, now, targetTimetableId = "tt")
 
         assertNull(aligned.local.courses.single { it.id == "c1" }.deletedAt, "对齐到的课程不该被作废")
         assertNotNull(aligned.local.courses.single { it.id == "c2" }.deletedAt, "消失的课程应作废")
@@ -182,7 +184,7 @@ class ImportAlignerTest {
             blocks = listOf(block("b1", "c1", "t1", updatedAt = now)),
         )
 
-        val aligned = ImportAligner.align(local, incoming, now)
+        val aligned = ImportAligner.align(local, incoming, now, targetTimetableId = "tt")
 
         assertEquals(local, aligned.local)
         assertEquals(incoming, aligned.incoming)
@@ -193,7 +195,7 @@ class ImportAlignerTest {
         val local = doc(terms = listOf(term("t1", name = "2025-2026学年2学期")))
         val incoming = doc(terms = listOf(term("t2")))
 
-        val aligned = ImportAligner.align(local, incoming, now)
+        val aligned = ImportAligner.align(local, incoming, now, targetTimetableId = "tt")
 
         assertEquals(local, aligned.local)
         assertEquals(incoming, aligned.incoming)
@@ -212,10 +214,32 @@ class ImportAlignerTest {
             blocks = listOf(block("b2", "c2", "t2")),
         )
 
-        val aligned = ImportAligner.align(local, incoming, now)
+        val aligned = ImportAligner.align(local, incoming, now, targetTimetableId = "tt")
 
         assertNull(aligned.local.courses.single { it.id == "c9" }.deletedAt, "别的学期的课程不该被作废")
         assertNull(aligned.local.blocks.single { it.id == "b9" }.deletedAt)
+    }
+
+    @Test
+    fun `同名学期不跨课表对齐 - 别的课表里的同名学期不是同一个`() {
+        // 本地「弟弟的课表」里有个同名学期；教务导入目标是当前课表 tt，不该被认成同一个
+        val local = doc(
+            terms = listOf(term("t9", timetableId = "sibling")),
+            courses = listOf(course("c9", "t9")),
+            blocks = listOf(block("b9", "c9", "t9")),
+        )
+        val incoming = doc(
+            terms = listOf(term("t2")),
+            courses = listOf(course("c2", "t2")),
+            blocks = listOf(block("b2", "c2", "t2")),
+        )
+
+        val aligned = ImportAligner.align(local, incoming, now, targetTimetableId = "tt")
+
+        // 没有对齐：新学期用自己的 ID，落在目标课表；别的课表的记录一个没动
+        assertEquals("t2", aligned.incoming.terms.single().id)
+        assertEquals("tt", aligned.incoming.terms.single().timetableId)
+        assertEquals(local, aligned.local)
     }
 
     @Test
@@ -233,7 +257,7 @@ class ImportAlignerTest {
             blocks = listOf(block("b3", "c3", "t2")),
         )
 
-        val aligned = ImportAligner.align(local, incoming, now)
+        val aligned = ImportAligner.align(local, incoming, now, targetTimetableId = "tt")
 
         assertEquals(local, aligned.local)
         assertEquals(incoming, aligned.incoming)

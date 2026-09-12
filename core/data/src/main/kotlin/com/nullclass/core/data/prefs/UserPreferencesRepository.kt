@@ -23,6 +23,7 @@ class UserPreferencesRepository @Inject constructor(
 ) {
 
     private object Keys {
+        val ACTIVE_TIMETABLE_ID = stringPreferencesKey("active_timetable_id")
         val REMINDER_LEAD_MINUTES = intPreferencesKey("reminder_lead_minutes")
         val NOTIFICATION_PERMISSION_ASKED = booleanPreferencesKey("notification_permission_asked")
         val SHOW_WEEKEND = booleanPreferencesKey("show_weekend")
@@ -31,6 +32,18 @@ class UserPreferencesRepository @Inject constructor(
         val SHOW_OTHER_WEEK_COURSES = booleanPreferencesKey("show_other_week_courses")
         val WIDGET_FONT_SIZE = stringPreferencesKey("widget_font_size")
         val SENT_REMINDER_KEYS = stringSetPreferencesKey("sent_reminder_keys")
+    }
+
+    /**
+     * 当前课表 id。**本地**选择，不进同步（换设备看同一份数据本来就少见，
+     * 写进库列会被 LWW 传来传去，切换课表变成跨设备互相顶）。
+     * 指向已删课表时的回落由 TimetableRepository 处理。
+     */
+    val activeTimetableId: Flow<String?> =
+        context.userPrefs.data.map { it[Keys.ACTIVE_TIMETABLE_ID] }
+
+    suspend fun setActiveTimetableId(value: String) {
+        context.userPrefs.edit { it[Keys.ACTIVE_TIMETABLE_ID] = value }
     }
 
     /** 提前提醒分钟数；0 = 关闭。默认 15。 */

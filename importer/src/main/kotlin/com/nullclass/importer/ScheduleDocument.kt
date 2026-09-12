@@ -10,13 +10,16 @@ import kotlinx.serialization.Serializable
  * 支持逐记录 LWW 合并与删除传播——导入 = 一次单向同步。
  *
  * 线上格式一旦发布就是契约，必须独立于应用内部模型演进；
- * v2 起新增字段必须给默认值（codec 配置 encodeDefaults，旧版本可读）。
+ * v2 起新增字段必须给默认值（codec 配置 encodeDefaults + ignoreUnknownKeys，旧版本可读可写）。
+ * 「课表」（[TimetableDto] / [TermDto.timetableId]）就是按这个约定加的：
+ * 旧版本写的快照里没有这些字段 → 归属为空 → 由 SyncEngine 解析到当前课表。
  */
 @Serializable
 data class ScheduleDocument(
     val formatVersion: Int = FORMAT_VERSION,
     val deviceId: String,
     val generatedAt: Long,
+    val timetables: List<TimetableDto> = emptyList(),
     val terms: List<TermDto>,
     val courses: List<CourseDto>,
     val blocks: List<BlockDto>,
@@ -46,6 +49,16 @@ object ImportProvenance {
         deviceId.startsWith(JW_PREFIX) || deviceId == WAKEUP_IMPORT
 }
 
+/** 课表（顶层容器，v2 格式的后加字段；旧版本快照里没有）。 */
+@Serializable
+data class TimetableDto(
+    val id: String,
+    val name: String,
+    val createdAt: Long,
+    val updatedAt: Long,
+    val deletedAt: Long? = null,
+)
+
 @Serializable
 data class TermDto(
     val id: String,
@@ -56,6 +69,8 @@ data class TermDto(
     val createdAt: Long,
     val updatedAt: Long,
     val deletedAt: Long? = null,
+    /** 所属课表 id；空串 = 旧版本写的（归属解析见 SyncEngine）。放在末尾让既有按位构造不破。 */
+    val timetableId: String = "",
 )
 
 @Serializable

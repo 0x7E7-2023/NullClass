@@ -19,6 +19,7 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -37,31 +38,31 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 
 /**
- * 学期管理：列表切换当前学期、编辑（周数 / 第 1 周日期 / 每周起始日 / 节次时间）、删除、新建。
- * 点整行 = 切为当前学期；改设置走右侧的编辑按钮。
+ * 课表管理：列表切换当前课表、重命名、删除、新建。
+ * 点整行 = 切为当前课表（今日/课表/小组件/提醒全部跟着切）；与学期管理同款交互。
  */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun TermListScreen(
+fun TimetableListScreen(
     onBack: () -> Unit,
-    onCreateTerm: () -> Unit,
-    onEditTerm: (String) -> Unit,
-    viewModel: TermListViewModel = hiltViewModel(),
+    onCreateTimetable: () -> Unit,
+    viewModel: TimetableListViewModel = hiltViewModel(),
 ) {
     val state by viewModel.uiState.collectAsState()
-    var pendingDelete by remember { mutableStateOf<TermListItem?>(null) }
+    var pendingDelete by remember { mutableStateOf<TimetableListItem?>(null) }
+    var pendingRename by remember { mutableStateOf<TimetableListItem?>(null) }
 
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("学期管理") },
+                title = { Text("课表管理") },
                 navigationIcon = {
                     IconButton(onClick = onBack) {
                         Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "返回")
                     }
                 },
                 actions = {
-                    TextButton(onClick = onCreateTerm) { Text("新建") }
+                    TextButton(onClick = onCreateTimetable) { Text("新建") }
                 },
             )
         },
@@ -78,13 +79,13 @@ fun TermListScreen(
                     horizontalAlignment = Alignment.CenterHorizontally,
                     verticalArrangement = Arrangement.spacedBy(12.dp),
                 ) {
-                    Text("还没有学期", style = MaterialTheme.typography.titleMedium)
+                    Text("还没有课表", style = MaterialTheme.typography.titleMedium)
                     Text(
-                        "新建一个学期开始排课",
+                        "新建一张开始排课",
                         style = MaterialTheme.typography.bodyMedium,
                         color = MaterialTheme.colorScheme.onSurfaceVariant,
                     )
-                    Button(onClick = onCreateTerm) { Text("创建学期") }
+                    Button(onClick = onCreateTimetable) { Text("创建课表") }
                 }
             }
         } else {
@@ -96,20 +97,11 @@ fun TermListScreen(
                     .padding(bottom = 24.dp),
                 verticalArrangement = Arrangement.spacedBy(8.dp),
             ) {
-                state.timetableName?.let { name ->
-                    item(key = "timetable-label") {
-                        Text(
-                            "所属课表：$name",
-                            style = MaterialTheme.typography.bodySmall,
-                            color = MaterialTheme.colorScheme.onSurfaceVariant,
-                        )
-                    }
-                }
-                items(state.items, key = { it.term.id }) { item ->
-                    TermRow(
+                items(state.items, key = { it.timetable.id }) { item ->
+                    TimetableRow(
                         item = item,
-                        onSelect = { viewModel.setCurrent(item.term.id) },
-                        onEdit = { onEditTerm(item.term.id) },
+                        onSelect = { viewModel.setActive(item.timetable.id) },
+                        onRename = { pendingRename = item },
                         onDelete = { pendingDelete = item },
                     )
                 }
@@ -118,32 +110,75 @@ fun TermListScreen(
     }
 
     pendingDelete?.let { item ->
+        // 最后一张不删：删光后「当前课表」没了落点，引导页也不该在老用户面前复活
+        if (state.items.size <= 1) {
+            AlertDialog(
+                onDismissRequest = { pendingDelete = null },
+                title = { Text("无法删除") },
+                text = { Text("至少保留一张课表。要清空内容，用学期管理删除里面的学期。") },
+                confirmButton = {
+                    TextButton(onClick = { pendingDelete = null }) { Text("知道了") }
+                },
+            )
+        } else {
+            AlertDialog(
+                onDismissRequest = { pendingDelete = null },
+                title = { Text("删除课表") },
+                text = {
+                    Text(
+                        "将删除课表「${item.timetable.name}」及其 ${item.termCount} 个学期和全部课程。" +
+                            "删除会同步到其他设备。",
+                    )
+                },
+                confirmButton = {
+                    TextButton(
+                        onClick = {
+                            pendingDelete = null
+                            viewModel.delete(item.timetable.id)
+                        },
+                    ) { Text("删除", color = MaterialTheme.colorScheme.error) }
+                },
+                dismissButton = {
+                    TextButton(onClick = { pendingDelete = null }) { Text("取消") }
+                },
+            )
+        }
+    }
+
+    pendingRename?.let { item ->
+        var name by remember(item) { mutableStateOf(item.timetable.name) }
         AlertDialog(
-            onDismissRequest = { pendingDelete = null },
-            title = { Text("删除学期") },
+            onDismissRequest = { pendingRename = null },
+            title = { Text("重命名课表") },
             text = {
-                Text("将删除学期「${item.term.name}」及其全部课程。删除会同步到其他设备。")
+                OutlinedTextField(
+                    value = name,
+                    onValueChange = { name = it },
+                    singleLine = true,
+                    label = { Text("课表名称") },
+                )
             },
             confirmButton = {
                 TextButton(
                     onClick = {
-                        pendingDelete = null
-                        viewModel.deleteTerm(item.term.id)
+                        val trimmed = name.trim()
+                        pendingRename = null
+                        if (trimmed.isNotEmpty()) viewModel.rename(item.timetable.id, trimmed)
                     },
-                ) { Text("删除", color = MaterialTheme.colorScheme.error) }
+                ) { Text("保存") }
             },
             dismissButton = {
-                TextButton(onClick = { pendingDelete = null }) { Text("取消") }
+                TextButton(onClick = { pendingRename = null }) { Text("取消") }
             },
         )
     }
 }
 
 @Composable
-private fun TermRow(
-    item: TermListItem,
+private fun TimetableRow(
+    item: TimetableListItem,
     onSelect: () -> Unit,
-    onEdit: () -> Unit,
+    onRename: () -> Unit,
     onDelete: () -> Unit,
 ) {
     Surface(
@@ -162,21 +197,17 @@ private fun TermRow(
                     .padding(vertical = 6.dp),
             ) {
                 Text(
-                    item.term.name,
+                    item.timetable.name,
                     style = MaterialTheme.typography.titleSmall,
                     fontWeight = FontWeight.Bold,
                 )
                 Text(
-                    when {
-                        item.currentWeek != null ->
-                            "第 ${item.currentWeek} 周 · 共 ${item.term.totalWeeks} 周"
-                        else -> "不在学期内 · 共 ${item.term.totalWeeks} 周"
-                    },
+                    "${item.termCount} 个学期",
                     style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                 )
             }
-            if (item.isCurrent) {
+            if (item.isActive) {
                 Text(
                     "当前",
                     style = MaterialTheme.typography.labelLarge,
@@ -185,17 +216,17 @@ private fun TermRow(
                     modifier = Modifier.padding(end = 4.dp),
                 )
             }
-            IconButton(onClick = onEdit) {
+            IconButton(onClick = onRename) {
                 Icon(
                     Icons.Default.Edit,
-                    contentDescription = "编辑学期",
+                    contentDescription = "重命名课表",
                     tint = MaterialTheme.colorScheme.onSurfaceVariant,
                 )
             }
             IconButton(onClick = onDelete) {
                 Icon(
                     Icons.Default.Delete,
-                    contentDescription = "删除学期",
+                    contentDescription = "删除课表",
                     tint = MaterialTheme.colorScheme.error,
                 )
             }

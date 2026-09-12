@@ -5,14 +5,23 @@ import com.nullclass.core.data.db.entity.CourseWithBlocksEntity
 import com.nullclass.core.data.db.entity.PeriodTimeEntity
 import com.nullclass.core.data.db.entity.ScheduleBlockEntity
 import com.nullclass.core.data.db.entity.TermEntity
+import com.nullclass.core.data.db.entity.TimetableEntity
 import com.nullclass.core.model.Course
 import com.nullclass.core.model.CourseWithBlocks
 import com.nullclass.core.model.PeriodTime
 import com.nullclass.core.model.ScheduleBlock
 import com.nullclass.core.model.Term
+import com.nullclass.core.model.Timetable
 import com.nullclass.core.model.WeekType
 
 /** Entity ↔ 领域模型映射。注意：@Relation 不带墓碑过滤，映射层统一处理。 */
+
+internal fun TimetableEntity.toModel() = Timetable(
+    id = id,
+    name = name,
+    createdAt = createdAt,
+    updatedAt = updatedAt,
+)
 
 internal fun TermEntity.toModel() = Term(
     id = id,
@@ -21,8 +30,9 @@ internal fun TermEntity.toModel() = Term(
     totalWeeks = totalWeeks,
 )
 
-internal fun Term.toEntity(createdAt: Long, updatedAt: Long, isCurrent: Boolean = false) = TermEntity(
+internal fun Term.toEntity(timetableId: String, createdAt: Long, updatedAt: Long, isCurrent: Boolean = false) = TermEntity(
     id = id,
+    timetableId = timetableId,
     name = name,
     firstDayEpochDay = firstDayEpochDay,
     totalWeeks = totalWeeks,

@@ -92,8 +92,10 @@ fun ScheduleScreen(
                         Text(title, style = MaterialTheme.typography.titleMedium)
                         if (state is ScheduleUiState.Ready) {
                             val ready = state as ScheduleUiState.Ready
+                            // 多课表时前缀课表名（单课表用户界面零变化）
+                            val prefix = ready.timetableName?.let { "$it · " } ?: ""
                             Text(
-                                text = "第 ${ready.selectedWeek} 周" +
+                                text = prefix + "第 ${ready.selectedWeek} 周" +
                                     if (ready.selectedWeek == ready.todayWeek) " · 本周" else "",
                                 style = MaterialTheme.typography.labelSmall,
                                 color = MaterialTheme.colorScheme.onSurfaceVariant,

@@ -80,6 +80,32 @@ class NullClassCodecTest {
     }
 
     @Test
+    fun `课表字段 round-trip 保真`() {
+        val doc = document().copy(
+            timetables = listOf(
+                TimetableDto(id = "tt-1", name = "我的课表", createdAt = 1, updatedAt = 2),
+                TimetableDto(id = "tt-2", name = "弟弟的课表", createdAt = 3, updatedAt = 4, deletedAt = 5),
+            ),
+            terms = document().terms.map { it.copy(timetableId = "tt-1") },
+        )
+        val decoded = NullClassCodec.decode(NullClassCodec.encode(doc))
+        assertEquals(doc, decoded)
+        assertEquals("tt-1", decoded.terms[0].timetableId)
+    }
+
+    @Test
+    fun `旧版本快照没有课表字段 - 照常读入，归属为空`() {
+        // 0.8.1 及更早写出的文件：没有 timetables、没有 timetableId（SyncEngine 负责解析归属）
+        val legacy = NullClassCodec.encode(document())
+            .replace("\"timetables\":[],", "")
+            .replace("\"timetableId\":\"\",", "")
+        assertEquals(2, NullClassCodec.decode(legacy).formatVersion)
+        val decoded = NullClassCodec.decode(legacy)
+        assertEquals(emptyList(), decoded.timetables)
+        assertEquals("", decoded.terms[0].timetableId)
+    }
+
+    @Test
     fun `非 JSON 内容 - 抛出可读错误`() {
         assertFailsWith<IllegalArgumentException> { NullClassCodec.decode("not a json") }
         assertFailsWith<IllegalArgumentException> { NullClassCodec.decode("{\"hello\":1}") }

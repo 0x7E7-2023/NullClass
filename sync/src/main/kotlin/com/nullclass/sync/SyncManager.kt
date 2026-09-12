@@ -1,5 +1,6 @@
 package com.nullclass.sync
 
+import com.nullclass.core.data.repository.TimetableRepository
 import com.nullclass.importer.ScheduleDocument
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
@@ -22,6 +23,8 @@ sealed interface SyncResult {
 data class MergeImportResult(
     val merged: ScheduleDocument,
     val adopted: Int,
+    /** 本次导入**新增**的课表（本地没有的 id）：导入同学的备份会多出一张课表，UI 要指明去哪了。 */
+    val newTimetableNames: List<String> = emptyList(),
 )
 
 /**
@@ -32,6 +35,7 @@ data class MergeImportResult(
 class SyncManager @Inject constructor(
     private val settings: SyncSettingsRepository,
     private val codec: SnapshotCodec,
+    private val timetableRepository: TimetableRepository,
 ) {
 
     private val mutex = Mutex()
@@ -54,7 +58,8 @@ class SyncManager @Inject constructor(
                 merged = local
                 adopted = 0
             } else {
-                merged = SyncEngine.merge(local, downloaded.snapshot, now)
+                // activeTimetableId：旧版本写的快照里学期没有课表归属，合并时落到当前课表
+                merged = SyncEngine.merge(local, downloaded.snapshot, now, timetableRepository.getActiveId())
                 adopted = codec.countAdopted(local, merged)
                 codec.apply(merged)
             }
@@ -82,12 +87,20 @@ class SyncManager @Inject constructor(
         val now = System.currentTimeMillis()
         val local = codec.dump(deviceId = null, nowMillis = now)
         // 适配器/WakeUp 每次导入都生成全新 UUID，纯按 ID 合并会让「一键刷新」复制一份课表；
-        // 先按名字对齐到本地记录（详见 ImportAligner），再走常规 LWW。
-        val aligned = ImportAligner.align(local, document, now)
-        val merged = SyncEngine.merge(aligned.local, aligned.incoming, now)
+        // 先按名字对齐到本地记录（详见 ImportAligner——名字匹配限定在当前课表内），再走常规 LWW。
+        val activeTimetableId = timetableRepository.getActiveId()
+        val aligned = ImportAligner.align(local, document, now, activeTimetableId)
+        val merged = SyncEngine.merge(aligned.local, aligned.incoming, now, activeTimetableId)
         val adopted = codec.countAdopted(aligned.local, merged)
         codec.apply(merged)
-        MergeImportResult(merged = merged, adopted = adopted)
+        val localLiveIds = local.timetables.filter { it.deletedAt == null }.map { it.id }.toSet()
+        MergeImportResult(
+            merged = merged,
+            adopted = adopted,
+            newTimetableNames = merged.timetables
+                .filter { it.deletedAt == null && it.id !in localLiveIds }
+                .map { it.name },
+        )
     }
 
     suspend fun testConnection(): WebDavResult {

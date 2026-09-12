@@ -25,11 +25,13 @@ class TermListViewModelTest {
     private val newer = Term(id = "new", name = "2026-2027-1", firstDayEpochDay = 140, totalWeeks = 20)
 
     private lateinit var repository: FakeListTermRepository
+    private lateinit var timetableRepository: FakeTimetableRepository
 
     @BeforeTest
     fun setUp() {
         Dispatchers.setMain(UnconfinedTestDispatcher())
         repository = FakeListTermRepository(listOf(newer, older), currentId = newer.id)
+        timetableRepository = FakeTimetableRepository()
     }
 
     @AfterTest
@@ -39,7 +41,7 @@ class TermListViewModelTest {
 
     @Test
     fun marksCurrentTerm() = runTest {
-        val vm = TermListViewModel(repository)
+        val vm = TermListViewModel(repository, timetableRepository)
         val items = vm.uiState.first { it.items.isNotEmpty() }.items
         assertEquals(listOf("new", "old"), items.map { it.term.id })
         assertEquals(listOf(true, false), items.map { it.isCurrent })
@@ -47,7 +49,7 @@ class TermListViewModelTest {
 
     @Test
     fun setCurrentSkipsAlreadyCurrent() = runTest {
-        val vm = TermListViewModel(repository)
+        val vm = TermListViewModel(repository, timetableRepository)
         vm.uiState.first { it.items.isNotEmpty() }
         vm.setCurrent(newer.id)
         assertTrue(repository.setCurrentCalls.isEmpty())
@@ -55,7 +57,7 @@ class TermListViewModelTest {
 
     @Test
     fun setCurrentSwitches() = runTest {
-        val vm = TermListViewModel(repository)
+        val vm = TermListViewModel(repository, timetableRepository)
         vm.uiState.first { it.items.isNotEmpty() }
         vm.setCurrent(older.id)
         val items = vm.uiState.first { state -> state.items.any { it.isCurrent && it.term.id == older.id } }.items

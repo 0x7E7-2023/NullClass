@@ -26,9 +26,12 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
+import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import com.nullclass.feature.edit.CourseEditScreen
 import com.nullclass.feature.edit.TermEditScreen
 import com.nullclass.feature.edit.TermListScreen
+import com.nullclass.feature.edit.TimetableCreateScreen
+import com.nullclass.feature.edit.TimetableListScreen
 import com.nullclass.feature.schedule.ScheduleScreen
 import com.nullclass.feature.schedule.TodayScreen
 import com.nullclass.feature.settings.AboutScreen
@@ -45,6 +48,8 @@ object Routes {
     const val COURSE_EDIT = "course_edit?courseId={courseId}"
     const val TERM_EDIT = "term_edit?termId={termId}"
     const val TERM_LIST = "term_list"
+    const val TIMETABLE_LIST = "timetable_list"
+    const val TIMETABLE_CREATE = "timetable_create"
     const val SETTINGS = "settings"
     const val ABOUT = "about"
     const val TRANSFER = "transfer"
@@ -72,9 +77,19 @@ fun AppNavHost() {
     val navController = rememberNavController()
     val pendingImportUri by PendingImport.uri.collectAsState()
 
-    // 「用其他应用打开」.nullclass → 直达导入页
-    LaunchedEffect(pendingImportUri) {
-        if (pendingImportUri != null && navController.currentDestination?.route != Routes.TRANSFER) {
+    // 首次启动闸门：没有课表 → 整棵导航树不渲染，只渲染创建页（创建后流自动放行）
+    val gateViewModel: AppGateViewModel = hiltViewModel()
+    val gateOverviews = gateViewModel.overviews.collectAsState().value
+    val gated = gateOverviews == null || gateOverviews.isEmpty()
+
+    // 「用其他应用打开」.nullclass → 直达导入页。被首启引导闸住时**先不导航**：
+    // 闸门期间 NavHost 没被组合、graph 未设，navigate 会直接抛异常当场崩溃；
+    // 闸门放行后 key（gated）变化令本 effect 重跑，导入页照常直达——
+    // 冷启动带着导入 Intent 的新装用户：先建课表，建完直接落进导入预览。
+    LaunchedEffect(pendingImportUri, gated) {
+        if (pendingImportUri != null && !gated &&
+            navController.currentDestination?.route != Routes.TRANSFER
+        ) {
             navController.navigate(Routes.TRANSFER)
         }
     }
@@ -93,6 +108,14 @@ fun AppNavHost() {
     val currentRoute = backStackEntry?.destination?.route
     // 底栏只在三个顶层页显示；详情/子页推入后隐藏，返回键自然恢复
     val showTabBar = currentRoute in TopTabs.map { it.route }
+
+    if (gated) {
+        // null = 首帧还没读到：什么都不画（外层已垫背景色）；空 = 全新安装，进引导
+        if (gateOverviews != null) {
+            TimetableCreateScreen(onDone = {}, standalone = true)
+        }
+        return
+    }
 
     Scaffold(
         containerColor = MaterialTheme.colorScheme.background,
@@ -154,6 +177,7 @@ fun AppNavHost() {
             composable(Routes.PROFILE) {
                 ProfileScreen(
                     onEditTerm = { termId -> navController.navigate(Routes.termEdit(termId)) },
+                    onOpenTimetableList = { navController.navigate(Routes.TIMETABLE_LIST) },
                     onOpenTermList = { navController.navigate(Routes.TERM_LIST) },
                     onOpenTransfer = { navController.navigate(Routes.TRANSFER) },
                     onOpenSettings = { navController.navigate(Routes.SETTINGS) },
@@ -176,6 +200,18 @@ fun AppNavHost() {
                     onBack = ::back,
                     onCreateTerm = { navController.navigate(Routes.termEdit()) },
                     onEditTerm = { termId -> navController.navigate(Routes.termEdit(termId)) },
+                )
+            }
+            composable(Routes.TIMETABLE_LIST) {
+                TimetableListScreen(
+                    onBack = ::back,
+                    onCreateTimetable = { navController.navigate(Routes.TIMETABLE_CREATE) },
+                )
+            }
+            composable(Routes.TIMETABLE_CREATE) {
+                TimetableCreateScreen(
+                    onDone = ::back,
+                    onBack = ::back,
                 )
             }
             composable(

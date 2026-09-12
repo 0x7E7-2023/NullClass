@@ -5,22 +5,17 @@ import androidx.room.Index
 import androidx.room.PrimaryKey
 
 /**
- * v2 审计三列约定（全业务表一致）：
+ * 课表（v3 新增）。审计三列约定与全业务表一致：
  *  - updatedAt：同步 LWW 冲突判定
  *  - deletedAt：软删除墓碑，同步时传播删除；业务查询一律过滤 IS NULL
  */
 @Entity(
-    tableName = "terms",
-    indices = [Index("deletedAt"), Index("timetableId")],
+    tableName = "timetables",
+    indices = [Index("deletedAt")],
 )
-data class TermEntity(
+data class TimetableEntity(
     @PrimaryKey val id: String,
-    /** 所属课表。v2 老数据迁移后归到固定 UUID 的「我的课表」；不因同步出现空值（见 SyncEngine）。 */
-    val timetableId: String,
     val name: String,
-    val firstDayEpochDay: Long,
-    val totalWeeks: Int,
-    val isCurrent: Boolean = false,
     val createdAt: Long,
     val updatedAt: Long,
     val deletedAt: Long? = null,

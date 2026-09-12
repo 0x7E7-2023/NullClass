@@ -3,6 +3,7 @@ package com.nullclass.feature.settings
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.nullclass.core.data.repository.TermRepository
+import com.nullclass.core.data.repository.TimetableRepository
 import com.nullclass.core.model.Term
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.delay
@@ -16,6 +17,8 @@ import javax.inject.Inject
 
 /** 我的页顶部学期卡片需要的信息。 */
 data class ProfileUiState(
+    /** 当前课表名（卡片小字标注，一眼知道自己在哪张课表里）。 */
+    val timetableName: String? = null,
     val term: Term? = null,
     /** 今天所在周次；不在学期内为 null。 */
     val currentWeek: Int? = null,
@@ -24,6 +27,7 @@ data class ProfileUiState(
 @HiltViewModel
 class ProfileViewModel @Inject constructor(
     termRepository: TermRepository,
+    timetableRepository: TimetableRepository,
 ) : ViewModel() {
 
     /** 每分钟一拍：进程过夜存活时跨天/跨周自动刷新周次，不依赖重建 VM。 */
@@ -35,7 +39,15 @@ class ProfileViewModel @Inject constructor(
     }
 
     val uiState: StateFlow<ProfileUiState> =
-        combine(termRepository.observeCurrent(), dayTicker) { term, _ ->
-            ProfileUiState(term = term, currentWeek = term?.weekOf(LocalDate.now().toEpochDay()))
+        combine(
+            termRepository.observeCurrent(),
+            timetableRepository.observeActive(),
+            dayTicker,
+        ) { term, activeTimetable, _ ->
+            ProfileUiState(
+                timetableName = activeTimetable?.name,
+                term = term,
+                currentWeek = term?.weekOf(LocalDate.now().toEpochDay()),
+            )
         }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), ProfileUiState())
 }

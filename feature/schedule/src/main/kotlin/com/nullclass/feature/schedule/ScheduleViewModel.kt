@@ -5,6 +5,7 @@ import androidx.lifecycle.viewModelScope
 import com.nullclass.core.data.prefs.UserPreferencesRepository
 import com.nullclass.core.data.repository.CourseRepository
 import com.nullclass.core.data.repository.TermRepository
+import com.nullclass.core.data.repository.TimetableRepository
 import com.nullclass.core.model.CourseWithBlocks
 import com.nullclass.core.model.PeriodTime
 import com.nullclass.core.model.PlacedBlock
@@ -17,6 +18,8 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.drop
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.stateIn
@@ -56,6 +59,12 @@ sealed interface ScheduleUiState {
         val showNowLine: Boolean,
         /** 是否把非本周的课画成灰块。 */
         val showOtherWeek: Boolean,
+        /**
+         * 当前课表名。**只有课表多于一张时才非 null**（顶栏第二行前缀「我的课表 · 第 3 周」）：
+         * 单课表用户看到的界面一个字都不变。今天在这张课表里第几周，与课表名无关，
+         * 所以它不影响周次计算，只影响标题文案。
+         */
+        val timetableName: String? = null,
     ) : ScheduleUiState
 }
 
@@ -73,12 +82,28 @@ class ScheduleViewModel @Inject constructor(
     private val termRepository: TermRepository,
     private val courseRepository: CourseRepository,
     private val userPreferencesRepository: UserPreferencesRepository,
+    timetableRepository: TimetableRepository,
 ) : ViewModel() {
 
     private val today: LocalDate = LocalDate.now()
 
     /** null = 跟随今天自动定位；用户翻页/选周后写入具体值。 */
     private val userSelectedWeek = MutableStateFlow<Int?>(null)
+
+    init {
+        // 切换课表后重置翻到的周次：页码式记忆跨课表没有意义（新课表可能根本没有那一周）
+        viewModelScope.launch {
+            timetableRepository.observeActive().drop(1).collect { userSelectedWeek.value = null }
+        }
+    }
+
+    /** 顶栏课表名：只有课表多于一张时才显示。 */
+    private val timetableLabel: Flow<String?> = combine(
+        timetableRepository.observeActive(),
+        timetableRepository.observeOverviews(),
+    ) { active, all ->
+        if (all.size > 1) active?.name else null
+    }.distinctUntilChanged()
 
     /** 四个显示开关一起变，任一变化都重算周视图。 */
     private val displayPrefs: Flow<DisplayPrefs> = combine(
@@ -91,10 +116,10 @@ class ScheduleViewModel @Inject constructor(
     }
 
     val uiState: StateFlow<ScheduleUiState> =
-        combine(termRepository.observeCurrent(), userSelectedWeek) { term, selected ->
-            term to selected
+        combine(termRepository.observeCurrent(), userSelectedWeek, timetableLabel) { term, selected, timetableName ->
+            Triple(term, selected, timetableName)
         }
-            .flatMapLatest { (term, selected) ->
+            .flatMapLatest { (term, selected, timetableName) ->
                 if (term == null) {
                     flowOf(ScheduleUiState.NoTerm)
                 } else {
@@ -123,6 +148,7 @@ class ScheduleViewModel @Inject constructor(
                             showTimeInCards = prefs.showTimeInCards,
                             showNowLine = prefs.showNowLine,
                             showOtherWeek = prefs.showOtherWeek,
+                            timetableName = timetableName,
                         )
                     }
                 }

@@ -10,6 +10,7 @@ An open-source class schedule app for Android universities. Local-first: no acco
 ## 功能 / Features
 
 - 📅 周视图课表（滑动切周、当前周高亮、单双周/连堂支持）
+- 🗂️ 多课表管理（一张应用装多张课表，课程与节次时间各自独立；新装先建课表，随时切换）
 - 🎓 上课中
   - 🗂️ 今日课表：底部三 Tab（今日 / 课表 / 我的），按上午/下午/晚上分组；正在上的课置顶实时卡片（进度条 + 还剩 X 分钟倒计时）
   - 🧩 桌面小组件：Jetpack Glance（今日课程 / 下节课），上课中状态带分钟级倒计时，随课节边界自动刷新

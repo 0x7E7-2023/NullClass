@@ -11,8 +11,10 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
+import androidx.compose.material.icons.automirrored.filled.List
 import androidx.compose.material.icons.filled.DateRange
 import androidx.compose.material.icons.filled.Info
+import androidx.compose.material.icons.filled.List
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material.icons.filled.Share
 import androidx.compose.material3.Icon
@@ -37,6 +39,7 @@ import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 @Composable
 fun ProfileScreen(
     onEditTerm: (termId: String?) -> Unit,
+    onOpenTimetableList: () -> Unit,
     onOpenTermList: () -> Unit,
     onOpenTransfer: () -> Unit,
     onOpenSettings: () -> Unit,
@@ -70,11 +73,19 @@ fun ProfileScreen(
                 modifier = Modifier.fillMaxWidth(),
             ) {
                 Column(modifier = Modifier.padding(20.dp)) {
+                    state.timetableName?.let { timetableName ->
+                        Text(
+                            "课表 · $timetableName",
+                            style = MaterialTheme.typography.labelSmall,
+                            color = MaterialTheme.colorScheme.onPrimaryContainer.copy(alpha = 0.6f),
+                        )
+                    }
                     Text(
                         term?.name ?: "还没有学期",
                         style = MaterialTheme.typography.titleMedium,
                         fontWeight = FontWeight.Bold,
                         color = MaterialTheme.colorScheme.onPrimaryContainer,
+                        modifier = Modifier.padding(top = 2.dp),
                     )
                     Text(
                         when {
@@ -97,6 +108,12 @@ fun ProfileScreen(
                     .padding(top = 16.dp),
                 verticalArrangement = Arrangement.spacedBy(8.dp),
             ) {
+                EntryRow(
+                    icon = Icons.AutoMirrored.Filled.List,
+                    title = "课表管理",
+                    subtitle = "当前：${state.timetableName ?: "—"} · 切换、新建、重命名",
+                    onClick = onOpenTimetableList,
+                )
                 EntryRow(
                     icon = Icons.Default.DateRange,
                     title = "学期管理",
