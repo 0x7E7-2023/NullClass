@@ -154,6 +154,35 @@ class JwScriptContractTest {
     }
 
     /**
+     * 能力位要**真跑一遍取值**，不能只看源码里有没有那行字。
+     *
+     * 曾经的写法把 `__ncCapabilities` 的字面量放在提问桥模板**之前**求值：
+     * 那一刻 `window.__ncSelect` 还没定义，`ask` 永远算出 false ——
+     * 真机上就是「桥明明注入了、脚本却被告知不支持提问」。源码断言查不出这种顺序错误。
+     */
+    @Test
+    fun `能力位在运行期按桥的真实状态取值`() {
+        val context = Context.enter()
+        try {
+            context.languageVersion = Context.VERSION_ES6
+
+            fun capsOf(ocr: Boolean, ask: Boolean, tag: String): Pair<String, String> {
+                val scope = context.initStandardObjects()
+                context.evaluateString(scope, BRIDGE_STUBS, "stubs-$tag", 1, null)
+                context.evaluateString(scope, runner(ocrEnabled = ocr, askEnabled = ask), "runner-$tag", 1, null)
+                val askValue = context.evaluateString(scope, "String(window.__ncCapabilities.ask)", "a", 1, null)
+                val ocrValue = context.evaluateString(scope, "String(window.__ncCapabilities.ocr)", "o", 1, null)
+                return ocrValue as String to askValue as String
+            }
+
+            assertEquals("true" to "true", capsOf(ocr = true, ask = true, tag = "on"))
+            assertEquals("false" to "false", capsOf(ocr = false, ask = false, tag = "off"))
+        } finally {
+            Context.exit()
+        }
+    }
+
+    /**
      * 真跑一遍提问桥（Rhino + 极简 Promise 垫片）：验证
      * 「选项只回传索引」「取消是 null 而不是错误」「confirm 的否是 false」
      * 这些**语义**，而不只是源码里有没有那几行字。

@@ -295,11 +295,16 @@ object JwScriptContract {
     window.$GLOBAL_ERROR = function (message) {
       window.$GLOBAL_ERROR_TEXT = String(message && message.message ? message.message : message);
     };
+__NC_PREAMBLE__
+__NC_OCR_BRIDGE__
+__NC_ASK_BRIDGE__
+    // 能力位必须在桥的实现**定义之后**才算：ask 那条要查 __ncSelect 是不是真的可调用，
+    // 放在模板前面求值会永远算出 false（桥的全局这时候还没定义）。
     window.$GLOBAL_CAPABILITIES = {
       specVersion: __NC_SPEC__,
       ocr: __NC_OCR_ENABLED__ && (typeof window[__NC_BRIDGE_NAME__] !== 'undefined'),
-      // 提问能力要同时满足「宿主开了」「桥对象在」「三个全局真的定义了」——
-      // 只报引擎/开关会撒谎，适配器会拿着 undefined 去调用然后静默失败。
+      // 三个条件都要满足：宿主开了、桥对象真的注入了、桥的全局真的可调用 ——
+      // 只报开关会撒谎，适配器会拿着 undefined 去调用然后静默失败。
       ask: __NC_ASK_ENABLED__ &&
         (typeof window[__NC_BRIDGE_NAME__] !== 'undefined') &&
         (typeof window.$GLOBAL_ASK_SELECT === 'function'),
@@ -307,9 +312,6 @@ object JwScriptContract {
       ocrMaxCalls: __NC_OCR_MAX_CALLS__,
       askMaxCalls: __NC_ASK_MAX_CALLS__
     };
-__NC_PREAMBLE__
-__NC_OCR_BRIDGE__
-__NC_ASK_BRIDGE__
     var __ncSource = __NC_SCRIPT__;
     var __ncReturn;
     try {
