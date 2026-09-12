@@ -4,7 +4,7 @@
 格式遵循 [Keep a Changelog](https://keepachangelog.com/zh-CN/1.1.0/)，
 版本遵循 [语义化版本](https://semver.org/lang/zh-CN/)。
 
-## [Unreleased]
+## [0.8.2] - 2026-09-12
 
 ### 新增
 
@@ -67,10 +67,13 @@
 
 ### 变更
 
+- **课表管理、学期编辑、节次快速设定、非本周灰块、适配器搜索**随本版发布。
 - **Room schema v3**：`timetables` 表 + `terms.timetableId`；v2 存量学期升级后归入固定 id 的
   「我的课表」（两台设备各自升级也收敛为同一条，不会同步出两张空的）。迁移经真机覆盖安装验证。
   **移除 `fallbackToDestructiveMigration`**：v2 已经发布上线，留着它意味着哪天漏写一个迁移、
   升级用户的课表会被**静默清空**——宁可当场崩出来，也不能闷声删库。
+- 版本升到 **0.8.2（versionCode 18）**：同步格式仍是 formatVersion 2，旧版备份/WebDAV 快照
+  与新版互通（新字段都带默认值，旧版本读写不受影响）。
 
 ## [0.8.1] - 2026-09-12
 
