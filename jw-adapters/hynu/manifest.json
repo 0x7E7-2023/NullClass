@@ -18,6 +18,11 @@
       "name": "基本课表（合成数据）",
       "extracted": "fixtures/basic.extracted.json",
       "expected": "fixtures/basic.expected.json"
+    },
+    {
+      "name": "没有星期表头 + 行中部有合并格（合成数据：兜底窗口按表宽推，行中部 colspan 与行首 rowspan 都不会把课挪一天）",
+      "extracted": "fixtures/noheader.extracted.json",
+      "expected": "fixtures/noheader.expected.json"
     }
   ]
 }

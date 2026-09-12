@@ -1,0 +1,97 @@
+{
+  "_note": "合成数据，不是真实抓取：按衡阳师范学院强智课表页的 DOM 形状编造，专测**无星期表头**时的兜底取列。形状：第 2 行的第 4 个格子 colspan=2（合并网格第 3-4 列，格子里是空的），第 3 行的节次格 rowspan=2（所以第 4 行没有节次格，它的首格就是网格第 1 列 = 星期一）。col/span 是 extract.js 按网格算出来的列号与跨列数（colspan/rowspan 都算进去了）。无表头时 parse.js 的兜底窗口只能按**表宽**（这里 8 列）推，不能按某一行的格子数推：第 2 行只有 7 个格子，按格子数推会把星期一的课读成星期二。拿到真实 dump 请替换这一对 fixture。",
+  "now": "2026-09-12",
+  "term": {
+    "code": "2026-2027-1",
+    "name": "2026-2027学年第一学期"
+  },
+  "rows": [
+    [
+      { "text": "第1-2节", "parts": [], "col": 0, "span": 1 },
+      {
+        "text": "高等数学（一）刘敏1-16(周)[01-02节]数学楼103",
+        "parts": [
+          "高等数学（一）<br><font title=\"教师\">刘敏</font><br><font title=\"周次(节次)\">1-16(周)[01-02节]</font><br><font title=\"教室\">数学楼103</font>"
+        ],
+        "col": 1,
+        "span": 1
+      },
+      { "text": "", "parts": [], "col": 2, "span": 1 },
+      { "text": "", "parts": [], "col": 3, "span": 1 },
+      { "text": "", "parts": [], "col": 4, "span": 1 },
+      { "text": "", "parts": [], "col": 5, "span": 1 },
+      { "text": "", "parts": [], "col": 6, "span": 1 },
+      {
+        "text": "军事理论何军1-16(周)[01-02节]军事楼101",
+        "parts": [
+          "军事理论<br><font title=\"教师\">何军</font><br><font title=\"周次(节次)\">1-16(周)[01-02节]</font><br><font title=\"教室\">军事楼101</font>"
+        ],
+        "col": 7,
+        "span": 1
+      }
+    ],
+    [
+      { "text": "第3-4节", "parts": [], "col": 0, "span": 1 },
+      {
+        "text": "教育学原理周晓兰1-8(周)[03-04节]教育楼201",
+        "parts": [
+          "教育学原理<br><font title=\"教师\">周晓兰</font><br><font title=\"周次(节次)\">1-8(周)[03-04节]</font><br><font title=\"教室\">教育楼201</font>"
+        ],
+        "col": 1,
+        "span": 1
+      },
+      {
+        "text": "大学体育（一）李强1-15(单)[03-04节]体育馆",
+        "parts": [
+          "大学体育（一）<br><font title=\"教师\">李强</font><br><font title=\"周次(节次)\">1-15(单)[03-04节]</font><br><font title=\"教室\">体育馆</font>"
+        ],
+        "col": 2,
+        "span": 1
+      },
+      { "text": "", "parts": [], "col": 3, "span": 2 },
+      {
+        "text": "形势与政策李梅1-4,6-8,10-16(周)[03-04节]文科楼105",
+        "parts": [
+          "形势与政策<br><font title=\"教师\">李梅</font><br><font title=\"周次(节次)\">1-4,6-8,10-16(周)[03-04节]</font><br><font title=\"教室\">文科楼105</font>"
+        ],
+        "col": 5,
+        "span": 1
+      },
+      { "text": "", "parts": [], "col": 6, "span": 1 },
+      { "text": "", "parts": [], "col": 7, "span": 1 }
+    ],
+    [
+      { "text": "第5-6节", "parts": [], "col": 0, "span": 1 },
+      { "text": "", "parts": [], "col": 1, "span": 1 },
+      { "text": "", "parts": [], "col": 2, "span": 1 },
+      {
+        "text": "现代汉语陈静3-17(周)[05-06节]文科楼302",
+        "parts": [
+          "现代汉语<br><font title=\"教师\">陈静</font><br><font title=\"周次(节次)\">3-17(周)[05-06节]</font><br><font title=\"教室\">文科楼302</font>"
+        ],
+        "col": 3,
+        "span": 1
+      },
+      { "text": "", "parts": [], "col": 4, "span": 1 },
+      { "text": "", "parts": [], "col": 5, "span": 1 },
+      { "text": "", "parts": [], "col": 6, "span": 1 },
+      { "text": "", "parts": [], "col": 7, "span": 1 }
+    ],
+    [
+      { "text": "", "parts": [], "col": 1, "span": 1 },
+      {
+        "text": "大学英语（一）王芳1-16(周)[05-06节]外语楼205",
+        "parts": [
+          "大学英语（一）<br><font title=\"教师\">王芳</font><br><font title=\"周次(节次)\">1-16(周)[05-06节]</font><br><font title=\"教室\">外语楼205</font>"
+        ],
+        "col": 2,
+        "span": 1
+      },
+      { "text": "", "parts": [], "col": 3, "span": 1 },
+      { "text": "", "parts": [], "col": 4, "span": 1 },
+      { "text": "", "parts": [], "col": 5, "span": 1 },
+      { "text": "", "parts": [], "col": 6, "span": 1 },
+      { "text": "", "parts": [], "col": 7, "span": 1 }
+    ]
+  ]
+}

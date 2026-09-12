@@ -10,7 +10,10 @@
     //      并按我们的规范切成极大段 + weekType。
     //
     // 输入是 extract.js 交出来的原始结构：
-    //   { now: "2026-09-12", term: { code, name }, rows: [ [ { text, parts: [原始 HTML] }, … ], … ] }
+    //   { now: "2026-09-12", term: { code, name },
+    //     rows: [ [ { text, parts: [原始 HTML], col, span }, … ], … ] }
+    //   col 是格子所在的网格列号（extract.js 把 colspan/rowspan 都算进去了），span 是跨列数；
+    //   缺了 col 的老载荷按「第几个格子」退回，行为与历史一致（见 colOf）。
     // 这里不碰 DOM（CI 的 Rhino 里没有），全部按字符串 + 正则处理，是纯函数。
     var data = JSON.parse(__ncInput);
     var rows = data.rows || [];
@@ -41,7 +44,8 @@
     var TEACHER_TITLE = /^(教师|老师|任课教师|授课教师|教师姓名)$/;
     var ROOM_TITLE = /^(教室|上课地点|上课教室|地点|教室名称)$/;
     var COURSE_TITLE = /^(课程|课程名称|课程名|科目)$/;
-    var SPEC_TITLE = /周次|节次|时间/;
+    var SPEC_TITLE = /周次|节次/;   // 别把「时间」并进来：标着「上课时间」的 font 内容是钟点（11:10-11:50），
+    // 会被下面的区间正则读成第 10-11 周，凭空造出排课。上游只查固定 title，这个宽匹配是移植时自己加的。
 
     var droppedWeeks = 0;
     var skippedBlocks = 0;
@@ -290,6 +294,43 @@
         return /^第?\s*\d{1,2}\s*([-—~至]\s*\d{1,2})?\s*节?$/.test(clean(value));
     }
 
+    // 格子所在的**网格列号**：extract.js 交出来的 col（colspan/rowspan 都算进去了）。
+    // 老一版载荷（或手写的用例）没有 col 时退回「第几个格子」，此时行为与历史一致。
+    function colOf(cell, fallbackIndex) {
+        return (typeof cell.col === 'number' && cell.col >= 0) ? cell.col : fallbackIndex;
+    }
+
+    function spanOf(cell) {
+        return (typeof cell.span === 'number' && cell.span >= 1) ? cell.span : 1;
+    }
+
+    // 取「网格第 want 列」上的格子：一格覆盖 [col, col + span)，跨列的合并格在它覆盖到的
+    // 每一列上都能取到（合并格里的课会落到它跨的每一天，这种情况进 warnings 说明）。
+    function cellAtGridCol(row, want) {
+        if (want < 0) return null;
+        for (var i = 0; i < row.length; i++) {
+            var start = colOf(row[i], i);
+            if (want >= start && want < start + spanOf(row[i])) return row[i];
+        }
+        return null;
+    }
+
+    // 表宽 = 整张表用到的最大网格列数（把 colspan 算进去）。无表头兜底的窗口起点要用它，
+    // 不能用某一行的格子数：行中部有合并格时那一行会少一个格子，按格子数算会整行错一天。
+    function gridWidthOf(allRows) {
+        var width = 0;
+        for (var r = 0; r < allRows.length; r++) {
+            var row = allRows[r] || [];
+            for (var c = 0; c < row.length; c++) {
+                var end = colOf(row[c], c) + spanOf(row[c]);
+                if (end > width) width = end;
+            }
+        }
+        return width;
+    }
+
+    var tableWidth = gridWidthOf(rows);
+
     function termNameFromCode(code) {
         var m = /^(\d{4})-(\d{4})-(\d)$/.exec(clean(code));
         if (!m) return '';
@@ -312,7 +353,7 @@
             if (rows[r][c].parts && rows[r][c].parts.length) hasContent = true;
             var day = dayOfLabel(rows[r][c].text);
             if (day >= 1 && day <= 7 && cols[day] < 0) {
-                cols[day] = c;
+                cols[day] = colOf(rows[r][c], c);
                 labels++;
             }
         }
@@ -327,16 +368,67 @@
     var order = [];
     var byCourse = {};
 
+    // 每天落在网格第几列：
+    //   ① 表头认出来的天用表头的列号（最可靠）；
+    //   ② 表头没认出来的天，按**表宽**推「整张表最后 7 列是周一到周日」——
+    //      这里绝不能用本行的格子数：行中部有合并格时那一行会少一个格子，
+    //      按本行格子数算会把整行挪一天（缺陷单：无表头 + 行中部少格 →
+    //      网格第 1 列（星期一）的课被读成星期二）；
+    //   ③ 推出来的列已经归了别的天、或超出表宽时**不猜**：宁可少认一天，
+    //      也不把课排到错的星期（不猜和少认的都进 warnings）。
+    var fallbackStart = tableWidth > 7 ? tableWidth - 7 : 0;
+    if (tableWidth <= 7) {
+        // 表宽不到 8 列：7 列窗口里会混进首列的节次标签列，往后挪一格
+        for (var fr = 0; fr < rows.length; fr++) {
+            if (rows[fr].length && isPeriodLabel(rows[fr][0].text)) {
+                fallbackStart = 1;
+                break;
+            }
+        }
+    }
+
+    var dayColOf = [0, -1, -1, -1, -1, -1, -1, -1];
+    var dayGuessed = [false, false, false, false, false, false, false, false];
+    var usedCols = {};
+    var guessedDays = 0;
+    var unplacedDays = 0;
+    var dd;
+    for (dd = 1; dd <= 7; dd++) {
+        if (bestLabels >= 4 && dayCol[dd] >= 0) {
+            dayColOf[dd] = dayCol[dd];
+            usedCols[dayCol[dd]] = true;
+        }
+    }
+    for (dd = 1; dd <= 7; dd++) {
+        if (dayColOf[dd] >= 0) continue;
+        var guess = fallbackStart + dd - 1;
+        if (guess < 0 || guess >= tableWidth || usedCols[guess]) {
+            unplacedDays++;
+            continue;
+        }
+        dayColOf[dd] = guess;
+        dayGuessed[dd] = true;
+        usedCols[guess] = true;
+        guessedDays++;
+    }
+
+    // 跨列且有内容的格子数：这种格子的课会落到它覆盖的每一天，得跟用户说一声
+    var mergedCells = 0;
+    // 星期是按表宽推出来的安排条数：这些安排的星期可能不准，warnings 里要点名
+    var guessedBlocks = 0;
+
     for (var ri = 0; ri < rows.length; ri++) {
         if (ri === headerRow) continue;
         var row = rows[ri];
-        // 没认出表头时的兜底：多于 7 列就按「最后 7 列是周一到周日」算
-        //（首列是节次列是最常见的多出那一列），并进 warnings 说明。
-        var offset = bestLabels >= 4 ? 0 : (row.length > 7 ? row.length - 7 : 0);
+        var countedMerged = [];
         for (var d = 1; d <= 7; d++) {
-            var col = bestLabels >= 4 ? dayCol[d] : offset + d - 1;
-            if (col < 0 || col >= row.length) continue;
-            var parts = row[col].parts || [];
+            var cell = cellAtGridCol(row, dayColOf[d]);
+            if (!cell) continue;
+            var parts = cell.parts || [];
+            if (spanOf(cell) > 1 && parts.length && countedMerged.indexOf(cell) < 0) {
+                countedMerged.push(cell);
+                mergedCells++;
+            }
             for (var p = 0; p < parts.length; p++) {
                 var blocks = String(parts[p]).split(DASHES);
                 for (var b = 0; b < blocks.length; b++) {
@@ -396,6 +488,7 @@
                                 block.location || ''].join('|');
                             if (course.seen[blockKey]) continue;
                             course.seen[blockKey] = true;
+                            if (dayGuessed[d]) guessedBlocks++;
                             course.blocks.push(block);
                         }
                     }
@@ -446,8 +539,32 @@
             '有 ' + skippedBlocks + ' 个课程块没能解析出周次或节次，已跳过（教务页面结构可能已调整，欢迎反馈给适配器）'
         );
     }
+    if (mergedCells > 0) {
+        warnings.push(
+            '有 ' + mergedCells + ' 个课程格子跨了多列（合并单元格）：已按它覆盖到的每一天各记一次，' +
+            '哪几天真的上课请核对导入结果'
+        );
+    }
     if (bestLabels < 4) {
-        warnings.push('课表里没找到星期表头，已按每行最后 7 列对应周一到周日，请核对导入结果');
+        warnings.push(
+            '课表里没找到星期表头，已按表宽 ' + tableWidth + ' 列推算（从第 ' + (fallbackStart + 1) +
+            ' 列起往右依次是周一到周日）：这样排出来的 ' + guessedBlocks + ' 条安排的星期可能不准，请核对导入结果'
+        );
+        if (tableWidth < 8) {
+            warnings.push(
+                '课表只有 ' + tableWidth + ' 列，可能没有显示完整的 7 天：没显示的那几天按「没有课」处理，请核对'
+            );
+        }
+    } else if (guessedDays > 0) {
+        warnings.push(
+            '星期表头只认出了 ' + bestLabels + ' 天，剩下 ' + guessedDays +
+            ' 天已按表宽推算：这 ' + guessedBlocks + ' 条安排的星期可能不准，请核对导入结果'
+        );
+    }
+    if (bestLabels >= 4 && unplacedDays > 0) {
+        warnings.push(
+            '有 ' + unplacedDays + ' 天没能在课表里对上一列，这几天的课可能没导进来，请核对'
+        );
     }
     if (!termName) {
         termName = '衡阳师范学院课表';

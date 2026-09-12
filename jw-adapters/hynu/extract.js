@@ -14,7 +14,9 @@
     // 移植改动：
     //   ① 不再弹窗问用户「起始学年 / 第几学期」：学期与学期名都从课表页的「学年学期」下拉框里取
     //      （上游是让用户手输年份 + 选第一/第二学期，再拼出 xnxq01id）；
-    //   ② 只交原始结构出去（学期 + 每一格的原始 HTML），周次/节次/课程名的解释全在 parse.js；
+    //   ② 只交原始结构出去（学期 + 每一格的文字/原始 HTML + 网格列号 col 与跨列数 span），
+    //      周次/节次/课程名的解释全在 parse.js。col 把 colspan/rowspan 都算进去了：
+    //      课表首列是节次列、个别格子跨列/跨行，parse.js 按「第几个格子」算星期会整表错位；
     //   ③ 去掉上游的「请确认已登录」弹窗与一串 toast —— 空课的导入流程自己会确认；
     //   ④ 学期下拉框认不出时的兜底不再读整页文字（原来是 doc.body.textContent），
     //      收窄成「页面标题 + 各下拉框的选项文字 + id/class 含 xnxq 的元素文字」——
@@ -66,17 +68,45 @@
         return parts;
     }
 
-    function cellOf(cell) {
-        var text = cell.textContent !== undefined ? cell.textContent : cell.innerText;
-        return { text: clean(text), parts: partsOf(cell) };
+    // col 是该格在整张表里的**网格列号**（把本行的 colspan 和上一行遗留的 rowspan 都算进去），
+    // span 是它的跨列数。强智的课表首列是节次列，个别格子还会跨列/跨行 ——
+    // 只按「第几个格子」算星期会整表错位（2026-09-12 的缺陷单就是这个），
+    // 所以把网格列号交给 parse.js，由它跟表头的星期标签（或表宽）对齐。
+    function cellOf(node, col, span) {
+        var text = node.textContent !== undefined ? node.textContent : node.innerText;
+        return { text: clean(text), parts: partsOf(node), col: col, span: span };
     }
 
-    function cellsOfRow(row) {
+    function spanOfAttr(node, name) {
+        var value = parseInt(node.getAttribute ? node.getAttribute(name) : '', 10);
+        return value >= 1 ? value : 1;
+    }
+
+    // carry[c] = 第 c 列还被前面某一行的 rowspan 占着几行（不含当前行）。
+    // 每进一行先把占用的列标出来并把计数减 1；rowspan=2 的格子只在自己那一行留下 td/th，
+    // 它占住的列在下一行必须空出来，否则下一行的格子会整体左移一格（节次列常被并走一格）。
+    function cellsOfRow(row, carry) {
         var out = [];
         var kids = row.children || [];
+        var occupied = {};
+        for (var k = 0; k < carry.length; k++) {
+            if (carry[k] > 0) {
+                occupied[k] = true;
+                carry[k] = carry[k] - 1;
+            }
+        }
+        var col = 0;
         for (var i = 0; i < kids.length; i++) {
             var tag = tagOf(kids[i]);
-            if (tag === 'TD' || tag === 'TH') out.push(cellOf(kids[i]));
+            if (tag !== 'TD' && tag !== 'TH') continue;
+            while (occupied[col]) col++;
+            var span = spanOfAttr(kids[i], 'colspan');
+            var rowspan = spanOfAttr(kids[i], 'rowspan');
+            out.push(cellOf(kids[i], col, span));
+            if (rowspan > 1) {
+                for (var s = 0; s < span; s++) carry[col + s] = rowspan - 1;
+            }
+            col += span;
         }
         return out;
     }
@@ -102,8 +132,11 @@
     function rowsOfTable(table) {
         var out = [];
         var trs = table.rows || table.getElementsByTagName('tr');
+        // carry 要跨行走：rowspan 会影响后面几行的列号，所以**每一行都要过一遍**
+        //（下面只把「有文字的」行交出去，但空行也要算，否则计数会对不上）
+        var carry = [];
         for (var i = 0; i < trs.length; i++) {
-            var cells = cellsOfRow(trs[i]);
+            var cells = cellsOfRow(trs[i], carry);
             for (var c = 0; c < cells.length; c++) {
                 if (cells[c].text || cells[c].parts.length) {
                     out.push(cells);
