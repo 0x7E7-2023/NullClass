@@ -657,8 +657,15 @@ private fun JwAdapter.usesAskBridge(): Boolean {
 }
 
 private fun JwAdapter.usesOcrBridge(): Boolean {
+    // 只认真正会调起来的两个全局。
+    //
+    // 这里**不能**顺带匹配 `__ncCapabilities`：那是个太宽的判据 —— 一个只想查
+    // 「能不能弹窗」的适配器（读 caps.ask）会被当成要用 OCR 的，于是每次提取
+    // 都先白等 OCR 引擎探测（首次要加载 ONNX 模型，好几秒）。
+    // 移植上游适配器时真有人踩到，只能靠不写这个词绕开：判据在宿主这边，不该
+    // 让每个适配器作者都知道这个坑。
     val source = extractScript + (parseScript ?: "")
-    return source.contains("__ncOcr") || source.contains("__ncCapabilities")
+    return source.contains("__ncOcr") || source.contains("__ncOcrGrid")
 }
 
 private fun buildErrorLog(
