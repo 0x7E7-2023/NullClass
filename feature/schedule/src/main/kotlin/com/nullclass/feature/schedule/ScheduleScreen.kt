@@ -56,6 +56,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import com.nullclass.core.model.PlacedBlock
+import com.nullclass.core.model.WeekLayout
 import com.nullclass.core.ui.theme.courseColor
 
 /**
@@ -210,7 +211,13 @@ fun ScheduleScreen(
                         val layout = if (week == ready.selectedWeek) {
                             ready.layout
                         } else {
-                            com.nullclass.core.model.WeekLayout.layoutForWeek(ready.schedule, week)
+                            WeekLayout.layoutForWeek(ready.schedule, week)
+                        }
+                        // 灰块按「当前这一页的周」算：翻页动画里扫过的中间页也得各画各的
+                        val otherWeekLayout = when {
+                            !ready.showOtherWeek -> emptyMap<Int, List<PlacedBlock>>()
+                            week == ready.selectedWeek -> ready.otherWeekLayout
+                            else -> WeekLayout.otherWeekLayout(ready.schedule, week)
                         }
                         Column(
                             Modifier
@@ -225,6 +232,7 @@ fun ScheduleScreen(
                                 showTimeInCards = ready.showTimeInCards,
                                 nowMinuteOfDay = if (week == ready.currentWeek && ready.showNowLine) nowMinute else null,
                                 onBlockClick = { detailBlock = it },
+                                otherWeekLayout = otherWeekLayout,
                             )
                         }
                     }
@@ -303,6 +311,26 @@ fun ScheduleScreen(
                                     Switch(
                                         checked = ready.showTimeInCards,
                                         onCheckedChange = { viewModel.setShowTimeInCards(it) },
+                                    )
+                                }
+                                Row(
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .clickable { viewModel.setShowOtherWeek(!ready.showOtherWeek) },
+                                    horizontalArrangement = Arrangement.SpaceBetween,
+                                    verticalAlignment = Alignment.CenterVertically,
+                                ) {
+                                    Column(Modifier.weight(1f)) {
+                                        Text("显示非本周课程")
+                                        Text(
+                                            "本周空着的时段，别的周要上的课用灰色标出来",
+                                            style = MaterialTheme.typography.bodySmall,
+                                            color = MaterialTheme.colorScheme.onSurfaceVariant,
+                                        )
+                                    }
+                                    Switch(
+                                        checked = ready.showOtherWeek,
+                                        onCheckedChange = { viewModel.setShowOtherWeek(it) },
                                     )
                                 }
                             }

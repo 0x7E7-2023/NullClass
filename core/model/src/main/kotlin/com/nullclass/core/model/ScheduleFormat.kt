@@ -36,6 +36,22 @@ object ScheduleFormat {
         WeekType.EVEN -> "双周"
     }
 
+    /**
+     * 窄处的紧凑周次：「1-16周」/「3周」，单双周缀在后面（「1-16周·单」）。
+     *
+     * 比 [weekRange] 少一个「第」—— 周视图灰块那一格只有几十 dp 宽，
+     * 「第1-16周」会被省略号吃掉尾巴，剩个「第1-1…」等于没说。
+     */
+    fun weekSpanLabel(block: ScheduleBlock): String {
+        val span = if (block.startWeek == block.endWeek) {
+            "${block.startWeek}周"
+        } else {
+            "${block.startWeek}-${block.endWeek}周"
+        }
+        val weekType = weekTypeLabel(block.weekType)
+        return if (weekType.isEmpty()) span else "$span·${weekType.removeSuffix("周")}"
+    }
+
     fun dayOfWeekLabel(dayOfWeek: Int): String =
         listOf("周一", "周二", "周三", "周四", "周五", "周六", "周日")
             .getOrElse(dayOfWeek - 1) { "?" }

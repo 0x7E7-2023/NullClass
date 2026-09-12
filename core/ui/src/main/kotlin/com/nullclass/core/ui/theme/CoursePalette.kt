@@ -44,3 +44,29 @@ fun courseColor(colorIndex: Int): CourseColor {
         border = base.copy(alpha = 0.4f),
     )
 }
+
+/**
+ * 「非本周」灰块的配色：不跟课程色走，一律主题灰。
+ *
+ * 灰块是给「这一格为什么空着」作注解的背景信息，不该和真课块争视线 ——
+ * 所以它没有课程色可认，也就不能和任何一门课混淆。
+ *
+ * **框和字分开调，因为它们要的东西相反**：
+ * - 框（容器 + 描边）压到很淡，只留一圈描边撑住轮廓 —— 这是要的「低可视度」；
+ * - 字（「非本周」、课名、周次）不能跟着一起淡，那正是这个功能要传达的信息。
+ *   0.7 对灰块底分别是深色 5.0:1 / 浅色 3.8:1，高过应用里最淡的既有标注
+ *   （节次列 9sp @0.65 ≈ 3.5:1），又明显低于真课块的字（满 alpha 的 onSurface）——
+ *   「比真课块淡一档，但读得清」。早先跟着容器一起压到 0.5（浅色只剩 2.4:1），
+ *   结果是一块灰、看不清是哪门课。
+ */
+@Composable
+fun otherWeekBlockColor(): CourseColor {
+    val base = MaterialTheme.colorScheme.onSurfaceVariant
+    // 0.08 而不是更小：深色主题下再低这块就彻底融进背景了，连描边都撑不住轮廓
+    val containerAlpha = if (MaterialTheme.colorScheme.background.luminance() < 0.5f) 0.08f else 0.06f
+    return CourseColor(
+        container = base.copy(alpha = containerAlpha),
+        content = base.copy(alpha = 0.7f),
+        border = base.copy(alpha = 0.14f),
+    )
+}

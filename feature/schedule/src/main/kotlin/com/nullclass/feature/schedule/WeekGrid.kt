@@ -20,11 +20,13 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.material3.HorizontalDivider
@@ -35,6 +37,7 @@ import com.nullclass.core.model.PlacedBlock
 import com.nullclass.core.model.ScheduleFormat
 import com.nullclass.core.model.Session
 import com.nullclass.core.ui.theme.courseColor
+import com.nullclass.core.ui.theme.otherWeekBlockColor
 
 /** 单节行高。课块高度 = 行高 × 跨节数。 */
 internal val PeriodCellHeight = 56.dp
@@ -45,6 +48,9 @@ internal fun periodColumnWidth(showTimeInCards: Boolean): Dp = if (showTimeInCar
 /**
  * 周视图主体：左侧节次列 + 5/7 天列（周末可隐藏）。
  * 外层负责纵向滚动与按周翻页。
+ *
+ * @param otherWeekLayout 该周不上、别的周要上的课块（灰块，见 WeekLayout.otherWeekLayout）；
+ *   只画在当周空着的时段里，关掉显示开关时传空表。
  */
 @Composable
 internal fun WeekGrid(
@@ -55,6 +61,7 @@ internal fun WeekGrid(
     showTimeInCards: Boolean,
     nowMinuteOfDay: Int?,
     onBlockClick: (PlacedBlock) -> Unit,
+    otherWeekLayout: Map<Int, List<PlacedBlock>> = emptyMap(),
     modifier: Modifier = Modifier,
 ) {
     val totalPeriods = periodTimes.size.coerceAtLeast(1)
@@ -82,6 +89,7 @@ internal fun WeekGrid(
                 DayColumn(
                     isToday = todayDayOfWeek == day,
                     blocks = layout[day].orEmpty(),
+                    otherWeekBlocks = otherWeekLayout[day].orEmpty(),
                     periodTimes = periodTimes,
                     showTimeInCards = showTimeInCards,
                     onBlockClick = onBlockClick,
@@ -158,6 +166,7 @@ private fun PeriodColumn(periodTimes: List<PeriodTime>, showTimeInCards: Boolean
 private fun DayColumn(
     isToday: Boolean,
     blocks: List<PlacedBlock>,
+    otherWeekBlocks: List<PlacedBlock>,
     periodTimes: List<PeriodTime>,
     showTimeInCards: Boolean,
     onBlockClick: (PlacedBlock) -> Unit,
@@ -167,6 +176,10 @@ private fun DayColumn(
     val hairline = with(density) { 1.toDp() } // 1 物理像素，屏上最细的描边
 
     Box(modifier = modifier.fillMaxHeight()) {
+        // 灰块先画：它只出现在当周空着的时段里，与真课块不会重叠，先画只是万无一失
+        otherWeekBlocks.forEach { placed ->
+            OtherWeekBlock(placed = placed, onBlockClick = onBlockClick)
+        }
         blocks.forEach { placed ->
             val color = courseColor(placed.course.colorIndex)
             Box(
@@ -228,6 +241,71 @@ private fun DayColumn(
             }
         }
     }
+}
+
+/**
+ * 「非本周」灰块：这一周不上、别的周要上的课（单双周、上半学期的课……）。
+ *
+ * 一律主题灰、低透明度，**不跟课程色走** —— 它是给「这格为什么空着」作注解的背景信息，
+ * 不该和真课块争视线；没有课程色可认，也就不会和任何一门课混淆。
+ *
+ * 光有一块灰，用户看不出它是什么意思，所以文字分三行按「这是什么 → 哪门课 → 哪几周来」
+ * 标清楚。三者挤在一行放不下：一列宽不到 8sp 的二十来个字，「非本周 · 3-6周」会被省略号
+ * 吃掉整个周次，只剩一个看不出所以然的「非本周 ·」。分开各占一行才都看得见 ——
+ * 单节的灰块（56dp 高）也放得下这四行。
+ */
+@Composable
+private fun OtherWeekBlock(placed: PlacedBlock, onBlockClick: (PlacedBlock) -> Unit) {
+    val color = otherWeekBlockColor()
+    val hairline = with(LocalDensity.current) { 1.toDp() }
+    Box(
+        modifier = Modifier
+            .offset(y = PeriodCellHeight * (placed.block.startPeriod - 1))
+            .fillMaxWidth()
+            .height(PeriodCellHeight * placed.block.periodCount)
+            .padding(1.5.dp)
+            .clip(RoundedCornerShape(8.dp))
+            .background(color.container)
+            .border(hairline, color.border, RoundedCornerShape(8.dp))
+            .clickable { onBlockClick(placed) },
+        contentAlignment = Alignment.Center,
+    ) {
+        Column(
+            horizontalAlignment = Alignment.CenterHorizontally,
+            modifier = Modifier.padding(horizontal = 2.dp, vertical = 3.dp),
+        ) {
+            OtherWeekText("非本周", color.content)
+            OtherWeekText(
+                text = placed.course.name,
+                color = color.content,
+                fontSize = 10.sp,
+                lineHeight = 12.sp,
+                maxLines = 2,
+            )
+            OtherWeekText(ScheduleFormat.weekSpanLabel(placed.block), color.content)
+        }
+    }
+}
+
+/** 灰块里的一行灰字。默认按小一号的标注排（8sp 单行），课名另给字号与行数。 */
+@Composable
+private fun OtherWeekText(
+    text: String,
+    color: Color,
+    fontSize: TextUnit = 8.sp,
+    lineHeight: TextUnit = 10.sp,
+    maxLines: Int = 1,
+) {
+    Text(
+        text = text,
+        fontSize = fontSize,
+        lineHeight = lineHeight,
+        color = color,
+        textAlign = TextAlign.Center,
+        maxLines = maxLines,
+        overflow = TextOverflow.Ellipsis,
+        modifier = Modifier.fillMaxWidth(),
+    )
 }
 
 /** 当前时刻在节次网格中的纵向偏移；空表或时刻不在首节开始～末节结束之间时返回 null。 */

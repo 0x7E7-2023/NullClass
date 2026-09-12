@@ -10,6 +10,7 @@ import android.os.PowerManager
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -33,6 +34,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SegmentedButton
 import androidx.compose.material3.SegmentedButtonDefaults
 import androidx.compose.material3.SingleChoiceSegmentedButtonRow
+import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
@@ -76,6 +78,7 @@ fun SettingsScreen(
     val reminderLeadMinutes by viewModel.reminderLeadMinutes.collectAsState()
     val autoSyncInterval by viewModel.autoSyncInterval.collectAsState()
     val widgetFontSize by viewModel.widgetFontSize.collectAsState()
+    val showOtherWeekCourses by viewModel.showOtherWeekCourses.collectAsState()
 
     val context = LocalContext.current
     var notificationGranted by remember {
@@ -299,6 +302,32 @@ fun SettingsScreen(
                     enabled = pinSupported,
                     modifier = Modifier.weight(1f),
                 ) { Text("下节课 2×1") }
+            }
+
+            HorizontalDivider(modifier = Modifier.padding(vertical = 8.dp))
+
+            // ---- 课表显示 ----
+            Text("课表显示", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold)
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .clickable { viewModel.setShowOtherWeekCourses(!showOtherWeekCourses) },
+                horizontalArrangement = Arrangement.spacedBy(12.dp),
+                verticalAlignment = Alignment.CenterVertically,
+            ) {
+                Column(Modifier.weight(1f)) {
+                    Text("显示非本周课程")
+                    Text(
+                        "本周空着的时段，别的周要上的课用灰色标出来。" +
+                            "与课表右上角「显示设置」里的是同一个开关，两边同步。",
+                        style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    )
+                }
+                Switch(
+                    checked = showOtherWeekCourses,
+                    onCheckedChange = viewModel::setShowOtherWeekCourses,
+                )
             }
         }
     }

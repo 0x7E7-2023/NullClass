@@ -12,6 +12,7 @@ import com.nullclass.core.model.Term
 import com.nullclass.core.model.WeekLayout
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
@@ -38,6 +39,8 @@ sealed interface ScheduleUiState {
         val schedule: List<CourseWithBlocks>,
         /** 该周每天的课块（已排序）。 */
         val layout: Map<Int, List<PlacedBlock>>,
+        /** 该周**不上**、但别的周要上的课块（灰块）；关掉开关时为空。 */
+        val otherWeekLayout: Map<Int, List<PlacedBlock>>,
         /** 今天的星期（1..7）。使用方结合 currentWeek 判断是否高亮今天列。 */
         val todayDayOfWeek: Int,
         /** 周视图是否显示周末两列。 */
@@ -46,8 +49,18 @@ sealed interface ScheduleUiState {
         val showTimeInCards: Boolean,
         /** 周视图是否画当前时间线。 */
         val showNowLine: Boolean,
+        /** 是否把非本周的课画成灰块。 */
+        val showOtherWeek: Boolean,
     ) : ScheduleUiState
 }
+
+/** 周视图的四个显示开关。合成一个流，免得 combine 超过 5 个参数要去走 Array 重载。 */
+private data class DisplayPrefs(
+    val showWeekend: Boolean,
+    val showTimeInCards: Boolean,
+    val showNowLine: Boolean,
+    val showOtherWeek: Boolean,
+)
 
 @OptIn(ExperimentalCoroutinesApi::class)
 @HiltViewModel
@@ -62,6 +75,16 @@ class ScheduleViewModel @Inject constructor(
     /** null = 跟随今天自动定位；用户翻页/选周后写入具体值。 */
     private val userSelectedWeek = MutableStateFlow<Int?>(null)
 
+    /** 四个显示开关一起变，任一变化都重算周视图。 */
+    private val displayPrefs: Flow<DisplayPrefs> = combine(
+        userPreferencesRepository.showWeekend,
+        userPreferencesRepository.showTimeInCards,
+        userPreferencesRepository.showNowLine,
+        userPreferencesRepository.showOtherWeekCourses,
+    ) { showWeekend, showTimeInCards, showNowLine, showOtherWeek ->
+        DisplayPrefs(showWeekend, showTimeInCards, showNowLine, showOtherWeek)
+    }
+
     val uiState: StateFlow<ScheduleUiState> =
         combine(termRepository.observeCurrent(), userSelectedWeek) { term, selected ->
             term to selected
@@ -75,10 +98,8 @@ class ScheduleViewModel @Inject constructor(
                     combine(
                         courseRepository.observeSchedule(term.id),
                         termRepository.observePeriodTimes(term.id),
-                        userPreferencesRepository.showWeekend,
-                        userPreferencesRepository.showTimeInCards,
-                        userPreferencesRepository.showNowLine,
-                    ) { schedule, periodTimes, showWeekend, showTimeInCards, showNowLine ->
+                        displayPrefs,
+                    ) { schedule, periodTimes, prefs ->
                         ScheduleUiState.Ready(
                             term = term,
                             currentWeek = currentWeek,
@@ -86,10 +107,16 @@ class ScheduleViewModel @Inject constructor(
                             periodTimes = periodTimes,
                             schedule = schedule,
                             layout = WeekLayout.layoutForWeek(schedule, week),
+                            otherWeekLayout = if (prefs.showOtherWeek) {
+                                WeekLayout.otherWeekLayout(schedule, week)
+                            } else {
+                                emptyMap()
+                            },
                             todayDayOfWeek = today.dayOfWeek.value,
-                            showWeekend = showWeekend,
-                            showTimeInCards = showTimeInCards,
-                            showNowLine = showNowLine,
+                            showWeekend = prefs.showWeekend,
+                            showTimeInCards = prefs.showTimeInCards,
+                            showNowLine = prefs.showNowLine,
+                            showOtherWeek = prefs.showOtherWeek,
                         )
                     }
                 }
@@ -119,6 +146,11 @@ class ScheduleViewModel @Inject constructor(
     /** 切换当前时间线显示。 */
     fun setShowNowLine(value: Boolean) {
         viewModelScope.launch { userPreferencesRepository.setShowNowLine(value) }
+    }
+
+    /** 切换非本周课程灰块显示。 */
+    fun setShowOtherWeek(value: Boolean) {
+        viewModelScope.launch { userPreferencesRepository.setShowOtherWeekCourses(value) }
     }
 
     fun deleteCourse(courseId: String) {

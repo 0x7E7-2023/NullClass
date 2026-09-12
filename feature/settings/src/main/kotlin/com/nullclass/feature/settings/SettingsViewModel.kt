@@ -59,8 +59,16 @@ class SettingsViewModel @Inject constructor(
     val widgetFontSize: StateFlow<WidgetFontSize> = userPreferences.widgetFontSize
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), WidgetFontSize.STANDARD)
 
+    /** 周视图是否在空着的时段显示非本周的课。与课表「显示设置」里的开关是同一个偏好。 */
+    val showOtherWeekCourses: StateFlow<Boolean> = userPreferences.showOtherWeekCourses
+        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), false)
+
     fun setReminderLeadMinutes(value: Int) {
         viewModelScope.launch { userPreferences.setReminderLeadMinutes(value) }
+    }
+
+    fun setShowOtherWeekCourses(value: Boolean) {
+        viewModelScope.launch { userPreferences.setShowOtherWeekCourses(value) }
     }
 
     fun setWidgetFontSize(value: WidgetFontSize) {

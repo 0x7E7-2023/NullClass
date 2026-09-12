@@ -28,6 +28,7 @@ class UserPreferencesRepository @Inject constructor(
         val SHOW_WEEKEND = booleanPreferencesKey("show_weekend")
         val SHOW_TIME_IN_CARDS = booleanPreferencesKey("show_time_in_cards")
         val SHOW_NOW_LINE = booleanPreferencesKey("show_now_line")
+        val SHOW_OTHER_WEEK_COURSES = booleanPreferencesKey("show_other_week_courses")
         val WIDGET_FONT_SIZE = stringPreferencesKey("widget_font_size")
         val SENT_REMINDER_KEYS = stringSetPreferencesKey("sent_reminder_keys")
     }
@@ -72,6 +73,14 @@ class UserPreferencesRepository @Inject constructor(
 
     suspend fun setShowNowLine(value: Boolean) {
         context.userPrefs.edit { it[Keys.SHOW_NOW_LINE] = value }
+    }
+
+    /** 周视图是否在当周空着的时段里，把「别的周要上」的课以灰色显示。默认关闭。 */
+    val showOtherWeekCourses: Flow<Boolean> =
+        context.userPrefs.data.map { it[Keys.SHOW_OTHER_WEEK_COURSES] ?: false }
+
+    suspend fun setShowOtherWeekCourses(value: Boolean) {
+        context.userPrefs.edit { it[Keys.SHOW_OTHER_WEEK_COURSES] = value }
     }
 
     /** 桌面小组件字号档。默认标准；未知值回落标准。 */
