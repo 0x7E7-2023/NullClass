@@ -16,8 +16,21 @@ data class JwSchedulePayload(
     val specVersion: Int = JwManifest.SPEC_VERSION,
     /** "schedule"（默认）| "image" | "boxes"。 */
     val kind: String = KIND_SCHEDULE,
-    /** 由图片识别生成的载荷：应用会在导入预览里追加核对提示。 */
+    /**
+     * 由图片识别生成的载荷。
+     *
+     * 应用会在导入预览里追加一条固定的核对提示（见 [reviewNotes]）—— 这个承诺写在这里
+     * 就得真兑现，别只留个没人读的字段。
+     */
     val ocrAssisted: Boolean = false,
+    /**
+     * 适配器要用户**重点核对**的说明，逐条原样显示在导入预览里。
+     *
+     * 给「有些字段只能推算」的适配器用：拿不到开学日期的学校占一多半，推算出来的
+     * 第 1 周日期会一路影响「现在第几周」、今日页、提醒与小组件，猜错了整个学期的课都错位。
+     * 适配器在这里如实说明，用户才有机会在导入前发现。
+     */
+    val warnings: List<String> = emptyList(),
     val terms: List<JwTerm> = emptyList(),
     val images: List<JwImageRef> = emptyList(),
     /** [KIND_BOXES]：页面文本块（CSS 像素，左上原点）。 */
@@ -44,8 +57,25 @@ data class JwSchedulePayload(
 
         /** 单个文本块的长度上限（超出部分由适配器自己截断）。 */
         const val MAX_BOX_TEXT = 120
+
+        /** [JwSchedulePayload.warnings] 的条数上限。 */
+        const val MAX_WARNINGS = 20
+
+        /** 单条 [JwSchedulePayload.warnings] 的长度上限。 */
+        const val MAX_WARNING_TEXT = 200
     }
+
+    /**
+     * 真正要显示给用户的核对提示：图片识别那条固定说明 + 适配器自己写的。
+     *
+     * `ocrAssisted` 的语义就落在这里一处，不让每个调用方各写一遍。
+     */
+    val reviewNotes: List<String>
+        get() = (if (ocrAssisted) listOf(OCR_REVIEW_NOTE) else emptyList()) + warnings
 }
+
+/** `ocrAssisted` 对应的固定提示（规范 §4）。 */
+const val OCR_REVIEW_NOTE = "该课表由图片识别生成，请重点核对课程名、周次与节次"
 
 /** 一个页面文本块：坐标与尺寸都是 CSS 像素。 */
 @Serializable
@@ -132,6 +162,18 @@ object JwPayloadCodec {
     fun validate(payload: JwSchedulePayload) {
         if (payload.specVersion > JwManifest.SPEC_VERSION) {
             throw JwPackageException("课表载荷规范版本 v${payload.specVersion} 高于本应用支持的 v${JwManifest.SPEC_VERSION}")
+        }
+        if (payload.warnings.size > JwSchedulePayload.MAX_WARNINGS) {
+            throw JwPackageException(
+                "核对提示太多（${payload.warnings.size} 条，上限 ${JwSchedulePayload.MAX_WARNINGS} 条）",
+            )
+        }
+        payload.warnings.forEachIndexed { index, warning ->
+            val at = "第 ${index + 1} 条核对提示"
+            if (warning.isBlank()) throw JwPackageException("$at 是空的")
+            if (warning.length > JwSchedulePayload.MAX_WARNING_TEXT) {
+                throw JwPackageException("$at 太长（${warning.length} 字，上限 ${JwSchedulePayload.MAX_WARNING_TEXT} 字）")
+            }
         }
         when (payload.kind) {
             JwSchedulePayload.KIND_SCHEDULE -> {

@@ -36,6 +36,13 @@ data class ImportPreview(
     val document: ScheduleDocument,
     val termSummaries: List<TermSummary>,
     val warnings: List<String> = emptyList(),
+    /**
+     * **第三方适配器**要求用户核对的说明。
+     *
+     * 和 [warnings] 分开放是因为渲染方式必须不同：这几条是脚本写的，用户得看得出
+     * 「这是那个适配器说的，不是空课说的」—— 否则脚本逐字复制宿主文案就能冒充我们。
+     */
+    val adapterNotes: List<String> = emptyList(),
     /** WakeUp 导入作为新学期，合并后设为当前学期。 */
     val activateTermId: String? = null,
     /**
@@ -137,8 +144,9 @@ class TransferViewModel @Inject constructor(
     }
 
     /** 教务导入回传的 ScheduleDocument JSON → 预览（复用同一条管线）。 */
-    fun parseExtractedDocument(json: String, source: String) {
-        parseRaw({ NullClassCodec.decode(json) }, source = source)
+    /** 教务提取回来的文档 → 预览。[adapterNotes] 是适配器要求重点核对的话，原样显示（标明来源）。 */
+    fun parseExtractedDocument(json: String, source: String, adapterNotes: List<String> = emptyList()) {
+        parseRaw({ NullClassCodec.decode(json) }, source = source, adapterNotes = adapterNotes)
     }
 
     // ---- 文件导入 ----
@@ -244,7 +252,11 @@ class TransferViewModel @Inject constructor(
 
     // ---- 内部 ----
 
-    private fun parseRaw(parser: () -> ScheduleDocument, source: String) {
+    private fun parseRaw(
+        parser: () -> ScheduleDocument,
+        source: String,
+        adapterNotes: List<String> = emptyList(),
+    ) {
         try {
             val document = parser()
             if (document.terms.none { it.deletedAt == null }) {
@@ -271,6 +283,7 @@ class TransferViewModel @Inject constructor(
                             source = source,
                             document = document,
                             termSummaries = summaries,
+                            adapterNotes = adapterNotes,
                             activateTermId = null,
                             pendingDeletions = deletions,
                         ),

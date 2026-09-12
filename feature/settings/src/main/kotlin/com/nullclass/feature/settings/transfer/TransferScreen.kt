@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
@@ -91,8 +92,21 @@ fun TransferScreen(
     val jwLauncher = rememberLauncherForActivityResult(
         ActivityResultContracts.StartActivityForResult(),
     ) { result ->
-        val json = result.data?.getStringExtra(com.nullclass.feature.settings.jw.JwImportActivity.EXTRA_DOCUMENT_JSON)
-        if (json != null) viewModel.parseExtractedDocument(json, source = "教务导入")
+        val data = result.data
+        val json = data?.getStringExtra(com.nullclass.feature.settings.jw.JwImportActivity.EXTRA_DOCUMENT_JSON)
+        if (json != null) {
+            val notes = data.getStringArrayListExtra(
+                com.nullclass.feature.settings.jw.JwImportActivity.EXTRA_DOCUMENT_NOTES,
+            ).orEmpty()
+            val adapterName = data.getStringExtra(
+                com.nullclass.feature.settings.jw.JwImportActivity.EXTRA_ADAPTER_NAME,
+            )
+            viewModel.parseExtractedDocument(
+                json,
+                source = if (adapterName.isNullOrBlank()) "教务导入" else "教务导入 · $adapterName",
+                adapterNotes = notes,
+            )
+        }
     }
 
     // 系统「用其他应用打开」.nullclass → 待导入 URI
@@ -271,7 +285,14 @@ private fun ImportPreviewDialog(
         onDismissRequest = onDismiss,
         title = { Text("导入预览") },
         text = {
-            Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+            // 弹窗高度封顶 + 可滚动：这些条目里有**第三方脚本**提供的文本，
+            // 条数上限（20 条 ×200 字）是给校验用的，不代表屏幕上放得下。
+            Column(
+                modifier = Modifier
+                    .heightIn(max = 420.dp)
+                    .verticalScroll(rememberScrollState()),
+                verticalArrangement = Arrangement.spacedBy(8.dp),
+            ) {
                 Text(
                     "来源：${preview.source}",
                     style = MaterialTheme.typography.bodySmall,
@@ -304,6 +325,23 @@ private fun ImportPreviewDialog(
                         style = MaterialTheme.typography.bodySmall,
                         color = MaterialTheme.colorScheme.tertiary,
                     )
+                }
+                if (preview.adapterNotes.isNotEmpty()) {
+                    // 来源必须写明白：这些字是适配器脚本写的，脚本可以逐字抄我们上面那句，
+                    // 也可以编一句「不会删除任何本地记录」—— 用户得知道该信谁。
+                    Text(
+                        "以下说明由适配器（第三方脚本）提供，不是空课官方的判断：",
+                        style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        fontWeight = FontWeight.Bold,
+                    )
+                    preview.adapterNotes.forEach { note ->
+                        Text(
+                            "· $note",
+                            style = MaterialTheme.typography.bodySmall,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        )
+                    }
                 }
                 Text(
                     "与本地数据合并后生效。",

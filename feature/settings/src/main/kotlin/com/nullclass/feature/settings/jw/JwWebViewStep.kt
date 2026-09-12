@@ -141,7 +141,7 @@ fun JwWebViewStep(
     adapter: JwAdapter,
     autoExtract: Boolean,
     preferredUrl: String?,
-    onExtracted: (documentJson: String, loadedUrl: String) -> Unit,
+    onExtracted: (documentJson: String, loadedUrl: String, notes: List<String>) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     val context = LocalContext.current
@@ -260,6 +260,7 @@ fun JwWebViewStep(
                                     .with(TemporalAdjusters.previousOrSame(DayOfWeek.MONDAY))
                                     .toEpochDay(),
                                 totalWeeks = 20,
+                                warnings = payload.warnings,
                             )
                             if (built.payload.terms.single().courses.isEmpty()) {
                                 val msg = "识别结果里没有课程，请改用手动录入。"
@@ -298,7 +299,7 @@ fun JwWebViewStep(
                         status = "提取成功"
                         lastErrorLog = null
                         JwExtractLog.i("提取成功 key=${adapter.key} terms=${document.terms.size}")
-                        onExtracted(NullClassCodec.encode(document), rememberableUrl())
+                        onExtracted(NullClassCodec.encode(document), rememberableUrl(), payload.reviewNotes)
                     }
                 }
             } catch (e: Exception) {
@@ -526,7 +527,7 @@ fun JwWebViewStep(
                     now = System.currentTimeMillis(),
                 )
                 ocrReview = null
-                onExtracted(NullClassCodec.encode(document), rememberableUrl())
+                onExtracted(NullClassCodec.encode(document), rememberableUrl(), review.payload.reviewNotes)
             },
             onDismiss = {
                 ocrReview = null
@@ -562,6 +563,7 @@ private fun buildBoxesReview(
             .toEpochDay(),
         totalWeeks = JwOcrScheduleBuilder.inferTotalWeeks(table),
         ocrAssisted = false,
+        warnings = payload.warnings,
     )
     if (built.payload.terms.single().courses.isEmpty()) {
         throw JwPackageException("这一页里没有解析出任何课程，请确认打开的是课表页面")

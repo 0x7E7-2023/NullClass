@@ -56,6 +56,13 @@ object JwOcrScheduleBuilder {
         totalWeeks: Int,
         /** 文本框来自 OCR 时置 true（导入预览会追加重核提示）；来自页面文本块时为 false。 */
         ocrAssisted: Boolean = true,
+        /**
+         * 适配器自己要用户核对的说明，原样带进重建后的载荷。
+         *
+         * 这一步是重建载荷，**不显式带就是丢**：适配器说的「开学日期是推算的」到不了用户眼前，
+         * 而推算出来的日期跟真的一样会用（今日页/提醒/小组件/周视图全按它算）。
+         */
+        warnings: List<String> = emptyList(),
     ): JwOcrBuildResult {
         // 结构层要求用户核对的话（表头顺序异常、节次号是推断的……）一并带到校对页上，
         // 不然它们只留在 warnings 里，用户根本看不到。
@@ -158,6 +165,7 @@ object JwOcrScheduleBuilder {
         val payload = JwSchedulePayload(
             kind = JwSchedulePayload.KIND_SCHEDULE,
             ocrAssisted = ocrAssisted,
+            warnings = warnings,
             terms = listOf(
                 JwTerm(
                     name = termName,

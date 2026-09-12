@@ -74,8 +74,17 @@ class JwImportActivity : ComponentActivity() {
                 val viewModel: JwImportViewModel = hiltViewModel()
                 JwImportScreen(
                     viewModel = viewModel,
-                    onFinishWithDocument = { json ->
-                        setResult(RESULT_OK, Intent().putExtra(EXTRA_DOCUMENT_JSON, json))
+                    onFinishWithDocument = { json, notes, adapterName ->
+                        setResult(
+                            RESULT_OK,
+                            Intent()
+                                .putExtra(EXTRA_DOCUMENT_JSON, json)
+                                // 适配器要用户重点核对的话（开学日是推算的、识别可能错位…）
+                                // 一路带到导入预览去，不能在这一跳丢掉
+                                .putStringArrayListExtra(EXTRA_DOCUMENT_NOTES, ArrayList(notes))
+                                // 名字也带上：预览里那一段第三方说明必须写清是谁说的
+                                .putExtra(EXTRA_ADAPTER_NAME, adapterName),
+                        )
                         finish()
                     },
                     onCancel = { finish() },
@@ -86,6 +95,8 @@ class JwImportActivity : ComponentActivity() {
 
     companion object {
         const val EXTRA_DOCUMENT_JSON = "documentJson"
+        const val EXTRA_DOCUMENT_NOTES = "documentNotes"
+        const val EXTRA_ADAPTER_NAME = "adapterName"
 
         fun intent(context: Context): Intent = Intent(context, JwImportActivity::class.java)
     }
@@ -95,7 +106,7 @@ class JwImportActivity : ComponentActivity() {
 @Composable
 private fun JwImportScreen(
     viewModel: JwImportViewModel,
-    onFinishWithDocument: (String) -> Unit,
+    onFinishWithDocument: (documentJson: String, notes: List<String>, adapterName: String) -> Unit,
     onCancel: () -> Unit,
 ) {
     val state by viewModel.state.collectAsState()
@@ -172,9 +183,9 @@ private fun JwImportScreen(
                     adapter.key == state.lastAdapterKey -> state.lastScheduleUrl
                     else -> null
                 },
-                onExtracted = { documentJson, loadedUrl ->
+                onExtracted = { documentJson, loadedUrl, notes ->
                     viewModel.rememberRefresh(adapter.key, loadedUrl)
-                    onFinishWithDocument(documentJson)
+                    onFinishWithDocument(documentJson, notes, adapter.displayName)
                 },
                 modifier = Modifier.padding(padding),
             )

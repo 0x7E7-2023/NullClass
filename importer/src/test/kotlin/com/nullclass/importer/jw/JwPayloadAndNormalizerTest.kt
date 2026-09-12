@@ -87,6 +87,61 @@ class JwPayloadAndNormalizerTest {
         assertTrue(badBox.message!!.contains("负"), badBox.message)
     }
 
+    // ---- 核对提示（规范 §4）----
+
+    @Test
+    fun `适配器写的核对提示原样保留`() {
+        val payload = JwPayloadCodec.decode(
+            """
+            {"specVersion":1,"kind":"schedule",
+             "warnings":["开学日期无法从教务获取，已按最近的周一推算，请核对","教室名可能含校区后缀"],
+             "terms":[{"name":"t","firstDay":"2026-09-07","courses":[]}]}
+            """.trimIndent(),
+        )
+        assertEquals(2, payload.warnings.size)
+        assertEquals(payload.warnings, payload.reviewNotes, "没有 ocrAssisted 时提示就是适配器写的那几条")
+    }
+
+    @Test
+    fun `ocrAssisted 会真的变成一条提示`() {
+        // 这条曾经只是文档里的承诺：字段解析得出来、传得下去，但没有任何界面读它。
+        val payload = JwPayloadCodec.decode(
+            """
+            {"specVersion":1,"kind":"schedule","ocrAssisted":true,
+             "warnings":["周次是从图片里认的"],
+             "terms":[{"name":"t","firstDay":"2026-09-07","courses":[]}]}
+            """.trimIndent(),
+        )
+        assertEquals(listOf(OCR_REVIEW_NOTE, "周次是从图片里认的"), payload.reviewNotes)
+        assertTrue(OCR_REVIEW_NOTE.isNotBlank())
+    }
+
+    @Test
+    fun `不给提示时没有任何核对条目`() {
+        assertTrue(JwPayloadCodec.decode(validPayload).reviewNotes.isEmpty())
+    }
+
+    @Test
+    fun `核对提示的条数与长度都有上限`() {
+        val many = (1..JwSchedulePayload.MAX_WARNINGS + 1).joinToString(",") { "\"提示$it\"" }
+        assertFailsWith<JwPackageException> {
+            JwPayloadCodec.decode(
+                """{"specVersion":1,"terms":[{"name":"t","firstDay":"2026-09-07"}],"warnings":[$many]}""",
+            )
+        }
+        val long = "提".repeat(JwSchedulePayload.MAX_WARNING_TEXT + 1)
+        assertFailsWith<JwPackageException> {
+            JwPayloadCodec.decode(
+                """{"specVersion":1,"terms":[{"name":"t","firstDay":"2026-09-07"}],"warnings":["$long"]}""",
+            )
+        }
+        assertFailsWith<JwPackageException> {
+            JwPayloadCodec.decode(
+                """{"specVersion":1,"terms":[{"name":"t","firstDay":"2026-09-07"}],"warnings":["   "]}""",
+            )
+        }
+    }
+
     @Test
     fun `不认识的载荷类型会被点名`() {
         val error = assertFailsWith<JwPackageException> { JwPayloadCodec.decode("""{"kind":"nope"}""") }

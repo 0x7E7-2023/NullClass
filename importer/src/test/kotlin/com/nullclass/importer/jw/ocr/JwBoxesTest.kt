@@ -3,6 +3,7 @@ package com.nullclass.importer.jw.ocr
 import com.nullclass.importer.jw.JwPayloadCodec
 import com.nullclass.importer.jw.JwScheduleNormalizer
 import com.nullclass.importer.jw.JwSchedulePayload
+import com.nullclass.importer.jw.OCR_REVIEW_NOTE
 import java.io.File
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -91,6 +92,42 @@ class JwBoxesTest {
         val document = JwScheduleNormalizer.normalize(built.payload, schoolKey = "universal", now = 0L)
         assertEquals(9, document.courses.size)
         assertEquals("jw-universal", document.deviceId)
+    }
+
+    /**
+     * 回归：`boxes` / `image` 两条路都会**重建**载荷，重建时不显式带警告就是静默丢掉。
+     *
+     * 后果不是少显示一句话：适配器说的「开学日期是推算的」到不了用户眼前，
+     * 而推算出来的日期跟真的一样会用（今日页/提醒/小组件/周视图全按它算）。
+     */
+    @Test
+    fun `重建载荷时把适配器的核对提示带过去`() {
+        val payload = fixture("dom-table.expected.json")
+        val table = JwTableAligner.align(JwBoxes.toOcrPage(payload))
+        val notes = listOf("开学日期无法从教务获取，已按最近的周一推算，请核对")
+
+        val withNotes = JwOcrScheduleBuilder.build(
+            table = table,
+            termName = "通用适配器",
+            firstDayEpochDay = 20_000,
+            totalWeeks = JwOcrScheduleBuilder.inferTotalWeeks(table),
+            ocrAssisted = false,
+            warnings = notes,
+        )
+        assertEquals(notes, withNotes.payload.warnings, "重建后的载荷必须带着适配器说的话")
+        assertEquals(notes, withNotes.payload.reviewNotes)
+        // 文本块是量出来的，不该被标成图片识别
+        assertFalse(withNotes.payload.ocrAssisted)
+
+        val withoutNotes = JwOcrScheduleBuilder.build(
+            table = table,
+            termName = "通用适配器",
+            firstDayEpochDay = 20_000,
+            totalWeeks = JwOcrScheduleBuilder.inferTotalWeeks(table),
+            ocrAssisted = true,
+        )
+        assertTrue(withoutNotes.payload.warnings.isEmpty())
+        assertEquals(listOf(OCR_REVIEW_NOTE), withoutNotes.payload.reviewNotes, "OCR 那条固定提示照旧")
     }
 
     @Test
