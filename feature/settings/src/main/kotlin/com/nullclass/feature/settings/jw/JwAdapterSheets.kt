@@ -15,6 +15,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontFamily
@@ -94,7 +95,11 @@ fun InstallConfirmDialog(
     }
 }
 
-/** 库索引候选列表（从链接添加时）。 */
+/**
+ * 库索引候选列表（从链接添加时）。
+ *
+ * 社区库动辄几十上百个适配器，这里和学校列表共用同一套搜索（[matchesQuery]）。
+ */
 @Composable
 fun LibraryDialog(
     snapshot: JwLibrarySnapshot,
@@ -102,6 +107,9 @@ fun LibraryDialog(
     onPick: (com.nullclass.importer.jw.JwLibraryEntry) -> Unit,
     onDismiss: () -> Unit,
 ) {
+    var query by rememberSaveable { mutableStateOf("") }
+    val entries = snapshot.index.adapters.filter { it.matchesQuery(query) }
+
     AlertDialog(
         onDismissRequest = onDismiss,
         title = { Text(snapshot.index.name ?: "适配器库") },
@@ -119,8 +127,17 @@ fun LibraryDialog(
                 )
                 if (snapshot.index.adapters.isEmpty()) {
                     Text("这个库里还没有适配器。")
+                } else {
+                    AdapterSearchField(query = query, onQueryChange = { query = it })
+                    if (entries.isEmpty()) {
+                        Text(
+                            "这个库里没有匹配「${query.trimQuery()}」的适配器。",
+                            style = MaterialTheme.typography.bodySmall,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        )
+                    }
                 }
-                snapshot.index.adapters.forEach { entry ->
+                entries.forEach { entry ->
                     Row(modifier = Modifier.fillMaxWidth()) {
                         TextButton(onClick = { onPick(entry) }, enabled = !busy, modifier = Modifier.weight(1f)) {
                             Column(Modifier.fillMaxWidth()) {

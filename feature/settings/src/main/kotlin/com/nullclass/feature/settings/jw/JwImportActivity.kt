@@ -16,8 +16,11 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.filled.Clear
+import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -26,6 +29,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
+import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
@@ -35,11 +39,13 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import com.nullclass.core.ui.theme.NullClassTheme
@@ -239,9 +245,23 @@ private fun SchoolPicker(
 ) {
     val context = LocalContext.current
     var linkDialog by remember { mutableStateOf(false) }
+    var query by rememberSaveable { mutableStateOf("") }
     val lastAdapter = state.lastAdapterKey?.let { key ->
         state.builtin.firstOrNull { it.key == key } ?: state.user.firstOrNull { it.key == key }
     }
+
+    // 与匹配函数同一套判据：只有分隔符的那种查询不算搜索态，否则会收起说明文案却一条不筛
+    val searching = hasQueryTerms(query)
+    val fallbackAdapters = state.builtin.filter { it.isFallback }
+    val schools = state.builtin.filter { !it.isFallback }.filter { it.matchesQuery(query) }
+    val matchedFallbacks = fallbackAdapters.filter { it.matchesQuery(query) }
+    val userAdapters = state.user.filter { it.matchesQuery(query) }
+    val brokenAdapters = state.broken.filter { it.matchesQuery(query) }
+    val hits = schools.size + matchedFallbacks.size + userAdapters.size + brokenAdapters.size
+    val noHits = searching && hits == 0
+    // 搜不到任何东西时，兜底适配器照样端上来 —— 「搜不到我的学校」正是它存在的理由。
+    // 平时它只在命中查询时出现（搜「通用」/「univ」能找到它，其余时候不占地方）。
+    val fallbackRows = if (noHits) fallbackAdapters else matchedFallbacks
 
     Column(
         modifier = modifier
@@ -250,50 +270,68 @@ private fun SchoolPicker(
         verticalArrangement = Arrangement.spacedBy(12.dp),
     ) {
         Text("从教务系统导入课表", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold)
-        Text(
-            "登录由你在下方网页里手工完成（验证码/扫码/短信都自己操作），空课不会碰你的教务账号密码；" +
-                "登录后进入课表页面，点「提取课表」即可。",
-            style = MaterialTheme.typography.bodySmall,
-            color = MaterialTheme.colorScheme.onSurfaceVariant,
-        )
+        // 搜索时把开场白收起来，结果多留几行
+        if (!searching) {
+            Text(
+                "登录由你在下方网页里手工完成（验证码/扫码/短信都自己操作），空课不会碰你的教务账号密码；" +
+                    "登录后进入课表页面，点「提取课表」即可。",
+                style = MaterialTheme.typography.bodySmall,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+            )
+        }
+
+        AdapterSearchField(query = query, onQueryChange = { query = it })
 
         if (lastAdapter != null) {
             Button(onClick = { onRefresh(lastAdapter) }, modifier = Modifier.fillMaxWidth()) {
                 Text("一键刷新：${lastAdapter.displayName}")
             }
-            Text(
-                "复用上次的登录状态重新提取（学校改了课表时用）。",
-                style = MaterialTheme.typography.bodySmall,
-                color = MaterialTheme.colorScheme.onSurfaceVariant,
-            )
+            if (!searching) {
+                Text(
+                    "复用上次的登录状态重新提取（学校改了课表时用）。",
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                )
+            }
         }
 
         LazyColumn(
             modifier = Modifier.weight(1f),
             verticalArrangement = Arrangement.spacedBy(8.dp),
         ) {
-            val schools = state.builtin.filter { !it.isFallback }
-            val fallbacks = state.builtin.filter { it.isFallback }
+            if (noHits) {
+                item {
+                    Text(
+                        "没找到匹配「${query.trimQuery()}」的适配器。",
+                        style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    )
+                }
+            }
             if (schools.isNotEmpty()) {
                 item { SectionLabel("内置适配器") }
                 items(schools, key = { "b-${it.key}" }) { adapter ->
                     AdapterRow(adapter, badge = null, onPick = onPick, onDetails = onShowDetails)
                 }
             }
-            item { SectionLabel("用户添加") }
-            if (state.user.isEmpty() && state.broken.isEmpty()) {
-                item {
-                    Text(
-                        "还没有添加过适配器。可以用下面的按钮导入别人做好的适配器包，或直接从适配器库添加。",
-                        style = MaterialTheme.typography.bodySmall,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant,
-                    )
+            if (!searching) {
+                item { SectionLabel("用户添加") }
+                if (state.user.isEmpty() && state.broken.isEmpty()) {
+                    item {
+                        Text(
+                            "还没有添加过适配器。可以用下面的按钮导入别人做好的适配器包，或直接从适配器库添加。",
+                            style = MaterialTheme.typography.bodySmall,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        )
+                    }
                 }
+            } else if (userAdapters.isNotEmpty() || brokenAdapters.isNotEmpty()) {
+                item { SectionLabel("用户添加") }
             }
-            items(state.user, key = { "u-${it.key}" }) { adapter ->
+            items(userAdapters, key = { "u-${it.key}" }) { adapter ->
                 AdapterRow(adapter, badge = "用户添加", onPick = onPick, onDetails = onShowDetails)
             }
-            items(state.broken, key = { "x-${it.key}" }) { broken ->
+            items(brokenAdapters, key = { "x-${it.key}" }) { broken ->
                 Row(
                     modifier = Modifier.fillMaxWidth(),
                     verticalAlignment = Alignment.CenterVertically,
@@ -309,9 +347,10 @@ private fun SchoolPicker(
                     TextButton(onClick = { onDelete(JwAdapterPlaceholder.of(broken.key)) }) { Text("删除") }
                 }
             }
-            // 兜底适配器置底：找得到学校的人不该被它分散注意力
-            if (fallbacks.isNotEmpty()) {
-                item { SectionLabel("找不到你的学校？") }
+            // 兜底适配器平时置底：找得到学校的人不该被它分散注意力。
+            // 搜不到东西时它就是答案，改由上面那行「没找到匹配…」起头，不再重复小标题。
+            if (fallbackRows.isNotEmpty()) {
+                if (!noHits) item { SectionLabel("找不到你的学校？") }
                 item {
                     Text(
                         "通用适配器不认学校：填上你的教务地址，登录后由空课读页面文字自己还原出表格" +
@@ -320,7 +359,7 @@ private fun SchoolPicker(
                         color = MaterialTheme.colorScheme.onSurfaceVariant,
                     )
                 }
-                items(fallbacks, key = { "f-${it.key}" }) { adapter ->
+                items(fallbackRows, key = { "f-${it.key}" }) { adapter ->
                     AdapterRow(adapter, badge = "通用", onPick = onPick, onDetails = onShowDetails)
                 }
             }
@@ -347,6 +386,33 @@ private fun SchoolPicker(
             onDismiss = { linkDialog = false },
         )
     }
+}
+
+/**
+ * 适配器搜索框。学校名、key、教务域名、作者都参与匹配 ——
+ * `dlutci`、`ustc.edu.cn`、`大连 工程` 都找得到（见 [matchesQuery]）。
+ */
+@Composable
+internal fun AdapterSearchField(query: String, onQueryChange: (String) -> Unit) {
+    OutlinedTextField(
+        value = query,
+        onValueChange = onQueryChange,
+        singleLine = true,
+        modifier = Modifier.fillMaxWidth(),
+        shape = MaterialTheme.shapes.large,
+        textStyle = MaterialTheme.typography.bodyMedium,
+        // 提示语要短到单行放得下，否则输入框会被撑成两行高
+        placeholder = { Text("搜索学校名称或域名") },
+        leadingIcon = { Icon(Icons.Default.Search, contentDescription = null) },
+        trailingIcon = {
+            if (query.isNotEmpty()) {
+                IconButton(onClick = { onQueryChange("") }) {
+                    Icon(Icons.Default.Clear, contentDescription = "清空搜索")
+                }
+            }
+        },
+        keyboardOptions = KeyboardOptions(imeAction = ImeAction.Search),
+    )
 }
 
 @Composable
