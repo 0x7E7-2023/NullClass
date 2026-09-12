@@ -171,7 +171,170 @@ class JwOcrTest {
     }
 
     @Test
+    fun `整行里的星期优先于它所在的列`() {
+        // 合班课那类页面会把一格画得横跨好几个星期列，格子自己写的「星期3」比列位置可信
+        assertNull(JwCourseTextParser.parseDayInLine("1-16周"))
+        assertNull(JwCourseTextParser.parseDayInLine("第三周"))
+        assertEquals(1, JwCourseTextParser.parseDayInLine("2-5周,星期1,1-2节,汇智楼105"))
+        assertEquals(3, JwCourseTextParser.parseDayInLine("1-16周,星期3,1-2节"))
+        assertEquals(7, JwCourseTextParser.parseDayInLine("星期天"))
+        assertEquals(2, JwCourseTextParser.parseDayInLine("周二,周日"))
+        assertEquals(1, JwCourseTextParser.parseDayInLine("周一,周二"))
+
+        val boxes = mutableListOf<OcrBox>()
+        listOf("周一", "周二", "周三", "周四", "周五").forEachIndexed { index, label ->
+            boxes += OcrBox(label, 130 + index * 100, 10, 180 + index * 100, 40)
+        }
+        listOf(1, 2, 3, 4).forEachIndexed { index, period ->
+            val center = 110 + index * 100
+            boxes += OcrBox("$period", 20, center - 15, 60, center + 15)
+        }
+        // 画在第 1 列里，格子自己写着星期 3
+        boxes += OcrBox("高等数学", 130, 70, 230, 100)
+        boxes += OcrBox("1-16周,星期3,1-2节", 130, 100, 230, 130)
+
+        val table = JwTableAligner.align(OcrPage(800, 600, boxes))
+        val result = JwOcrScheduleBuilder.build(table, "T", 20000, 20)
+        val block = result.payload.terms.single().courses.single().blocks.single()
+        assertEquals(3, block.dayOfWeek)
+        assertEquals(1, block.startPeriod)
+        assertEquals(2, block.endPeriod)
+    }
+
+    @Test
+    fun `节次列不在页宽左侧四分之一内也能定行`() {
+        // 表格靠右、页很宽时，按「页宽的 1/4」判会把整列节次漏掉；现在按「在星期列外侧」判
+        val boxes = mutableListOf<OcrBox>()
+        listOf("周一", "周二", "周三", "周四", "周五").forEachIndexed { index, label ->
+            boxes += OcrBox(label, 400 + index * 100, 10, 450 + index * 100, 40)
+        }
+        listOf(1, 2, 3, 4).forEachIndexed { index, period ->
+            val center = 110 + index * 100
+            boxes += OcrBox("$period", 280, center - 15, 320, center + 15)
+        }
+        boxes += OcrBox("高等数学", 410, 70, 510, 100)
+        boxes += OcrBox("1-16周", 410, 100, 510, 130)
+
+        val table = JwTableAligner.align(OcrPage(width = 1000, height = 600, boxes = boxes))
+        assertTrue(table.reliable, table.warnings.toString())
+        assertEquals(listOf(1, 2, 3, 4), table.rowPeriods)
+        assertEquals("高等数学", JwOcrScheduleBuilder.build(table, "T", 20000, 20)
+            .payload.terms.single().courses.single().name)
+    }
+
+    @Test
+    fun `同一门课被画在两个列里也只收一份课块`() {
+        val boxes = mutableListOf<OcrBox>()
+        listOf("周一", "周二", "周三", "周四", "周五").forEachIndexed { index, label ->
+            boxes += OcrBox(label, 130 + index * 100, 10, 180 + index * 100, 40)
+        }
+        listOf(1, 2, 3, 4).forEachIndexed { index, period ->
+            val center = 110 + index * 100
+            boxes += OcrBox("$period", 20, center - 15, 60, center + 15)
+        }
+        // 同一段文字出现在两个列里（页面把跨列的课各画了一遍）
+        listOf(130, 330).forEach { left ->
+            boxes += OcrBox("高等数学", left, 70, left + 100, 100)
+            boxes += OcrBox("1-16周,星期1,1-2节", left, 100, left + 100, 130)
+        }
+
+        val table = JwTableAligner.align(OcrPage(800, 600, boxes))
+        val course = JwOcrScheduleBuilder.build(table, "T", 20000, 20)
+            .payload.terms.single().courses.single()
+        assertEquals(1, course.blocks.size, course.blocks.toString())
+    }
+
+    @Test
+    fun `行标是上课时间也能定行 并提醒核对节次`() {
+        val boxes = mutableListOf<OcrBox>()
+        listOf("周一", "周二", "周三", "周四", "周五").forEachIndexed { index, label ->
+            boxes += OcrBox(label, 130 + index * 100, 10, 180 + index * 100, 40)
+        }
+        listOf("08:00-08:45", "08:55-09:40", "10:00-10:45", "10:55-11:40").forEachIndexed { index, label ->
+            val center = 110 + index * 100
+            boxes += OcrBox(label, 20, center - 15, 120, center + 15)
+        }
+        boxes += OcrBox("高等数学", 130, 70, 230, 100)
+        boxes += OcrBox("1-16周,星期1,1-2节", 130, 100, 230, 130)
+
+        val table = JwTableAligner.align(OcrPage(800, 600, boxes))
+        assertTrue(table.reliable, table.warnings.toString())
+        assertEquals(4, table.rowAnchors.size)
+        assertTrue(table.warnings.any { it.contains("按上课时间") }, table.warnings.toString())
+
+        val result = JwOcrScheduleBuilder.build(table, "T", 20000, 20)
+        val block = result.payload.terms.single().courses.single().blocks.single()
+        assertEquals(1, block.dayOfWeek)
+        // 节次优先取格子里写的「1-2节」，不是按行序推出来的
+        assertEquals(1, block.startPeriod)
+        assertEquals(2, block.endPeriod)
+        // 推断出来的节次号必须出现在校对页上，不能只躺在 warnings 里
+        assertTrue(result.issues.any { it.contains("按上课时间") }, result.issues.toString())
+    }
+
+    @Test
+    fun `整页没有周次时逐格还原 而不是把一列糊成一门课`() {
+        // 「本周课表」那类视图：格子里只有课名/教师/教室，没有周次。按周次切段就无从谈起，
+        // 这时候必须退回按格子分组，否则一整列的课会被拼成一门课（课名还只剩第一个）。
+        val boxes = mutableListOf<OcrBox>()
+        listOf("周一", "周二", "周三", "周四", "周五").forEachIndexed { index, label ->
+            boxes += OcrBox(label, 130 + index * 100, 10, 180 + index * 100, 40)
+        }
+        listOf(1, 2, 3, 4).forEachIndexed { index, period ->
+            val center = 110 + index * 100
+            boxes += OcrBox("$period", 20, center - 15, 60, center + 15)
+        }
+        boxes += OcrBox("大学英语", 130, 70, 230, 100)
+        boxes += OcrBox("李四", 130, 100, 230, 130)
+        boxes += OcrBox("教1-101", 130, 130, 230, 160)
+        boxes += OcrBox("高等数学", 230, 70, 330, 100)
+        boxes += OcrBox("王五", 230, 100, 330, 130)
+        boxes += OcrBox("教2-201", 230, 130, 330, 160)
+
+        val table = JwTableAligner.align(OcrPage(800, 600, boxes))
+        assertTrue(table.reliable, table.warnings.toString())
+        val result = JwOcrScheduleBuilder.build(table, "T", 20000, 20)
+        val courses = result.payload.terms.single().courses
+        assertEquals(listOf("大学英语", "高等数学"), courses.map { it.name }.sorted())
+        assertTrue(result.issues.any { it.contains("没有周次信息") }, result.issues.toString())
+
+        val english = courses.first { it.name == "大学英语" }
+        assertEquals("李四", english.teacher)
+        val block = english.blocks.single()
+        assertEquals(1, block.dayOfWeek)
+        assertEquals("教1-101", block.location)
+        // 周次认不出 → 按整学期兜底，并逐条提示核对
+        assertEquals(1, block.startWeek)
+        assertEquals(20, block.endWeek)
+        assertTrue(result.issues.any { it.contains("没识别出周次") }, result.issues.toString())
+    }
+
+    @Test
+    fun `表格上下的页头页脚不该把课表判成不可靠`() {
+        // OCR 整屏截图必然带上页头菜单与页脚版权：它们不是课表内容，
+        // 不该按「落不进网格」计入比例（真机实测把一张干净课表压到 33% 直接拒识）
+        val boxes = mutableListOf<OcrBox>()
+        boxes += OcrBox("首页 选课 成绩查询 教学安排", 20, 5, 400, 35)
+        boxes += OcrBox("版权所有 © 教务处", 20, 700, 200, 730)
+        listOf("周一", "周二", "周三", "周四", "周五").forEachIndexed { index, label ->
+            boxes += OcrBox(label, 130 + index * 100, 60, 180 + index * 100, 90)
+        }
+        listOf(1, 2, 3, 4).forEachIndexed { index, period ->
+            val center = 160 + index * 100
+            boxes += OcrBox("$period", 20, center - 15, 60, center + 15)
+        }
+        boxes += OcrBox("高等数学", 130, 120, 230, 150)
+        boxes += OcrBox("1-16周", 130, 150, 230, 180)
+
+        val table = JwTableAligner.align(OcrPage(800, 760, boxes))
+        assertTrue(table.reliable, table.warnings.toString())
+        assertTrue(table.unassigned.isEmpty(), table.unassigned.toString())
+        assertEquals("高等数学\n1-16周", table.cells[0][0])
+    }
+
+    @Test
     fun `周次文本不会被当成节次标注`() {
+
         assertNull(JwCourseTextParser.parsePeriodLabel("1-16周"))
         assertNull(JwCourseTextParser.parsePeriodLabel("1-16周(单)"))
         assertEquals(3..4, JwCourseTextParser.parsePeriodLabel("3-4"))

@@ -74,15 +74,21 @@ object JwTableAligner {
         if (colDays != colDays.sorted()) warnings += "星期表头顺序异常，请重点核对"
 
         val headerTop = headerGroup.maxOf { it.top }
+        // 节次列在星期列**外侧**——左边是最常见的排法，右边也有（少数系统两侧都标）。
+        // 判据不用「页宽的百分之几」：同一张表在「容器坐标」与「整页坐标」下页宽差好几倍，
+        // 按比例判会在其中一种坐标里整列落空。
+        val firstColumn = colAnchors.first()
+        val lastColumn = colAnchors.last()
+        val outsideColumns = { box: OcrBox -> box.centerX < firstColumn || box.centerX > lastColumn }
         val periodBoxes = boxes.filter { box ->
-            box.top > headerTop &&
-                box.centerX < page.width * 0.25 &&
-                JwCourseTextParser.parsePeriodLabel(box.text) != null
+            box.top > headerTop && outsideColumns(box) && JwCourseTextParser.parsePeriodLabel(box.text) != null
         }.sortedBy { it.centerY }
 
         val rowAnchors = mutableListOf<Int>()
         val rowPeriods = mutableListOf<Int>()
         val rowEndPeriods = mutableListOf<Int>()
+        // 定行用掉的文本框不再参与归格（它们是行标，不是课表内容）
+        val rowLabelBoxes = mutableSetOf<OcrBox>()
         periodBoxes.forEach { box ->
             val range = JwCourseTextParser.parsePeriodLabel(box.text) ?: return@forEach
             if (rowAnchors.isNotEmpty() && box.centerY - rowAnchors.last() < medianHeight) return@forEach
@@ -90,22 +96,46 @@ object JwTableAligner {
             rowPeriods += range.first
             rowEndPeriods += range.last
         }
+        rowLabelBoxes += periodBoxes
+
+        // 节次号一个都认不出时退一步：有些教务把行标成上课时间（08:00-08:45）而不是「1」「1-2」。
+        // 时间标注只用来**定行**；节次号优先取格子里写的「1-2节」，取不到就按行序推断 —— 推断出来的
+        // 节次号未必等于学校的节次编号，所以要在 warnings 里讲清楚，让用户核对那一栏看到。
+        if (rowAnchors.size < MIN_PERIOD_ROWS) {
+            val timeBoxes = boxes.filter { box ->
+                box.top > headerTop && outsideColumns(box) && JwCourseTextParser.looksLikeTimeLabel(box.text)
+            }.sortedBy { it.centerY }
+            if (timeBoxes.size >= MIN_PERIOD_ROWS) {
+                timeBoxes.forEach { box ->
+                    if (rowAnchors.isNotEmpty() && box.centerY - rowAnchors.last() < medianHeight) return@forEach
+                    rowAnchors += box.centerY
+                    rowPeriods += rowAnchors.size
+                    rowEndPeriods += rowAnchors.size
+                }
+                warnings += "节次列是按上课时间认的，节次号按行序推断，请重点核对"
+                rowLabelBoxes += timeBoxes
+            }
+        }
         if (rowAnchors.size < MIN_PERIOD_ROWS) {
             return AlignedTable.unreliable(listOf("没有找到节次列（识别到 ${rowAnchors.size} 行），无法确定课表行"))
         }
         expectedRows?.let { if (it != rowAnchors.size) warnings += "节次行数与预期不符（识别 ${rowAnchors.size}，预期 $it）" }
 
-        val rowTolerance = toleranceOf(rowAnchors, medianHeight)
         val colTolerance = toleranceOf(colAnchors, medianHeight)
+        val rowRange = tableRows(rowAnchors, headerTop, medianHeight)
+        val rowOf = rowLocator(rowAnchors, rowRange)
 
         val headerSet = headerGroup.toHashSet()
-        val periodSet = periodBoxes.toHashSet()
         val buckets = Array(rowAnchors.size) { Array(colAnchors.size) { mutableListOf<OcrBox>() } }
         val unassigned = mutableListOf<OcrBox>()
 
-        boxes.forEach { box ->
-            if (box in headerSet || box in periodSet) return@forEach
-            val row = nearestIndex(rowAnchors, box.centerY, rowTolerance)
+        // 表格上下之外的文本框（页头导航、页脚版权）本来就不是课表内容，不算候选 ——
+        // 否则它们会按「落不进网格」计入比例，把一张干净课表判成不可靠（真机 OCR 实测：8/24、33%）。
+        val candidates = boxes.filterNot { it in headerSet || it in rowLabelBoxes }
+            .filter { it.centerY in rowRange }
+
+        candidates.forEach { box ->
+            val row = rowOf(box.centerY)
             val col = nearestIndex(colAnchors, box.centerX, colTolerance)
             if (row == null || col == null) {
                 unassigned += box
@@ -122,7 +152,7 @@ object JwTableAligner {
             }
         }
 
-        val considered = boxes.size - headerSet.size - periodSet.size
+        val considered = candidates.size
         val assignedRatio = if (considered <= 0) 1.0 else (considered - unassigned.size).toDouble() / considered
         if (unassigned.isNotEmpty()) {
             warnings += "有 ${unassigned.size} 个文本块没能归入网格（占 ${(1 - assignedRatio).times(100).toInt()}%）"
@@ -140,6 +170,30 @@ object JwTableAligner {
             warnings = warnings,
             unassigned = unassigned,
         )
+    }
+
+    /** 课表的纵向范围：上沿是表头底边，下沿是末行锚点再加半个行距。 */
+    private fun tableRows(rowAnchors: List<Int>, headerTop: Int, medianHeight: Int): IntRange {
+        val lastGap = rowAnchors[rowAnchors.lastIndex] - rowAnchors[rowAnchors.lastIndex - 1]
+        return headerTop..(rowAnchors.last() + (lastGap / 2).coerceAtLeast(medianHeight / 2))
+    }
+
+    /**
+     * 行归属：按相邻行锚点的**中线**切段，而不是「离锚点不超过半个行距」。
+     *
+     * 一格跨多节（rowspan）时格子里的文字是靠顶端排的，离它所在行的锚点可以有整整一格那么远——
+     * 卡半径会把课名整片判成「落不进网格」（真实金智课表：113 个文本框里 44 个，直接提取失败）。
+     * [bounds] 之外的文本框（页头页脚）直接判为不在表内。
+     */
+    private fun rowLocator(rowAnchors: List<Int>, bounds: IntRange): (Int) -> Int? {
+        val edges = rowAnchors.zipWithNext { a, b -> (a + b) / 2 }
+        return { centerY ->
+            if (centerY !in bounds) {
+                null
+            } else {
+                edges.indexOfFirst { centerY <= it }.let { if (it < 0) rowAnchors.lastIndex else it }
+            }
+        }
     }
 
     /** 按纵向重叠把文本框分组成行。 */

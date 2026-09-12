@@ -118,6 +118,8 @@ private fun JwImportScreen(
         if (adapter.promptsForStartUrl && (askAddress || rememberedUrl(adapter) == null)) {
             pendingStartUrl = adapter
         } else {
+            // 「照上次再来一遍」：别把上一轮手填的地址带进来
+            startUrl = null
             selected = adapter
         }
     }
@@ -150,10 +152,18 @@ private fun JwImportScreen(
         } else {
             JwWebViewStep(
                 adapter = adapter,
-                autoExtract = state.autoExtract && adapter.key == state.lastAdapterKey,
+                // 通用适配器**不自动提取**：它的课表是页面自己渲染出来的，而页面加载完（onPageFinished）
+                // 不等于课表画好了。提取一开始就冻结网络，抢跑会把还在加载页面资源（常见于资源放在
+                // CDN 域上的教务系统）的 SPA 掐死在白屏上，用户连补救都无从下手——金智课表实测如此。
+                // 它的文案本来写的就是「打开课表页后点提取课表」。
+                autoExtract = state.autoExtract && adapter.key == state.lastAdapterKey &&
+                    !adapter.promptsForStartUrl,
                 preferredUrl = when {
+                    // 通用适配器：**这次弹窗里填的地址优先**。那是用户换学校、修失效地址的唯一入口，
+                    // 被「上次成功那页」顶掉的话就还是无门（真机实测：填了新地址，进网页的仍是旧地址）。
+                    adapter.promptsForStartUrl ->
+                        startUrl ?: state.lastScheduleUrl.takeIf { adapter.key == state.lastAdapterKey }
                     adapter.key == state.lastAdapterKey -> state.lastScheduleUrl
-                    adapter.promptsForStartUrl -> startUrl
                     else -> null
                 },
                 onExtracted = { documentJson, loadedUrl ->
