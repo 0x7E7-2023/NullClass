@@ -52,7 +52,7 @@
 | `name` | ✔ | 展示名，≤60 字 |
 | `version` | ✔ | `x.y.z` |
 | `loginUrl` | ✔ | 登录页或课表页；允许 http（会显示「不安全连接」标记）。声明 `startUrlPrompt` 时可以留空 |
-| `startUrlPrompt` | | 地址由用户现场输入：应用先弹输入框，再把地址记成「一键刷新」的入口。给不针对具体学校的通用适配器用。**代价**：域名在打开前未知，OCR 桥（§5）只注入到已知域名，所以这类适配器拿不到 `__ncOcr`；这类适配器也**不会被自动提取**（课表什么时候画出来只有用户看得见，抢在 `onPageFinished` 提取会冻结网络、把还在加载的页面掐死），由用户点「提取课表」 |
+| `startUrlPrompt` | | 地址由用户现场输入：应用先弹输入框，再把地址记成「一键刷新」的入口。给不针对具体学校的通用适配器用。**代价**：域名在打开前未知，OCR 桥（§5.1）只注入到已知域名，所以这类适配器拿不到 `__ncOcr`；这类适配器也**不会被自动提取**（课表什么时候画出来只有用户看得见，抢在 `onPageFinished` 提取会冻结网络、把还在加载的页面掐死），由用户点「提取课表」 |
 | `fallback` | | 兜底适配器：应用把它排在适配器列表最下方并附一句说明（正常找得到学校的用户不该被它分散注意力） |
 | `scheduleUrlHint` | | 一键刷新时优先打开的课表页 |
 | `minAppVersionCode` | | 高于应用 versionCode 时明确报错而不是行为诡异 |
@@ -80,9 +80,10 @@
 | `__ncInput` | `parse.js` 的输入：`extract.js` 的原始输出字符串 |
 | `__ncDone(json)` | 提交结果并结束脚本 |
 | `__ncError(msg)` | 报错并结束脚本 |
-| `__ncCapabilities` | `{ specVersion, ocr, ocrMaxPixels, ocrMaxCalls }`，先查再用 |
-| `__ncOcr(input, options)` | 调用应用内 OCR，返回 Promise（见 §5） |
-| `__ncOcrGrid(input, options)` | OCR + 应用的表格结构层，返回对齐后的网格（见 §5） |
+| `__ncCapabilities` | `{ specVersion, ocr, ask, ocrMaxPixels, ocrMaxCalls, askMaxCalls }`，先查再用 |
+| `__ncOcr(input, options)` | 调用应用内 OCR，返回 Promise（见 §5.1） |
+| `__ncOcrGrid(input, options)` | OCR + 应用的表格结构层，返回对齐后的网格（见 §5.1） |
+| `__ncSelect / __ncConfirm / __ncPrompt` | 问用户一句话，返回 Promise（见 §5.2） |
 
 三种结束方式任选：
 
@@ -200,7 +201,12 @@
 extract 量文本框、parse 在「最像课表的那块」与「整页」之间挑一份，两者都不像课表时退回
 `kind:"image"` 交给 OCR。
 
-## 5. 给第三方适配器的 OCR 接口
+## 5. 宿主能力接口
+
+适配器可以调用应用内的原生能力。**先查 `__ncCapabilities` 再调用** —— 桥只注入到已知域名，
+拿不到时必须降级或明确报错，不要假设它一定在。
+
+### 5.1 OCR
 
 OCR 是应用内的原生能力，通过桥暴露给脚本：
 
@@ -225,6 +231,49 @@ if (__ncCapabilities.ocr) {
 - `__ncCapabilities.ocr` 为 `true` 的条件是「设备打包了 OCR **且**桥已注入到当前页面」。
   宿主在跑用到 OCR 的脚本前会等桥就绪，但适配器仍必须处理 `false`（降级或明确报错），不要假设它一定是 `true`。
 - `__ncOcr` / `__ncOcrGrid` resolve 的是**对象**（`r.boxes` / `g.cells`），不是 JSON 字符串。
+
+### 5.2 提问（弹窗）
+
+有些适配器得问用户一句才能继续（选学年学期、确认覆盖、补一个页面上没有的值）。
+宿主提供三个提问接口，**结果都是受限的**——这是刻意的：
+
+```js
+if (__ncCapabilities.ask) {
+  const index = await __ncSelect({
+    title: '选择学期',
+    message: '请选择要导入的学期',
+    items: ['2026-2027 第一学期', '2025-2026 第二学期'],
+    defaultIndex: 0
+  });                                  // → 选中项下标；取消为 null
+  if (index === null) return;          // 用户取消是正常结果，不是错误
+
+  const ok = await __ncConfirm({ title: '导入 42 门课程？' });   // → true / false
+  const year = await __ncPrompt({
+    title: '起始学年', message: '例如 2025-2026 输入 2025', maxLength: 4
+  });                                  // → 用户输入的字符串；取消为 null
+}
+```
+
+| 接口 | 参数 | 返回 |
+|---|---|---|
+| `__ncSelect` | `title`（必填 ≤60 字）、`message`（≤300 字）、`items`（1–50 项，每项 ≤60 字）、`defaultIndex` | 选中项**下标**；取消 `null` |
+| `__ncConfirm` | `title`、`message`、`confirmText`、`cancelText` | `true` / `false` |
+| `__ncPrompt` | `title`、`message`、`placeholder`、`defaultText`（≤200 字）、`maxLength`（1–200，默认 100） | 用户输入的字符串；取消 `null` |
+
+规则：
+
+- **取消是正常结果**：`__ncSelect` / `__ncPrompt` 取消时 resolve `null`，`__ncConfirm` 取消时 resolve `false`。
+  只有参数不合法、超过次数上限、桥不可用这三种情况才会 reject —— catch 到它们说明脚本写错了。
+- **单次提取最多问 8 次**；参数超限会带定位报错（「title 太长（120 字，上限 60 字）」）。
+- **`__ncSelect` 只回传下标**，不回传文本：脚本拿不到用户没选的东西。
+- **弹窗抬头由应用渲染，适配器改不掉**。标题、说明、选项文本都来自脚本，所以应用固定显示
+  「适配器「X」在向你提问」，`__ncPrompt` 还固定附一句「空课不会向你索要教务密码等账号信息」。
+- **等用户回答的时间不计入脚本超时**（超时是为了兜住跑飞的脚本，不是催用户做决定），
+  但单次提取的累计等待上限是 5 分钟。
+- **提问只应该出现在 `extract.js` 里**：`parse.js` 在 CI 里用 Rhino 跑，那里没有桥也没有用户，
+  它必须是纯函数。
+- **能用页面解决的就别问**：用户此刻正开在教务页面上，让他自己在页面里切到目标学期、
+  再点「提取课表」，往往比弹窗更清楚（他看得见自己选的是哪个学期）。
 
 ## 6. 库（第三方适配器仓库）
 
@@ -281,6 +330,8 @@ CI 会用 Rhino 在 JVM 上**真实执行**你的 `parse.js`，与 `fixtures/*.e
 ## 8. 安全与隐私红线
 
 - **不要碰凭证**：登录全程由用户在 WebView 手工完成，适配器不得读取、存储、上报账号密码。
+  **提问接口同样不许用来索要凭据**：用弹窗问账号、密码、验证码、身份证号的一律拒绝合并 ——
+  那是在应用自己的界面里钓鱼，用户会把账算在空课头上。
 - **不要外发数据**：除课表接口外不得向任何域发送数据；`allowHosts` 只写你真的需要的域名。
 - **不要埋点**：任何统计、上报、遥测都会被拒绝合并。
 - 适配器在用户已登录的页面里运行，能力等同于该教务账号：**请只做取课表这一件事**。

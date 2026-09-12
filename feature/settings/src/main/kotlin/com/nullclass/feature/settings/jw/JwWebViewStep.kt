@@ -32,6 +32,7 @@ import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -45,6 +46,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
 import com.nullclass.importer.NullClassCodec
 import com.nullclass.importer.jw.JwAdapter
+import com.nullclass.importer.jw.JwAskRequest
 import com.nullclass.importer.jw.JwHostAllowlist
 import com.nullclass.importer.jw.JwOriginRules
 import com.nullclass.importer.jw.JwPackageException
@@ -57,6 +59,7 @@ import com.nullclass.importer.jw.ocr.JwOcrScheduleBuilder
 import com.nullclass.importer.jw.ocr.JwTableAligner
 import com.nullclass.ocr.OcrEngines
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.io.ByteArrayInputStream
@@ -162,7 +165,10 @@ fun JwWebViewStep(
     var autoTriggered by remember { mutableStateOf(false) }
     var ocrEnabled by remember { mutableStateOf(false) }
     var ocrReview by remember { mutableStateOf<JwOcrBuildResult?>(null) }
-    var ocrBridge by remember { mutableStateOf<JwOcrBridge?>(null) }
+    var scriptBridge by remember { mutableStateOf<JwScriptBridge?>(null) }
+    // 提问弹窗的状态由界面持有（桥写、界面读），答完再回填给脚本
+    val askState = remember { MutableStateFlow<JwAskRequest?>(null) }
+    val askRequest by askState.collectAsState()
 
     val gate = remember(adapter.key) {
         JwNetworkGate().apply {
@@ -203,7 +209,7 @@ fun JwWebViewStep(
         gate.resetBlockLog()
         lastErrorLog = null
         JwExtractLog.clearLastError(context)
-        ocrBridge?.reset()
+        scriptBridge?.reset()
         status = "提取中…"
         JwExtractLog.i(
             "开始提取 key=${adapter.key} url=${view.url} desktop=$isDesktopMode hosts=${gate.allowedHosts}",
@@ -213,12 +219,19 @@ fun JwWebViewStep(
                 // 用到 OCR 的脚本才等：① 能力探测（首次要加载 ONNX 模型，自动提取很容易跑在它
                 // 前面，那样脚本会被按「没有 OCR」构建）② 桥对象注入。纯 DOM 适配器不必白等。
                 val usesOcr = adapter.usesOcrBridge()
-                val ocrAvailable = if (usesOcr) {
-                    ocrProbe.await().also { if (it) ocrBridge?.awaitReady() }
-                } else {
-                    false
-                }
-                val runner = JwScriptRunner(view, gate.allowedHosts, ocrEnabled = ocrAvailable)
+                val ocrAvailable = if (usesOcr) ocrProbe.await() else false
+                // 桥是异步注入的，用到它的脚本必须先等它到位 —— 否则能力位会报 false，
+                // 脚本按「不支持」降级，明明能用却不用。
+                if ((usesOcr && ocrAvailable) || adapter.usesAskBridge()) scriptBridge?.awaitReady()
+                val bridge = scriptBridge
+                val runner = JwScriptRunner(
+                    view,
+                    gate.allowedHosts,
+                    ocrEnabled = ocrAvailable,
+                    askEnabled = bridge != null,
+                    // 等用户回答的时间不算脚本时间 —— 由宿主的账本说了算，不读页面全局
+                    isWaitingForUser = { bridge?.hasPendingAsk() == true },
+                )
                 val extracted = runner.run(adapter.extractScript)
                 val payloadJson = adapter.parseScript?.let { runner.run(it, extracted) } ?: extracted
                 val payload = JwPayloadCodec.decode(payloadJson)
@@ -307,6 +320,8 @@ fun JwWebViewStep(
 
     DisposableEffect(Unit) {
         onDispose {
+            // 弹窗还挂着就走人：不叫醒脚本的话它会一直卡在「等用户回答」上
+            scriptBridge?.cancelPendingAsk("页面已关闭")
             webView?.apply {
                 loadUrl("about:blank")
                 (parent as? android.view.ViewGroup)?.removeView(this)
@@ -403,9 +418,9 @@ fun JwWebViewStep(
                     // 注入本身是异步的，自动提取还得再等它到位 —— 见 extract() 里的 awaitReady
                     val rules = JwOriginRules.forAdapter(adapter.manifest, gate.allowedHosts)
                     if (rules.isNotEmpty()) {
-                        val bridge = JwOcrBridge(context, this, gate.allowedHosts, scope)
+                        val bridge = JwScriptBridge(context, this, gate.allowedHosts, scope, askState)
                         bridge.attach(rules)
-                        ocrBridge = bridge
+                        scriptBridge = bridge
                     }
                     if (startUrl.isBlank()) {
                         // startUrlPrompt 适配器理论上不会走到这（地址在进入本页前就填好了）
@@ -491,6 +506,14 @@ fun JwWebViewStep(
                 }
             }
         }
+    }
+
+    askRequest?.let { request ->
+        JwAskDialog(
+            request = request,
+            adapterLabel = adapter.displayName,
+            onResult = { scriptBridge?.answerAsk(it) },
+        )
     }
 
     ocrReview?.let { review ->
@@ -626,6 +649,11 @@ private fun hostOf(url: String): String? = runCatching { java.net.URI(url).host?
  * 会因为桥还没到位而报 false，适配器就会误判成「设备不支持 OCR」。
  * 纯 DOM 抓取的适配器不该为此白等。
  */
+private fun JwAdapter.usesAskBridge(): Boolean {
+    val source = extractScript + (parseScript ?: "")
+    return source.contains("__ncSelect") || source.contains("__ncConfirm") || source.contains("__ncPrompt")
+}
+
 private fun JwAdapter.usesOcrBridge(): Boolean {
     val source = extractScript + (parseScript ?: "")
     return source.contains("__ncOcr") || source.contains("__ncCapabilities")

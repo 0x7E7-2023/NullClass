@@ -2,6 +2,8 @@ package com.nullclass.feature.settings.jw
 
 import android.os.SystemClock
 import android.webkit.WebView
+import com.nullclass.importer.jw.JwRunBudget
+import com.nullclass.importer.jw.JwRunVerdict
 import com.nullclass.importer.jw.JwScriptContract
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
@@ -26,6 +28,14 @@ class JwScriptRunner(
     private val webView: WebView,
     private val allowedHosts: List<String>,
     private val ocrEnabled: Boolean = false,
+    private val askEnabled: Boolean = false,
+    /**
+     * 此刻是否正等用户回答弹窗。
+     *
+     * **由宿主回答，不读页面全局** —— 页面全局脚本能改写，拿它当刹车
+     * 等于把刹车交给被审计的人。
+     */
+    private val isWaitingForUser: () -> Boolean = { false },
 ) {
 
     suspend fun run(
@@ -33,12 +43,9 @@ class JwScriptRunner(
         inputJson: String? = null,
         timeoutMs: Long = JwScriptContract.DEFAULT_TIMEOUT_MS,
     ): String {
-        evaluate(JwScriptContract.buildRunner(script, inputJson, allowedHosts, ocrEnabled))
-        val deadline = SystemClock.elapsedRealtime() + timeoutMs
+        evaluate(JwScriptContract.buildRunner(script, inputJson, allowedHosts, ocrEnabled, askEnabled))
+        val budget = JwRunBudget(timeoutMs)
         while (true) {
-            if (SystemClock.elapsedRealtime() > deadline) {
-                throw JwScriptException("脚本执行超时（${timeoutMs / 1000} 秒）")
-            }
             val status = JSONObject(evaluate(JwScriptContract.buildPollScript()))
             if (status.optBoolean("done")) {
                 if (!status.isNull("error")) {
@@ -50,6 +57,14 @@ class JwScriptRunner(
                     throw JwScriptException("提取结果过大（${length / 1024}K 字符），请向适配器作者反馈")
                 }
                 return readResult(length)
+            }
+
+            when (budget.tick(SystemClock.elapsedRealtime(), isWaitingForUser())) {
+                JwRunVerdict.SCRIPT_TIMEOUT ->
+                    throw JwScriptException("脚本执行超时（${timeoutMs / 1000} 秒）")
+                JwRunVerdict.WAIT_TIMEOUT ->
+                    throw JwScriptException("等待回答超时（${budget.maxWaitMs / 1000} 秒）")
+                JwRunVerdict.RUNNING -> Unit
             }
             delay(POLL_INTERVAL_MS)
         }

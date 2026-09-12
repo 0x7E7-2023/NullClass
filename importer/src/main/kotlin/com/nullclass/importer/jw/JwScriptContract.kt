@@ -27,6 +27,13 @@ object JwScriptContract {
     const val GLOBAL_OCR_GRID = "__ncOcrGrid"
     const val GLOBAL_OCR_REPLY = "__ncOcrReply"
 
+    /** 向用户提问：`__ncSelect` / `__ncConfirm` / `__ncPrompt`。 */
+    const val GLOBAL_ASK_SELECT = "__ncSelect"
+    const val GLOBAL_ASK_CONFIRM = "__ncConfirm"
+    const val GLOBAL_ASK_PROMPT = "__ncPrompt"
+    /** 宿主回填提问结果的入口。 */
+    const val GLOBAL_ASK_REPLY = "__ncAskReply"
+
     /** JS 桥对象名（`WebViewCompat.addWebMessageListener` 注入）。 */
     const val BRIDGE_NAME = "ncBridge"
 
@@ -36,7 +43,7 @@ object JwScriptContract {
     /** 单次提取允许的结果上限（字符）。 */
     const val MAX_RESULT_CHARS = 16 * 1024 * 1024
 
-    /** 脚本超时。 */
+    /** 脚本超时。**等用户回答弹窗的时间不计入**（见 [JwRunBudget]）。 */
     const val DEFAULT_TIMEOUT_MS = 30_000L
     const val OCR_TIMEOUT_MS = 15_000L
 
@@ -82,15 +89,21 @@ object JwScriptContract {
         return PREAMBLE_TEMPLATE.replace("__NC_HOSTS__", hosts)
     }
 
-    /** 完整的一次脚本执行包装（含沙箱、能力声明、OCR 桥、结果收集）。 */
+    /** 完整的一次脚本执行包装（含沙箱、能力声明、OCR 桥、提问桥、结果收集）。 */
     fun buildRunner(
         script: String,
         inputJson: String?,
         allowedHosts: List<String>,
         ocrEnabled: Boolean,
+        askEnabled: Boolean = false,
     ): String {
         val ocrBridge = if (ocrEnabled) {
             OCR_BRIDGE_TEMPLATE.replace("__NC_BRIDGE__", jsStringLiteral(BRIDGE_NAME))
+        } else {
+            ""
+        }
+        val askBridge = if (askEnabled) {
+            ASK_BRIDGE_TEMPLATE.replace("__NC_BRIDGE__", jsStringLiteral(BRIDGE_NAME))
         } else {
             ""
         }
@@ -98,11 +111,14 @@ object JwScriptContract {
             .replace("__NC_INPUT__", inputJson?.let { jsStringLiteral(it) } ?: "null")
             .replace("__NC_SPEC__", SPEC_VERSION.toString())
             .replace("__NC_OCR_ENABLED__", ocrEnabled.toString())
+            .replace("__NC_ASK_ENABLED__", askEnabled.toString())
             .replace("__NC_BRIDGE_NAME__", jsStringLiteral(BRIDGE_NAME))
             .replace("__NC_OCR_MAX_PIXELS__", OCR_MAX_PIXELS.toString())
             .replace("__NC_OCR_MAX_CALLS__", OCR_MAX_CALLS.toString())
+            .replace("__NC_ASK_MAX_CALLS__", JwAskLimits.MAX_CALLS.toString())
             .replace("__NC_PREAMBLE__", buildPreamble(allowedHosts))
             .replace("__NC_OCR_BRIDGE__", ocrBridge)
+            .replace("__NC_ASK_BRIDGE__", askBridge)
             .replace("__NC_SCRIPT__", jsStringLiteral(script))
     }
 
@@ -116,6 +132,15 @@ object JwScriptContract {
     /** 宿主回填 OCR 结果（桥的应答）。 */
     fun buildOcrReplyScript(id: String, ok: Boolean, payloadJson: String): String =
         "window.$GLOBAL_OCR_REPLY(${jsStringLiteral(id)}, $ok, ${jsStringLiteral(payloadJson)})"
+
+    /**
+     * 宿主回填提问结果（桥的应答）。
+     *
+     * `ok = true` 时 [payloadJson] 是**答案的 JSON 字面量**（`3` / `"文本"` / `true` / `null`）；
+     * `ok = false` 时是错误消息。取消不是错误：那是 `ok = true` + `null`（或 confirm 的 `false`）。
+     */
+    fun buildAskReplyScript(id: String, ok: Boolean, payloadJson: String): String =
+        "window.$GLOBAL_ASK_REPLY(${jsStringLiteral(id)}, $ok, ${jsStringLiteral(payloadJson)})"
 
     private const val PREAMBLE_TEMPLATE = """
 (function () {
@@ -195,7 +220,7 @@ object JwScriptContract {
     if (!entry) return;
     delete __ncPending[id];
     if (ok) {
-      // 规范 §5 承诺的是对象（r.boxes / g.cells），宿主传过来的是 JSON 字符串 —— 必须解析
+      // 规范 §5.1 承诺的是对象（r.boxes / g.cells），宿主传过来的是 JSON 字符串 —— 必须解析
       try { entry.resolve(JSON.parse(payload)); }
       catch (e) { entry.reject(new Error('OCR 返回的数据无法解析：' + String(e && e.message ? e.message : e))); }
     } else { entry.reject(new Error(String(payload || '识别失败'))); }
@@ -214,6 +239,43 @@ object JwScriptContract {
   }
   window.$GLOBAL_OCR = function (input, options) { return __ncCall('ocr', input, options); };
   window.$GLOBAL_OCR_GRID = function (input, options) { return __ncCall('ocrGrid', input, options); };
+})();
+"""
+
+    private const val ASK_BRIDGE_TEMPLATE = """
+(function () {
+  var __ncAskSeq = 0;
+  var __ncAskPending = {};
+  window.$GLOBAL_ASK_REPLY = function (id, ok, payload) {
+    var entry = __ncAskPending[id];
+    if (!entry) return;
+    delete __ncAskPending[id];
+    if (ok) {
+      try { entry.resolve(JSON.parse(payload)); }
+      catch (e) { entry.reject(new Error('弹窗返回的数据无法解析：' + String(e && e.message ? e.message : e))); }
+    } else {
+      entry.reject(new Error(String(payload || '提问失败')));
+    }
+  };
+  function __ncAsk(type, options) {
+    return new Promise(function (resolve, reject) {
+      var id = type + '-' + (++__ncAskSeq);
+      __ncAskPending[id] = { resolve: resolve, reject: reject };
+      try {
+        window[__NC_BRIDGE__].postMessage(JSON.stringify({
+          type: type,
+          id: id,
+          options: JSON.stringify(options || null)
+        }));
+      } catch (e) {
+        delete __ncAskPending[id];
+        reject(new Error('提问桥不可用：' + String(e && e.message ? e.message : e)));
+      }
+    });
+  }
+  window.$GLOBAL_ASK_SELECT = function (options) { return __ncAsk('askSelect', options); };
+  window.$GLOBAL_ASK_CONFIRM = function (options) { return __ncAsk('askConfirm', options); };
+  window.$GLOBAL_ASK_PROMPT = function (options) { return __ncAsk('askPrompt', options); };
 })();
 """
 
@@ -236,11 +298,18 @@ object JwScriptContract {
     window.$GLOBAL_CAPABILITIES = {
       specVersion: __NC_SPEC__,
       ocr: __NC_OCR_ENABLED__ && (typeof window[__NC_BRIDGE_NAME__] !== 'undefined'),
+      // 提问能力要同时满足「宿主开了」「桥对象在」「三个全局真的定义了」——
+      // 只报引擎/开关会撒谎，适配器会拿着 undefined 去调用然后静默失败。
+      ask: __NC_ASK_ENABLED__ &&
+        (typeof window[__NC_BRIDGE_NAME__] !== 'undefined') &&
+        (typeof window.$GLOBAL_ASK_SELECT === 'function'),
       ocrMaxPixels: __NC_OCR_MAX_PIXELS__,
-      ocrMaxCalls: __NC_OCR_MAX_CALLS__
+      ocrMaxCalls: __NC_OCR_MAX_CALLS__,
+      askMaxCalls: __NC_ASK_MAX_CALLS__
     };
 __NC_PREAMBLE__
 __NC_OCR_BRIDGE__
+__NC_ASK_BRIDGE__
     var __ncSource = __NC_SCRIPT__;
     var __ncReturn;
     try {
