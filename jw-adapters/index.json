@@ -20,6 +20,54 @@
       "name": "通用适配器",
       "version": "1.0.0",
       "path": "universal"
+    },
+    {
+      "key": "zjut",
+      "name": "浙江工业大学",
+      "version": "1.0.0",
+      "path": "zjut"
+    },
+    {
+      "key": "hynu",
+      "name": "衡阳师范学院",
+      "version": "1.0.0",
+      "path": "hynu"
+    },
+    {
+      "key": "niit",
+      "name": "南京工业职业技术大学",
+      "version": "1.0.0",
+      "path": "niit"
+    },
+    {
+      "key": "jstc",
+      "name": "江苏旅游职业学院",
+      "version": "1.0.0",
+      "path": "jstc"
+    },
+    {
+      "key": "masu",
+      "name": "马鞍山学院",
+      "version": "1.0.0",
+      "path": "masu"
+    },
+    {
+      "key": "neau",
+      "name": "东北农业大学",
+      "version": "1.0.0",
+      "path": "neau"
+    },
+    {
+      "key": "sxgcxy",
+      "name": "山西工程职业学院",
+      "version": "1.0.0",
+      "path": "sxgcxy"
+    },
+    {
+      "key": "hbmu",
+      "name": "湖北医药学院",
+      "version": "1.0.0",
+      "path": "hbmu"
     }
   ]
 }

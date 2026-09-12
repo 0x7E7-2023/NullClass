@@ -1,0 +1,97 @@
+{
+  "specVersion": 1,
+  "kind": "schedule",
+  "ocrAssisted": false,
+  "warnings": [
+    "页面上的节次标签把两节写在一起（如「第1-2节 08:20-09:55」），段内每一节的上下课时间已按该段的起止时间均分，如与教务不一致请在节次设置里调整",
+    "第 5、6、7、8 节的上下课时间页面上没有，用的是适配器内置的马鞍山学院作息表，如与教务不一致请在节次设置里调整",
+    "开学日期教务没有提供，已按页面上显示的「第 3 周」反推为 2026-09-07，请在学期管理里核对",
+    "学期总周数教务没有提供，已按 20 周计（课表里最大的周次是 17 周），如校历不同请在学期管理里调整",
+    "课表里有 1 格课没能读出「第N节」标签（星期 3），已跳过，请核对课表"
+  ],
+  "terms": [
+    {
+      "name": "2026-2027学年第一学期",
+      "firstDay": "2026-09-07",
+      "totalWeeks": 20,
+      "periodTimes": [
+        { "periodIndex": 1, "start": "08:20", "end": "09:07" },
+        { "periodIndex": 2, "start": "09:07", "end": "09:55" },
+        { "periodIndex": 3, "start": "10:15", "end": "11:00" },
+        { "periodIndex": 4, "start": "11:05", "end": "11:50" },
+        { "periodIndex": 5, "start": "13:50", "end": "14:35" },
+        { "periodIndex": 6, "start": "14:40", "end": "15:25" },
+        { "periodIndex": 7, "start": "15:45", "end": "16:30" },
+        { "periodIndex": 8, "start": "16:35", "end": "17:20" },
+        { "periodIndex": 9, "start": "18:20", "end": "19:07" },
+        { "periodIndex": 10, "start": "19:07", "end": "19:55" }
+      ],
+      "courses": [
+        {
+          "name": "高等数学A(一)",
+          "teacher": "张伟",
+          "note": null,
+          "blocks": [
+            {
+              "dayOfWeek": 1,
+              "startPeriod": 1,
+              "endPeriod": 1,
+              "startWeek": 1,
+              "endWeek": 16,
+              "weekType": "ALL",
+              "location": "数智楼309"
+            }
+          ]
+        },
+        {
+          "name": "线性代数",
+          "teacher": "王强",
+          "note": null,
+          "blocks": [
+            {
+              "dayOfWeek": 2,
+              "startPeriod": 2,
+              "endPeriod": 2,
+              "startWeek": 1,
+              "endWeek": 9,
+              "weekType": "ALL",
+              "location": "数智楼205"
+            }
+          ]
+        },
+        {
+          "name": "大学英语",
+          "teacher": "李娜",
+          "note": null,
+          "blocks": [
+            {
+              "dayOfWeek": 1,
+              "startPeriod": 3,
+              "endPeriod": 3,
+              "startWeek": 1,
+              "endWeek": 16,
+              "weekType": "ALL",
+              "location": "教学楼B202"
+            }
+          ]
+        },
+        {
+          "name": "大学物理",
+          "teacher": "周涛",
+          "note": null,
+          "blocks": [
+            {
+              "dayOfWeek": 5,
+              "startPeriod": 9,
+              "endPeriod": 10,
+              "startWeek": 1,
+              "endWeek": 17,
+              "weekType": "ALL",
+              "location": "实验楼401"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

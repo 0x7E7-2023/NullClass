@@ -1,0 +1,27 @@
+{
+  "specVersion": 1,
+  "key": "jstc",
+  "name": "江苏旅游职业学院",
+  "version": "1.0.0",
+  "author": "上游 星河欲转（MIT）；移植 NullClass",
+  "homepage": "https://github.com/XingHeYuZhuan/shiguang_warehouse",
+  "loginUrl": "https://authserver.jstc.edu.cn/authserver/login?service=https%3A%2F%2Fjwxt.jstc.edu.cn%2Fstudent%2Fsso%2Flogin",
+  "minAppVersionCode": 11,
+  "extract": "extract.js",
+  "parse": "parse.js",
+  "allowHosts": [
+    "*.jstc.edu.cn"
+  ],
+  "fixtures": [
+    {
+      "name": "2025-2026 学年第一学期（合成 fixture）",
+      "extracted": "fixtures/basic.extracted.json",
+      "expected": "fixtures/basic.expected.json"
+    },
+    {
+      "name": "课表周次超出校历（合成 fixture：第 20 周的课把总周数从校历的 16 周抬到 20 周，必须进 warnings）",
+      "extracted": "fixtures/over-calendar.extracted.json",
+      "expected": "fixtures/over-calendar.expected.json"
+    }
+  ]
+}

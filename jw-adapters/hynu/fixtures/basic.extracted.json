@@ -1,0 +1,160 @@
+{
+  "_note": "合成数据，不是真实抓取：按衡阳师范学院强智课表页（/jsxsd/xskb/xskb_list.do）的 DOM 形状编造，只用来回归 parse.js 的转换逻辑。形状取自上游 hynu_01.js 的选择器（#timetable / div.kbcontent / font[title=教师|周次(节次)|教室]）与其它强智学校公开的页面结构。拿到真实 dump 请替换这一对 fixture。",
+  "now": "2026-09-12",
+  "term": {
+    "code": "2026-2027-1",
+    "name": "2026-2027学年第一学期"
+  },
+  "rows": [
+    [
+      { "text": "节次", "parts": [] },
+      { "text": "星期一", "parts": [] },
+      { "text": "星期二", "parts": [] },
+      { "text": "星期三", "parts": [] },
+      { "text": "星期四", "parts": [] },
+      { "text": "星期五", "parts": [] },
+      { "text": "星期六", "parts": [] },
+      { "text": "星期日", "parts": [] }
+    ],
+    [
+      { "text": "第1-2节", "parts": [] },
+      {
+        "text": "高等数学（一）刘敏1-16(周)[01-02节]数学楼103",
+        "parts": [
+          "高等数学（一）<br><font title=\"教师\">刘敏</font><br><font title=\"周次(节次)\">1-16(周)[01-02节]</font><br><font title=\"教室\">数学楼103</font>"
+        ]
+      },
+      {
+        "text": "大学英语（一）王芳1-16(周)[01-02节]外语楼205",
+        "parts": [
+          "大学英语（一）<br><font title=\"教师\">王芳</font><br><font title=\"周次(节次)\">1-16(周)[01-02节]</font><br><font title=\"教室\">外语楼205</font>"
+        ]
+      },
+      { "text": "", "parts": [] },
+      {
+        "text": "现代汉语陈静3-17(周)[01-02节]文科楼302",
+        "parts": [
+          "\n                        现代汉语<br><font title=\"教师\">陈静</font><br><font title=\"周次(节次)\">3-17(周)[01-02节]</font><br><font title=\"教室\">文科楼302</font>\n                    "
+        ]
+      },
+      {
+        "text": "大学英语（一）王芳1-16(周)[01-02节]外语楼205",
+        "parts": [
+          "大学英语（一）<br><font title=\"教师\">王芳</font><br><font title=\"周次(节次)\">1-16(周)[01-02节]</font><br><font title=\"教室\">外语楼205</font>"
+        ]
+      },
+      { "text": "", "parts": [] },
+      { "text": "", "parts": [] }
+    ],
+    [
+      { "text": "第3-4节", "parts": [] },
+      {
+        "text": "教育学原理周晓兰1-8(周)[03-04节]教育楼201",
+        "parts": [
+          "教育学原理<br><font title=\"教师\">周晓兰</font><br><font title=\"周次(节次)\">1-8(周)[03-04节]</font><br><font title=\"教室\">教育楼201</font>"
+        ]
+      },
+      { "text": "", "parts": [] },
+      {
+        "text": "高等数学（一）刘敏1-16(周)[03-04节]数学楼103",
+        "parts": [
+          "高等数学（一）<br><font title=\"教师\">刘敏</font><br><font title=\"周次(节次)\">1-16(周)[03-04节]</font><br><font title=\"教室\">数学楼103</font>"
+        ]
+      },
+      { "text": "", "parts": [] },
+      {
+        "text": "形势与政策李梅1-4,6-8,10-16(周)[03-04节]文科楼105",
+        "parts": [
+          "形势与政策<br><font title=\"教师\">李梅</font><br><font title=\"周次(节次)\">1-4,6-8,10-16(周)[03-04节]</font><br><font title=\"教室\">文科楼105</font>"
+        ]
+      },
+      { "text": "", "parts": [] },
+      { "text": "", "parts": [] }
+    ],
+    [
+      { "text": "第5-6节", "parts": [] },
+      { "text": "", "parts": [] },
+      {
+        "text": "大学体育（一）李强1-15(单)[05-06节]体育馆",
+        "parts": [
+          "大学体育（一）<br><font title=\"教师\">李强</font><br><font title=\"周次(节次)\">1-15(单)[05-06节]</font><br><font title=\"教室\">体育馆</font>"
+        ]
+      },
+      { "text": "", "parts": [] },
+      {
+        "text": "中国近现代史纲要张伟1-8(周)[05-06节]文科楼104书法基础罗静9-16(周)[05-06节]艺术楼203",
+        "parts": [
+          "中国近现代史纲要<br><font title=\"教师\">张伟</font><br><font title=\"周次(节次)\">1-8(周)[05-06节]</font><br><font title=\"教室\">文科楼104</font>---------------------书法基础<br><font title=\"教师\">罗静</font><br><font title=\"周次(节次)\">9-16(周)[05-06节]</font><br><font title=\"教室\">艺术楼203</font>"
+        ]
+      },
+      {
+        "text": "大学生心理健康教育赵丹2-16(双)[05-06节]教育楼302",
+        "parts": [
+          "大学生心理健康教育<br><font title=\"教师\">赵丹</font><br><font title=\"周次(节次)\">2-16(双)[05-06节]</font><br><font title=\"教室\">教育楼302</font>"
+        ]
+      },
+      { "text": "", "parts": [] },
+      { "text": "", "parts": [] }
+    ],
+    [
+      { "text": "第7-8节", "parts": [] },
+      { "text": "", "parts": [] },
+      { "text": "", "parts": [] },
+      {
+        "text": "程序设计基础黄伟9-16(周)[0708节]信息楼402",
+        "parts": [
+          "程序设计基础<br><font title=\"老师\">黄伟</font><br><font title=\"周次\">9-16(周)</font><br><font title=\"节次\">[0708节]</font><br><font title=\"教室\">信息楼402</font>"
+        ]
+      },
+      { "text": "", "parts": [] },
+      {
+        "text": "毛泽东思想和中国特色社会主义理论体系概论张伟1-16(周)[07-08节]文科楼104",
+        "parts": [
+          "毛泽东思想和中国特色社会主义理论体系概论<br><font title=\"教师\">张伟</font><br><font title=\"周次(节次)\">1-16(周)[07-08节]</font><br><font title=\"教室\">文科楼104</font>"
+        ]
+      },
+      { "text": "", "parts": [] },
+      { "text": "", "parts": [] }
+    ],
+    [
+      { "text": "第9-10节", "parts": [] },
+      {
+        "text": "思想道德与法治李梅1-16(周)[09-10节]文科楼105",
+        "parts": [
+          "思想道德与法治<br><font title=\"教师\">李梅</font><br><font title=\"周次(节次)\">1-16(周)[09-10节]</font><br><font title=\"教室\">文科楼105</font>"
+        ]
+      },
+      { "text": "", "parts": [] },
+      {
+        "text": "军事理论何军",
+        "parts": [
+          "军事理论<br><font title=\"教师\">何军</font>"
+        ]
+      },
+      { "text": "", "parts": [] },
+      { "text": "", "parts": [] },
+      {
+        "text": "教育见习周晓兰17-18(周)[09-10节]",
+        "parts": [
+          "教育见习<br><font title=\"教师\">周晓兰</font><br><font title=\"周次(节次)\">17-18(周)[09-10节]</font>"
+        ]
+      },
+      { "text": "", "parts": [] }
+    ],
+    [
+      { "text": "第11-12节", "parts": [] },
+      { "text": "", "parts": [] },
+      {
+        "text": "大学生职业发展与就业指导何军见通知",
+        "parts": [
+          "大学生职业发展与就业指导<br><font title=\"教师\">何军</font><br><font title=\"周次(节次)\">见通知</font>"
+        ]
+      },
+      { "text": "", "parts": [] },
+      { "text": "", "parts": [] },
+      { "text": "", "parts": [] },
+      { "text": "", "parts": [] },
+      { "text": "", "parts": [] }
+    ]
+  ]
+}

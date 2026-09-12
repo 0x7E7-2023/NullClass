@@ -1,0 +1,21 @@
+{
+  "specVersion": 1,
+  "key": "zjut",
+  "name": "浙江工业大学",
+  "version": "1.0.0",
+  "author": "上游 glxgo（MIT）；移植 NullClass",
+  "homepage": "https://github.com/XingHeYuZhuan/shiguang_warehouse",
+  "loginUrl": "http://www.gdjw.zjut.edu.cn/jwglxt/xtgl/login_slogin.html?kickout=1",
+  "scheduleUrlHint": "http://www.gdjw.zjut.edu.cn/jwglxt/kbcx/xskbcx_cxXskbcxIndex.html?gnmkdm=N253508&layout=default",
+  "minAppVersionCode": 11,
+  "extract": "extract.js",
+  "parse": "parse.js",
+  "allowHosts": [],
+  "fixtures": [
+    {
+      "name": "合成用例：2026-2027 学年第一学期（含单双周、分段周次、重复行与 2 行脏数据）",
+      "extracted": "fixtures/basic.extracted.json",
+      "expected": "fixtures/basic.expected.json"
+    }
+  ]
+}

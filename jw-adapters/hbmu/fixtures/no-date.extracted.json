@@ -1,0 +1,32 @@
+{
+  "_note": "合成 fixture：与 basic.extracted.json 同一批虚构数据，但走「排课日期接口没探到」这条路 —— 开学日按最近的周一推算，两条 warning 都要出现。见 docs/jw-adapter-testing.md §3。",
+  "term": {
+    "code": "202502",
+    "source": "auto"
+  },
+  "today": "2026-04-15",
+  "dateInfo": null,
+  "total": 2,
+  "rows": [
+    {
+      "kch": "200101",
+      "kcmc": "形势与政策",
+      "teaxms": "郑十二",
+      "jxcdmc": "2号教学楼101",
+      "zc": "1-8周",
+      "xq": "2",
+      "jcdm": "0102",
+      "xf": "2.0"
+    },
+    {
+      "kch": "200201",
+      "kcmc": "大学体育（二）",
+      "teaxms": "王十三",
+      "jxcdmc": "田径场",
+      "zc": "9-16周",
+      "xq": "4",
+      "jcdm": "0304",
+      "xf": "1.0"
+    }
+  ]
+}

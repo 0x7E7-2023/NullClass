@@ -1,0 +1,37 @@
+{
+  "_note": "合成用例（维护者手上没有可公开的真实课表页，形状照上游脚本读的字段编）：页面标签是连堂写法，整张表只有「第1-2节」「第3-4节」…这些成对的标签，没有单节标签。期望值按 docs/jw-adapter-spec.md 手推（段内每一节按该段起止均分），不是 parse.js 的输出。",
+  "url": "http://jwxt.masu.edu.cn:8080/eams/courseTableForStd.action",
+  "title": "学生课表",
+  "today": "2026-09-21",
+  "unitCount": 11,
+  "currentWeek": 3,
+  "semesterLabels": ["2026-2027学年第一学期"],
+  "image": null,
+  "cells": [
+    { "row": 0, "col": 0, "rowSpan": 1, "colSpan": 1, "id": "", "className": "title", "text": "节次", "title": "" },
+    { "row": 0, "col": 1, "rowSpan": 1, "colSpan": 1, "id": "", "className": "title", "text": "星期一", "title": "" },
+    { "row": 0, "col": 2, "rowSpan": 1, "colSpan": 1, "id": "", "className": "title", "text": "星期二", "title": "" },
+    { "row": 0, "col": 3, "rowSpan": 1, "colSpan": 1, "id": "", "className": "title", "text": "星期三", "title": "" },
+    { "row": 0, "col": 4, "rowSpan": 1, "colSpan": 1, "id": "", "className": "title", "text": "星期四", "title": "" },
+    { "row": 0, "col": 5, "rowSpan": 1, "colSpan": 1, "id": "", "className": "title", "text": "星期五", "title": "" },
+    { "row": 0, "col": 6, "rowSpan": 1, "colSpan": 1, "id": "", "className": "title", "text": "星期六", "title": "" },
+    { "row": 0, "col": 7, "rowSpan": 1, "colSpan": 1, "id": "", "className": "title", "text": "星期日", "title": "" },
+
+    { "row": 1, "col": 0, "rowSpan": 1, "colSpan": 1, "id": "", "className": "section", "text": "第1-2节\n08:20-09:55", "title": "" },
+    { "row": 1, "col": 1, "rowSpan": 1, "colSpan": 1, "id": "TD0_1", "className": "infoTitle", "text": "高等数学A(一)(202620271.11202001.002)(张伟)(1-16周,数智楼309)", "title": "高等数学A(一)(202620271.11202001.002)(张伟)(1-16周,数智楼309)" },
+
+    { "row": 2, "col": 0, "rowSpan": 1, "colSpan": 1, "id": "", "className": "section", "text": "第3-4节\n10:15-11:50", "title": "" },
+    { "row": 2, "col": 3, "rowSpan": 1, "colSpan": 1, "id": "TD24_3", "className": "infoTitle", "text": "大学英语(202620271.11202002.001)(李娜)(1-16周,教学楼B202)", "title": "大学英语(202620271.11202002.001)(李娜)(1-16周,教学楼B202)" },
+
+    { "row": 3, "col": 0, "rowSpan": 1, "colSpan": 1, "id": "", "className": "section", "text": "第5-6节\n13:50-15:25", "title": "" },
+    { "row": 3, "col": 5, "rowSpan": 1, "colSpan": 1, "id": "TD48_5", "className": "infoTitle", "text": "程序设计基础(202620271.11202004.001)(陈晨)(2-6周,机房A303)", "title": "程序设计基础(202620271.11202004.001)(陈晨)(2-6周,机房A303)" },
+
+    { "row": 4, "col": 0, "rowSpan": 1, "colSpan": 1, "id": "", "className": "section", "text": "第7-8节\n15:45-17:20", "title": "" },
+    { "row": 4, "col": 1, "rowSpan": 1, "colSpan": 1, "id": "TD6_1", "className": "infoTitle", "text": "体育（一）(202620271.11202007.001)(刘洋)(1-16周,体育馆)", "title": "体育（一）(202620271.11202007.001)(刘洋)(1-16周,体育馆)" },
+
+    { "row": 5, "col": 0, "rowSpan": 1, "colSpan": 1, "id": "", "className": "section", "text": "第9-10节\n18:20-19:55", "title": "" },
+    { "row": 5, "col": 5, "rowSpan": 1, "colSpan": 1, "id": "TD52_5", "className": "infoTitle", "text": "大学物理(202620271.11202008.001)(周涛)(1-17周,实验楼401)", "title": "大学物理(202620271.11202008.001)(周涛)(1-17周,实验楼401)" },
+
+    { "row": 6, "col": 0, "rowSpan": 1, "colSpan": 1, "id": "", "className": "section", "text": "第11-12节\n20:00-21:35", "title": "" }
+  ]
+}

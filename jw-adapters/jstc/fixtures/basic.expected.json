@@ -1,0 +1,223 @@
+{
+  "specVersion": 1,
+  "kind": "schedule",
+  "ocrAssisted": false,
+  "warnings": [
+    "本次只导入了「2025-2026学年第一学期」（教务页面上当前打开的学期）；学期列表里还有 2 个学期，需要哪一个就在教务页面上切过去再点「提取课表」。",
+    "教务返回的排课记录里有 4 条解析不了，已跳过（缺课程名 1 条、缺星期 1 条、缺节次 1 条、缺周次 1 条）；如发现少了课，请到教务页面核对原课表。"
+  ],
+  "terms": [
+    {
+      "name": "2025-2026学年第一学期",
+      "firstDay": "2025-09-01",
+      "totalWeeks": 20,
+      "periodTimes": [
+        {
+          "periodIndex": 1,
+          "start": "08:00",
+          "end": "08:40"
+        },
+        {
+          "periodIndex": 2,
+          "start": "08:50",
+          "end": "09:30"
+        },
+        {
+          "periodIndex": 3,
+          "start": "09:50",
+          "end": "10:30"
+        },
+        {
+          "periodIndex": 4,
+          "start": "10:40",
+          "end": "11:20"
+        },
+        {
+          "periodIndex": 5,
+          "start": "11:30",
+          "end": "12:10"
+        },
+        {
+          "periodIndex": 6,
+          "start": "14:00",
+          "end": "14:40"
+        },
+        {
+          "periodIndex": 7,
+          "start": "14:50",
+          "end": "15:30"
+        },
+        {
+          "periodIndex": 8,
+          "start": "15:50",
+          "end": "16:30"
+        },
+        {
+          "periodIndex": 9,
+          "start": "16:40",
+          "end": "17:20"
+        },
+        {
+          "periodIndex": 10,
+          "start": "19:00",
+          "end": "19:40"
+        },
+        {
+          "periodIndex": 11,
+          "start": "19:50",
+          "end": "20:30"
+        }
+      ],
+      "courses": [
+        {
+          "name": "高等数学(一)",
+          "teacher": "王丽",
+          "note": null,
+          "blocks": [
+            {
+              "dayOfWeek": 1,
+              "startPeriod": 1,
+              "endPeriod": 2,
+              "startWeek": 1,
+              "endWeek": 18,
+              "weekType": "ALL",
+              "location": "勤业楼 A203"
+            }
+          ]
+        },
+        {
+          "name": "大学英语(一)",
+          "teacher": "李强,Mary",
+          "note": null,
+          "blocks": [
+            {
+              "dayOfWeek": 3,
+              "startPeriod": 3,
+              "endPeriod": 4,
+              "startWeek": 1,
+              "endWeek": 15,
+              "weekType": "ODD",
+              "location": "笃行楼 204"
+            }
+          ]
+        },
+        {
+          "name": "思想道德与法治",
+          "teacher": "张伟",
+          "note": null,
+          "blocks": [
+            {
+              "dayOfWeek": 5,
+              "startPeriod": 5,
+              "endPeriod": 6,
+              "startWeek": 2,
+              "endWeek": 16,
+              "weekType": "EVEN",
+              "location": "明德楼 108"
+            }
+          ]
+        },
+        {
+          "name": "大学体育(一)",
+          "teacher": "陈刚",
+          "note": null,
+          "blocks": [
+            {
+              "dayOfWeek": 2,
+              "startPeriod": 7,
+              "endPeriod": 8,
+              "startWeek": 1,
+              "endWeek": 8,
+              "weekType": "ALL",
+              "location": "田径场"
+            },
+            {
+              "dayOfWeek": 2,
+              "startPeriod": 7,
+              "endPeriod": 8,
+              "startWeek": 10,
+              "endWeek": 12,
+              "weekType": "ALL",
+              "location": "田径场"
+            }
+          ]
+        },
+        {
+          "name": "计算机应用基础",
+          "teacher": "刘洋",
+          "note": null,
+          "blocks": [
+            {
+              "dayOfWeek": 4,
+              "startPeriod": 9,
+              "endPeriod": 10,
+              "startWeek": 5,
+              "endWeek": 5,
+              "weekType": "ALL",
+              "location": "文昌校区 信息楼 305"
+            }
+          ]
+        },
+        {
+          "name": "形势与政策",
+          "teacher": "赵云",
+          "note": null,
+          "blocks": [
+            {
+              "dayOfWeek": 1,
+              "startPeriod": 11,
+              "endPeriod": 11,
+              "startWeek": 3,
+              "endWeek": 3,
+              "weekType": "ALL",
+              "location": null
+            },
+            {
+              "dayOfWeek": 1,
+              "startPeriod": 11,
+              "endPeriod": 11,
+              "startWeek": 6,
+              "endWeek": 6,
+              "weekType": "ALL",
+              "location": null
+            },
+            {
+              "dayOfWeek": 1,
+              "startPeriod": 11,
+              "endPeriod": 11,
+              "startWeek": 9,
+              "endWeek": 9,
+              "weekType": "ALL",
+              "location": null
+            },
+            {
+              "dayOfWeek": 1,
+              "startPeriod": 11,
+              "endPeriod": 11,
+              "startWeek": 12,
+              "endWeek": 12,
+              "weekType": "ALL",
+              "location": null
+            }
+          ]
+        },
+        {
+          "name": "军事理论",
+          "teacher": "孙倩",
+          "note": null,
+          "blocks": [
+            {
+              "dayOfWeek": 6,
+              "startPeriod": 1,
+              "endPeriod": 2,
+              "startWeek": 1,
+              "endWeek": 18,
+              "weekType": "ALL",
+              "location": "大学生活动中心报告厅"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

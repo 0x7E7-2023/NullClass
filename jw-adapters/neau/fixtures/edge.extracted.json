@@ -1,0 +1,113 @@
+{
+  "source": "urp-ajaxStudentSchedule",
+  "apiPath": "/student/courseSelect/thisSemesterCurriculum/ajaxStudentSchedule/callback",
+  "pageUrl": "https://zhjwxs.webvpn.neau.edu.cn/student/courseSelect/curriculum/index",
+  "fetchedDate": "2027-02-24",
+  "_fixture_note": "合成数据（测试方案 §3）：按上游 NEAU_01.js 实际读取的字段形状编的，不是真实抓取。这份专挑边界：classWeek 位串、逗号列举的周次、单双周、连堂、跨多节、缺 continuingSession、非法星期、空周次、超过 30 周的周次、空 timeAndPlaceList、坏掉的作息时间。课程名/教师为虚构。",
+  "raw": {
+    "xkxx": [
+      {
+        "2001": {
+          "courseName": "数据结构",
+          "attendClassTeacher": "周*平",
+          "timeAndPlaceList": [
+            {
+              "classDay": "1",
+              "classSessions": "1",
+              "continuingSession": "2",
+              "weekDescription": "",
+              "classWeek": "1111111111000000000000000",
+              "campusName": "南区",
+              "teachingBuildingName": "信息楼",
+              "classroomName": "机房1"
+            },
+            {
+              "classDay": "3",
+              "classSessions": "5",
+              "continuingSession": "",
+              "weekDescription": "1,3,5,7,9周",
+              "campusName": "南区",
+              "teachingBuildingName": "教学楼A",
+              "classroomName": "302"
+            }
+          ]
+        },
+        "2002": {
+          "courseName": "编译原理",
+          "attendClassTeacher": "吴*国",
+          "timeAndPlaceList": [
+            {
+              "classDay": "2",
+              "classSessions": "3",
+              "continuingSession": "3",
+              "weekDescription": "2-12周(双)",
+              "campusName": "南区",
+              "teachingBuildingName": "信息楼",
+              "classroomName": "401"
+            },
+            {
+              "classDay": "4",
+              "classSessions": "7",
+              "continuingSession": "4",
+              "weekDescription": "1-40周",
+              "campusName": "南区",
+              "teachingBuildingName": "信息楼",
+              "classroomName": "401"
+            }
+          ]
+        },
+        "2003": {
+          "courseName": "操作系统",
+          "attendClassTeacher": "郑*华",
+          "timeAndPlaceList": [
+            {
+              "classDay": "8",
+              "classSessions": "1",
+              "continuingSession": "2",
+              "weekDescription": "1-8周",
+              "campusName": "南区",
+              "teachingBuildingName": "信息楼",
+              "classroomName": "402"
+            },
+            {
+              "classDay": "2",
+              "classSessions": "1",
+              "continuingSession": "2",
+              "weekDescription": "周",
+              "campusName": "南区",
+              "teachingBuildingName": "信息楼",
+              "classroomName": "402"
+            }
+          ]
+        },
+        "2004": {
+          "courseName": "计算机网络",
+          "attendClassTeacher": "冯*波",
+          "timeAndPlaceList": []
+        },
+        "2005": {
+          "courseName": "数字电路",
+          "attendClassTeacher": "许*东",
+          "timeAndPlaceList": [
+            {
+              "classDay": "5",
+              "classSessions": "9",
+              "continuingSession": "2",
+              "weekDescription": "1-16周(单)",
+              "campusName": "",
+              "teachingBuildingName": "",
+              "classroomName": "阶梯教室3"
+            }
+          ]
+        }
+      }
+    ],
+    "jcsjbs": [
+      { "jc": "1", "kssj": "0800", "jssj": "0845" },
+      { "jc": "2", "kssj": "084", "jssj": "0935" },
+      { "jc": "3", "kssj": "1005", "jssj": "1050" },
+      { "jc": "", "kssj": "1055", "jssj": "1140" },
+      { "jc": "5", "kssj": "1330", "jssj": "1300" }
+    ]
+  }
+}

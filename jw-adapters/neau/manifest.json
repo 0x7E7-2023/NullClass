@@ -1,0 +1,27 @@
+{
+  "specVersion": 1,
+  "key": "neau",
+  "name": "东北农业大学",
+  "version": "1.0.0",
+  "author": "上游 dezige131（MIT）；移植 NullClass",
+  "homepage": "https://github.com/XingHeYuZhuan/shiguang_warehouse",
+  "loginUrl": "https://webvpn.neau.edu.cn/",
+  "minAppVersionCode": 11,
+  "extract": "extract.js",
+  "parse": "parse.js",
+  "allowHosts": [
+    "*.neau.edu.cn"
+  ],
+  "fixtures": [
+    {
+      "name": "基本表格（含单双周、连堂、无课表课程）",
+      "extracted": "fixtures/basic.extracted.json",
+      "expected": "fixtures/basic.expected.json"
+    },
+    {
+      "name": "边界：位串周次、逗号周次、越界截断、坏作息时间",
+      "extracted": "fixtures/edge.extracted.json",
+      "expected": "fixtures/edge.expected.json"
+    }
+  ]
+}

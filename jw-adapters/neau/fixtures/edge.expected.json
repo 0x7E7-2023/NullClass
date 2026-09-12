@@ -1,0 +1,101 @@
+{
+  "specVersion": 1,
+  "kind": "schedule",
+  "ocrAssisted": false,
+  "warnings": [
+    "开学日期（第 1 周开始日）教务没有提供：课表接口只返回本学期课表，不含校历。已按抓取日 2027-02-24 所在周的周一（2027-02-22）推算 —— 它决定「现在第几周」，请到「学期管理」里核对成真实开学日",
+    "学期名是推算的：接口只按「当前学期」返回，没有学年学期字段。已按抓取日 2027-02-24 推为「2026-2027学年第二学期」，如与实际不符可在导入后重命名",
+    "学期总周数按课表里出现的最大周次（30 周）推定，接口没有给出总周数；校历周数不同的话可在「学期管理」里改",
+    "教务系统对 1 门课还没有排上课时间地点（通常是还没排课），已跳过：计算机网络",
+    "有 1 门课一条安排都没解析出来，已跳过：操作系统；另有 2 条安排的星期/节次/周次读不出来，已忽略",
+    "有安排的周次超出了空课支持的最大 30 周：1 条安排的周次被截断到第 30 周，请核对教务里的周次写法",
+    "教务返回的作息时间里有 3 节的时间格式读不出来，已跳过该节；其余照常，请在导入后核对上课时间"
+  ],
+  "terms": [
+    {
+      "name": "2026-2027学年第二学期",
+      "firstDay": "2027-02-22",
+      "totalWeeks": 30,
+      "periodTimes": [
+        {
+          "periodIndex": 1,
+          "start": "08:00",
+          "end": "08:45"
+        },
+        {
+          "periodIndex": 3,
+          "start": "10:05",
+          "end": "10:50"
+        }
+      ],
+      "courses": [
+        {
+          "name": "数据结构",
+          "teacher": "周平",
+          "note": null,
+          "blocks": [
+            {
+              "dayOfWeek": 1,
+              "startPeriod": 1,
+              "endPeriod": 2,
+              "startWeek": 1,
+              "endWeek": 10,
+              "weekType": "ALL",
+              "location": "南区信息楼机房1"
+            },
+            {
+              "dayOfWeek": 3,
+              "startPeriod": 5,
+              "endPeriod": 5,
+              "startWeek": 1,
+              "endWeek": 9,
+              "weekType": "ODD",
+              "location": "南区教学楼A302"
+            }
+          ]
+        },
+        {
+          "name": "编译原理",
+          "teacher": "吴国",
+          "note": null,
+          "blocks": [
+            {
+              "dayOfWeek": 2,
+              "startPeriod": 3,
+              "endPeriod": 5,
+              "startWeek": 2,
+              "endWeek": 12,
+              "weekType": "EVEN",
+              "location": "南区信息楼401"
+            },
+            {
+              "dayOfWeek": 4,
+              "startPeriod": 7,
+              "endPeriod": 10,
+              "startWeek": 1,
+              "endWeek": 30,
+              "weekType": "ALL",
+              "location": "南区信息楼401"
+            }
+          ]
+        },
+        {
+          "name": "数字电路",
+          "teacher": "许东",
+          "note": null,
+          "blocks": [
+            {
+              "dayOfWeek": 5,
+              "startPeriod": 9,
+              "endPeriod": 10,
+              "startWeek": 1,
+              "endWeek": 15,
+              "weekType": "ODD",
+              "location": "阶梯教室3"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

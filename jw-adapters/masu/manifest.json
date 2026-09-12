@@ -1,0 +1,35 @@
+{
+  "specVersion": 1,
+  "key": "masu",
+  "name": "马鞍山学院",
+  "version": "1.0.0",
+  "author": "上游 Haooz（拾光课程表 shiguang_warehouse，MIT）；移植 NullClass",
+  "homepage": "https://github.com/XingHeYuZhuan/shiguang_warehouse",
+  "loginUrl": "https://jwxt.masu.edu.cn/",
+  "minAppVersionCode": 11,
+  "extract": "extract.js",
+  "parse": "parse.js",
+  "allowHosts": [],
+  "fixtures": [
+    {
+      "name": "基本课表（11 节，含合班/单双周/一格两门课）",
+      "extracted": "fixtures/basic.extracted.json",
+      "expected": "fixtures/basic.expected.json"
+    },
+    {
+      "name": "括号里的纯数字序号（合成）",
+      "extracted": "fixtures/serial-number.extracted.json",
+      "expected": "fixtures/serial-number.expected.json"
+    },
+    {
+      "name": "节次标签：连堂合并行/多节写法/认不出来（合成）",
+      "extracted": "fixtures/section-labels.extracted.json",
+      "expected": "fixtures/section-labels.expected.json"
+    },
+    {
+      "name": "连堂标签下的作息时间（合成）",
+      "extracted": "fixtures/block-labels.extracted.json",
+      "expected": "fixtures/block-labels.expected.json"
+    }
+  ]
+}

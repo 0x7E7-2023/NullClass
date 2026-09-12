@@ -1,0 +1,40 @@
+{
+  "specVersion": 1,
+  "key": "hbmu",
+  "name": "湖北医药学院",
+  "version": "1.0.0",
+  "author": "上游 xhh李（MIT）；移植 NullClass",
+  "homepage": "https://github.com/XingHeYuZhuan/shiguang_warehouse",
+  "loginUrl": "https://jw.hbmu.edu.cn/",
+  "minAppVersionCode": 11,
+  "extract": "extract.js",
+  "parse": "parse.js",
+  "allowHosts": [],
+  "fixtures": [
+    {
+      "name": "基本表格（合成 fixture：连堂、分段周次、单双周、HTML 实体、3 行脏数据）",
+      "extracted": "fixtures/basic.extracted.json",
+      "expected": "fixtures/basic.expected.json"
+    },
+    {
+      "name": "排课日期接口没探到时的推算路径（合成 fixture）",
+      "extracted": "fixtures/no-date.extracted.json",
+      "expected": "fixtures/no-date.expected.json"
+    },
+    {
+      "name": "单双周写在「周」之后的周次（合成 fixture：1-16周(双) / 双周1-16 / 1-8周(单),9-16周(双) / 单双周）",
+      "extracted": "fixtures/weeks-parity.extracted.json",
+      "expected": "fixtures/weeks-parity.expected.json"
+    },
+    {
+      "name": "接口没回 total、按翻页取全（合成 fixture）",
+      "extracted": "fixtures/no-total.extracted.json",
+      "expected": "fixtures/no-total.expected.json"
+    },
+    {
+      "name": "接口没回 total 且翻到了页数上限（合成 fixture）",
+      "extracted": "fixtures/no-total-truncated.extracted.json",
+      "expected": "fixtures/no-total-truncated.expected.json"
+    }
+  ]
+}

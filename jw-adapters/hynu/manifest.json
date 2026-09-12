@@ -1,0 +1,23 @@
+{
+  "specVersion": 1,
+  "key": "hynu",
+  "name": "衡阳师范学院",
+  "version": "1.0.0",
+  "author": "上游 星河欲转（拾光课程表社区，MIT）；移植 NullClass",
+  "homepage": "https://github.com/XingHeYuZhuan/shiguang_warehouse",
+  "loginUrl": "https://hysfjw.hynu.edu.cn/jsxsd/",
+  "scheduleUrlHint": "https://hysfjw.hynu.edu.cn/jsxsd/xskb/xskb_list.do",
+  "minAppVersionCode": 11,
+  "extract": "extract.js",
+  "parse": "parse.js",
+  "allowHosts": [
+    "hysfjw.hynu.edu.cn"
+  ],
+  "fixtures": [
+    {
+      "name": "基本课表（合成数据）",
+      "extracted": "fixtures/basic.extracted.json",
+      "expected": "fixtures/basic.expected.json"
+    }
+  ]
+}

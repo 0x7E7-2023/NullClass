@@ -1,0 +1,201 @@
+{
+  "specVersion": 1,
+  "kind": "schedule",
+  "ocrAssisted": false,
+  "warnings": [
+    "教务系统不提供校历，开学日期「2026-09-07」是按「9 月 1 日之后的第一个周一」推算的，它决定「现在第几周」，请在学期管理里核对。",
+    "节次时间按你选择的「唐槐校区」作息写入（教务处公布的 10 节制），选错校区会与实际上课时间不符，请在学期管理里核对。",
+    "有 1 个周次超出 1..30 的范围，已忽略（教务数据里的异常值）。",
+    "有 1 行课表数据缺少课名 / 星期 / 节次 / 周次，已跳过（可能是教务系统的调课、待定之类记录）。",
+    "课表里最晚只排到第 18 周，学期总周数按 20 周写入，可在学期管理里调整。"
+  ],
+  "terms": [
+    {
+      "name": "2026-2027 学年第一学期",
+      "firstDay": "2026-09-07",
+      "totalWeeks": 20,
+      "periodTimes": [
+        {
+          "periodIndex": 1,
+          "start": "08:20",
+          "end": "09:05"
+        },
+        {
+          "periodIndex": 2,
+          "start": "09:05",
+          "end": "09:50"
+        },
+        {
+          "periodIndex": 3,
+          "start": "10:00",
+          "end": "10:45"
+        },
+        {
+          "periodIndex": 4,
+          "start": "10:45",
+          "end": "11:30"
+        },
+        {
+          "periodIndex": 5,
+          "start": "13:40",
+          "end": "14:25"
+        },
+        {
+          "periodIndex": 6,
+          "start": "14:25",
+          "end": "15:10"
+        },
+        {
+          "periodIndex": 7,
+          "start": "15:20",
+          "end": "16:05"
+        },
+        {
+          "periodIndex": 8,
+          "start": "16:05",
+          "end": "16:50"
+        },
+        {
+          "periodIndex": 9,
+          "start": "17:30",
+          "end": "18:15"
+        },
+        {
+          "periodIndex": 10,
+          "start": "18:15",
+          "end": "19:00"
+        }
+      ],
+      "courses": [
+        {
+          "name": "高等数学A(一)",
+          "teacher": "王建国",
+          "note": null,
+          "blocks": [
+            {
+              "dayOfWeek": 1,
+              "startPeriod": 1,
+              "endPeriod": 2,
+              "startWeek": 1,
+              "endWeek": 16,
+              "weekType": "ALL",
+              "location": "唐槐教学楼A101"
+            }
+          ]
+        },
+        {
+          "name": "体育（一）",
+          "teacher": "赵鹏",
+          "note": null,
+          "blocks": [
+            {
+              "dayOfWeek": 2,
+              "startPeriod": 5,
+              "endPeriod": 5,
+              "startWeek": 1,
+              "endWeek": 16,
+              "weekType": "ALL",
+              "location": "田径场"
+            }
+          ]
+        },
+        {
+          "name": "大学英语（一）",
+          "teacher": "李晓芸",
+          "note": null,
+          "blocks": [
+            {
+              "dayOfWeek": 3,
+              "startPeriod": 3,
+              "endPeriod": 4,
+              "startWeek": 1,
+              "endWeek": 16,
+              "weekType": "ALL",
+              "location": "图书信息楼302"
+            }
+          ]
+        },
+        {
+          "name": "形势与政策",
+          "teacher": "刘洋",
+          "note": null,
+          "blocks": [
+            {
+              "dayOfWeek": 3,
+              "startPeriod": 7,
+              "endPeriod": 7,
+              "startWeek": 5,
+              "endWeek": 5,
+              "weekType": "ALL",
+              "location": "唐槐教学楼C101"
+            }
+          ]
+        },
+        {
+          "name": "军事理论",
+          "teacher": "周强",
+          "note": null,
+          "blocks": [
+            {
+              "dayOfWeek": 4,
+              "startPeriod": 7,
+              "endPeriod": 8,
+              "startWeek": 1,
+              "endWeek": 11,
+              "weekType": "ODD",
+              "location": "唐槐教学楼B203"
+            }
+          ]
+        },
+        {
+          "name": "入学教育",
+          "teacher": "张敏",
+          "note": null,
+          "blocks": [
+            {
+              "dayOfWeek": 4,
+              "startPeriod": 9,
+              "endPeriod": 9,
+              "startWeek": 5,
+              "endWeek": 7,
+              "weekType": "ODD",
+              "location": null
+            }
+          ]
+        },
+        {
+          "name": "金工实训",
+          "teacher": "孙志强",
+          "note": null,
+          "blocks": [
+            {
+              "dayOfWeek": 5,
+              "startPeriod": 5,
+              "endPeriod": 8,
+              "startWeek": 17,
+              "endWeek": 18,
+              "weekType": "ALL",
+              "location": null
+            }
+          ]
+        },
+        {
+          "name": "大学生心理健康",
+          "teacher": "陈静",
+          "note": null,
+          "blocks": [
+            {
+              "dayOfWeek": 5,
+              "startPeriod": 9,
+              "endPeriod": 10,
+              "startWeek": 2,
+              "endWeek": 16,
+              "weekType": "EVEN",
+              "location": "图书信息楼105"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

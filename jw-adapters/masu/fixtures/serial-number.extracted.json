@@ -1,0 +1,34 @@
+{
+  "_note": "合成用例（维护者手上没有可公开的真实课表页，形状照上游脚本读的字段编）：格子里的「(1)」「(2)」是课程序号，不是周次。期望值按 docs/jw-adapter-spec.md 手推，不是 parse.js 的输出。",
+  "url": "http://jwxt.masu.edu.cn:8080/eams/courseTableForStd.action",
+  "title": "学生课表",
+  "today": "2026-09-21",
+  "unitCount": 11,
+  "currentWeek": 3,
+  "semesterLabels": ["2026-2027学年第一学期"],
+  "image": null,
+  "cells": [
+    { "row": 0, "col": 0, "rowSpan": 1, "colSpan": 1, "id": "", "className": "title", "text": "节次", "title": "" },
+    { "row": 0, "col": 1, "rowSpan": 1, "colSpan": 1, "id": "", "className": "title", "text": "星期一", "title": "" },
+    { "row": 0, "col": 2, "rowSpan": 1, "colSpan": 1, "id": "", "className": "title", "text": "星期二", "title": "" },
+    { "row": 0, "col": 3, "rowSpan": 1, "colSpan": 1, "id": "", "className": "title", "text": "星期三", "title": "" },
+    { "row": 0, "col": 4, "rowSpan": 1, "colSpan": 1, "id": "", "className": "title", "text": "星期四", "title": "" },
+    { "row": 0, "col": 5, "rowSpan": 1, "colSpan": 1, "id": "", "className": "title", "text": "星期五", "title": "" },
+    { "row": 0, "col": 6, "rowSpan": 1, "colSpan": 1, "id": "", "className": "title", "text": "星期六", "title": "" },
+    { "row": 0, "col": 7, "rowSpan": 1, "colSpan": 1, "id": "", "className": "title", "text": "星期日", "title": "" },
+
+    { "row": 1, "col": 0, "rowSpan": 1, "colSpan": 1, "id": "", "className": "section", "text": "第1节\n08:20-09:05", "title": "" },
+    { "row": 2, "col": 0, "rowSpan": 1, "colSpan": 1, "id": "", "className": "section", "text": "第2节\n09:10-09:55", "title": "" },
+    { "row": 3, "col": 0, "rowSpan": 1, "colSpan": 1, "id": "", "className": "section", "text": "第3节\n10:15-11:00", "title": "" },
+    { "row": 3, "col": 3, "rowSpan": 1, "colSpan": 1, "id": "TD24_3", "className": "infoTitle", "text": "大学英语(1)(202620271.11202002.001)(李娜)(1-16周,教学楼B202)", "title": "大学英语(1)(202620271.11202002.001)(李娜)(1-16周,教学楼B202)" },
+    { "row": 4, "col": 0, "rowSpan": 1, "colSpan": 1, "id": "", "className": "section", "text": "第4节\n11:05-11:50", "title": "" },
+    { "row": 5, "col": 0, "rowSpan": 1, "colSpan": 1, "id": "", "className": "section", "text": "第5节\n13:50-14:35", "title": "" },
+    { "row": 6, "col": 0, "rowSpan": 1, "colSpan": 1, "id": "", "className": "section", "text": "第6节\n14:40-15:25", "title": "" },
+    { "row": 6, "col": 6, "rowSpan": 1, "colSpan": 1, "id": "TD60_6", "className": "infoTitle", "text": "形势与政策1(1)(赵敏)(2-5周,教学楼C101)大学生就业指导(2)(孙磊)(6-7周、9-11周、13周、16周,教学楼C102)", "title": "形势与政策1(1)(赵敏)(2-5周,教学楼C101)大学生就业指导(2)(孙磊)(6-7周、9-11周、13周、16周,教学楼C102)" },
+    { "row": 7, "col": 0, "rowSpan": 1, "colSpan": 1, "id": "", "className": "section", "text": "第7节\n15:45-16:30", "title": "" },
+    { "row": 8, "col": 0, "rowSpan": 1, "colSpan": 1, "id": "", "className": "section", "text": "第8节\n16:35-17:20", "title": "" },
+    { "row": 9, "col": 0, "rowSpan": 1, "colSpan": 1, "id": "", "className": "section", "text": "第9节\n18:20-19:05", "title": "" },
+    { "row": 10, "col": 0, "rowSpan": 1, "colSpan": 1, "id": "", "className": "section", "text": "第10节\n19:10-19:55", "title": "" },
+    { "row": 11, "col": 0, "rowSpan": 1, "colSpan": 1, "id": "", "className": "section", "text": "第11节\n20:00-20:45", "title": "" }
+  ]
+}

@@ -1,0 +1,25 @@
+{
+  "specVersion": 1,
+  "key": "sxgcxy",
+  "name": "山西工程职业学院",
+  "version": "1.0.0",
+  "author": "上游 星河欲转（MIT）；移植 NullClass",
+  "homepage": "https://github.com/XingHeYuZhuan/shiguang_warehouse",
+  "loginUrl": "https://sxevc.jw.chaoxing.com/admin/login",
+  "minAppVersionCode": 11,
+  "extract": "extract.js",
+  "parse": "parse.js",
+  "allowHosts": [],
+  "fixtures": [
+    {
+      "name": "基本表格（合成数据：连堂 / 逗号枚举周次 / 脏行）",
+      "extracted": "fixtures/basic.extracted.json",
+      "expected": "fixtures/basic.expected.json"
+    },
+    {
+      "name": "单双周写法（合成数据：单/双写在周次区间之后）",
+      "extracted": "fixtures/odd-even.extracted.json",
+      "expected": "fixtures/odd-even.expected.json"
+    }
+  ]
+}

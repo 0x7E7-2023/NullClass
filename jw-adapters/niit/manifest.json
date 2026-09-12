@@ -1,0 +1,25 @@
+{
+  "specVersion": 1,
+  "key": "niit",
+  "name": "南京工业职业技术大学",
+  "version": "1.0.0",
+  "author": "上游 nifs1729（MIT）；移植 NullClass",
+  "homepage": "https://github.com/XingHeYuZhuan/shiguang_warehouse",
+  "loginUrl": "https://jwxt.niit.edu.cn/",
+  "minAppVersionCode": 11,
+  "extract": "extract.js",
+  "parse": "parse.js",
+  "allowHosts": [],
+  "fixtures": [
+    {
+      "name": "基本课表（拿不到校历：学期编号与开学日都是推算的）",
+      "extracted": "fixtures/basic.extracted.json",
+      "expected": "fixtures/basic.expected.json"
+    },
+    {
+      "name": "校历可用（开学日与总周数取自校历）",
+      "extracted": "fixtures/calendar.extracted.json",
+      "expected": "fixtures/calendar.expected.json"
+    }
+  ]
+}

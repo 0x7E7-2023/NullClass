@@ -1,0 +1,257 @@
+{
+  "specVersion": 1,
+  "kind": "schedule",
+  "ocrAssisted": false,
+  "warnings": [
+    "开学日期教务没有提供，已按页面上显示的「第 3 周」反推为 2026-09-07，请在学期管理里核对",
+    "学期总周数教务没有提供，已按 20 周计（课表里最大的周次是 17 周），如校历不同请在学期管理里调整"
+  ],
+  "terms": [
+    {
+      "name": "2026-2027学年第一学期",
+      "firstDay": "2026-09-07",
+      "totalWeeks": 20,
+      "periodTimes": [
+        {
+          "periodIndex": 1,
+          "start": "08:20",
+          "end": "09:05"
+        },
+        {
+          "periodIndex": 2,
+          "start": "09:10",
+          "end": "09:55"
+        },
+        {
+          "periodIndex": 3,
+          "start": "10:15",
+          "end": "11:00"
+        },
+        {
+          "periodIndex": 4,
+          "start": "11:05",
+          "end": "11:50"
+        },
+        {
+          "periodIndex": 5,
+          "start": "13:50",
+          "end": "14:35"
+        },
+        {
+          "periodIndex": 6,
+          "start": "14:40",
+          "end": "15:25"
+        },
+        {
+          "periodIndex": 7,
+          "start": "15:45",
+          "end": "16:30"
+        },
+        {
+          "periodIndex": 8,
+          "start": "16:35",
+          "end": "17:20"
+        },
+        {
+          "periodIndex": 9,
+          "start": "18:20",
+          "end": "19:05"
+        },
+        {
+          "periodIndex": 10,
+          "start": "19:10",
+          "end": "19:55"
+        },
+        {
+          "periodIndex": 11,
+          "start": "20:00",
+          "end": "20:45"
+        }
+      ],
+      "courses": [
+        {
+          "name": "高等数学A(一)",
+          "teacher": "张伟",
+          "note": null,
+          "blocks": [
+            {
+              "dayOfWeek": 1,
+              "startPeriod": 1,
+              "endPeriod": 2,
+              "startWeek": 1,
+              "endWeek": 16,
+              "weekType": "ALL",
+              "location": "数智楼(3号实验楼)309"
+            }
+          ]
+        },
+        {
+          "name": "大学英语",
+          "teacher": "李娜",
+          "note": null,
+          "blocks": [
+            {
+              "dayOfWeek": 3,
+              "startPeriod": 2,
+              "endPeriod": 2,
+              "startWeek": 1,
+              "endWeek": 16,
+              "weekType": "ALL",
+              "location": "教学楼B202"
+            }
+          ]
+        },
+        {
+          "name": "线性代数",
+          "teacher": "王强",
+          "note": null,
+          "blocks": [
+            {
+              "dayOfWeek": 2,
+              "startPeriod": 3,
+              "endPeriod": 3,
+              "startWeek": 1,
+              "endWeek": 9,
+              "weekType": "ODD",
+              "location": "数智楼205"
+            }
+          ]
+        },
+        {
+          "name": "程序设计基础",
+          "teacher": "陈晨",
+          "note": null,
+          "blocks": [
+            {
+              "dayOfWeek": 4,
+              "startPeriod": 5,
+              "endPeriod": 6,
+              "startWeek": 2,
+              "endWeek": 6,
+              "weekType": "EVEN",
+              "location": "机房A303"
+            },
+            {
+              "dayOfWeek": 4,
+              "startPeriod": 5,
+              "endPeriod": 6,
+              "startWeek": 10,
+              "endWeek": 14,
+              "weekType": "EVEN",
+              "location": "机房A303"
+            }
+          ]
+        },
+        {
+          "name": "形势与政策1",
+          "teacher": "赵敏",
+          "note": null,
+          "blocks": [
+            {
+              "dayOfWeek": 6,
+              "startPeriod": 6,
+              "endPeriod": 6,
+              "startWeek": 2,
+              "endWeek": 5,
+              "weekType": "ALL",
+              "location": "教学楼C101"
+            }
+          ]
+        },
+        {
+          "name": "大学生就业指导",
+          "teacher": "孙磊",
+          "note": null,
+          "blocks": [
+            {
+              "dayOfWeek": 6,
+              "startPeriod": 6,
+              "endPeriod": 6,
+              "startWeek": 6,
+              "endWeek": 7,
+              "weekType": "ALL",
+              "location": "教学楼C102"
+            },
+            {
+              "dayOfWeek": 6,
+              "startPeriod": 6,
+              "endPeriod": 6,
+              "startWeek": 9,
+              "endWeek": 11,
+              "weekType": "ALL",
+              "location": "教学楼C102"
+            },
+            {
+              "dayOfWeek": 6,
+              "startPeriod": 6,
+              "endPeriod": 6,
+              "startWeek": 13,
+              "endWeek": 13,
+              "weekType": "ALL",
+              "location": "教学楼C102"
+            },
+            {
+              "dayOfWeek": 6,
+              "startPeriod": 6,
+              "endPeriod": 6,
+              "startWeek": 16,
+              "endWeek": 16,
+              "weekType": "ALL",
+              "location": "教学楼C102"
+            }
+          ]
+        },
+        {
+          "name": "体育（一）",
+          "teacher": "刘洋",
+          "note": null,
+          "blocks": [
+            {
+              "dayOfWeek": 1,
+              "startPeriod": 8,
+              "endPeriod": 8,
+              "startWeek": 1,
+              "endWeek": 16,
+              "weekType": "ALL",
+              "location": "体育馆"
+            }
+          ]
+        },
+        {
+          "name": "大学物理",
+          "teacher": "周涛",
+          "note": null,
+          "blocks": [
+            {
+              "dayOfWeek": 5,
+              "startPeriod": 9,
+              "endPeriod": 9,
+              "startWeek": 1,
+              "endWeek": 4,
+              "weekType": "ALL",
+              "location": "实验楼401"
+            },
+            {
+              "dayOfWeek": 5,
+              "startPeriod": 9,
+              "endPeriod": 9,
+              "startWeek": 6,
+              "endWeek": 6,
+              "weekType": "ALL",
+              "location": "实验楼401"
+            },
+            {
+              "dayOfWeek": 5,
+              "startPeriod": 9,
+              "endPeriod": 9,
+              "startWeek": 9,
+              "endWeek": 17,
+              "weekType": "ALL",
+              "location": "实验楼401"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

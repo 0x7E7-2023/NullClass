@@ -1,0 +1,117 @@
+{
+  "_note": "合成样例（不是真实抓取）：字段形状按上游 NIIT/niit.js 读取的接口字段编造，只保证「同样的输入永远得到同样的输出」。拿到真实 dump 请替换本文件并重跑 :importer:test。",
+  "term": {
+    "code": "2026-2027-1",
+    "name": null,
+    "source": "guess",
+    "firstDay": "2026-09-07",
+    "firstDaySource": "guess",
+    "totalWeeks": null
+  },
+  "rows": [
+    {
+      "XNXQDM": "2026-2027-1",
+      "KCH": "0701112",
+      "KCM": "高等数学A（一）",
+      "JXBID": "202620271510001001",
+      "SKXQ": "1",
+      "KSJC": "1",
+      "JSJC": "2",
+      "SKZC": "11111111111111110000",
+      "SKJS": "王建国",
+      "JASMC": "教1-201",
+      "XXXQDM_DISPLAY": "仙林校区"
+    },
+    {
+      "XNXQDM": "2026-2027-1",
+      "KCH": "0702005",
+      "KCM": "大学英语（一）",
+      "JXBID": "202620271510002007",
+      "SKXQ": "2",
+      "KSJC": "3",
+      "JSJC": "4",
+      "SKZC": "10101010101010100000",
+      "SKJS": "李梅",
+      "JASMC": "教2-105",
+      "XXXQDM_DISPLAY": "仙林校区"
+    },
+    {
+      "XNXQDM": "2026-2027-1",
+      "KCH": "0702005",
+      "KCM": "大学英语（一）",
+      "JXBID": "202620271510002007",
+      "SKXQ": "4",
+      "KSJC": "3",
+      "JSJC": "4",
+      "SKZC": "01010101010101010000",
+      "SKJS": "李梅",
+      "JASMC": "教2-105",
+      "XXXQDM_DISPLAY": "仙林校区"
+    },
+    {
+      "XNXQDM": "2026-2027-1",
+      "KCH": "0703011",
+      "KCM": "程序设计基础",
+      "JXBID": "202620271510003002",
+      "SKXQ": "3",
+      "KSJC": "5",
+      "JSJC": "6",
+      "SKZC": "00111111111111100000",
+      "SKJS": "陈晓东/赵磊",
+      "JASMC": "实训楼B302",
+      "XXXQDM_DISPLAY": "仙林校区"
+    },
+    {
+      "XNXQDM": "2026-2027-1",
+      "KCH": "0704002",
+      "KCM": "体育（一）",
+      "JXBID": "202620271510004003",
+      "SKXQ": "5",
+      "KSJC": "7",
+      "JSJC": "8",
+      "SKZC": "00010001000100000000",
+      "SKJS": null,
+      "JASMC": "体育馆",
+      "XXXQDM_DISPLAY": "仙林校区"
+    },
+    {
+      "XNXQDM": "2026-2027-1",
+      "KCH": "0705007",
+      "KCM": "形势与政策",
+      "JXBID": "202620271510005001",
+      "SKXQ": "6",
+      "KSJC": "9",
+      "JSJC": "11",
+      "SKZC": "00001000110000000000",
+      "SKJS": "孙倩",
+      "JASMC": null,
+      "XXXQDM_DISPLAY": "仙林校区"
+    },
+    {
+      "XNXQDM": "2026-2027-1",
+      "KCH": "0706001",
+      "KCM": "军事理论",
+      "JXBID": "202620271510006004",
+      "SKXQ": "2",
+      "KSJC": "9",
+      "JSJC": "10",
+      "SKZC": "00000000000000000000",
+      "SKJS": "周伟",
+      "JASMC": "教3-101",
+      "XXXQDM_DISPLAY": "仙林校区"
+    },
+    {
+      "XNXQDM": "2026-2027-1",
+      "KCH": null,
+      "KCM": null,
+      "JXBID": null,
+      "SKXQ": null,
+      "KSJC": null,
+      "JSJC": null,
+      "SKZC": null,
+      "SKJS": null,
+      "JASMC": null,
+      "XXXQDM_DISPLAY": null
+    }
+  ]
+}

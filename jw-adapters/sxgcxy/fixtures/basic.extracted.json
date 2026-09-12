@@ -1,0 +1,170 @@
+{
+  "_note": "合成数据（不是真实抓取）：按上游 shiguang_warehouse/SXGCXY/sxgcxy_01.js 实际读取的字段形状编造，用来说明 extract.js 会交出去什么、parse.js 会产出什么。字段名取自上游脚本（kcmc/tmc/croommc/xingqi/djc/zcstr），真机 dump 换掉这份文件才算数 —— 见 AUDIT.md。",
+  "campus": "tanghuai",
+  "term": {
+    "code": "2026-2027-1",
+    "attempts": ["2026-2027-1"]
+  },
+  "rows": [
+    {
+      "id": 1001,
+      "xnxq": "2026-2027-1",
+      "kcmc": "<a href=\"/admin/pkgl/xk/kbxx?id=1001\" title=\"高等数学A(一)\">高等数学A(一)</a>",
+      "tmc": "<a href=\"/admin/pkgl/xk/jsxx?id=2001\">王建国（副教授）</a>",
+      "croommc": "<span>唐槐教学楼A101</span>",
+      "xingqi": "1",
+      "djc": "1",
+      "zcstr": "1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16"
+    },
+    {
+      "id": 1002,
+      "xnxq": "2026-2027-1",
+      "kcmc": "<a href=\"/admin/pkgl/xk/kbxx?id=1001\" title=\"高等数学A(一)\">高等数学A(一)</a>",
+      "tmc": "<a href=\"/admin/pkgl/xk/jsxx?id=2001\">王建国（副教授）</a>",
+      "croommc": "<span>唐槐教学楼A101</span>",
+      "xingqi": "1",
+      "djc": "2",
+      "zcstr": "1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16"
+    },
+    {
+      "id": 1003,
+      "xnxq": "2026-2027-1",
+      "kcmc": "大学英语（一）",
+      "tmc": "<a href=\"/admin/pkgl/xk/jsxx?id=2002\">李晓芸</a>",
+      "croommc": "图书信息楼302",
+      "xingqi": "3",
+      "djc": "3",
+      "zcstr": "1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16"
+    },
+    {
+      "id": 1004,
+      "xnxq": "2026-2027-1",
+      "kcmc": "大学英语（一）",
+      "tmc": "<a href=\"/admin/pkgl/xk/jsxx?id=2002\">李晓芸</a>",
+      "croommc": "图书信息楼302",
+      "xingqi": "3",
+      "djc": "4",
+      "zcstr": "1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16"
+    },
+    {
+      "id": 1005,
+      "xnxq": "2026-2027-1",
+      "kcmc": "体育（一）",
+      "tmc": "赵鹏",
+      "croommc": "田径场",
+      "xingqi": "2",
+      "djc": "5",
+      "zcstr": "1-16"
+    },
+    {
+      "id": 1006,
+      "xnxq": "2026-2027-1",
+      "kcmc": "军事理论",
+      "tmc": "<a href=\"/admin/pkgl/xk/jsxx?id=2003\">周强</a>",
+      "croommc": "唐槐教学楼B203",
+      "xingqi": "4",
+      "djc": "7",
+      "zcstr": "1,3,5,7,9,11"
+    },
+    {
+      "id": 1007,
+      "xnxq": "2026-2027-1",
+      "kcmc": "军事理论",
+      "tmc": "<a href=\"/admin/pkgl/xk/jsxx?id=2003\">周强</a>",
+      "croommc": "唐槐教学楼B203",
+      "xingqi": "4",
+      "djc": "8",
+      "zcstr": "1,3,5,7,9,11"
+    },
+    {
+      "id": 1008,
+      "xnxq": "2026-2027-1",
+      "kcmc": "大学生心理健康",
+      "tmc": "陈静",
+      "croommc": "图书信息楼105",
+      "xingqi": "5",
+      "djc": "9",
+      "zcstr": "2,4,6,8,10,12,14,16"
+    },
+    {
+      "id": 1009,
+      "xnxq": "2026-2027-1",
+      "kcmc": "大学生心理健康",
+      "tmc": "陈静",
+      "croommc": "图书信息楼105",
+      "xingqi": "5",
+      "djc": "10",
+      "zcstr": "2,4,6,8,10,12,14,16"
+    },
+    {
+      "id": 1010,
+      "xnxq": "2026-2027-1",
+      "kcmc": "形势与政策",
+      "tmc": "<a href=\"/admin/pkgl/xk/jsxx?id=2004\">刘洋</a>",
+      "croommc": "唐槐教学楼C101",
+      "xingqi": "3",
+      "djc": "7",
+      "zcstr": "5"
+    },
+    {
+      "id": 1011,
+      "xnxq": "2026-2027-1",
+      "kcmc": "入学教育",
+      "tmc": "张敏",
+      "croommc": "",
+      "xingqi": "4",
+      "djc": "9",
+      "zcstr": "5,7,2026"
+    },
+    {
+      "id": 1012,
+      "xnxq": "2026-2027-1",
+      "kcmc": "金工实训",
+      "tmc": "孙志强",
+      "croommc": "",
+      "xingqi": "5",
+      "djc": "5",
+      "zcstr": "17,18"
+    },
+    {
+      "id": 1013,
+      "xnxq": "2026-2027-1",
+      "kcmc": "金工实训",
+      "tmc": "孙志强",
+      "croommc": "",
+      "xingqi": "5",
+      "djc": "6",
+      "zcstr": "17,18"
+    },
+    {
+      "id": 1014,
+      "xnxq": "2026-2027-1",
+      "kcmc": "金工实训",
+      "tmc": "孙志强",
+      "croommc": "",
+      "xingqi": "5",
+      "djc": "7",
+      "zcstr": "17,18"
+    },
+    {
+      "id": 1015,
+      "xnxq": "2026-2027-1",
+      "kcmc": "金工实训",
+      "tmc": "孙志强",
+      "croommc": "",
+      "xingqi": "5",
+      "djc": "8",
+      "zcstr": "17,18"
+    },
+    {
+      "id": 1099,
+      "xnxq": "2026-2027-1",
+      "kcmc": "调课待定",
+      "tmc": "",
+      "croommc": "",
+      "xingqi": "",
+      "djc": "",
+      "zcstr": ""
+    }
+  ]
+}
