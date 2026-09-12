@@ -36,6 +36,7 @@ import com.nullclass.core.model.PeriodTime
 import com.nullclass.core.model.PlacedBlock
 import com.nullclass.core.model.ScheduleFormat
 import com.nullclass.core.model.Session
+import com.nullclass.core.model.Term
 import com.nullclass.core.ui.theme.courseColor
 import com.nullclass.core.ui.theme.otherWeekBlockColor
 
@@ -46,9 +47,20 @@ internal val PeriodCellHeight = 56.dp
 internal fun periodColumnWidth(showTimeInCards: Boolean): Dp = if (showTimeInCards) 28.dp else 44.dp
 
 /**
- * 周视图主体：左侧节次列 + 5/7 天列（周末可隐藏）。
+ * 周视图要显示的列（ISO 星期几，按学期的每周起始日排序）。
+ *
+ * 关掉「显示周末」= 去掉周六、周日**这两列**，而不是砍掉末尾两列：一周从周日算起时，
+ * 末尾两列是周五、周六，砍尾巴会把周五也一起砍掉。剩下的列仍按学期的周序排
+ * （周三开学的学期去掉周末后是 三四五一二）。
+ */
+internal fun Term.visibleWeekDays(showWeekend: Boolean): List<Int> =
+    if (showWeekend) daysInWeekOrder else daysInWeekOrder.filter { it <= 5 }
+
+/**
+ * 周视图主体：左侧节次列 + 5/7 天列（周末可隐藏、列序随学期起始日）。
  * 外层负责纵向滚动与按周翻页。
  *
+ * @param weekDays 要画的列，见 [visibleWeekDays]；与 [WeekHeader] 必须传同一份
  * @param otherWeekLayout 该周不上、别的周要上的课块（灰块，见 WeekLayout.otherWeekLayout）；
  *   只画在当周空着的时段里，关掉显示开关时传空表。
  */
@@ -56,8 +68,8 @@ internal fun periodColumnWidth(showTimeInCards: Boolean): Dp = if (showTimeInCar
 internal fun WeekGrid(
     periodTimes: List<PeriodTime>,
     layout: Map<Int, List<PlacedBlock>>,
+    weekDays: List<Int>,
     todayDayOfWeek: Int?,
-    showWeekend: Boolean,
     showTimeInCards: Boolean,
     nowMinuteOfDay: Int?,
     onBlockClick: (PlacedBlock) -> Unit,
@@ -65,11 +77,10 @@ internal fun WeekGrid(
     modifier: Modifier = Modifier,
 ) {
     val totalPeriods = periodTimes.size.coerceAtLeast(1)
-    val lastDay = if (showWeekend) 7 else 5
     val hairline = with(LocalDensity.current) { 1.toDp() }
-    // 当前时间线：仅本周页；今天逢周末仅在显示周末时画；时刻须在节次表跨度内
+    // 当前时间线：仅本周页；今天那一列没显示（关掉了周末又逢周末）就不画；时刻须在节次表跨度内
     val nowLineY = todayDayOfWeek?.let { today ->
-        if (today <= 5 || showWeekend) {
+        if (today in weekDays) {
             nowMinuteOfDay?.let { nowLineYDp(periodTimes, it) }
         } else {
             null
@@ -85,7 +96,7 @@ internal fun WeekGrid(
                 .height(PeriodCellHeight * totalPeriods),
         ) {
             PeriodColumn(periodTimes, showTimeInCards)
-            for (day in 1..lastDay) {
+            for (day in weekDays) {
                 DayColumn(
                     isToday = todayDayOfWeek == day,
                     blocks = layout[day].orEmpty(),

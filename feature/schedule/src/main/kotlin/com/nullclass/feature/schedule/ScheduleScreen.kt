@@ -94,7 +94,7 @@ fun ScheduleScreen(
                             val ready = state as ScheduleUiState.Ready
                             Text(
                                 text = "第 ${ready.selectedWeek} 周" +
-                                    if (ready.selectedWeek == ready.currentWeek) " · 本周" else "",
+                                    if (ready.selectedWeek == ready.todayWeek) " · 本周" else "",
                                 style = MaterialTheme.typography.labelSmall,
                                 color = MaterialTheme.colorScheme.onSurfaceVariant,
                             )
@@ -103,7 +103,8 @@ fun ScheduleScreen(
                 },
                 actions = {
                     val ready = state as? ScheduleUiState.Ready
-                    if (ready != null && ready.selectedWeek != ready.currentWeek) {
+                    // 今天不在学期内时没有「本周」可回（回也是回第 1 周），按钮不显示
+                    if (ready != null && ready.todayWeek != null && ready.selectedWeek != ready.todayWeek) {
                         TextButton(onClick = { viewModel.backToCurrentWeek() }) {
                             Text("回本周")
                         }
@@ -189,15 +190,17 @@ fun ScheduleScreen(
                         .fillMaxSize()
                         .padding(padding),
                 ) {
+                    // 表头与网格必须拿同一份列（顺序、可见性都来自它），否则列会错位
+                    val weekDays = ready.term.visibleWeekDays(ready.showWeekend)
                     WeekHeader(
                         term = ready.term,
                         week = ready.selectedWeek,
-                        todayDayOfWeek = if (ready.selectedWeek == ready.currentWeek) {
+                        weekDays = weekDays,
+                        todayDayOfWeek = if (ready.selectedWeek == ready.todayWeek) {
                             ready.todayDayOfWeek
                         } else {
                             null
                         },
-                        showWeekend = ready.showWeekend,
                         showTimeInCards = ready.showTimeInCards,
                         // 无水平 padding：与 WeekGrid 总宽严格一致，分栏才能逐列对齐
                         modifier = Modifier.fillMaxWidth(),
@@ -227,10 +230,10 @@ fun ScheduleScreen(
                             WeekGrid(
                                 periodTimes = ready.periodTimes,
                                 layout = layout,
-                                todayDayOfWeek = if (week == ready.currentWeek) ready.todayDayOfWeek else null,
-                                showWeekend = ready.showWeekend,
+                                weekDays = weekDays,
+                                todayDayOfWeek = if (week == ready.todayWeek) ready.todayDayOfWeek else null,
                                 showTimeInCards = ready.showTimeInCards,
-                                nowMinuteOfDay = if (week == ready.currentWeek && ready.showNowLine) nowMinute else null,
+                                nowMinuteOfDay = if (week == ready.todayWeek && ready.showNowLine) nowMinute else null,
                                 onBlockClick = { detailBlock = it },
                                 otherWeekLayout = otherWeekLayout,
                             )
@@ -258,7 +261,7 @@ fun ScheduleScreen(
                 if (showWeekPicker) {
                     WeekPickerDialog(
                         totalWeeks = ready.term.totalWeeks,
-                        currentWeek = ready.currentWeek,
+                        currentWeek = ready.todayWeek,
                         selectedWeek = ready.selectedWeek,
                         onSelect = {
                             viewModel.selectWeek(it)
@@ -348,7 +351,8 @@ fun ScheduleScreen(
 @Composable
 private fun WeekPickerDialog(
     totalWeeks: Int,
-    currentWeek: Int,
+    /** 今天所在的周；今天不在学期内时为 null（没有哪一格标「本周」）。 */
+    currentWeek: Int?,
     selectedWeek: Int,
     onSelect: (Int) -> Unit,
     onDismiss: () -> Unit,

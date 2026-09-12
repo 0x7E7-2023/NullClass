@@ -12,6 +12,7 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Delete
+import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -35,12 +36,16 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 
-/** 学期管理：列表切换当前学期、删除、新建。编辑当前学期仍走「我的」顶部卡片。 */
+/**
+ * 学期管理：列表切换当前学期、编辑（周数 / 第 1 周日期 / 每周起始日 / 节次时间）、删除、新建。
+ * 点整行 = 切为当前学期；改设置走右侧的编辑按钮。
+ */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun TermListScreen(
     onBack: () -> Unit,
     onCreateTerm: () -> Unit,
+    onEditTerm: (String) -> Unit,
     viewModel: TermListViewModel = hiltViewModel(),
 ) {
     val state by viewModel.uiState.collectAsState()
@@ -95,6 +100,7 @@ fun TermListScreen(
                     TermRow(
                         item = item,
                         onSelect = { viewModel.setCurrent(item.term.id) },
+                        onEdit = { onEditTerm(item.term.id) },
                         onDelete = { pendingDelete = item },
                     )
                 }
@@ -128,6 +134,7 @@ fun TermListScreen(
 private fun TermRow(
     item: TermListItem,
     onSelect: () -> Unit,
+    onEdit: () -> Unit,
     onDelete: () -> Unit,
 ) {
     Surface(
@@ -167,6 +174,13 @@ private fun TermRow(
                     color = MaterialTheme.colorScheme.primary,
                     fontWeight = FontWeight.Bold,
                     modifier = Modifier.padding(end = 4.dp),
+                )
+            }
+            IconButton(onClick = onEdit) {
+                Icon(
+                    Icons.Default.Edit,
+                    contentDescription = "编辑学期",
+                    tint = MaterialTheme.colorScheme.onSurfaceVariant,
                 )
             }
             IconButton(onClick = onDelete) {

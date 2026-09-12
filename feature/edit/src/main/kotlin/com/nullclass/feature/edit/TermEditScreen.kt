@@ -26,6 +26,9 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SegmentedButton
+import androidx.compose.material3.SegmentedButtonDefaults
+import androidx.compose.material3.SingleChoiceSegmentedButtonRow
 import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
@@ -42,6 +45,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
+import com.nullclass.core.model.ScheduleFormat
 import com.nullclass.core.model.Session
 import java.time.LocalDate
 
@@ -95,11 +99,29 @@ fun TermEditScreen(
                 modifier = Modifier.fillMaxWidth(),
             )
 
-            // 开学日期（第一周周一）
+            // 每周起始日：一周从哪天算起 = 第 1 周从哪天开始（同一个值的两种说法）
             val firstDay = LocalDate.ofEpochDay(state.firstDayEpochDay)
+            Text("每周起始日", style = MaterialTheme.typography.labelLarge)
+            WeekStartDaySelector(
+                selected = firstDay.dayOfWeek.value,
+                onSelect = viewModel::setWeekStartDay,
+            )
+
             OutlinedButton(onClick = { showDatePicker = true }, modifier = Modifier.fillMaxWidth()) {
-                Text("开学第一周周一：${firstDay.year}年${firstDay.monthValue}月${firstDay.dayOfMonth}日")
+                Text("第 1 周第 1 天：${firstDay.year}年${firstDay.monthValue}月${firstDay.dayOfMonth}日")
             }
+
+            Text(
+                "第 1 周：${dateLabel(state.firstDayEpochDay)} – ${dateLabel(state.firstDayEpochDay + 6)}",
+                style = MaterialTheme.typography.bodySmall,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+            )
+            Text(
+                "一周从哪天算起，第 1 周就从哪天开始，周视图的列顺序与「第几周」都跟着走。" +
+                    "点上面那排会把日期挪到最近的对应星期几（周一 ↔ 周日 来回切也不会跑偏）。",
+                style = MaterialTheme.typography.bodySmall,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+            )
 
             Row(
                 verticalAlignment = Alignment.CenterVertically,
@@ -250,6 +272,28 @@ fun TermEditScreen(
             },
         )
     }
+}
+
+@Composable
+private fun WeekStartDaySelector(selected: Int, onSelect: (Int) -> Unit) {
+    // 固定按周一~周日排：这是「选一个起始日」的选择器，不该跟着选中项自己重排
+    SingleChoiceSegmentedButtonRow(modifier = Modifier.fillMaxWidth()) {
+        (1..7).forEach { day ->
+            SegmentedButton(
+                selected = selected == day,
+                onClick = { onSelect(day) },
+                shape = SegmentedButtonDefaults.itemShape(day - 1, 7),
+            ) {
+                Text(ScheduleFormat.dayOfWeekShortLabel(day), fontSize = 13.sp)
+            }
+        }
+    }
+}
+
+/** "9月7日（周一）"。 */
+private fun dateLabel(epochDay: Long): String {
+    val date = LocalDate.ofEpochDay(epochDay)
+    return "${date.monthValue}月${date.dayOfMonth}日（${ScheduleFormat.dayOfWeekLabel(date.dayOfWeek.value)}）"
 }
 
 @Composable

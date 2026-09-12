@@ -56,6 +56,11 @@ object ScheduleFormat {
         listOf("周一", "周二", "周三", "周四", "周五", "周六", "周日")
             .getOrElse(dayOfWeek - 1) { "?" }
 
+    /** 单字星期：「一」..「日」。周视图表头与「每周起始日」选择器那样一排 7 格的地方用。 */
+    fun dayOfWeekShortLabel(dayOfWeek: Int): String =
+        listOf("一", "二", "三", "四", "五", "六", "日")
+            .getOrElse(dayOfWeek - 1) { "?" }
+
     /** "3-4节"；恰好一节时 "3节"。 */
     fun periodRange(block: ScheduleBlock): String =
         if (block.startPeriod == block.endPeriod) {

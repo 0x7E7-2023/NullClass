@@ -175,6 +175,7 @@ fun AppNavHost() {
                 TermListScreen(
                     onBack = ::back,
                     onCreateTerm = { navController.navigate(Routes.termEdit()) },
+                    onEditTerm = { termId -> navController.navigate(Routes.termEdit(termId)) },
                 )
             }
             composable(

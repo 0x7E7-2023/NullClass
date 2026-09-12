@@ -8,6 +8,7 @@ import com.nullclass.core.data.repository.CourseRepository
 import com.nullclass.core.data.repository.TermRepository
 import com.nullclass.core.model.PeriodTime
 import com.nullclass.core.model.Term
+import com.nullclass.core.model.nearestWeekday
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -29,7 +30,7 @@ data class TermEditUiState(
     val loading: Boolean = true,
     val isNew: Boolean = true,
     val name: String = "",
-    /** 开学第一周周一（epoch day）。 */
+    /** 第 1 周的第 1 天（epoch day）。每周从这天的星期几算起，见 [Term.weekStartDay]。 */
     val firstDayEpochDay: Long = 0L,
     val totalWeeks: Int = 20,
     val periods: List<EditablePeriod> = emptyList(),
@@ -112,6 +113,16 @@ class TermEditViewModel @Inject constructor(
     fun setName(value: String) = _state.update { it.copy(name = value, error = null) }
 
     fun setFirstDay(epochDay: Long) = _state.update { it.copy(firstDayEpochDay = epochDay) }
+
+    /**
+     * 设「每周起始日」：把第 1 周的日期挪到最近的、该星期几的那天。
+     *
+     * 一周从哪天算起 = 第 1 周从哪天开始，是同一个值的两种说法，所以不另存字段 ——
+     * 改起始日就是改日期，改日期（[setFirstDay]）也就顺带改了起始日，两边不会打架。
+     */
+    fun setWeekStartDay(dayOfWeek: Int) = _state.update {
+        it.copy(firstDayEpochDay = nearestWeekday(it.firstDayEpochDay, dayOfWeek))
+    }
 
     fun setTotalWeeks(value: Int) = _state.update {
         it.copy(totalWeeks = value.coerceIn(1, 25))

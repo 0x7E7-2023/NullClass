@@ -32,8 +32,13 @@ sealed interface ScheduleUiState {
 
     data class Ready(
         val term: Term,
-        /** 今天所在的周（不在学期内时回退 1）。 */
-        val currentWeek: Int,
+        /**
+         * 今天所在的周；**今天不在学期内**（开学前几天、学期已结束且没有新学期）为 null。
+         *
+         * 不要兜成 1：那样顶栏会写「第 1 周 · 本周」，还把第 1 周那一列按今天高亮、在上面画
+         * 当前时间线 —— 而今日页/提醒/学期列表此时都说「不在学期内」，两处自相矛盾。
+         */
+        val todayWeek: Int?,
         val selectedWeek: Int,
         val periodTimes: List<PeriodTime>,
         val schedule: List<CourseWithBlocks>,
@@ -41,7 +46,7 @@ sealed interface ScheduleUiState {
         val layout: Map<Int, List<PlacedBlock>>,
         /** 该周**不上**、但别的周要上的课块（灰块）；关掉开关时为空。 */
         val otherWeekLayout: Map<Int, List<PlacedBlock>>,
-        /** 今天的星期（1..7）。使用方结合 currentWeek 判断是否高亮今天列。 */
+        /** 今天的星期（1..7）。使用方结合 todayWeek 判断是否高亮今天列。 */
         val todayDayOfWeek: Int,
         /** 周视图是否显示周末两列。 */
         val showWeekend: Boolean,
@@ -93,8 +98,9 @@ class ScheduleViewModel @Inject constructor(
                 if (term == null) {
                     flowOf(ScheduleUiState.NoTerm)
                 } else {
-                    val currentWeek = term.weekOf(today.toEpochDay()) ?: 1
-                    val week = selected ?: currentWeek
+                    // 今天不在学期内 → todayWeek 为 null：翻页默认落到第 1 周，但不谎称「本周」
+                    val todayWeek = term.weekOf(today.toEpochDay())
+                    val week = selected ?: todayWeek ?: 1
                     combine(
                         courseRepository.observeSchedule(term.id),
                         termRepository.observePeriodTimes(term.id),
@@ -102,7 +108,7 @@ class ScheduleViewModel @Inject constructor(
                     ) { schedule, periodTimes, prefs ->
                         ScheduleUiState.Ready(
                             term = term,
-                            currentWeek = currentWeek,
+                            todayWeek = todayWeek,
                             selectedWeek = week,
                             periodTimes = periodTimes,
                             schedule = schedule,
