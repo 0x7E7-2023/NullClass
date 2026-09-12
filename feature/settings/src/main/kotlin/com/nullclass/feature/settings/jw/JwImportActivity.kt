@@ -5,6 +5,7 @@ import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import androidx.activity.ComponentActivity
+import androidx.activity.compose.BackHandler
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.compose.setContent
 import androidx.activity.result.contract.ActivityResultContracts
@@ -119,6 +120,11 @@ private fun JwImportScreen(
     val zipLauncher = rememberLauncherForActivityResult(ActivityResultContracts.OpenDocument()) { uri ->
         uri?.let { viewModel.importZip(it, it.lastPathSegment?.substringAfterLast('/')) }
     }
+
+    // 系统返回手势对齐顶栏返回键：选中学校后返回 = 回学校列表，而不是把整个
+    // 导入 Activity 退掉——手势退出走的是系统跨 Activity 预测动画，和顶栏的
+    // 「回退一步」行为不一致，登录到一半误滑一下整个导入流程就没了。
+    BackHandler(enabled = selected != null) { selected = null }
 
     /** 上次成功的课表页地址；只对「上次就是这个适配器」有意义。 */
     fun rememberedUrl(adapter: JwAdapter): String? =
