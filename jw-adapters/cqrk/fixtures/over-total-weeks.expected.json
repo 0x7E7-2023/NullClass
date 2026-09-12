@@ -1,0 +1,93 @@
+{
+  "specVersion": 1,
+  "kind": "schedule",
+  "ocrAssisted": false,
+  "warnings": [
+    "开学日期无法从教务获取，已按最近的周一（2026-09-07）推算，请在「学期管理」里核对",
+    "教务页面不提供学期总周数与作息时间：总周数按 20 周起算、节次时间按适配器内置的 12 节设定，请在「学期管理」里核对",
+    "课表里有到第 24 周的课，超过了内置的 20 周，学期总周数已按 24 周计，请在「学期管理」里核对",
+    "课表里出现了内置作息表没有的第 13-14 节，已补上占位时间（20:00 起），请到「学期管理」里核对真实上下课时间"
+  ],
+  "terms": [
+    {
+      "name": "2026-2027学年第一学期",
+      "firstDay": "2026-09-07",
+      "totalWeeks": 24,
+      "periodTimes": [
+        { "periodIndex": 1, "start": "08:30", "end": "09:15" },
+        { "periodIndex": 2, "start": "09:20", "end": "10:05" },
+        { "periodIndex": 3, "start": "10:20", "end": "11:05" },
+        { "periodIndex": 4, "start": "11:10", "end": "11:55" },
+        { "periodIndex": 5, "start": "14:00", "end": "14:45" },
+        { "periodIndex": 6, "start": "14:50", "end": "15:35" },
+        { "periodIndex": 7, "start": "15:40", "end": "16:25" },
+        { "periodIndex": 8, "start": "16:40", "end": "17:25" },
+        { "periodIndex": 9, "start": "17:30", "end": "18:15" },
+        { "periodIndex": 10, "start": "19:00", "end": "19:45" },
+        { "periodIndex": 11, "start": "19:50", "end": "20:35" },
+        { "periodIndex": 12, "start": "20:40", "end": "21:25" },
+        { "periodIndex": 13, "start": "20:00", "end": "20:45" },
+        { "periodIndex": 14, "start": "21:00", "end": "21:45" }
+      ],
+      "courses": [
+        {
+          "name": "高等数学A(一)",
+          "teacher": "刘敏",
+          "note": null,
+          "blocks": [
+            {
+              "dayOfWeek": 1,
+              "startPeriod": 1,
+              "endPeriod": 2,
+              "startWeek": 1,
+              "endWeek": 24,
+              "weekType": "ALL",
+              "location": "数学楼101"
+            }
+          ]
+        },
+        {
+          "name": "电磁学",
+          "teacher": "钱伟",
+          "note": null,
+          "blocks": [
+            {
+              "dayOfWeek": 3,
+              "startPeriod": 3,
+              "endPeriod": 4,
+              "startWeek": 1,
+              "endWeek": 19,
+              "weekType": "ODD",
+              "location": "物理楼202"
+            },
+            {
+              "dayOfWeek": 5,
+              "startPeriod": 3,
+              "endPeriod": 4,
+              "startWeek": 4,
+              "endWeek": 20,
+              "weekType": "EVEN",
+              "location": "物理楼202"
+            }
+          ]
+        },
+        {
+          "name": "大学英语（三）",
+          "teacher": "王芳",
+          "note": null,
+          "blocks": [
+            {
+              "dayOfWeek": 5,
+              "startPeriod": 13,
+              "endPeriod": 14,
+              "startWeek": 2,
+              "endWeek": 18,
+              "weekType": "ALL",
+              "location": "外语楼401"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

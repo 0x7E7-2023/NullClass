@@ -1,0 +1,53 @@
+{
+  "specVersion": 1,
+  "kind": "schedule",
+  "ocrAssisted": false,
+  "warnings": [
+    "正方课表接口不给开学日期，第 1 周按「第一学期 = 9 月 1 日所在周的周一」推算为 2026-08-31，请在学期管理里核对成学校实际开学日",
+    "只导入了教务系统当前选中的学期（2026-2027学年第一学期）；要导入别的学期，请在教务页面里切到那个学期再点「提取课表」",
+    "课表里最晚排到第 22 周，超出按 20 周估算的学期长度，学期总周数已按 22 周导入，请核对",
+    "没取到教务的节次时间（节次时间接口没返回数据），节次时间已改用空课内置默认表，请在学期管理里核对作息"
+  ],
+  "terms": [
+    {
+      "name": "2026-2027学年第一学期",
+      "firstDay": "2026-08-31",
+      "totalWeeks": 22,
+      "periodTimes": [],
+      "courses": [
+        {
+          "name": "高等数学A(一)",
+          "teacher": "陈立群",
+          "note": null,
+          "blocks": [
+            {
+              "dayOfWeek": 1,
+              "startPeriod": 1,
+              "endPeriod": 2,
+              "startWeek": 1,
+              "endWeek": 16,
+              "weekType": "ALL",
+              "location": "教学楼A-301"
+            }
+          ]
+        },
+        {
+          "name": "社会实践",
+          "teacher": "钱进",
+          "note": null,
+          "blocks": [
+            {
+              "dayOfWeek": 6,
+              "startPeriod": 5,
+              "endPeriod": 8,
+              "startWeek": 22,
+              "endWeek": 22,
+              "weekType": "ALL",
+              "location": null
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

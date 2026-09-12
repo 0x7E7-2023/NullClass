@@ -1,0 +1,60 @@
+{
+  "_note": "合成 fixture（不是真实抓取）：形状按上游 shiguang_warehouse 的 ZZU/zzu.js 实际读取的字段编造，我们没有该校账号 —— 见 docs/jw-adapter-testing.md §3。课程、教师、教室均为虚构。这份挑的是总周数的**整周边界**与开学日回退：startDate 是周三（2025-09-03）、firstDayOfWeek=1，载荷的 firstDay 必须回退到那一周的周一（2025-09-01）；endDate（2026-01-05，周一）与开学日相差正好 126 天，含首尾是 127 天 = 19 周（上游 zzu.js 的 ceil(相差天数/7) 会算成 18 周，少一整周）。本用例的期望 warnings 是**空数组**：这条路径上教务什么都给全了，适配器不该多嘴。",
+  "term": {
+    "id": "512",
+    "label": "2025-2026学年第一学期",
+    "pickedBy": "selected"
+  },
+  "semesters": [
+    {
+      "id": "512",
+      "label": "2025-2026学年第一学期",
+      "selected": true
+    }
+  ],
+  "semesterMeta": {
+    "id": 512,
+    "nameZh": "2025-2026学年第一学期",
+    "startDate": "2025-09-03",
+    "endDate": "2026-01-05",
+    "weekStartOnSunday": false
+  },
+  "activities": [
+    {
+      "courseName": "马克思主义基本原理",
+      "teachers": ["周敏"],
+      "room": "文科园 301",
+      "weekday": 2,
+      "startUnit": 1,
+      "endUnit": 2,
+      "weekIndexes": [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19]
+    },
+    {
+      "courseName": "大学物理",
+      "teachers": ["陈刚"],
+      "room": "物理楼 B101",
+      "weekday": 4,
+      "startUnit": 3,
+      "endUnit": 4,
+      "weekIndexes": [1, 2, 3, 4, 5, 6, 7, 8]
+    }
+  ],
+  "courseUnitList": [
+    { "indexNo": 1, "startTime": 800, "endTime": 845 },
+    { "indexNo": 2, "startTime": 855, "endTime": 940 },
+    { "indexNo": 3, "startTime": 1010, "endTime": 1055 },
+    { "indexNo": 4, "startTime": 1105, "endTime": 1150 },
+    { "indexNo": 5, "startTime": 1400, "endTime": 1445 },
+    { "indexNo": 6, "startTime": 1455, "endTime": 1540 },
+    { "indexNo": 7, "startTime": 1610, "endTime": 1655 },
+    { "indexNo": 8, "startTime": 1705, "endTime": 1750 },
+    { "indexNo": 9, "startTime": 1900, "endTime": 1945 },
+    { "indexNo": 10, "startTime": 1955, "endTime": 2040 },
+    { "indexNo": 11, "startTime": 2050, "endTime": 2135 },
+    { "indexNo": 12, "startTime": 2140, "endTime": 2225 }
+  ],
+  "pageInfo": {
+    "root": { "total": 2 },
+    "tableVm": null
+  }
+}

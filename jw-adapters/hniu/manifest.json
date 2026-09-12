@@ -1,0 +1,38 @@
+{
+  "specVersion": 1,
+  "key": "hniu",
+  "name": "湖南信息职业技术学院",
+  "version": "1.0.0",
+  "author": "上游 星河欲转（拾光课程表社区，MIT）；移植 NullClass",
+  "homepage": "https://github.com/XingHeYuZhuan/shiguang_warehouse",
+  "loginUrl": "https://jw.hniu.cn/jsxsd/",
+  "scheduleUrlHint": "https://jw.hniu.cn/jsxsd/xskb/xskb_list.do",
+  "minAppVersionCode": 11,
+  "extract": "extract.js",
+  "parse": "parse.js",
+  "allowHosts": [
+    "jw.hniu.cn"
+  ],
+  "fixtures": [
+    {
+      "name": "基本课表（合成数据）",
+      "extracted": "fixtures/basic.extracted.json",
+      "expected": "fixtures/basic.expected.json"
+    },
+    {
+      "name": "连堂节次 01-02-03-04 与相邻节次合并、用到第 13-14 节（合成数据）",
+      "extracted": "fixtures/block-sections.extracted.json",
+      "expected": "fixtures/block-sections.expected.json"
+    },
+    {
+      "name": "单双周的各种写法：1-15(单) / 2-16周(双) / 单周1-16 / 隔周（合成数据）",
+      "extracted": "fixtures/odd-even.extracted.json",
+      "expected": "fixtures/odd-even.expected.json"
+    },
+    {
+      "name": "括号序号(2)不是周次、认不出的块不许静默丢、第 22 周抬高总周数（合成数据）",
+      "extracted": "fixtures/serial-drop.extracted.json",
+      "expected": "fixtures/serial-drop.expected.json"
+    }
+  ]
+}

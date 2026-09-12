@@ -1,0 +1,65 @@
+{
+  "specVersion": 1,
+  "kind": "schedule",
+  "ocrAssisted": false,
+  "warnings": [
+    "只导入了教务系统当前选中的学期（2026-2027学年第一学期）；要导入别的学期，请在教务页面里切到那个学期再点「提取课表」",
+    "开学日期取自教务系统的学期周次校历：第 1 周从 2026-08-31 开始，请在学期管理里核对",
+    "学期总周数取自教务校历（18 周），如与实际不符可在学期管理里改",
+    "课表里用到第 6 节，而作息表只到第 4 节：第 5-6 节按空课内建节次表补了时间，请核对",
+    "教务系统说这个学期有 9 条排课记录，实际只取到 7 条，课表可能不完整，请重试或反馈",
+    "教务系统另外给了 2 门集中实践课（金工实习、军事技能训练）：它们没有固定的星期与节次，排不进周课表，请自行在学期里添加",
+    "有 3 行课表数据不全（缺星期 1 行、缺节次 1 行、缺周次（或周次全超出 1-30 周）1 行），已跳过：教务数据不完整时会出现，如发现少课请反馈",
+    "有 10 个周次超出 1-30 周，已丢弃（教务给出的周次不正常）",
+    "有 1 行课表的节次写成了多段（例如「1-2,5-6」），已按最大跨度放入（中间几节也算上），请核对"
+  ],
+  "terms": [
+    {
+      "name": "2026-2027学年第一学期",
+      "firstDay": "2026-08-31",
+      "totalWeeks": 18,
+      "periodTimes": [
+        { "periodIndex": 1, "start": "08:10", "end": "08:50" },
+        { "periodIndex": 2, "start": "09:00", "end": "09:40" },
+        { "periodIndex": 3, "start": "09:50", "end": "10:30" },
+        { "periodIndex": 4, "start": "10:40", "end": "11:20" },
+        { "periodIndex": 5, "start": "14:00", "end": "14:45" },
+        { "periodIndex": 6, "start": "14:55", "end": "15:40" }
+      ],
+      "courses": [
+        {
+          "name": "概率论与数理统计",
+          "teacher": "郑十二",
+          "note": null,
+          "blocks": [
+            { "dayOfWeek": 1, "startPeriod": 1, "endPeriod": 2, "startWeek": 1, "endWeek": 16, "weekType": "ALL", "location": "6号楼302" }
+          ]
+        },
+        {
+          "name": "大学物理实验",
+          "teacher": "李十三",
+          "note": null,
+          "blocks": [
+            { "dayOfWeek": 3, "startPeriod": 1, "endPeriod": 6, "startWeek": 2, "endWeek": 16, "weekType": "EVEN", "location": "实验楼401" }
+          ]
+        },
+        {
+          "name": "就业指导",
+          "teacher": "孙十七",
+          "note": null,
+          "blocks": [
+            { "dayOfWeek": 2, "startPeriod": 3, "endPeriod": 4, "startWeek": 1, "endWeek": 8, "weekType": "ALL", "location": "就业中心" }
+          ]
+        },
+        {
+          "name": "大学英语(3)",
+          "teacher": "郑二十三",
+          "note": null,
+          "blocks": [
+            { "dayOfWeek": 2, "startPeriod": 1, "endPeriod": 2, "startWeek": 3, "endWeek": 16, "weekType": "ALL", "location": "语音室101" }
+          ]
+        }
+      ]
+    }
+  ]
+}

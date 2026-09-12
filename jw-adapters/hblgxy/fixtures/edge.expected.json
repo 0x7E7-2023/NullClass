@@ -1,0 +1,168 @@
+{
+  "specVersion": 1,
+  "kind": "schedule",
+  "ocrAssisted": false,
+  "warnings": [
+    "开学日期无法从教务获取，已按最近的周一（2026-09-07）推算，请在「学期管理」里核对",
+    "教务页面不提供学期总周数与作息时间：总周数按 22 周、节次时间按适配器内置的 14 节设定，请在「学期管理」里核对",
+    "课表里有第 22 周的课：学期总周数已按它给到 22 周（教务不给总周数），请核对是不是真实周次",
+    "有 3 条周次超出 30 周，已按脏数据丢弃",
+    "有 2 个课程块页面没给节次（方括号里没有节次），已按所在行的「第N节」标签补上，请核对",
+    "有 3 个课程块没能解析出来（缺课程名 1 个、缺周次 1 个、缺节次 1 个），已跳过：教务页面结构可能已调整，欢迎反馈给适配器",
+    "课表里用到了内置作息表没有的节次（第 15、16 节）：这几节在课表里不会显示上下课时间，请核对",
+    "有 1 行的格子数比表头少（行首的节次格子被合并到了上一行），已按该行最后 7 列对应周一到周日对齐，请核对这几天的课"
+  ],
+  "terms": [
+    {
+      "name": "2026-2027学年第一学期",
+      "firstDay": "2026-09-07",
+      "totalWeeks": 22,
+      "periodTimes": [
+        { "periodIndex": 1, "start": "08:00", "end": "08:45" },
+        { "periodIndex": 2, "start": "08:55", "end": "09:40" },
+        { "periodIndex": 3, "start": "10:00", "end": "10:45" },
+        { "periodIndex": 4, "start": "10:55", "end": "11:40" },
+        { "periodIndex": 5, "start": "14:00", "end": "14:45" },
+        { "periodIndex": 6, "start": "14:55", "end": "15:40" },
+        { "periodIndex": 7, "start": "16:00", "end": "16:45" },
+        { "periodIndex": 8, "start": "16:55", "end": "17:40" },
+        { "periodIndex": 9, "start": "19:00", "end": "19:45" },
+        { "periodIndex": 10, "start": "19:55", "end": "20:40" },
+        { "periodIndex": 11, "start": "20:50", "end": "21:35" },
+        { "periodIndex": 12, "start": "21:45", "end": "22:30" },
+        { "periodIndex": 13, "start": "22:40", "end": "23:25" },
+        { "periodIndex": 14, "start": "23:25", "end": "23:59" }
+      ],
+      "courses": [
+        {
+          "name": "体育(1)",
+          "teacher": "王强",
+          "note": null,
+          "blocks": [
+            {
+              "dayOfWeek": 1,
+              "startPeriod": 1,
+              "endPeriod": 2,
+              "startWeek": 2,
+              "endWeek": 16,
+              "weekType": "EVEN",
+              "location": "田径场"
+            }
+          ]
+        },
+        {
+          "name": "思想道德与法治",
+          "teacher": "李梅",
+          "note": null,
+          "blocks": [
+            {
+              "dayOfWeek": 1,
+              "startPeriod": 3,
+              "endPeriod": 4,
+              "startWeek": 9,
+              "endWeek": 16,
+              "weekType": "ALL",
+              "location": "文科楼105"
+            }
+          ]
+        },
+        {
+          "name": "创新创业教育",
+          "teacher": "陈晨",
+          "note": null,
+          "blocks": [
+            {
+              "dayOfWeek": 2,
+              "startPeriod": 15,
+              "endPeriod": 16,
+              "startWeek": 1,
+              "endWeek": 8,
+              "weekType": "ALL",
+              "location": "创业楼101"
+            }
+          ]
+        },
+        {
+          "name": "中国近现代史纲要",
+          "teacher": "张伟",
+          "note": null,
+          "blocks": [
+            {
+              "dayOfWeek": 3,
+              "startPeriod": 3,
+              "endPeriod": 4,
+              "startWeek": 5,
+              "endWeek": 12,
+              "weekType": "ALL",
+              "location": "文科楼106"
+            }
+          ]
+        },
+        {
+          "name": "大学英语(二)",
+          "teacher": "李娜",
+          "note": null,
+          "blocks": [
+            {
+              "dayOfWeek": 1,
+              "startPeriod": 3,
+              "endPeriod": 4,
+              "startWeek": 11,
+              "endWeek": 16,
+              "weekType": "ALL",
+              "location": "外语楼203"
+            }
+          ]
+        },
+        {
+          "name": "毕业设计",
+          "teacher": "李工",
+          "note": null,
+          "blocks": [
+            {
+              "dayOfWeek": 1,
+              "startPeriod": 5,
+              "endPeriod": 6,
+              "startWeek": 3,
+              "endWeek": 22,
+              "weekType": "ALL",
+              "location": "设计楼A区"
+            }
+          ]
+        },
+        {
+          "name": "大学物理实验",
+          "teacher": "郑霞",
+          "note": null,
+          "blocks": [
+            {
+              "dayOfWeek": 3,
+              "startPeriod": 5,
+              "endPeriod": 8,
+              "startWeek": 3,
+              "endWeek": 8,
+              "weekType": "ALL",
+              "location": "实验楼B301"
+            }
+          ]
+        },
+        {
+          "name": "高等数学A(一)",
+          "teacher": "王建国",
+          "note": null,
+          "blocks": [
+            {
+              "dayOfWeek": 1,
+              "startPeriod": 7,
+              "endPeriod": 8,
+              "startWeek": 1,
+              "endWeek": 16,
+              "weekType": "ALL",
+              "location": "教一101"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,40 @@
+{
+  "specVersion": 1,
+  "key": "huel",
+  "name": "河南财经政法大学",
+  "version": "1.0.0",
+  "author": "上游 Mercury（MIT）；移植 NullClass",
+  "homepage": "https://github.com/XingHeYuZhuan/shiguang_warehouse",
+  "loginUrl": "https://xk.huel.edu.cn/",
+  "minAppVersionCode": 11,
+  "extract": "extract.js",
+  "parse": "parse.js",
+  "allowHosts": [],
+  "fixtures": [
+    {
+      "name": "基本表格（合成 fixture：连堂 1-4 节、晚上 11-13 节、分段周次、重复行、3 行脏数据）",
+      "extracted": "fixtures/basic.extracted.json",
+      "expected": "fixtures/basic.expected.json"
+    },
+    {
+      "name": "单双周写在「周」之后及其他周次写法（合成 fixture：1-16周(双) / 2-16周(单) / 1-18周全周 / 1-17周单周 / 3-4周(1) 的括号序号不是周次）",
+      "extracted": "fixtures/weeks-parity.extracted.json",
+      "expected": "fixtures/weeks-parity.expected.json"
+    },
+    {
+      "name": "节次写法（合成 fixture：01-02节 / 0102 连写 / 第9,10节 / 1-2节 / 1-2,5-6 两段 / 超出作息表的第 14 节）",
+      "extracted": "fixtures/sections-forms.extracted.json",
+      "expected": "fixtures/sections-forms.expected.json"
+    },
+    {
+      "name": "接口报的总数大于实到行数（合成 fixture：报 42 条只取到 4 条，且教务声明的总周数 16 被第 18 周的课抬高）",
+      "extracted": "fixtures/short-page.extracted.json",
+      "expected": "fixtures/short-page.expected.json"
+    },
+    {
+      "name": "周次越界与空周次（合成 fixture：1-36周 的超出部分丢弃并报警，zcd 为空的行跳过并报警）",
+      "extracted": "fixtures/weeks-overflow.extracted.json",
+      "expected": "fixtures/weeks-overflow.expected.json"
+    }
+  ]
+}

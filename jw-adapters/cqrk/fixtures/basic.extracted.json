@@ -1,0 +1,108 @@
+{
+  "_note": "合成数据，不是真实抓取：按重庆人文科技学院强智课表页（/jsxsd/xskb/xskb_list.do）的 DOM 形状编造，只用来回归 parse.js 的转换逻辑。形状取自上游 cqrk_01.js 的选择器（#kbtable / td / div.kbcontent / font[title=老师|教师|教室|周次(节次)]，课名是 font 之前的裸文本，一个格子里多门课用一长串减号分隔）。课程名/教师/教室均为虚构，无学号姓名。拿到真实 dump 请替换这一对 fixture。",
+  "pageUrl": "https://jwxt.cqrk.edu.cn:18080/jsxsd/xskb/xskb_list.do",
+  "now": "2026-09-12",
+  "term": {
+    "code": "2026-2027-1",
+    "name": "2026-2027学年第一学期"
+  },
+  "cols": 8,
+  "rows": [
+    [
+      { "col": 0, "text": "节次", "parts": [] },
+      { "col": 1, "text": "星期一", "parts": [] },
+      { "col": 2, "text": "星期二", "parts": [] },
+      { "col": 3, "text": "星期三", "parts": [] },
+      { "col": 4, "text": "星期四", "parts": [] },
+      { "col": 5, "text": "星期五", "parts": [] },
+      { "col": 6, "text": "星期六", "parts": [] },
+      { "col": 7, "text": "星期日", "parts": [] }
+    ],
+    [
+      { "col": 0, "text": "第1-2节", "parts": [] },
+      {
+        "col": 1,
+        "text": "高等数学（一）刘敏1-16周[01-02节]博学楼A101",
+        "parts": [
+          "高等数学（一）<br><font title=\"教师\">刘敏</font><br><font title=\"周次(节次)\">1-16周[01-02节]</font><br><font title=\"教室\">博学楼A101</font>"
+        ]
+      },
+      { "col": 2, "text": "", "parts": [] },
+      { "col": 3, "text": "", "parts": [] },
+      { "col": 4, "text": "", "parts": [] },
+      { "col": 5, "text": "", "parts": [] },
+      { "col": 6, "text": "", "parts": [] },
+      { "col": 7, "text": "", "parts": [] }
+    ],
+    [
+      { "col": 0, "text": "第3-4节", "parts": [] },
+      { "col": 1, "text": "", "parts": [] },
+      { "col": 2, "text": "", "parts": [] },
+      {
+        "col": 3,
+        "text": "大学英语（二）王芳1-15周(单)[03-04节]博学楼B203",
+        "parts": [
+          "大学英语（二）<br><font title=\"教师\">王芳</font><br><font title=\"周次(节次)\">1-15周(单)[03-04节]</font><br><font title=\"教室\">博学楼B203</font>"
+        ]
+      },
+      {
+        "col": 4,
+        "text": "计算机基础李强2-16周(双)[03-04节]实验楼C305",
+        "parts": [
+          "计算机基础<br><font title=\"教师\">李强</font><br><font title=\"周次(节次)\">2-16周(双)[03-04节]</font><br><font title=\"教室\">实验楼C305</font>"
+        ]
+      },
+      { "col": 5, "text": "", "parts": [] },
+      { "col": 6, "text": "", "parts": [] },
+      { "col": 7, "text": "", "parts": [] }
+    ],
+    [
+      { "col": 0, "text": "第5-6节", "parts": [] },
+      {
+        "col": 1,
+        "text": "大学物理（一）任课教师:1-14周[05-06节]博学楼A301",
+        "parts": [
+          "大学物理（一）<br><font title=\"教师\">任课教师:</font><br><font title=\"周次(节次)\">1-14周[05-06节]</font><br><font title=\"教室\">博学楼A301</font>"
+        ]
+      },
+      { "col": 2, "text": "", "parts": [] },
+      { "col": 3, "text": "", "parts": [] },
+      { "col": 4, "text": "", "parts": [] },
+      { "col": 5, "text": "", "parts": [] },
+      { "col": 6, "text": "", "parts": [] },
+      { "col": 7, "text": "", "parts": [] }
+    ],
+    [
+      { "col": 0, "text": "第9-10节", "parts": [] },
+      { "col": 1, "text": "", "parts": [] },
+      { "col": 2, "text": "", "parts": [] },
+      { "col": 3, "text": "", "parts": [] },
+      { "col": 4, "text": "", "parts": [] },
+      {
+        "col": 5,
+        "text": "中国近现代史纲要周红2-18周[07-08节]博学楼D102",
+        "parts": [
+          "中国近现代史纲要<br><font title=\"教师\">周红</font><br><font title=\"周次(节次)\">2-18周[07-08节]</font><br><font title=\"教室\">博学楼D102</font>"
+        ]
+      },
+      { "col": 6, "text": "", "parts": [] },
+      { "col": 7, "text": "", "parts": [] }
+    ],
+    [
+      { "col": 0, "text": "第9-10节", "parts": [] },
+      { "col": 1, "text": "", "parts": [] },
+      { "col": 2, "text": "", "parts": [] },
+      {
+        "col": 3,
+        "text": "大学生心理健康教育赵敏3-12周[09,10节]大学生活动中心",
+        "parts": [
+          "大学生心理健康教育<br><font title=\"教师\">赵敏</font><br><font title=\"周次(节次)\">3-12周[09,10节]</font><br><font title=\"教室\">大学生活动中心</font>"
+        ]
+      },
+      { "col": 4, "text": "", "parts": [] },
+      { "col": 5, "text": "", "parts": [] },
+      { "col": 6, "text": "", "parts": [] },
+      { "col": 7, "text": "", "parts": [] }
+    ]
+  ]
+}

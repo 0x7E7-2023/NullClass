@@ -1,0 +1,106 @@
+{
+  "specVersion": 1,
+  "kind": "schedule",
+  "ocrAssisted": false,
+  "warnings": [
+    "开学日期无法从教务获取，已按最近的周一（2026-09-07）推算，请在「学期管理」里核对",
+    "教务页面不提供学期总周数与作息时间：总周数按 20 周、节次时间按怀化学院公布的 10 节作息表设定，请在「学期管理」里核对"
+  ],
+  "terms": [
+    {
+      "name": "2026-2027学年第一学期",
+      "firstDay": "2026-09-07",
+      "totalWeeks": 20,
+      "periodTimes": [
+        { "periodIndex": 1, "start": "08:20", "end": "09:05" },
+        { "periodIndex": 2, "start": "09:15", "end": "10:00" },
+        { "periodIndex": 3, "start": "10:20", "end": "11:05" },
+        { "periodIndex": 4, "start": "11:15", "end": "12:00" },
+        { "periodIndex": 5, "start": "14:20", "end": "15:05" },
+        { "periodIndex": 6, "start": "15:15", "end": "16:00" },
+        { "periodIndex": 7, "start": "16:20", "end": "17:05" },
+        { "periodIndex": 8, "start": "17:15", "end": "18:00" },
+        { "periodIndex": 9, "start": "19:30", "end": "20:15" },
+        { "periodIndex": 10, "start": "20:25", "end": "21:10" }
+      ],
+      "courses": [
+        {
+          "name": "大学体育（一）",
+          "teacher": "李强",
+          "note": null,
+          "blocks": [
+            { "dayOfWeek": 1, "startPeriod": 1, "endPeriod": 2, "startWeek": 1, "endWeek": 15, "weekType": "ODD", "location": "体育馆" }
+          ]
+        },
+        {
+          "name": "程序设计基础",
+          "teacher": "黄伟",
+          "note": null,
+          "blocks": [
+            { "dayOfWeek": 1, "startPeriod": 3, "endPeriod": 4, "startWeek": 1, "endWeek": 9, "weekType": "ALL", "location": "信息楼402" },
+            { "dayOfWeek": 1, "startPeriod": 3, "endPeriod": 4, "startWeek": 11, "endWeek": 17, "weekType": "ALL", "location": "信息楼402" }
+          ]
+        },
+        {
+          "name": "大学生心理健康教育",
+          "teacher": "赵丹",
+          "note": null,
+          "blocks": [
+            { "dayOfWeek": 2, "startPeriod": 1, "endPeriod": 2, "startWeek": 2, "endWeek": 16, "weekType": "EVEN", "location": "教育楼302" }
+          ]
+        },
+        {
+          "name": "概率论",
+          "teacher": "孙芳",
+          "note": null,
+          "blocks": [
+            { "dayOfWeek": 3, "startPeriod": 1, "endPeriod": 2, "startWeek": 2, "endWeek": 16, "weekType": "EVEN", "location": "数学楼201" }
+          ]
+        },
+        {
+          "name": "数据结构",
+          "teacher": "陈静",
+          "note": null,
+          "blocks": [
+            { "dayOfWeek": 3, "startPeriod": 3, "endPeriod": 3, "startWeek": 1, "endWeek": 16, "weekType": "ALL", "location": "信息楼305" }
+          ]
+        },
+        {
+          "name": "形势与政策",
+          "teacher": "李梅",
+          "note": null,
+          "blocks": [
+            { "dayOfWeek": 4, "startPeriod": 1, "endPeriod": 2, "startWeek": 1, "endWeek": 4, "weekType": "ALL", "location": "文科楼105" },
+            { "dayOfWeek": 4, "startPeriod": 1, "endPeriod": 2, "startWeek": 6, "endWeek": 8, "weekType": "ALL", "location": "文科楼105" },
+            { "dayOfWeek": 4, "startPeriod": 1, "endPeriod": 2, "startWeek": 10, "endWeek": 16, "weekType": "ALL", "location": "文科楼105" }
+          ]
+        },
+        {
+          "name": "专题讲座",
+          "teacher": "王凯",
+          "note": null,
+          "blocks": [
+            { "dayOfWeek": 5, "startPeriod": 1, "endPeriod": 2, "startWeek": 3, "endWeek": 3, "weekType": "ALL", "location": "学术报告厅" }
+          ]
+        },
+        {
+          "name": "就业指导",
+          "teacher": "何军",
+          "note": null,
+          "blocks": [
+            { "dayOfWeek": 5, "startPeriod": 5, "endPeriod": 6, "startWeek": 1, "endWeek": 8, "weekType": "ALL", "location": "文科楼104" },
+            { "dayOfWeek": 5, "startPeriod": 5, "endPeriod": 6, "startWeek": 11, "endWeek": 15, "weekType": "ODD", "location": "文科楼104" }
+          ]
+        },
+        {
+          "name": "大学英语（二）",
+          "teacher": "王芳",
+          "note": null,
+          "blocks": [
+            { "dayOfWeek": 6, "startPeriod": 1, "endPeriod": 2, "startWeek": 1, "endWeek": 16, "weekType": "ALL", "location": "外语楼205" }
+          ]
+        }
+      ]
+    }
+  ]
+}

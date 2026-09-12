@@ -1,0 +1,105 @@
+{
+  "_note": "合成数据，不是真实抓取。用例名：单元格与节次来源。覆盖第一批审查挖出来的坑：节次可能写在「周次(节次)」里、可能写在教室名里（上游 GXDLXY 的读法，位置在教室名末尾）、可能只在所在行的节次标签里（第1-2节 / 第二大节），一个都读不出来时必须进 warnings 而不是静默丢课；另外还覆盖跨列格子（colspan）与「一行里既有认不出节次的课、也有自带节次的课」这种行。形状同其它 fixture，只用来回归 parse.js。",
+  "now": "2026-09-12",
+  "term": {
+    "code": "2026-2027-1",
+    "name": "2026-2027学年第一学期"
+  },
+  "rows": [
+    [
+      { "text": "节次", "parts": [], "col": 0, "span": 1 },
+      { "text": "星期一", "parts": [], "col": 1, "span": 1 },
+      { "text": "星期二", "parts": [], "col": 2, "span": 1 },
+      { "text": "星期三", "parts": [], "col": 3, "span": 1 },
+      { "text": "星期四", "parts": [], "col": 4, "span": 1 },
+      { "text": "星期五", "parts": [], "col": 5, "span": 1 },
+      { "text": "星期六", "parts": [], "col": 6, "span": 1 },
+      { "text": "星期日", "parts": [], "col": 7, "span": 1 }
+    ],
+    [
+      { "text": "第1-2节", "parts": [], "col": 0, "span": 1 },
+      {
+        "text": "供用电技术1-16(周)[01-02节]电气楼301",
+        "parts": [
+          "供用电技术<br><font title=\"周次(节次)\">1-16(周)[01-02节]</font><br><font title=\"教室\">电气楼301</font>"
+        ],
+        "col": 1,
+        "span": 1
+      },
+      {
+        "text": "电气控制与PLC黄丽1-8周实训楼205[01-02]节",
+        "parts": [
+          "电气控制与PLC<br><font title=\"教师\">黄丽</font><br><font title=\"周次(节次)\">1-8周</font><br><font title=\"教室\">实训楼205[01-02]节</font>"
+        ],
+        "col": 2,
+        "span": 1
+      },
+      {
+        "text": "单片机应用周晓兰9-16周实训楼302",
+        "parts": [
+          "单片机应用<br><font title=\"教师\">周晓兰</font><br><font title=\"周次(节次)\">9-16周</font><br><font title=\"教室\">实训楼302</font>"
+        ],
+        "col": 3,
+        "span": 1
+      },
+      {
+        "text": "传感器与检测技术张伟1-16(周)[03-04-05节]实训楼401",
+        "parts": [
+          "传感器与检测技术<br><font title=\"教师\">张伟</font><br><font title=\"周次(节次)\">1-16(周)[03-04-05节]</font><br><font title=\"教室\">实训楼401</font>"
+        ],
+        "col": 4,
+        "span": 1
+      },
+      {
+        "text": "集中实训罗静1-2周[01-02节]实训基地",
+        "parts": [
+          "集中实训<br><font title=\"教师\">罗静</font><br><font title=\"周次(节次)\">1-2周[01-02节]</font><br><font title=\"教室\">实训基地</font>"
+        ],
+        "col": 5,
+        "span": 2
+      },
+      { "text": "", "parts": [], "col": 7, "span": 1 }
+    ],
+    [
+      { "text": "第二大节", "parts": [], "col": 0, "span": 1 },
+      {
+        "text": "电力市场营销李梅1-16周文科楼201",
+        "parts": [
+          "电力市场营销<br><font title=\"教师\">李梅</font><br><font title=\"周次(节次)\">1-16周</font><br><font title=\"教室\">文科楼201</font>"
+        ],
+        "col": 1,
+        "span": 1
+      },
+      { "text": "", "parts": [], "col": 2, "span": 1 },
+      { "text": "", "parts": [], "col": 3, "span": 1 },
+      { "text": "", "parts": [], "col": 4, "span": 1 },
+      { "text": "", "parts": [], "col": 5, "span": 1 },
+      { "text": "", "parts": [], "col": 6, "span": 1 },
+      { "text": "", "parts": [], "col": 7, "span": 1 }
+    ],
+    [
+      { "text": "上午", "parts": [], "col": 0, "span": 1 },
+      {
+        "text": "新能源发电技术何军1-4周文科楼202",
+        "parts": [
+          "新能源发电技术<br><font title=\"教师\">何军</font><br><font title=\"周次(节次)\">1-4周</font><br><font title=\"教室\">文科楼202</font>"
+        ],
+        "col": 1,
+        "span": 1
+      },
+      {
+        "text": "电工实训李强1-2周[01-02节]实训楼501",
+        "parts": [
+          "电工实训<br><font title=\"教师\">李强</font><br><font title=\"周次(节次)\">1-2周[01-02节]</font><br><font title=\"教室\">实训楼501</font>"
+        ],
+        "col": 2,
+        "span": 1
+      },
+      { "text": "", "parts": [], "col": 3, "span": 1 },
+      { "text": "", "parts": [], "col": 4, "span": 1 },
+      { "text": "", "parts": [], "col": 5, "span": 1 },
+      { "text": "", "parts": [], "col": 6, "span": 1 },
+      { "text": "", "parts": [], "col": 7, "span": 1 }
+    ]
+  ]
+}

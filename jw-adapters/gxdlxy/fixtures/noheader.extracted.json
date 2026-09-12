@@ -1,0 +1,44 @@
+{
+  "_note": "合成数据，不是真实抓取。用例名：没有星期表头（兜底按每行最后 7 格对应周一到周日）。课表页的表头被做成图片、或表头行里混进了课程内容时，解析不能整表空掉，要退回「最后 7 格是周一到周日」并在 warnings 里如实说明。上游 gxdlxy_01.js 没有这一层（它一律按「第几个格子就是星期几」算），hynu 那一版有；这里保留。",
+  "now": "2026-09-12",
+  "term": {
+    "code": "2026-2027-1",
+    "name": "2026-2027学年第一学期"
+  },
+  "rows": [
+    [
+      { "text": "第1-2节", "parts": [], "col": 0, "span": 1 },
+      {
+        "text": "高等数学（三）刘敏1-16(周)[01-02节]数学楼103",
+        "parts": [
+          "高等数学（三）<br><font title=\"教师\">刘敏</font><br><font title=\"周次(节次)\">1-16(周)[01-02节]</font><br><font title=\"教室\">数学楼103</font>"
+        ],
+        "col": 1,
+        "span": 1
+      },
+      { "text": "", "parts": [], "col": 2, "span": 1 },
+      { "text": "", "parts": [], "col": 3, "span": 1 },
+      { "text": "", "parts": [], "col": 4, "span": 1 },
+      { "text": "", "parts": [], "col": 5, "span": 1 },
+      { "text": "", "parts": [], "col": 6, "span": 1 },
+      { "text": "", "parts": [], "col": 7, "span": 1 }
+    ],
+    [
+      { "text": "第3-4节", "parts": [], "col": 0, "span": 1 },
+      { "text": "", "parts": [], "col": 1, "span": 1 },
+      { "text": "", "parts": [], "col": 2, "span": 1 },
+      {
+        "text": "大学物理黄伟1-16(周)[03-04节]物理楼201",
+        "parts": [
+          "大学物理<br><font title=\"教师\">黄伟</font><br><font title=\"周次(节次)\">1-16(周)[03-04节]</font><br><font title=\"教室\">物理楼201</font>"
+        ],
+        "col": 3,
+        "span": 1
+      },
+      { "text": "", "parts": [], "col": 4, "span": 1 },
+      { "text": "", "parts": [], "col": 5, "span": 1 },
+      { "text": "", "parts": [], "col": 6, "span": 1 },
+      { "text": "", "parts": [], "col": 7, "span": 1 }
+    ]
+  ]
+}

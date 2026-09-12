@@ -1,0 +1,37 @@
+{
+  "specVersion": 1,
+  "key": "zzu",
+  "name": "郑州大学",
+  "version": "1.0.0",
+  "author": "上游 LilyCarry（MIT）；移植 NullClass",
+  "homepage": "https://github.com/XingHeYuZhuan/shiguang_warehouse",
+  "loginUrl": "https://cas.s.zzu.edu.cn/cas/a/login?service=https%3A%2F%2Fjwxt.zzu.edu.cn%2Fstudent%2Fsso%2Flogin",
+  "minAppVersionCode": 11,
+  "extract": "extract.js",
+  "parse": "parse.js",
+  "allowHosts": [
+    "*.zzu.edu.cn"
+  ],
+  "fixtures": [
+    {
+      "name": "2025-2026 学年第一学期（合成 fixture：同课拆两条、单双周、连堂、脏记录、作息表只到第 10 节）",
+      "extracted": "fixtures/basic.extracted.json",
+      "expected": "fixtures/basic.expected.json"
+    },
+    {
+      "name": "课表周次超出校历（合成 fixture：第 20 周的课把总周数从校历的 16 周抬到 20 周，必须进 warnings）",
+      "extracted": "fixtures/over-calendar.extracted.json",
+      "expected": "fixtures/over-calendar.expected.json"
+    },
+    {
+      "name": "三条降级路径（合成 fixture：没有结束日期 → 总周数按下限 18 周；没有作息表 → 回落内置 12 节；没有学期名 → 推算；接口总数多于拿到的条数）",
+      "extracted": "fixtures/fallbacks.extracted.json",
+      "expected": "fixtures/fallbacks.expected.json"
+    },
+    {
+      "name": "开学日回退与总周数的整周边界（合成 fixture：startDate 是周三、相差正好 126 天 → 19 周；这条路径没有推算，warnings 为空）",
+      "extracted": "fixtures/week-boundary.extracted.json",
+      "expected": "fixtures/week-boundary.expected.json"
+    }
+  ]
+}

@@ -1,0 +1,53 @@
+{
+  "specVersion": 1,
+  "kind": "schedule",
+  "ocrAssisted": false,
+  "warnings": [
+    "学年读不出来，第 1 周按「今天的周一」推算为 2026-03-02，请在学期管理里核对成学校实际开学日",
+    "只导入了教务系统当前选中的学期（第二学期）；要导入别的学期，请在教务页面里切到那个学期再点「提取课表」",
+    "教务没有给出学期总周数，已按 20 周导入（课表里最晚到第 16 周），如与实际不符可在学期管理里改",
+    "没取到教务的节次时间（节次时间接口没返回数据），节次时间已改用空课内置默认表，请在学期管理里核对作息"
+  ],
+  "terms": [
+    {
+      "name": "第二学期",
+      "firstDay": "2026-03-02",
+      "totalWeeks": 20,
+      "periodTimes": [],
+      "courses": [
+        {
+          "name": "大学英语(三)",
+          "teacher": "林雅琴",
+          "note": null,
+          "blocks": [
+            {
+              "dayOfWeek": 3,
+              "startPeriod": 3,
+              "endPeriod": 4,
+              "startWeek": 1,
+              "endWeek": 16,
+              "weekType": "ALL",
+              "location": "语音楼B-205"
+            }
+          ]
+        },
+        {
+          "name": "体育(三)",
+          "teacher": "赵斌",
+          "note": null,
+          "blocks": [
+            {
+              "dayOfWeek": 5,
+              "startPeriod": 7,
+              "endPeriod": 8,
+              "startWeek": 1,
+              "endWeek": 16,
+              "weekType": "ALL",
+              "location": "田径场"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

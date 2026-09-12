@@ -1,0 +1,134 @@
+{
+  "_note": "合成数据，不是真实抓取：按重庆人文科技学院强智课表页（/jsxsd/xskb/xskb_list.do）的 DOM 形状编造，只用来回归 parse.js 的转换逻辑。这一份专测两处会让**整次导入失败**的脏数据边界：(1) 节次越界 —— 「[17-18节]」与「[12345678节]」（两位一节切出 12/34/56/78）都必须按『读不出节次』跳过并点名，不许补出 24:00 以后的占位作息（载荷校验的时间只收 00:00–23:59）；(2) 跳过的块点名进 warnings 时，5 个长课名会把警告撑到 200 字以上 —— 警告必须自带上限（截断 + 省略号），否则整次导入会被载荷校验拒收。课名/教师/教室均为虚构，无学号姓名。拿到真实 dump 请替换这一对 fixture。",
+  "pageUrl": "https://jwxt.cqrk.edu.cn:18080/jsxsd/xskb/xskb_list.do",
+  "now": "2026-09-12",
+  "term": {
+    "code": "2026-2027-1",
+    "name": "2026-2027学年第一学期"
+  },
+  "cols": 8,
+  "rows": [
+    [
+      { "col": 0, "text": "节次", "parts": [] },
+      { "col": 1, "text": "星期一", "parts": [] },
+      { "col": 2, "text": "星期二", "parts": [] },
+      { "col": 3, "text": "星期三", "parts": [] },
+      { "col": 4, "text": "星期四", "parts": [] },
+      { "col": 5, "text": "星期五", "parts": [] },
+      { "col": 6, "text": "星期六", "parts": [] },
+      { "col": 7, "text": "星期日", "parts": [] }
+    ],
+    [
+      { "col": 0, "text": "第15-16节", "parts": [] },
+      {
+        "col": 1,
+        "text": "大学英语（一）王芳1-16周[15-16节]博学楼B203大学物理实验（光学与近代物理测量部分）欧阳志远实验楼C101",
+        "parts": [
+          "大学英语（一）<br><font title=\"教师\">王芳</font><br><font title=\"周次(节次)\">1-16周[15-16节]</font><br><font title=\"教室\">博学楼B203</font>----------大学物理实验（光学与近代物理测量部分）<br><font title=\"教师\">欧阳志远</font><br><font title=\"教室\">实验楼C101</font>"
+        ]
+      },
+      { "col": 2, "text": "", "parts": [] },
+      { "col": 3, "text": "", "parts": [] },
+      { "col": 4, "text": "", "parts": [] },
+      { "col": 5, "text": "", "parts": [] },
+      { "col": 6, "text": "", "parts": [] },
+      { "col": 7, "text": "", "parts": [] }
+    ],
+    [
+      { "col": 0, "text": "第1-2节", "parts": [] },
+      { "col": 1, "text": "", "parts": [] },
+      {
+        "col": 2,
+        "text": "工程训练（机械制造与自动化基础部分）实训司马文静工程训练中心",
+        "parts": [
+          "工程训练（机械制造与自动化基础部分）实训<br><font title=\"教师\">司马文静</font><br><font title=\"教室\">工程训练中心</font>"
+        ]
+      },
+      { "col": 3, "text": "", "parts": [] },
+      { "col": 4, "text": "", "parts": [] },
+      { "col": 5, "text": "", "parts": [] },
+      { "col": 6, "text": "", "parts": [] },
+      { "col": 7, "text": "", "parts": [] }
+    ],
+    [
+      { "col": 0, "text": "第3-4节", "parts": [] },
+      { "col": 1, "text": "", "parts": [] },
+      { "col": 2, "text": "", "parts": [] },
+      {
+        "col": 3,
+        "text": "程序设计基础综合实践训练项目（一）诸葛明辉信息楼302",
+        "parts": [
+          "程序设计基础综合实践训练项目（一）<br><font title=\"教师\">诸葛明辉</font><br><font title=\"教室\">信息楼302</font>"
+        ]
+      },
+      { "col": 4, "text": "", "parts": [] },
+      { "col": 5, "text": "", "parts": [] },
+      { "col": 6, "text": "", "parts": [] },
+      { "col": 7, "text": "", "parts": [] }
+    ],
+    [
+      { "col": 0, "text": "第5-6节", "parts": [] },
+      { "col": 1, "text": "", "parts": [] },
+      { "col": 2, "text": "", "parts": [] },
+      { "col": 3, "text": "", "parts": [] },
+      {
+        "col": 4,
+        "text": "数据结构与算法课程设计实践项目（二）答辩上官婉清信息楼305",
+        "parts": [
+          "数据结构与算法课程设计实践项目（二）答辩<br><font title=\"教师\">上官婉清</font><br><font title=\"教室\">信息楼305</font>"
+        ]
+      },
+      { "col": 5, "text": "", "parts": [] },
+      { "col": 6, "text": "", "parts": [] },
+      { "col": 7, "text": "", "parts": [] }
+    ],
+    [
+      { "col": 0, "text": "第7-8节", "parts": [] },
+      { "col": 1, "text": "", "parts": [] },
+      { "col": 2, "text": "", "parts": [] },
+      { "col": 3, "text": "", "parts": [] },
+      { "col": 4, "text": "", "parts": [] },
+      {
+        "col": 5,
+        "text": "马克思主义基本原理概论专题研讨课（下）慕容雪松教学楼401",
+        "parts": [
+          "马克思主义基本原理概论专题研讨课（下）<br><font title=\"教师\">慕容雪松</font><br><font title=\"教室\">教学楼401</font>"
+        ]
+      },
+      { "col": 6, "text": "", "parts": [] },
+      { "col": 7, "text": "", "parts": [] }
+    ],
+    [
+      { "col": 0, "text": "第9-10节", "parts": [] },
+      { "col": 1, "text": "", "parts": [] },
+      { "col": 2, "text": "", "parts": [] },
+      { "col": 3, "text": "", "parts": [] },
+      { "col": 4, "text": "", "parts": [] },
+      { "col": 5, "text": "", "parts": [] },
+      {
+        "col": 6,
+        "text": "数据库原理郑洁1-16周[17-18节]信息楼302",
+        "parts": [
+          "数据库原理<br><font title=\"教师\">郑洁</font><br><font title=\"周次(节次)\">1-16周[17-18节]</font><br><font title=\"教室\">信息楼302</font>"
+        ]
+      },
+      { "col": 7, "text": "", "parts": [] }
+    ],
+    [
+      { "col": 0, "text": "第1-2节", "parts": [] },
+      { "col": 1, "text": "", "parts": [] },
+      { "col": 2, "text": "", "parts": [] },
+      { "col": 3, "text": "", "parts": [] },
+      { "col": 4, "text": "", "parts": [] },
+      { "col": 5, "text": "", "parts": [] },
+      { "col": 6, "text": "", "parts": [] },
+      {
+        "col": 7,
+        "text": "体育（一）陈刚1-16周[12345678节]田径场",
+        "parts": [
+          "体育（一）<br><font title=\"教师\">陈刚</font><br><font title=\"周次(节次)\">1-16周[12345678节]</font><br><font title=\"教室\">田径场</font>"
+        ]
+      }
+    ]
+  ]
+}

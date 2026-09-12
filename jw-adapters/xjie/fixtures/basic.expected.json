@@ -1,0 +1,89 @@
+{
+  "specVersion": 1,
+  "kind": "schedule",
+  "ocrAssisted": false,
+  "warnings": [
+    "开学日期无法从教务获取，已按最近的周一（2026-09-07）推算，请在「学期管理」里核对",
+    "教务页面不提供学期总周数与作息时间：总周数按 20 周、节次时间按适配器内置的 11 节设定，请在「学期管理」里核对",
+    "有 1 处排课的节次教务没写（如只有「12-15(周)」），已按所在行的节次标签放入，请核对节次"
+  ],
+  "terms": [
+    {
+      "name": "2026-2027学年第一学期",
+      "firstDay": "2026-09-07",
+      "totalWeeks": 20,
+      "periodTimes": [
+        { "periodIndex": 1, "start": "10:00", "end": "10:45" },
+        { "periodIndex": 2, "start": "10:55", "end": "11:40" },
+        { "periodIndex": 3, "start": "11:55", "end": "12:40" },
+        { "periodIndex": 4, "start": "12:50", "end": "13:35" },
+        { "periodIndex": 5, "start": "13:45", "end": "14:30" },
+        { "periodIndex": 6, "start": "16:00", "end": "16:45" },
+        { "periodIndex": 7, "start": "16:55", "end": "17:40" },
+        { "periodIndex": 8, "start": "17:55", "end": "18:40" },
+        { "periodIndex": 9, "start": "18:50", "end": "19:35" },
+        { "periodIndex": 10, "start": "19:50", "end": "20:35" },
+        { "periodIndex": 11, "start": "20:45", "end": "21:30" }
+      ],
+      "courses": [
+        {
+          "name": "高等数学A(一)",
+          "teacher": "王丽",
+          "note": null,
+          "blocks": [
+            { "dayOfWeek": 1, "startPeriod": 1, "endPeriod": 2, "startWeek": 1, "endWeek": 16, "weekType": "ALL", "location": "教1-101" }
+          ]
+        },
+        {
+          "name": "大学计算机基础",
+          "teacher": "李强",
+          "note": null,
+          "blocks": [
+            { "dayOfWeek": 3, "startPeriod": 1, "endPeriod": 2, "startWeek": 1, "endWeek": 9, "weekType": "ALL", "location": "计算中心302" },
+            { "dayOfWeek": 3, "startPeriod": 1, "endPeriod": 2, "startWeek": 11, "endWeek": 17, "weekType": "ALL", "location": "计算中心302" }
+          ]
+        },
+        {
+          "name": "无机及分析化学",
+          "teacher": null,
+          "note": null,
+          "blocks": [
+            { "dayOfWeek": 5, "startPeriod": 1, "endPeriod": 2, "startWeek": 3, "endWeek": 17, "weekType": "ALL", "location": "实验楼B203" }
+          ]
+        },
+        {
+          "name": "大学英语(一)",
+          "teacher": "张伟",
+          "note": null,
+          "blocks": [
+            { "dayOfWeek": 2, "startPeriod": 3, "endPeriod": 4, "startWeek": 12, "endWeek": 15, "weekType": "ALL", "location": "文科楼205" }
+          ]
+        },
+        {
+          "name": "中国近现代史纲要",
+          "teacher": "刘洋",
+          "note": null,
+          "blocks": [
+            { "dayOfWeek": 3, "startPeriod": 3, "endPeriod": 4, "startWeek": 1, "endWeek": 8, "weekType": "ALL", "location": "文科楼104" }
+          ]
+        },
+        {
+          "name": "书法基础",
+          "teacher": "陈静",
+          "note": null,
+          "blocks": [
+            { "dayOfWeek": 3, "startPeriod": 3, "endPeriod": 4, "startWeek": 9, "endWeek": 16, "weekType": "ALL", "location": "艺术楼203" }
+          ]
+        },
+        {
+          "name": "体育(一)",
+          "teacher": "赵丹",
+          "note": null,
+          "blocks": [
+            { "dayOfWeek": 4, "startPeriod": 5, "endPeriod": 6, "startWeek": 1, "endWeek": 16, "weekType": "ALL", "location": "体育馆" }
+          ]
+        }
+      ]
+    }
+  ]
+}

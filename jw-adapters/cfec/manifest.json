@@ -1,0 +1,36 @@
+{
+  "specVersion": 1,
+  "key": "cfec",
+  "name": "重庆财经学院",
+  "version": "1.0.0",
+  "author": "上游 glxgo（MIT）；移植 NullClass",
+  "homepage": "https://github.com/XingHeYuZhuan/shiguang_warehouse",
+  "loginUrl": "http://jwmis.cfec.edu.cn/jwglxt/kbcx/xskbcx_cxXskbcxIndex.html?gnmkdm=N2151&layout=default",
+  "scheduleUrlHint": "http://jwmis.cfec.edu.cn/jwglxt/kbcx/xskbcx_cxXskbcxIndex.html?gnmkdm=N2151&layout=default",
+  "minAppVersionCode": 11,
+  "extract": "extract.js",
+  "parse": "parse.js",
+  "allowHosts": [],
+  "fixtures": [
+    {
+      "name": "合成用例：基本表格（含单双周、分段周次、重复排课行、1 行缺课名；教务校历 18 周 + 校区作息，课表里有一门排到第 20 周）",
+      "extracted": "fixtures/basic.extracted.json",
+      "expected": "fixtures/basic.expected.json"
+    },
+    {
+      "name": "合成用例：单/双周的各种写法（1-16周(双) / 1-16周(单) / 双周1-16 / 1-8周(单),9-16周(双) / 1-16周 双 / 1-16周(单双周)）",
+      "extracted": "fixtures/weeks-parity.extracted.json",
+      "expected": "fixtures/weeks-parity.expected.json"
+    },
+    {
+      "name": "合成用例：教务的校历与作息接口都没取到（开学日推算、总周数取课表最大周次、作息回落内置表）",
+      "extracted": "fixtures/no-extras.extracted.json",
+      "expected": "fixtures/no-extras.expected.json"
+    },
+    {
+      "name": "合成用例：脏数据与集中实践课（缺星期/缺节次/周次全超限、节次多段与两位一拼、作息只回 4 节需补足、sjkList 实践课）",
+      "extracted": "fixtures/dirty-rows.extracted.json",
+      "expected": "fixtures/dirty-rows.expected.json"
+    }
+  ]
+}

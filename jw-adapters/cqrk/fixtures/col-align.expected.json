@@ -1,0 +1,112 @@
+{
+  "specVersion": 1,
+  "kind": "schedule",
+  "ocrAssisted": false,
+  "warnings": [
+    "开学日期无法从教务获取，已按最近的周一（2026-09-07）推算，请在「学期管理」里核对",
+    "教务页面不提供学期总周数与作息时间：总周数按 20 周起算、节次时间按适配器内置的 12 节设定，请在「学期管理」里核对"
+  ],
+  "terms": [
+    {
+      "name": "2026-2027学年第一学期",
+      "firstDay": "2026-09-07",
+      "totalWeeks": 20,
+      "periodTimes": [
+        { "periodIndex": 1, "start": "08:30", "end": "09:15" },
+        { "periodIndex": 2, "start": "09:20", "end": "10:05" },
+        { "periodIndex": 3, "start": "10:20", "end": "11:05" },
+        { "periodIndex": 4, "start": "11:10", "end": "11:55" },
+        { "periodIndex": 5, "start": "14:00", "end": "14:45" },
+        { "periodIndex": 6, "start": "14:50", "end": "15:35" },
+        { "periodIndex": 7, "start": "15:40", "end": "16:25" },
+        { "periodIndex": 8, "start": "16:40", "end": "17:25" },
+        { "periodIndex": 9, "start": "17:30", "end": "18:15" },
+        { "periodIndex": 10, "start": "19:00", "end": "19:45" },
+        { "periodIndex": 11, "start": "19:50", "end": "20:35" },
+        { "periodIndex": 12, "start": "20:40", "end": "21:25" }
+      ],
+      "courses": [
+        {
+          "name": "高等数学（二）",
+          "teacher": "刘敏",
+          "note": null,
+          "blocks": [
+            {
+              "dayOfWeek": 2,
+              "startPeriod": 1,
+              "endPeriod": 2,
+              "startWeek": 1,
+              "endWeek": 16,
+              "weekType": "ALL",
+              "location": "博学楼A101"
+            }
+          ]
+        },
+        {
+          "name": "大学英语（三）",
+          "teacher": "王芳",
+          "note": null,
+          "blocks": [
+            {
+              "dayOfWeek": 2,
+              "startPeriod": 3,
+              "endPeriod": 4,
+              "startWeek": 1,
+              "endWeek": 16,
+              "weekType": "ALL",
+              "location": "博学楼B203"
+            }
+          ]
+        },
+        {
+          "name": "大学物理（二）",
+          "teacher": "周红",
+          "note": null,
+          "blocks": [
+            {
+              "dayOfWeek": 7,
+              "startPeriod": 3,
+              "endPeriod": 4,
+              "startWeek": 1,
+              "endWeek": 14,
+              "weekType": "ALL",
+              "location": "博学楼A301"
+            }
+          ]
+        },
+        {
+          "name": "计算机基础",
+          "teacher": "李强",
+          "note": null,
+          "blocks": [
+            {
+              "dayOfWeek": 1,
+              "startPeriod": 5,
+              "endPeriod": 6,
+              "startWeek": 2,
+              "endWeek": 16,
+              "weekType": "EVEN",
+              "location": "实验楼C305"
+            }
+          ]
+        },
+        {
+          "name": "中国近现代史纲要",
+          "teacher": "赵敏",
+          "note": null,
+          "blocks": [
+            {
+              "dayOfWeek": 6,
+              "startPeriod": 7,
+              "endPeriod": 8,
+              "startWeek": 3,
+              "endWeek": 12,
+              "weekType": "ALL",
+              "location": "博学楼D102"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,33 @@
+{
+  "specVersion": 1,
+  "key": "hblgxy",
+  "name": "淮北理工学院",
+  "version": "1.0.0",
+  "author": "上游 星河欲转（拾光课程表社区，MIT）；移植 NullClass",
+  "homepage": "https://github.com/XingHeYuZhuan/shiguang_warehouse",
+  "loginUrl": "https://a.hblgxy.edu.cn:5111/jsxsd/",
+  "scheduleUrlHint": "https://a.hblgxy.edu.cn:5111/jsxsd/xskb/xskb_list.do",
+  "minAppVersionCode": 11,
+  "extract": "extract.js",
+  "parse": "parse.js",
+  "allowHosts": [
+    "a.hblgxy.edu.cn"
+  ],
+  "fixtures": [
+    {
+      "name": "基本课表（合成数据）",
+      "extracted": "fixtures/basic.extracted.json",
+      "expected": "fixtures/basic.expected.json"
+    },
+    {
+      "name": "边界写法（合成数据）：单双周写在「周」后、括号序号、无节次标签、连堂、周次超出内置总周数",
+      "extracted": "fixtures/edge.extracted.json",
+      "expected": "fixtures/edge.expected.json"
+    },
+    {
+      "name": "教学班序号组（合成数据）：括号里的数字区间 (1-2) 不是周次、量词「周」写在括号里、单/双被空白隔开仍是标记、只剩序号时丢块进 warnings",
+      "extracted": "fixtures/serial.extracted.json",
+      "expected": "fixtures/serial.expected.json"
+    }
+  ]
+}

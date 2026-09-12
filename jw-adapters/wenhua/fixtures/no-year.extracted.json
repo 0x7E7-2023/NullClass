@@ -1,0 +1,36 @@
+{
+  "_note": "合成用例（学年读不出来，2026-09-12）。期望值按 docs/jw-adapter-spec.md 手推，不是 parse.js 的输出。教务页面的学年下拉框被改过 / 读不出来时，学期名退化成「第二学期」、第 1 周退回「今天所在周的周一」（取 extract 交过来的 today，不在 parse.js 里读当前时间 —— 那样这一条分支没法写 fixture）。开学日必须是推算的，所以 warnings 里要如实说明。",
+  "term": {
+    "xnm": "",
+    "xqm": "12",
+    "xnmText": "",
+    "xqmText": "2"
+  },
+  "timeSlots": null,
+  "raw": {
+    "kbList": [
+      {
+        "kcmc": "大学英语(三)",
+        "xm": "林雅琴",
+        "cdmc": "语音楼B-205",
+        "cdbh": "B205",
+        "xqj": "3",
+        "jcs": "3-4",
+        "zcd": "1-16周",
+        "xqh_id": "1"
+      },
+      {
+        "kcmc": "体育(三)",
+        "xm": "赵斌",
+        "cdmc": "田径场",
+        "cdbh": "TCC",
+        "xqj": "5",
+        "jcs": "7-8",
+        "zcd": "1-16周",
+        "xqh_id": "1"
+      }
+    ]
+  },
+  "reportedTotal": null,
+  "today": "2026-03-04"
+}

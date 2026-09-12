@@ -1,0 +1,63 @@
+{
+  "specVersion": 1,
+  "kind": "schedule",
+  "ocrAssisted": false,
+  "warnings": [
+    "教务给的学期起止日期（2025-12-21）只能数出 16 周，但课表里有安排落在第 20 周，学期总周数已按 20 周导入，请在学期管理里核对。"
+  ],
+  "terms": [
+    {
+      "name": "2025-2026学年第一学期",
+      "firstDay": "2025-09-01",
+      "totalWeeks": 20,
+      "periodTimes": [
+        { "periodIndex": 1, "start": "08:00", "end": "08:45" },
+        { "periodIndex": 2, "start": "08:55", "end": "09:40" },
+        { "periodIndex": 3, "start": "10:10", "end": "10:55" },
+        { "periodIndex": 4, "start": "11:05", "end": "11:50" },
+        { "periodIndex": 5, "start": "14:00", "end": "14:45" },
+        { "periodIndex": 6, "start": "14:55", "end": "15:40" },
+        { "periodIndex": 7, "start": "16:10", "end": "16:55" },
+        { "periodIndex": 8, "start": "17:05", "end": "17:50" },
+        { "periodIndex": 9, "start": "19:00", "end": "19:45" },
+        { "periodIndex": 10, "start": "19:55", "end": "20:40" },
+        { "periodIndex": 11, "start": "20:50", "end": "21:35" },
+        { "periodIndex": 12, "start": "21:40", "end": "22:25" }
+      ],
+      "courses": [
+        {
+          "name": "高等数学(一)",
+          "teacher": "王丽",
+          "note": null,
+          "blocks": [
+            {
+              "dayOfWeek": 1,
+              "startPeriod": 1,
+              "endPeriod": 2,
+              "startWeek": 1,
+              "endWeek": 16,
+              "weekType": "ALL",
+              "location": "理科园 305"
+            }
+          ]
+        },
+        {
+          "name": "专题讲座",
+          "teacher": "钱进",
+          "note": null,
+          "blocks": [
+            {
+              "dayOfWeek": 3,
+              "startPeriod": 5,
+              "endPeriod": 6,
+              "startWeek": 18,
+              "endWeek": 20,
+              "weekType": "ALL",
+              "location": "学术报告厅"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

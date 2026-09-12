@@ -1,0 +1,62 @@
+{
+  "_note": "合成数据，不是真实抓取：按中国石油大学（华东）强智学生端课表页（/jsxsd/xskb/xskb_list.do）的 DOM 形状编造，只用来回归 parse.js 的转换逻辑。用例名：作息表顺延的上限（第 15-16 节顺延下去会超过 23:59，不能再补出时刻）+ 明细里带钟点区间的 font（[title=上课时间]、[title=时间] 装的是 08:00-09:35 这种时刻，不是周次）。第 15-16 节与那两条钟点 font 都是**防御性用例**：上游 upc.js 只 querySelector 了 font[title=教师|周次(节次)|教室]，明细里没有这两样东西，真实页面是否长这样没有账号验证过。预期值按移植手册 §4 独立推出（第 13/14 节 = 21:35-22:20 / 22:30-23:15，第 15 节 = 23:25-24:10 越界），不是把 parse.js 的输出贴回来的。",
+  "now": "2026-09-12",
+  "term": { "code": "2026-2027-1", "name": "2026-2027学年第一学期" },
+  "rows": [
+    [
+      { "text": "节次", "parts": [] },
+      { "text": "星期一", "parts": [] },
+      { "text": "星期二", "parts": [] },
+      { "text": "星期三", "parts": [] },
+      { "text": "星期四", "parts": [] },
+      { "text": "星期五", "parts": [] },
+      { "text": "星期六", "parts": [] },
+      { "text": "星期日", "parts": [] }
+    ],
+    [
+      { "text": "第1-2节", "parts": [] },
+      {
+        "text": "大学物理(上)王强08:00-09:351-16(周)[01-02节]基础楼B201",
+        "parts": [
+          "<font color=\"#000000\">大学物理(上)</font><br><font title=\"教师\">王强</font><br><font title=\"上课时间\">08:00-09:35</font><br><font title=\"周次(节次)\">1-16(周)[01-02节]</font><br><font title=\"教室\">基础楼B201</font>"
+        ]
+      },
+      { "text": "", "parts": [] },
+      { "text": "", "parts": [] },
+      { "text": "", "parts": [] },
+      { "text": "", "parts": [] },
+      { "text": "", "parts": [] },
+      { "text": "", "parts": [] }
+    ],
+    [
+      { "text": "第3-4节", "parts": [] },
+      { "text": "", "parts": [] },
+      {
+        "text": "中国近现代史纲要刘敏10:05-11:403-9(周)[03-04节]文理楼105",
+        "parts": [
+          "<font color=\"#000000\">中国近现代史纲要</font><br><font title=\"教师\">刘敏</font><br><font title=\"时间\">10:05-11:40</font><br><font title=\"周次(节次)\">3-9(周)[03-04节]</font><br><font title=\"教室\">文理楼105</font>"
+        ]
+      },
+      { "text": "", "parts": [] },
+      { "text": "", "parts": [] },
+      { "text": "", "parts": [] },
+      { "text": "", "parts": [] },
+      { "text": "", "parts": [] }
+    ],
+    [
+      { "text": "第15-16节", "parts": [] },
+      {
+        "text": "高等数学A(一)张伟1-16(周)[1516节]南教楼101",
+        "parts": [
+          "<font color=\"#000000\">高等数学A(一)</font><br><font title=\"教师\">张伟</font><br><font title=\"周次(节次)\">1-16(周)[1516节]</font><br><font title=\"教室\">南教楼101</font>"
+        ]
+      },
+      { "text": "", "parts": [] },
+      { "text": "", "parts": [] },
+      { "text": "", "parts": [] },
+      { "text": "", "parts": [] },
+      { "text": "", "parts": [] },
+      { "text": "", "parts": [] }
+    ]
+  ]
+}

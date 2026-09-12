@@ -1,0 +1,159 @@
+{
+  "_note": "合成数据，不是真实抓取：按新疆工程学院强智课表页（https://jwxt.xjie.edu.cn/jsxsd/xskb/xskb_list.do）的 DOM 形状编造，只用来回归 parse.js 的转换逻辑，不保证真实页面上的解析结论。形状取自上游 XJIE/xjie_01.js 的选择器（#timetable / div.kbcontent[style*=none] / font[title=教师|周次(节次)|教室]）与它注释里的周次写法（1-9,11-17(周)[01-02节]）。用例名：基本课表（表头对齐、一格两门课、教师前缀、节次回落行标签）。拿到真实 dump 请替换这一对 fixture。",
+  "now": "2026-09-12",
+  "term": {
+    "code": "2026-2027-1",
+    "name": "2026-2027学年第一学期",
+    "source": "select-selected"
+  },
+  "rows": [
+    [
+      {
+        "text": "节次",
+        "parts": []
+      },
+      {
+        "text": "星期一",
+        "parts": []
+      },
+      {
+        "text": "星期二",
+        "parts": []
+      },
+      {
+        "text": "星期三",
+        "parts": []
+      },
+      {
+        "text": "星期四",
+        "parts": []
+      },
+      {
+        "text": "星期五",
+        "parts": []
+      },
+      {
+        "text": "星期六",
+        "parts": []
+      },
+      {
+        "text": "星期日",
+        "parts": []
+      }
+    ],
+    [
+      {
+        "text": "第1-2节",
+        "parts": []
+      },
+      {
+        "text": "高等数学A(一)任课教师:王丽1-16(周)[01-02节]教1-101",
+        "parts": [
+          "高等数学A(一)<br><font title=\"教师\">任课教师:王丽</font><br><font title=\"周次(节次)\">1-16(周)[01-02节]</font><br><font title=\"教室\">教1-101</font><br><font title=\"上课时间\">11:10-11:50</font>"
+        ]
+      },
+      {
+        "text": "",
+        "parts": []
+      },
+      {
+        "text": "大学计算机基础李强1-9,11-17(周)[01-02节]计算中心302",
+        "parts": [
+          "\n                        大学计算机基础<br><font title=\"教师\">李强</font><br><font title=\"周次(节次)\">1-9,11-17(周)[01-02节]</font><br><font title=\"教室\">计算中心302</font>\n                    "
+        ]
+      },
+      {
+        "text": "",
+        "parts": []
+      },
+      {
+        "text": "无机及分析化学3-17(周)[01-02节]实验楼B203",
+        "parts": [
+          "无机及分析化学<br><font title=\"周次(节次)\">3-17(周)[01-02节]</font><br><font title=\"教室\">实验楼B203</font>"
+        ]
+      },
+      {
+        "text": "",
+        "parts": []
+      },
+      {
+        "text": "",
+        "parts": []
+      }
+    ],
+    [
+      {
+        "text": "第3-4节",
+        "parts": []
+      },
+      {
+        "text": "",
+        "parts": []
+      },
+      {
+        "text": "大学英语(一)张伟12-15(周)文科楼205",
+        "parts": [
+          "大学英语(一)<br><font title=\"教师\">张伟</font><br><font title=\"周次(节次)\">12-15(周)</font><br><font title=\"教室\">文科楼205</font>"
+        ]
+      },
+      {
+        "text": "中国近现代史纲要刘洋1-8(周)[03-04节]文科楼104书法基础陈静9-16(周)[03-04节]艺术楼203",
+        "parts": [
+          "中国近现代史纲要<br><font title=\"教师\">刘洋</font><br><font title=\"周次(节次)\">1-8(周)[03-04节]</font><br><font title=\"教室\">文科楼104</font>---------------------书法基础<br><font title=\"教师\">陈静</font><br><font title=\"周次(节次)\">9-16(周)[03-04节]</font><br><font title=\"教室\">艺术楼203</font>"
+        ]
+      },
+      {
+        "text": "",
+        "parts": []
+      },
+      {
+        "text": "",
+        "parts": []
+      },
+      {
+        "text": "",
+        "parts": []
+      },
+      {
+        "text": "",
+        "parts": []
+      }
+    ],
+    [
+      {
+        "text": "第5-6节",
+        "parts": []
+      },
+      {
+        "text": "",
+        "parts": []
+      },
+      {
+        "text": "",
+        "parts": []
+      },
+      {
+        "text": "",
+        "parts": []
+      },
+      {
+        "text": "体育(一)赵丹1-16(周)[05-06节]体育馆",
+        "parts": [
+          "体育(一)<br><font title=\"教师\">赵丹</font><br><font title=\"周次(节次)\">1-16(周)[05-06节]</font><br><font title=\"教室\">体育馆</font>"
+        ]
+      },
+      {
+        "text": "",
+        "parts": []
+      },
+      {
+        "text": "",
+        "parts": []
+      },
+      {
+        "text": "",
+        "parts": []
+      }
+    ]
+  ]
+}

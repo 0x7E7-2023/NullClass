@@ -1,0 +1,43 @@
+{
+  "specVersion": 1,
+  "key": "hhtc",
+  "name": "怀化学院",
+  "version": "1.0.0",
+  "author": "上游 星河欲转（拾光课程表社区，MIT）；移植 NullClass",
+  "homepage": "https://github.com/XingHeYuZhuan/shiguang_warehouse",
+  "loginUrl": "https://jwmis.hhtc.edu.cn/",
+  "scheduleUrlHint": "https://jwmis.hhtc.edu.cn/jsxsd/xskb/xskb_list.do",
+  "minAppVersionCode": 11,
+  "extract": "extract.js",
+  "parse": "parse.js",
+  "allowHosts": [
+    "jwmis.hhtc.edu.cn"
+  ],
+  "fixtures": [
+    {
+      "name": "基本表格（合成数据：表头对齐 / 两种课名写法 / 同格副本去重 / 行标签回落）",
+      "extracted": "fixtures/basic.extracted.json",
+      "expected": "fixtures/basic.expected.json"
+    },
+    {
+      "name": "周次写法（合成数据：单双周在「周」后与括号里、双周前缀、周次缺口、括号内序号不是周次）",
+      "extracted": "fixtures/weeks.extracted.json",
+      "expected": "fixtures/weeks.expected.json"
+    },
+    {
+      "name": "连堂合并与越界（合成数据：跨行连堂并成一块、第11-12节补作息、总周数被抬高、越界与无节次丢块入 warnings）",
+      "extracted": "fixtures/merge.extracted.json",
+      "expected": "fixtures/merge.expected.json"
+    },
+    {
+      "name": "星期表头认不全（合成数据：周末两格表头是图片、DOM 里没有文字，按「最后 7 列」推断并进 warnings）",
+      "extracted": "fixtures/partialheader.extracted.json",
+      "expected": "fixtures/partialheader.expected.json"
+    },
+    {
+      "name": "教学班序号组（合成数据）：括号里的数字区间 (1-2) 不是周次、量词「周」写在括号里、单/双被空白隔开仍是标记、只剩序号时丢块进 warnings",
+      "extracted": "fixtures/serial.extracted.json",
+      "expected": "fixtures/serial.expected.json"
+    }
+  ]
+}

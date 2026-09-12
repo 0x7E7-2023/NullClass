@@ -1,0 +1,104 @@
+{
+  "_note": "合成数据，不是真实抓取。用例名：① 星期表头只认出一部分（周末表头是图片/空格的形态）时，没认出来的天不许静默丢课（B5）；② 行里有跨列格子（colspan）时，最后 7 格的兜底必须按 extract.js 交出来的**列号**对齐，不能拿「这一行有几格」去数（B6）。期望值按「每行最后 7 列对应周一到周日」的位置独立推出来：表宽 8 列、offset=1，于是第 d 天 = 第 1+d 列。第 3 行是 B6 的关键：它有 7 个格子但 col=0,1,2,3,5,6,7（3 跨 2 列），按格子数数最后 7 格会把每门课都往后挪一天。",
+  "now": "2026-09-12",
+  "term": {
+    "code": "2026-2027-1",
+    "name": "2026-2027学年第一学期"
+  },
+  "rows": [
+    [
+      { "text": "节次", "parts": [], "col": 0, "span": 1 },
+      { "text": "星期一", "parts": [], "col": 1, "span": 1 },
+      { "text": "星期二", "parts": [], "col": 2, "span": 1 },
+      { "text": "星期三", "parts": [], "col": 3, "span": 1 },
+      { "text": "星期四", "parts": [], "col": 4, "span": 1 },
+      { "text": "星期五", "parts": [], "col": 5, "span": 1 },
+      { "text": "", "parts": [], "col": 6, "span": 1 },
+      { "text": "", "parts": [], "col": 7, "span": 1 }
+    ],
+    [
+      { "text": "第1-2节", "parts": [], "col": 0, "span": 1 },
+      { "text": "", "parts": [], "col": 1, "span": 1 },
+      { "text": "", "parts": [], "col": 2, "span": 1 },
+      { "text": "", "parts": [], "col": 3, "span": 1 },
+      { "text": "", "parts": [], "col": 4, "span": 1 },
+      { "text": "", "parts": [], "col": 5, "span": 1 },
+      {
+        "text": "大学物理黄伟1-16(周)[01-02节]物理楼201",
+        "parts": [
+          "大学物理<br><font title=\"教师\">黄伟</font><br><font title=\"周次(节次)\">1-16(周)[01-02节]</font><br><font title=\"教室\">物理楼201</font>"
+        ],
+        "col": 6,
+        "span": 1
+      },
+      {
+        "text": "大学体育李强1-16(周)[01-02节]体育馆",
+        "parts": [
+          "大学体育<br><font title=\"教师\">李强</font><br><font title=\"周次(节次)\">1-16(周)[01-02节]</font><br><font title=\"教室\">体育馆</font>"
+        ],
+        "col": 7,
+        "span": 1
+      }
+    ],
+    [
+      { "text": "第3-4节", "parts": [], "col": 0, "span": 1 },
+      {
+        "text": "高等数学刘敏1-16(周)[03-04节]数学楼103",
+        "parts": [
+          "高等数学<br><font title=\"教师\">刘敏</font><br><font title=\"周次(节次)\">1-16(周)[03-04节]</font><br><font title=\"教室\">数学楼103</font>"
+        ],
+        "col": 1,
+        "span": 1
+      },
+      { "text": "", "parts": [], "col": 2, "span": 1 },
+      {
+        "text": "电工实训李强1-2(周)[03-04节]实训楼501",
+        "parts": [
+          "电工实训<br><font title=\"教师\">李强</font><br><font title=\"周次(节次)\">1-2(周)[03-04节]</font><br><font title=\"教室\">实训楼501</font>"
+        ],
+        "col": 3,
+        "span": 2
+      },
+      { "text": "", "parts": [], "col": 6, "span": 1 },
+      { "text": "", "parts": [], "col": 7, "span": 1 }
+    ],
+    [
+      { "text": "第5-6节", "parts": [], "col": 0, "span": 1 },
+      {
+        "text": "程序设计基础黄伟3-6周[05-06节]信息楼402",
+        "parts": [
+          "程序设计基础<br><font title=\"教师\">黄伟</font><br><font title=\"周次(节次)\">3-6(周)[05-06节]</font><br><font title=\"教室\">信息楼402</font>"
+        ],
+        "col": 1,
+        "span": 1
+      },
+      { "text": "", "parts": [], "col": 2, "span": 1 },
+      { "text": "", "parts": [], "col": 3, "span": 1 },
+      { "text": "", "parts": [], "col": 4, "span": 1 },
+      {
+        "text": "思想道德与法治李梅1-16(周)[05-06节]文科楼105",
+        "parts": [
+          "思想道德与法治<br><font title=\"教师\">李梅</font><br><font title=\"周次(节次)\">1-16(周)[05-06节]</font><br><font title=\"教室\">文科楼105</font>"
+        ],
+        "col": 5,
+        "span": 1
+      },
+      {
+        "text": "军事理论何军1-16(周)[05-06节]文科楼106",
+        "parts": [
+          "军事理论<br><font title=\"教师\">何军</font><br><font title=\"周次(节次)\">1-16(周)[05-06节]</font><br><font title=\"教室\">文科楼106</font>"
+        ],
+        "col": 6,
+        "span": 1
+      },
+      {
+        "text": "教育见习周晓兰17-18(周)[05-06节]文科楼107",
+        "parts": [
+          "教育见习<br><font title=\"教师\">周晓兰</font><br><font title=\"周次(节次)\">17-18(周)[05-06节]</font><br><font title=\"教室\">文科楼107</font>"
+        ],
+        "col": 7,
+        "span": 1
+      }
+    ]
+  ]
+}

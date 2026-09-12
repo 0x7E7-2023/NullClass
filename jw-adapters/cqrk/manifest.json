@@ -1,0 +1,49 @@
+{
+  "specVersion": 1,
+  "key": "cqrk",
+  "name": "重庆人文科技学院",
+  "version": "1.0.0",
+  "author": "上游 星河欲转（拾光课程表社区，MIT）；移植 NullClass",
+  "homepage": "https://github.com/XingHeYuZhuan/shiguang_warehouse",
+  "loginUrl": "https://https-auth-cqrk-edu-cn-443.webvpn.cqrk.edu.cn:8480/cas/login?service=http%3A%2F%2Fportal.cqrk.edu.cn&rewrite=1",
+  "minAppVersionCode": 11,
+  "extract": "extract.js",
+  "parse": "parse.js",
+  "allowHosts": [
+    "*.webvpn.cqrk.edu.cn",
+    "jwxt.cqrk.edu.cn",
+    "portal.cqrk.edu.cn"
+  ],
+  "fixtures": [
+    {
+      "name": "基本课表（合成数据）",
+      "extracted": "fixtures/basic.extracted.json",
+      "expected": "fixtures/basic.expected.json"
+    },
+    {
+      "name": "边界：周次/节次写法与超长作息（合成数据）",
+      "extracted": "fixtures/edge-weeks.extracted.json",
+      "expected": "fixtures/edge-weeks.expected.json"
+    },
+    {
+      "name": "边界：总周数被更晚的周次抬高（合成数据）",
+      "extracted": "fixtures/over-total-weeks.extracted.json",
+      "expected": "fixtures/over-total-weeks.expected.json"
+    },
+    {
+      "name": "边界：周次写法（(周) / 单双在前 / 括号序号 / 认不出的单双）（合成数据）",
+      "extracted": "fixtures/week-forms.extracted.json",
+      "expected": "fixtures/week-forms.expected.json"
+    },
+    {
+      "name": "边界：节次列被 rowspan 并走时的星期对齐（合成数据）",
+      "extracted": "fixtures/col-align.extracted.json",
+      "expected": "fixtures/col-align.expected.json"
+    },
+    {
+      "name": "边界：节次越界与超长警告（合成数据）",
+      "extracted": "fixtures/dirty-limits.extracted.json",
+      "expected": "fixtures/dirty-limits.expected.json"
+    }
+  ]
+}

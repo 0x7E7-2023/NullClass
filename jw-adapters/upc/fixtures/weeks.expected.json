@@ -1,0 +1,103 @@
+{
+  "specVersion": 1,
+  "kind": "schedule",
+  "ocrAssisted": false,
+  "warnings": [
+    "开学日期无法从教务获取，已按提取当天的周首日（2026-09-06，周日）推算，请在「学期管理」里核对（该口径取自上游适配器声明的 firstDayOfWeek=7）",
+    "教务不给学期总周数与作息时间：总周数按 30 周、节次时间按适配器内置的 12 节设定，请在「学期管理」里核对",
+    "课表里出现了第 30 周的课，学期总周数已按最晚周次抬高到 30 周，请核对",
+    "有 1 个周次超出 30 周的上限，已按脏数据丢弃",
+    "有 1 个课程块的节次标签不完整，已按所在行的「第N节」标签定位",
+    "有 1 个课程块没能解析出周次（或整块就没有周次字段，例如只写了「见通知」），已跳过",
+    "有 1 个课程块的周次里只有部分分段带「单/双」标记，已按字面各段自判（例如「1-8周,10-16周(双)」按前半每周、后半双周处理），请核对"
+  ],
+  "terms": [
+    {
+      "name": "2026-2027学年第一学期",
+      "firstDay": "2026-09-06",
+      "totalWeeks": 30,
+      "periodTimes": [
+        { "periodIndex": 1, "start": "08:00", "end": "08:45" },
+        { "periodIndex": 2, "start": "08:50", "end": "09:35" },
+        { "periodIndex": 3, "start": "09:55", "end": "10:40" },
+        { "periodIndex": 4, "start": "10:45", "end": "11:30" },
+        { "periodIndex": 5, "start": "11:35", "end": "12:20" },
+        { "periodIndex": 6, "start": "14:00", "end": "14:45" },
+        { "periodIndex": 7, "start": "14:50", "end": "15:35" },
+        { "periodIndex": 8, "start": "15:55", "end": "16:40" },
+        { "periodIndex": 9, "start": "16:45", "end": "17:30" },
+        { "periodIndex": 10, "start": "19:00", "end": "19:45" },
+        { "periodIndex": 11, "start": "19:50", "end": "20:35" },
+        { "periodIndex": 12, "start": "20:40", "end": "21:25" }
+      ],
+      "courses": [
+        {
+          "name": "大学体育(一)",
+          "teacher": "李强",
+          "note": null,
+          "blocks": [
+            { "dayOfWeek": 1, "startPeriod": 1, "endPeriod": 2, "startWeek": 1, "endWeek": 15, "weekType": "ODD", "location": "体育馆" }
+          ]
+        },
+        {
+          "name": "大学物理(上)",
+          "teacher": "王强",
+          "note": null,
+          "blocks": [
+            { "dayOfWeek": 2, "startPeriod": 1, "endPeriod": 2, "startWeek": 2, "endWeek": 16, "weekType": "EVEN", "location": "基础楼B201" }
+          ]
+        },
+        {
+          "name": "军事理论",
+          "teacher": "何军",
+          "note": null,
+          "blocks": [
+            { "dayOfWeek": 4, "startPeriod": 1, "endPeriod": 2, "startWeek": 2, "endWeek": 6, "weekType": "EVEN", "location": "南教楼203" },
+            { "dayOfWeek": 4, "startPeriod": 1, "endPeriod": 2, "startWeek": 10, "endWeek": 10, "weekType": "ALL", "location": "南教楼203" }
+          ]
+        },
+        {
+          "name": "中国近现代史纲要",
+          "teacher": "刘敏",
+          "note": null,
+          "blocks": [
+            { "dayOfWeek": 1, "startPeriod": 3, "endPeriod": 4, "startWeek": 1, "endWeek": 8, "weekType": "ALL", "location": "文理楼105" },
+            { "dayOfWeek": 1, "startPeriod": 3, "endPeriod": 4, "startWeek": 10, "endWeek": 16, "weekType": "EVEN", "location": "文理楼105" }
+          ]
+        },
+        {
+          "name": "石油工程概论",
+          "teacher": "孙涛",
+          "note": null,
+          "blocks": [
+            { "dayOfWeek": 3, "startPeriod": 3, "endPeriod": 4, "startWeek": 3, "endWeek": 3, "weekType": "ALL", "location": "工科楼A502" }
+          ]
+        },
+        {
+          "name": "程序设计基础(C)",
+          "teacher": "陈静",
+          "note": null,
+          "blocks": [
+            { "dayOfWeek": 1, "startPeriod": 5, "endPeriod": 6, "startWeek": 28, "endWeek": 30, "weekType": "ALL", "location": "计算机楼302" }
+          ]
+        },
+        {
+          "name": "大学英语(一)",
+          "teacher": "李娜",
+          "note": null,
+          "blocks": [
+            { "dayOfWeek": 3, "startPeriod": 5, "endPeriod": 6, "startWeek": 1, "endWeek": 15, "weekType": "ODD", "location": "文理楼208" }
+          ]
+        },
+        {
+          "name": "形势与政策",
+          "teacher": "李梅",
+          "note": null,
+          "blocks": [
+            { "dayOfWeek": 2, "startPeriod": 7, "endPeriod": 8, "startWeek": 1, "endWeek": 16, "weekType": "ALL", "location": "文理楼401" }
+          ]
+        }
+      ]
+    }
+  ]
+}

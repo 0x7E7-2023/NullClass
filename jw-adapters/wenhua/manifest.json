@@ -1,0 +1,71 @@
+{
+  "specVersion": 1,
+  "key": "wenhua",
+  "name": "文华学院",
+  "version": "1.0.0",
+  "author": "上游 glxgo（MIT）；移植 NullClass",
+  "homepage": "https://github.com/XingHeYuZhuan/shiguang_warehouse",
+  "loginUrl": "https://jw1.hustwenhua.net/jwglxt/xtgl/login_slogin.html",
+  "scheduleUrlHint": "https://jw1.hustwenhua.net/jwglxt/kbcx/xskbcx_cxXskbcxIndex.html?gnmkdm=N2151&layout=default",
+  "minAppVersionCode": 11,
+  "extract": "extract.js",
+  "parse": "parse.js",
+  "allowHosts": [],
+  "fixtures": [
+    {
+      "name": "基本表格（合成：完全重复的行 / 单周 1-16周(单) / 双周 2-16周(双) / 分段周次 1-4,6-8周 / 全角逗号 / 两位一节 0304 / 5 行脏数据 / 教务节次时间表）",
+      "extracted": "fixtures/basic.extracted.json",
+      "expected": "fixtures/basic.expected.json"
+    },
+    {
+      "name": "单双周写法（合成：1-16周(双) / 1-15周(单) / 双周1-16 / 单周1-15 / 1-8周(单),9-16周(双) / 全角括号 / 认不出单双的隔周、单双周兜底）",
+      "extracted": "fixtures/weeks-parity.extracted.json",
+      "expected": "fixtures/weeks-parity.expected.json"
+    },
+    {
+      "name": "节次时间不完整（合成：教务只给到第 8 节、课表用到第 9-10 节 → 整份回落空课内置节次表）",
+      "extracted": "fixtures/period-times-partial.extracted.json",
+      "expected": "fixtures/period-times-partial.expected.json"
+    },
+    {
+      "name": "节次时间在课表没用到的位置上有缺口（合成：用到 1-2 与 9-10、教务只给了这四节 → 保留真实作息）",
+      "extracted": "fixtures/period-times-gap.extracted.json",
+      "expected": "fixtures/period-times-gap.expected.json"
+    },
+    {
+      "name": "括号里的教学班序号（合成：3-4节(1) 与 (1)1-16周 —— 防御性用例）",
+      "extracted": "fixtures/serial-number.extracted.json",
+      "expected": "fixtures/serial-number.expected.json"
+    },
+    {
+      "name": "周次整串被括号包住（合成：zcd「(1-16周)」单行 —— 旧版把括号组连内容一起删，这一行被判成没周次，整份抛「没有解析到任何课程」）",
+      "extracted": "fixtures/weeks-wrapped.extracted.json",
+      "expected": "fixtures/weeks-wrapped.expected.json"
+    },
+    {
+      "name": "节次整串被括号包住（合成：jcs「(1-2节)」单行 —— 同一处缺陷的节次一侧）",
+      "extracted": "fixtures/sections-wrapped.extracted.json",
+      "expected": "fixtures/sections-wrapped.expected.json"
+    },
+    {
+      "name": "括号写法专场（合成：1-16(周) 周写在括号里 / 1-16周 双 空白隔开的单双 / 全角括号整串包住 (5-6节) 与（2-16周）/ 序号仍整组丢掉 (2)1-8周 与 7-8节(2)）",
+      "extracted": "fixtures/bracket-forms.extracted.json",
+      "expected": "fixtures/bracket-forms.expected.json"
+    },
+    {
+      "name": "总周数被课表里更晚的周次抬高（合成：排到第 22 周 → 总周数 22 并写进 warnings）",
+      "extracted": "fixtures/total-weeks-raised.extracted.json",
+      "expected": "fixtures/total-weeks-raised.expected.json"
+    },
+    {
+      "name": "响应带了记录总数但条数对不上（合成：报 42 条、只取到 3 条 → 出声）",
+      "extracted": "fixtures/reported-total.extracted.json",
+      "expected": "fixtures/reported-total.expected.json"
+    },
+    {
+      "name": "学年读不出来（合成：学期名退化成「第二学期」、第 1 周退回今天所在周的周一）",
+      "extracted": "fixtures/no-year.extracted.json",
+      "expected": "fixtures/no-year.expected.json"
+    }
+  ]
+}

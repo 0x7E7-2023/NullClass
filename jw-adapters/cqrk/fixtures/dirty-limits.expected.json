@@ -1,0 +1,54 @@
+{
+  "specVersion": 1,
+  "kind": "schedule",
+  "ocrAssisted": false,
+  "warnings": [
+    "开学日期无法从教务获取，已按最近的周一（2026-09-07）推算，请在「学期管理」里核对",
+    "教务页面不提供学期总周数与作息时间：总周数按 20 周起算、节次时间按适配器内置的 12 节设定，请在「学期管理」里核对",
+    "课表里出现了内置作息表没有的第 13-16 节，已补上占位时间（20:00 起），请到「学期管理」里核对真实上下课时间",
+    "有 5 个没认出节次、2 个节次超出 16 节 的课程块已跳过（教务页面结构可能已调整，欢迎反馈）。包含：大学物理实验（光学与近代物理测量部分）（欧阳志远）——没认出节次；工程训练（机械制造与自动化基础部分）实训（司马文静）——没认出节次；程序设计基础综合实践训练项目（一）（诸葛明辉）——没认出节次；数据结构与算法课程设计实践项目（二）答辩（上官婉清）——没认出节次；马克思主义基本原理概论专题研…"
+  ],
+  "terms": [
+    {
+      "name": "2026-2027学年第一学期",
+      "firstDay": "2026-09-07",
+      "totalWeeks": 20,
+      "periodTimes": [
+        { "periodIndex": 1, "start": "08:30", "end": "09:15" },
+        { "periodIndex": 2, "start": "09:20", "end": "10:05" },
+        { "periodIndex": 3, "start": "10:20", "end": "11:05" },
+        { "periodIndex": 4, "start": "11:10", "end": "11:55" },
+        { "periodIndex": 5, "start": "14:00", "end": "14:45" },
+        { "periodIndex": 6, "start": "14:50", "end": "15:35" },
+        { "periodIndex": 7, "start": "15:40", "end": "16:25" },
+        { "periodIndex": 8, "start": "16:40", "end": "17:25" },
+        { "periodIndex": 9, "start": "17:30", "end": "18:15" },
+        { "periodIndex": 10, "start": "19:00", "end": "19:45" },
+        { "periodIndex": 11, "start": "19:50", "end": "20:35" },
+        { "periodIndex": 12, "start": "20:40", "end": "21:25" },
+        { "periodIndex": 13, "start": "20:00", "end": "20:45" },
+        { "periodIndex": 14, "start": "21:00", "end": "21:45" },
+        { "periodIndex": 15, "start": "22:00", "end": "22:45" },
+        { "periodIndex": 16, "start": "23:00", "end": "23:45" }
+      ],
+      "courses": [
+        {
+          "name": "大学英语（一）",
+          "teacher": "王芳",
+          "note": null,
+          "blocks": [
+            {
+              "dayOfWeek": 1,
+              "startPeriod": 15,
+              "endPeriod": 16,
+              "startWeek": 1,
+              "endWeek": 16,
+              "weekType": "ALL",
+              "location": "博学楼B203"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,82 @@
+{
+  "specVersion": 1,
+  "kind": "schedule",
+  "ocrAssisted": false,
+  "warnings": [
+    "开学日期无法从教务获取，已按最近的周一（2026-09-07）推算，请在「学期管理」里核对",
+    "教务页面不提供学期总周数与作息时间：总周数按 22 周、节次时间按适配器内置的 11 节设定，请在「学期管理」里核对",
+    "课表里有 1 个课程块没能解析（节次读不出 1 个），已跳过（如「大学物理(一)」），欢迎反馈",
+    "课表里最晚的课在第 22 周，学期总周数已从内置的 20 周抬高到 22 周，请在「学期管理」里核对",
+    "课表里用到了第 12 节，而内置作息表只有 11 节：这几节在课表里不会显示上下课时间，请在「节次设置」里补上"
+  ],
+  "terms": [
+    {
+      "name": "2026-2027学年第一学期",
+      "firstDay": "2026-09-07",
+      "totalWeeks": 22,
+      "periodTimes": [
+        { "periodIndex": 1, "start": "10:00", "end": "10:45" },
+        { "periodIndex": 2, "start": "10:55", "end": "11:40" },
+        { "periodIndex": 3, "start": "11:55", "end": "12:40" },
+        { "periodIndex": 4, "start": "12:50", "end": "13:35" },
+        { "periodIndex": 5, "start": "13:45", "end": "14:30" },
+        { "periodIndex": 6, "start": "16:00", "end": "16:45" },
+        { "periodIndex": 7, "start": "16:55", "end": "17:40" },
+        { "periodIndex": 8, "start": "17:55", "end": "18:40" },
+        { "periodIndex": 9, "start": "18:50", "end": "19:35" },
+        { "periodIndex": 10, "start": "19:50", "end": "20:35" },
+        { "periodIndex": 11, "start": "20:45", "end": "21:30" }
+      ],
+      "courses": [
+        {
+          "name": "高等数学A(一)",
+          "teacher": "王丽",
+          "note": null,
+          "blocks": [
+            { "dayOfWeek": 1, "startPeriod": 1, "endPeriod": 2, "startWeek": 1, "endWeek": 16, "weekType": "ALL", "location": "教1-101" }
+          ]
+        },
+        {
+          "name": "程序设计基础",
+          "teacher": "黄伟",
+          "note": null,
+          "blocks": [
+            { "dayOfWeek": 3, "startPeriod": 1, "endPeriod": 2, "startWeek": 1, "endWeek": 16, "weekType": "ALL", "location": "信息楼402" }
+          ]
+        },
+        {
+          "name": "工程制图",
+          "teacher": "周晓兰",
+          "note": null,
+          "blocks": [
+            { "dayOfWeek": 2, "startPeriod": 3, "endPeriod": 5, "startWeek": 1, "endWeek": 12, "weekType": "ALL", "location": "制图室201" }
+          ]
+        },
+        {
+          "name": "军事理论",
+          "teacher": "何军",
+          "note": null,
+          "blocks": [
+            { "dayOfWeek": 4, "startPeriod": 9, "endPeriod": 10, "startWeek": 1, "endWeek": 12, "weekType": "ALL", "location": "文科楼105" }
+          ]
+        },
+        {
+          "name": "毕业实习",
+          "teacher": "周晓兰",
+          "note": null,
+          "blocks": [
+            { "dayOfWeek": 5, "startPeriod": 7, "endPeriod": 8, "startWeek": 19, "endWeek": 22, "weekType": "ALL", "location": "校外实训基地" }
+          ]
+        },
+        {
+          "name": "形势与政策",
+          "teacher": "李梅",
+          "note": null,
+          "blocks": [
+            { "dayOfWeek": 3, "startPeriod": 11, "endPeriod": 12, "startWeek": 5, "endWeek": 8, "weekType": "ALL", "location": "文科楼105" }
+          ]
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,101 @@
+{
+  "specVersion": 1,
+  "kind": "schedule",
+  "ocrAssisted": false,
+  "warnings": [
+    "正方课表接口不给开学日期，第 1 周按「第一学期 = 9 月 1 日所在周的周一」推算为 2026-08-31，请在学期管理里核对成学校实际开学日",
+    "只导入了教务系统当前选中的学期（2026-2027学年第一学期）；要导入别的学期，请在教务页面里切到那个学期再点「提取课表」",
+    "教务没有给出学期总周数，已按 20 周导入（课表里最晚到第 16 周），如与实际不符可在学期管理里改",
+    "没取到教务的节次时间（节次时间接口没返回数据），节次时间已改用空课内置默认表，请在学期管理里核对作息"
+  ],
+  "terms": [
+    {
+      "name": "2026-2027学年第一学期",
+      "firstDay": "2026-08-31",
+      "totalWeeks": 20,
+      "periodTimes": [],
+      "courses": [
+        {
+          "name": "高等数学A(一)",
+          "teacher": "陈立群",
+          "note": null,
+          "blocks": [
+            {
+              "dayOfWeek": 1,
+              "startPeriod": 1,
+              "endPeriod": 2,
+              "startWeek": 1,
+              "endWeek": 16,
+              "weekType": "ALL",
+              "location": "教学楼A-301"
+            }
+          ]
+        },
+        {
+          "name": "大学英语(三)",
+          "teacher": "林雅琴",
+          "note": null,
+          "blocks": [
+            {
+              "dayOfWeek": 3,
+              "startPeriod": 3,
+              "endPeriod": 4,
+              "startWeek": 2,
+              "endWeek": 16,
+              "weekType": "EVEN",
+              "location": "语音楼B-205"
+            }
+          ]
+        },
+        {
+          "name": "大学物理(一)",
+          "teacher": "王志远",
+          "note": null,
+          "blocks": [
+            {
+              "dayOfWeek": 4,
+              "startPeriod": 5,
+              "endPeriod": 6,
+              "startWeek": 2,
+              "endWeek": 16,
+              "weekType": "ALL",
+              "location": "教学楼A-208"
+            }
+          ]
+        },
+        {
+          "name": "程序设计基础",
+          "teacher": "周敏",
+          "note": null,
+          "blocks": [
+            {
+              "dayOfWeek": 2,
+              "startPeriod": 3,
+              "endPeriod": 4,
+              "startWeek": 1,
+              "endWeek": 8,
+              "weekType": "ALL",
+              "location": "计算机楼B-101"
+            }
+          ]
+        },
+        {
+          "name": "体育(三)",
+          "teacher": "赵斌",
+          "note": null,
+          "blocks": [
+            {
+              "dayOfWeek": 5,
+              "startPeriod": 7,
+              "endPeriod": 8,
+              "startWeek": 3,
+              "endWeek": 16,
+              "weekType": "ALL",
+              "location": "田径场"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

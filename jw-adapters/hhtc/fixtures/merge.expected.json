@@ -1,0 +1,52 @@
+{
+  "specVersion": 1,
+  "kind": "schedule",
+  "ocrAssisted": false,
+  "warnings": [
+    "开学日期无法从教务获取，已按最近的周一（2026-09-07）推算，请在「学期管理」里核对",
+    "课表里最晚排到第 22 周，学期总周数已从默认的 20 周抬高到 22 周，请在「学期管理」里核对",
+    "有 1 个课程块的节次超出 12 节，已跳过（欢迎反馈给适配器）",
+    "有 1 个课程块没能解析出周次或节次，已跳过（教务页面结构可能已调整，欢迎反馈给适配器）",
+    "课表里出现了第 11、12 节（超出怀化学院公布的 10 节作息表），这几节的上下课时间已用空课内置默认表补齐，请核对"
+  ],
+  "terms": [
+    {
+      "name": "2026-2027学年第一学期",
+      "firstDay": "2026-09-07",
+      "totalWeeks": 22,
+      "periodTimes": [
+        { "periodIndex": 1, "start": "08:20", "end": "09:05" },
+        { "periodIndex": 2, "start": "09:15", "end": "10:00" },
+        { "periodIndex": 3, "start": "10:20", "end": "11:05" },
+        { "periodIndex": 4, "start": "11:15", "end": "12:00" },
+        { "periodIndex": 5, "start": "14:20", "end": "15:05" },
+        { "periodIndex": 6, "start": "15:15", "end": "16:00" },
+        { "periodIndex": 7, "start": "16:20", "end": "17:05" },
+        { "periodIndex": 8, "start": "17:15", "end": "18:00" },
+        { "periodIndex": 9, "start": "19:30", "end": "20:15" },
+        { "periodIndex": 10, "start": "20:25", "end": "21:10" },
+        { "periodIndex": 11, "start": "20:20", "end": "21:05" },
+        { "periodIndex": 12, "start": "21:15", "end": "22:00" }
+      ],
+      "courses": [
+        {
+          "name": "大学物理（一）",
+          "teacher": "黄伟",
+          "note": null,
+          "blocks": [
+            { "dayOfWeek": 1, "startPeriod": 1, "endPeriod": 4, "startWeek": 1, "endWeek": 8, "weekType": "ALL", "location": "信息楼402" },
+            { "dayOfWeek": 2, "startPeriod": 11, "endPeriod": 12, "startWeek": 9, "endWeek": 16, "weekType": "ALL", "location": "信息楼402" }
+          ]
+        },
+        {
+          "name": "专业实习",
+          "teacher": "周晓兰",
+          "note": null,
+          "blocks": [
+            { "dayOfWeek": 2, "startPeriod": 5, "endPeriod": 6, "startWeek": 21, "endWeek": 22, "weekType": "ALL", "location": null }
+          ]
+        }
+      ]
+    }
+  ]
+}

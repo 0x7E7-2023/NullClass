@@ -1,0 +1,156 @@
+{
+  "_note": "合成数据，不是真实抓取（测试方案 §3），用例名：周次/节次写法边界 + 超长作息。刻意覆盖上游 cqrk_01.js 最容易写坏的几处：`1-16周(双)`（单双写在「周」字后面）、`[09,10节]`（逗号节次）、`[15节]`（单节）、`1-3,5周`（区间与单周混排）、`1-8周(单),10-16周(双)`（同一格两段各判各的单双）、`6周`/`第9周`（不写成区间的周）、`9-10周(1)`（「周」字后面的括号纯数字序号 —— 上游会把那个 1 也当成第 1 周）、以及三类必须进 warnings 而不能静默丢的块（没节次方括号、没周次、课名写成图片 `<img>`）。教师/教室/课名均为虚构。",
+  "pageUrl": "https://jwxt.cqrk.edu.cn:18080/jsxsd/xskb/xskb_list.do",
+  "now": "2026-09-12",
+  "term": {
+    "code": "2026-2027-1",
+    "name": "2026-2027学年第一学期"
+  },
+  "cols": 8,
+  "rows": [
+    [
+      { "col": 0, "text": "节次", "parts": [] },
+      { "col": 1, "text": "星期一", "parts": [] },
+      { "col": 2, "text": "星期二", "parts": [] },
+      { "col": 3, "text": "星期三", "parts": [] },
+      { "col": 4, "text": "星期四", "parts": [] },
+      { "col": 5, "text": "星期五", "parts": [] },
+      { "col": 6, "text": "星期六", "parts": [] },
+      { "col": 7, "text": "星期日", "parts": [] }
+    ],
+    [
+      { "col": 0, "text": "第1-2节", "parts": [] },
+      {
+        "col": 1,
+        "text": "工程制图孙伟1-20周(双)[01-02节]工程训练中心",
+        "parts": [
+          "工程制图<br><font title=\"教师\">孙伟</font><br><font title=\"周次(节次)\">1-20周(双)[01-02节]</font><br><font title=\"教室\">工程训练中心</font>"
+        ]
+      },
+      { "col": 2, "text": "", "parts": [] },
+      {
+        "col": 3,
+        "text": "数据库原理郑洁1-8周(单),10-16周(双)[01-02节]信息楼302",
+        "parts": [
+          "数据库原理<br><font title=\"教师\">郑洁</font><br><font title=\"周次(节次)\">1-8周(单),10-16周(双)[01-02节]</font><br><font title=\"教室\">信息楼302</font>"
+        ]
+      },
+      { "col": 4, "text": "", "parts": [] },
+      { "col": 5, "text": "", "parts": [] },
+      { "col": 6, "text": "", "parts": [] },
+      { "col": 7, "text": "", "parts": [] }
+    ],
+    [
+      { "col": 0, "text": "第3-4节", "parts": [] },
+      { "col": 1, "text": "", "parts": [] },
+      {
+        "col": 2,
+        "text": "体育（三）陈刚1-18周(单)[03-04节]田径场",
+        "parts": [
+          "体育（三）<br><font title=\"教师\">陈刚</font><br><font title=\"周次(节次)\">1-18周(单)[03-04节]</font><br><font title=\"教室\">田径场</font>"
+        ]
+      },
+      { "col": 3, "text": "", "parts": [] },
+      { "col": 4, "text": "", "parts": [] },
+      { "col": 5, "text": "", "parts": [] },
+      { "col": 6, "text": "", "parts": [] },
+      { "col": 7, "text": "", "parts": [] }
+    ],
+    [
+      { "col": 0, "text": "第5-6节", "parts": [] },
+      { "col": 1, "text": "", "parts": [] },
+      { "col": 2, "text": "", "parts": [] },
+      { "col": 3, "text": "", "parts": [] },
+      { "col": 4, "text": "", "parts": [] },
+      {
+        "col": 5,
+        "text": "创新创业基础吴敏1-3,5周[05-06节]创业园101",
+        "parts": [
+          "创新创业基础<br><font title=\"教师\">吴敏</font><br><font title=\"周次(节次)\">1-3,5周[05-06节]</font><br><font title=\"教室\">创业园101</font>"
+        ]
+      },
+      { "col": 6, "text": "", "parts": [] },
+      { "col": 7, "text": "", "parts": [] }
+    ],
+    [
+      { "col": 0, "text": "第9-10节", "parts": [] },
+      { "col": 1, "text": "", "parts": [] },
+      { "col": 2, "text": "", "parts": [] },
+      {
+        "col": 3,
+        "text": "简明英语（视听说）口语训练林悦6周[09,10节]语言实验室",
+        "parts": [
+          "简明英语（视听说）口语训练<br><font title=\"教师\">林悦</font><br><font title=\"周次(节次)\">6周[09,10节]</font><br><font title=\"教室\">语言实验室</font>"
+        ]
+      },
+      { "col": 4, "text": "", "parts": [] },
+      { "col": 5, "text": "", "parts": [] },
+      { "col": 6, "text": "", "parts": [] },
+      { "col": 7, "text": "", "parts": [] }
+    ],
+    [
+      { "col": 0, "text": "第13节", "parts": [] },
+      { "col": 1, "text": "", "parts": [] },
+      { "col": 2, "text": "", "parts": [] },
+      { "col": 3, "text": "", "parts": [] },
+      {
+        "col": 4,
+        "text": "形势与政策何静第9周[15节]周(1)行政楼报告厅",
+        "parts": [
+          "形势与政策<br><font title=\"教师\">何静</font><br><font title=\"周次(节次)\">第9周[15节]周(1)</font><br><font title=\"教室\">行政楼报告厅</font>"
+        ]
+      },
+      { "col": 5, "text": "", "parts": [] },
+      { "col": 6, "text": "", "parts": [] },
+      { "col": 7, "text": "", "parts": [] }
+    ],
+    [
+      { "col": 0, "text": "第13节", "parts": [] },
+      { "col": 1, "text": "", "parts": [] },
+      { "col": 2, "text": "", "parts": [] },
+      { "col": 3, "text": "", "parts": [] },
+      { "col": 4, "text": "", "parts": [] },
+      { "col": 5, "text": "", "parts": [] },
+      {
+        "col": 6,
+        "text": "数据结构与算法周涛9-10周(1)[09,10节]信息楼305",
+        "parts": [
+          "数据结构与算法<br><font title=\"教师\">周涛</font><br><font title=\"周次(节次)\">9-10周(1)[09,10节]</font><br><font title=\"教室\">信息楼305</font>"
+        ]
+      },
+      { "col": 7, "text": "", "parts": [] }
+    ],
+    [
+      { "col": 0, "text": "第7-8节", "parts": [] },
+      { "col": 1, "text": "", "parts": [] },
+      { "col": 2, "text": "", "parts": [] },
+      { "col": 3, "text": "", "parts": [] },
+      { "col": 4, "text": "", "parts": [] },
+      { "col": 5, "text": "", "parts": [] },
+      {
+        "col": 6,
+        "text": "未命名课程钱进4-16周[07-08节]综合楼201",
+        "parts": [
+          "<img src=\"/images/course-14.png\"><br><font title=\"教师\">钱进</font><br><font title=\"周次(节次)\">4-16周[07-08节]</font><br><font title=\"教室\">综合楼201</font>"
+        ]
+      },
+      { "col": 7, "text": "", "parts": [] }
+    ],
+    [
+      { "col": 0, "text": "第7-8节", "parts": [] },
+      { "col": 1, "text": "", "parts": [] },
+      { "col": 2, "text": "", "parts": [] },
+      { "col": 3, "text": "", "parts": [] },
+      { "col": 4, "text": "", "parts": [] },
+      { "col": 5, "text": "", "parts": [] },
+      { "col": 6, "text": "", "parts": [] },
+      {
+        "col": 7,
+        "text": "大学物理实验（一）陈刚[07-08节]实验楼C305",
+        "parts": [
+          "大学物理实验（一）<br><font title=\"教师\">陈刚</font><br><font title=\"周次(节次)\">[07-08节]</font><br><font title=\"教室\">实验楼C305</font>"
+        ]
+      }
+    ]
+  ]
+}

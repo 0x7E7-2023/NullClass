@@ -1,0 +1,45 @@
+{
+  "specVersion": 1,
+  "key": "glmu",
+  "name": "桂林医科大学",
+  "version": "1.0.0",
+  "author": "上游 xhh李（MIT）；移植 NullClass",
+  "homepage": "https://github.com/XingHeYuZhuan/shiguang_warehouse",
+  "loginUrl": "https://ejwc.glmc.edu.cn/",
+  "minAppVersionCode": 11,
+  "extract": "extract.js",
+  "parse": "parse.js",
+  "allowHosts": [],
+  "fixtures": [
+    {
+      "name": "基本表格（合成 fixture：连堂、三节区间连堂 05-07、分段周次、单双周、HTML 实体、3 行脏数据）",
+      "extracted": "fixtures/basic.extracted.json",
+      "expected": "fixtures/basic.expected.json"
+    },
+    {
+      "name": "分段单双周写在「周」之后（合成 fixture：2-16周(双) / 1-15周(单) / 1-8周(单),9-16周(双) / 单双周 / 双周1-16）",
+      "extracted": "fixtures/weeks-parity.extracted.json",
+      "expected": "fixtures/weeks-parity.expected.json"
+    },
+    {
+      "name": "课表里出现晚于 20 周的周次（合成 fixture：1-25周 —— 总周数被抬高，必须在 warnings 里说出来）",
+      "extracted": "fixtures/late-week.extracted.json",
+      "expected": "fixtures/late-week.expected.json"
+    },
+    {
+      "name": "周次栏有认不出的写法 + 节次带文字标签（合成 fixture：zc=「第周」必须进 warnings；jcdm=「第9节」要读成第 9 节）",
+      "extracted": "fixtures/odd-week-text.extracted.json",
+      "expected": "fixtures/odd-week-text.expected.json"
+    },
+    {
+      "name": "接口没回 total、按翻页取全（合成 fixture）",
+      "extracted": "fixtures/no-total.extracted.json",
+      "expected": "fixtures/no-total.expected.json"
+    },
+    {
+      "name": "接口没回 total 且翻到了页数上限（合成 fixture）",
+      "extracted": "fixtures/no-total-truncated.extracted.json",
+      "expected": "fixtures/no-total-truncated.expected.json"
+    }
+  ]
+}

@@ -1,0 +1,52 @@
+{
+  "specVersion": 1,
+  "kind": "schedule",
+  "ocrAssisted": false,
+  "warnings": [
+    "开学日期无法从教务获取，已按最近的周一（2026-09-07）推算，请在「学期管理」里核对",
+    "教务页面不提供作息时间：节次时间按适配器内置的 12 节设定，请在「学期管理」里核对",
+    "课表里用到了第 22 周，超过适配器内置的 20 周：学期总周数已按 22 周导入，请在「学期管理」里核对",
+    "有 2 处课程信息没能解析出周次或节次，已跳过：顶岗实习、军事理论（教务页面结构可能已调整，欢迎反馈给适配器）",
+    "没能识别出学年学期名称，学期名已用「湖南信息职业技术学院课表」占位，请在「学期管理」里改名"
+  ],
+  "terms": [
+    {
+      "name": "湖南信息职业技术学院课表",
+      "firstDay": "2026-09-07",
+      "totalWeeks": 22,
+      "periodTimes": [
+        { "periodIndex": 1, "start": "08:30", "end": "09:10" },
+        { "periodIndex": 2, "start": "09:20", "end": "10:00" },
+        { "periodIndex": 3, "start": "10:20", "end": "11:00" },
+        { "periodIndex": 4, "start": "11:10", "end": "11:50" },
+        { "periodIndex": 5, "start": "14:00", "end": "14:40" },
+        { "periodIndex": 6, "start": "14:50", "end": "15:30" },
+        { "periodIndex": 7, "start": "15:50", "end": "16:30" },
+        { "periodIndex": 8, "start": "16:40", "end": "17:20" },
+        { "periodIndex": 9, "start": "18:40", "end": "19:20" },
+        { "periodIndex": 10, "start": "19:30", "end": "20:10" },
+        { "periodIndex": 11, "start": "20:20", "end": "21:00" },
+        { "periodIndex": 12, "start": "21:10", "end": "21:50" }
+      ],
+      "courses": [
+        {
+          "name": "高等数学A(一)",
+          "teacher": "刘敏",
+          "note": null,
+          "blocks": [
+            { "dayOfWeek": 1, "startPeriod": 1, "endPeriod": 2, "startWeek": 5, "endWeek": 8, "weekType": "ALL", "location": "数学楼103" },
+            { "dayOfWeek": 1, "startPeriod": 1, "endPeriod": 2, "startWeek": 12, "endWeek": 16, "weekType": "ALL", "location": "数学楼103" }
+          ]
+        },
+        {
+          "name": "毕业设计",
+          "teacher": "陈明",
+          "note": null,
+          "blocks": [
+            { "dayOfWeek": 5, "startPeriod": 5, "endPeriod": 6, "startWeek": 1, "endWeek": 22, "weekType": "ALL", "location": "设计室" }
+          ]
+        }
+      ]
+    }
+  ]
+}

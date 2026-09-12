@@ -1,0 +1,99 @@
+{
+  "specVersion": 1,
+  "kind": "schedule",
+  "ocrAssisted": false,
+  "warnings": [
+    "学期是按当前日期推算的（2026-2027学年第一学期）。如果这不是你要导入的学期，请在学期管理里修改。",
+    "教务没有给出学期总周数，已取 20 周（课表里最晚到第 16 周，学校作息按 20 周），如与实际不符可在学期管理里改。",
+    "上下课时间取自适配器内置的桂医作息表（第一节 08:30），下午与晚上的时间未能与学校公开作息表核对一致，请在「学期管理」里核对一遍。",
+    "有 1 条课程记录信息不完整，已跳过（缺周次 1 条）。",
+    "有 1 条课程记录的周次栏里有认不出的写法（原文如「第」），这些段落已被忽略；请核对课表，并把这所学校的周次写法反馈给适配器作者。"
+  ],
+  "terms": [
+    {
+      "name": "2026-2027学年第一学期",
+      "firstDay": "2026-09-07",
+      "totalWeeks": 20,
+      "periodTimes": [
+        {
+          "periodIndex": 1,
+          "start": "08:30",
+          "end": "09:10"
+        },
+        {
+          "periodIndex": 2,
+          "start": "09:20",
+          "end": "10:00"
+        },
+        {
+          "periodIndex": 3,
+          "start": "10:10",
+          "end": "10:50"
+        },
+        {
+          "periodIndex": 4,
+          "start": "11:00",
+          "end": "11:40"
+        },
+        {
+          "periodIndex": 5,
+          "start": "11:50",
+          "end": "12:30"
+        },
+        {
+          "periodIndex": 6,
+          "start": "14:30",
+          "end": "15:10"
+        },
+        {
+          "periodIndex": 7,
+          "start": "15:20",
+          "end": "16:00"
+        },
+        {
+          "periodIndex": 8,
+          "start": "16:10",
+          "end": "16:50"
+        },
+        {
+          "periodIndex": 9,
+          "start": "17:00",
+          "end": "17:40"
+        },
+        {
+          "periodIndex": 10,
+          "start": "19:00",
+          "end": "19:40"
+        },
+        {
+          "periodIndex": 11,
+          "start": "19:50",
+          "end": "20:30"
+        },
+        {
+          "periodIndex": 12,
+          "start": "20:40",
+          "end": "21:20"
+        }
+      ],
+      "courses": [
+        {
+          "name": "医学伦理学",
+          "teacher": "冯十四",
+          "note": null,
+          "blocks": [
+            {
+              "dayOfWeek": 3,
+              "startPeriod": 9,
+              "endPeriod": 9,
+              "startWeek": 1,
+              "endWeek": 16,
+              "weekType": "ALL",
+              "location": "1号教学楼105"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

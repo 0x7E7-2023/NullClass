@@ -1,0 +1,102 @@
+{
+  "_note": "合成数据，不是真实抓取：按中国石油大学（华东）强智学生端课表页（/jsxsd/xskb/xskb_list.do）的 DOM 形状编造，只用来回归 parse.js 的转换逻辑。这一份专打**周次写法**（第一批 hbmu 把「1-16周(双)」解析成每周都上、CI 却是绿的，就是这里没覆盖）。用例名：周次写法（单/双在括号里、单/双在「周」字后面、双周前缀、只有部分分段带标记、第N周、见通知、越界周次、节次写在周次前面、括号里的数字不是周次）。最后一条（(1-2)1-16周）是**防御性用例**：那个括号数字是节次之类的东西，不是周次，真实页面是否长这样没有账号验证过。预期值按移植手册 §4.1/§4.2 独立推出。",
+  "now": "2026-09-12",
+  "term": { "code": "2026-2027-1", "name": "2026-2027学年第一学期" },
+  "rows": [
+    [
+      { "text": "节次", "parts": [] },
+      { "text": "星期一", "parts": [] },
+      { "text": "星期二", "parts": [] },
+      { "text": "星期三", "parts": [] },
+      { "text": "星期四", "parts": [] },
+      { "text": "星期五", "parts": [] },
+      { "text": "星期六", "parts": [] },
+      { "text": "星期日", "parts": [] }
+    ],
+    [
+      { "text": "第1-2节", "parts": [] },
+      {
+        "text": "大学体育(一)李强1-15(单)[01-02节]体育馆",
+        "parts": [
+          "<font color=\"#000000\">大学体育(一)</font><br><font title=\"教师\">李强</font><br><font title=\"周次(节次)\">1-15(单)[01-02节]</font><br><font title=\"教室\">体育馆</font>"
+        ]
+      },
+      {
+        "text": "大学物理(上)王强1-16周(双)[01-02节]基础楼B201",
+        "parts": [
+          "<font color=\"#000000\">大学物理(上)</font><br><font title=\"教师\">王强</font><br><font title=\"周次(节次)\">1-16周(双)[01-02节]</font><br><font title=\"教室\">基础楼B201</font>"
+        ]
+      },
+      { "text": "", "parts": [] },
+      {
+        "text": "军事理论何军双周2-6、10[01-02节]南教楼203",
+        "parts": [
+          "<font color=\"#000000\">军事理论</font><br><font title=\"教师\">何军</font><br><font title=\"周次(节次)\">双周2-6、10[01-02节]</font><br><font title=\"教室\">南教楼203</font>"
+        ]
+      },
+      { "text": "", "parts": [] },
+      { "text": "", "parts": [] },
+      { "text": "", "parts": [] }
+    ],
+    [
+      { "text": "第3-4节", "parts": [] },
+      {
+        "text": "中国近现代史纲要刘敏1-8周,10-16周(双)[03-04节]文理楼105",
+        "parts": [
+          "<font color=\"#000000\">中国近现代史纲要</font><br><font title=\"教师\">刘敏</font><br><font title=\"周次(节次)\">1-8周,10-16周(双)[03-04节]</font><br><font title=\"教室\">文理楼105</font>"
+        ]
+      },
+      { "text": "", "parts": [] },
+      {
+        "text": "石油工程概论孙涛第3周[03-04节]工科楼A502",
+        "parts": [
+          "<font color=\"#000000\">石油工程概论</font><br><font title=\"教师\">孙涛</font><br><font title=\"周次(节次)\">第3周[03-04节]</font><br><font title=\"教室\">工科楼A502</font>"
+        ]
+      },
+      {
+        "text": "形势与政策李梅见通知[03-04节]文理楼401",
+        "parts": [
+          "<font color=\"#000000\">形势与政策</font><br><font title=\"教师\">李梅</font><br><font title=\"周次(节次)\">见通知[03-04节]</font><br><font title=\"教室\">文理楼401</font>"
+        ]
+      },
+      { "text": "", "parts": [] },
+      { "text": "", "parts": [] },
+      { "text": "", "parts": [] }
+    ],
+    [
+      { "text": "第5-6节", "parts": [] },
+      {
+        "text": "程序设计基础(C)陈静28-31(周)[05-06节]计算机楼302",
+        "parts": [
+          "<font color=\"#000000\">程序设计基础(C)</font><br><font title=\"教师\">陈静</font><br><font title=\"周次(节次)\">28-31(周)[05-06节]</font><br><font title=\"教室\">计算机楼302</font>"
+        ]
+      },
+      { "text": "", "parts": [] },
+      {
+        "text": "大学英语(一)李娜第5-6节 1-16周(单)文理楼208",
+        "parts": [
+          "<font color=\"#000000\">大学英语(一)</font><br><font title=\"教师\">李娜</font><br><font title=\"周次(节次)\">第5-6节 1-16周(单)</font><br><font title=\"教室\">文理楼208</font>"
+        ]
+      },
+      { "text": "", "parts": [] },
+      { "text": "", "parts": [] },
+      { "text": "", "parts": [] },
+      { "text": "", "parts": [] }
+    ],
+    [
+      { "text": "第7-8节", "parts": [] },
+      { "text": "", "parts": [] },
+      {
+        "text": "形势与政策李梅(1-2)1-16周[07-08节]文理楼401",
+        "parts": [
+          "<font color=\"#000000\">形势与政策</font><br><font title=\"教师\">李梅</font><br><font title=\"周次(节次)\">(1-2)1-16周[07-08节]</font><br><font title=\"教室\">文理楼401</font>"
+        ]
+      },
+      { "text": "", "parts": [] },
+      { "text": "", "parts": [] },
+      { "text": "", "parts": [] },
+      { "text": "", "parts": [] },
+      { "text": "", "parts": [] }
+    ]
+  ]
+}

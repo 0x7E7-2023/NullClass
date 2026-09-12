@@ -1,0 +1,60 @@
+{
+  "_note": "合成 fixture（不是真实抓取）：形状按上游 shiguang_warehouse 的 ZZU/zzu.js 实际读取的字段编造，我们没有该校账号 —— 见 docs/jw-adapter-testing.md §3。课程、教师、教室均为虚构。这份专挑一条边界（jstc 在这个位置出过错）：校历（startDate 2025-09-01 / endDate 2025-12-21）只数得出 16 周，课表里却有排到第 20 周的课，parse.js 按课表把学期总周数抬到 20 周时**必须**写进 warnings，否则用户看到的总周数与教务给的对不上却没有任何线索。",
+  "term": {
+    "id": "512",
+    "label": "2025-2026学年第一学期",
+    "pickedBy": "url"
+  },
+  "semesters": [
+    {
+      "id": "512",
+      "label": "2025-2026学年第一学期",
+      "selected": true
+    }
+  ],
+  "semesterMeta": {
+    "id": 512,
+    "nameZh": "2025-2026学年第一学期",
+    "startDate": "2025-09-01",
+    "endDate": "2025-12-21",
+    "weekStartOnSunday": false
+  },
+  "activities": [
+    {
+      "courseName": "高等数学(一)",
+      "teachers": ["王丽"],
+      "room": "理科园 305",
+      "weekday": 1,
+      "startUnit": 1,
+      "endUnit": 2,
+      "weekIndexes": [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16]
+    },
+    {
+      "courseName": "专题讲座",
+      "teachers": ["钱进"],
+      "room": "学术报告厅",
+      "weekday": 3,
+      "startUnit": 5,
+      "endUnit": 6,
+      "weekIndexes": [18, 19, 20]
+    }
+  ],
+  "courseUnitList": [
+    { "indexNo": 1, "startTime": 800, "endTime": 845 },
+    { "indexNo": 2, "startTime": 855, "endTime": 940 },
+    { "indexNo": 3, "startTime": 1010, "endTime": 1055 },
+    { "indexNo": 4, "startTime": 1105, "endTime": 1150 },
+    { "indexNo": 5, "startTime": 1400, "endTime": 1445 },
+    { "indexNo": 6, "startTime": 1455, "endTime": 1540 },
+    { "indexNo": 7, "startTime": 1610, "endTime": 1655 },
+    { "indexNo": 8, "startTime": 1705, "endTime": 1750 },
+    { "indexNo": 9, "startTime": 1900, "endTime": 1945 },
+    { "indexNo": 10, "startTime": 1955, "endTime": 2040 },
+    { "indexNo": 11, "startTime": 2050, "endTime": 2135 },
+    { "indexNo": 12, "startTime": 2140, "endTime": 2225 }
+  ],
+  "pageInfo": {
+    "root": { "totalCount": 2 },
+    "tableVm": null
+  }
+}

@@ -68,6 +68,78 @@
       "name": "湖北医药学院",
       "version": "1.0.0",
       "path": "hbmu"
+    },
+    {
+      "key": "cfec",
+      "name": "重庆财经学院",
+      "version": "1.0.0",
+      "path": "cfec"
+    },
+    {
+      "key": "hblgxy",
+      "name": "淮北理工学院",
+      "version": "1.0.0",
+      "path": "hblgxy"
+    },
+    {
+      "key": "glmu",
+      "name": "桂林医科大学",
+      "version": "1.0.0",
+      "path": "glmu"
+    },
+    {
+      "key": "xjie",
+      "name": "新疆工程学院",
+      "version": "1.0.0",
+      "path": "xjie"
+    },
+    {
+      "key": "wenhua",
+      "name": "文华学院",
+      "version": "1.0.0",
+      "path": "wenhua"
+    },
+    {
+      "key": "hniu",
+      "name": "湖南信息职业技术学院",
+      "version": "1.0.0",
+      "path": "hniu"
+    },
+    {
+      "key": "upc",
+      "name": "中国石油大学（华东）",
+      "version": "1.0.0",
+      "path": "upc"
+    },
+    {
+      "key": "huel",
+      "name": "河南财经政法大学",
+      "version": "1.0.0",
+      "path": "huel"
+    },
+    {
+      "key": "hhtc",
+      "name": "怀化学院",
+      "version": "1.0.0",
+      "path": "hhtc"
+    },
+    {
+      "key": "cqrk",
+      "name": "重庆人文科技学院",
+      "version": "1.0.0",
+      "path": "cqrk"
+    },
+    {
+      "key": "gxdlxy",
+      "name": "广西电力职业技术学院",
+      "version": "1.0.0",
+      "path": "gxdlxy"
+    },
+    {
+      "key": "zzu",
+      "name": "郑州大学",
+      "version": "1.0.0",
+      "path": "zzu"
     }
   ]
 }

@@ -1,0 +1,137 @@
+{
+  "_note": "合成数据，不是真实抓取：按中国石油大学（华东）强智学生端课表页（/jsxsd/xskb/xskb_list.do）的 DOM 形状编造，只用来回归 parse.js 的转换逻辑。形状取自上游 upc.js 的选择器（#timetable、div.kbcontent、课名放在无 title 的 <font> 里、font[title=教师|周次(节次)|教室]）与其它强智部署公开的页面结构。预期值是按移植手册 §4 独立推出的，不是把 parse.js 的输出贴回来的。拿到真实 dump 请替换这一对 fixture。用例名：基本课表（多门课同格、同一门课跨两天、缺教室、课名不在 font 里的写法）。",
+  "now": "2026-09-12",
+  "term": { "code": "2026-2027-1", "name": "2026-2027学年第一学期" },
+  "rows": [
+    [
+      { "text": "节次", "parts": [] },
+      { "text": "星期一", "parts": [] },
+      { "text": "星期二", "parts": [] },
+      { "text": "星期三", "parts": [] },
+      { "text": "星期四", "parts": [] },
+      { "text": "星期五", "parts": [] },
+      { "text": "星期六", "parts": [] },
+      { "text": "星期日", "parts": [] }
+    ],
+    [
+      { "text": "第1-2节", "parts": [] },
+      {
+        "text": "高等数学A(一)张伟1-16(周)[01-02节]南教楼101",
+        "parts": [
+          "<font color=\"#000000\">高等数学A(一)</font><br><font title=\"教师\">张伟</font><br><font title=\"周次(节次)\">1-16(周)[01-02节]</font><br><font title=\"教室\">南教楼101</font>"
+        ]
+      },
+      {
+        "text": "大学英语(一)李娜1-16(周)[01-02节]文理楼208",
+        "parts": [
+          "<font color=\"#000000\">大学英语(一)</font><br><font title=\"教师\">李娜</font><br><font title=\"周次(节次)\">1-16(周)[01-02节]</font><br><font title=\"教室\">文理楼208</font>"
+        ]
+      },
+      { "text": "", "parts": [] },
+      {
+        "text": "大学物理(上)王强1-8(周)[01-02节]基础楼B201",
+        "parts": [
+          "<font color=\"#000000\">大学物理(上)</font><br><font title=\"教师\">王强</font><br><font title=\"周次(节次)\">1-8(周)[01-02节]</font><br><font title=\"教室\">基础楼B201</font>"
+        ]
+      },
+      {
+        "text": "程序设计基础(C)陈静1-16(周)[01-02节]计算机楼302",
+        "parts": [
+          "<font color=\"#000000\">程序设计基础(C)</font><br><font title=\"教师\">陈静</font><br><font title=\"周次(节次)\">1-16(周)[01-02节]</font><br><font title=\"教室\">计算机楼302</font>"
+        ]
+      },
+      { "text": "", "parts": [] },
+      { "text": "", "parts": [] }
+    ],
+    [
+      { "text": "第3-4节", "parts": [] },
+      {
+        "text": "高等数学A(一)张伟1-16(周)[03-04节]南教楼101线性代数张伟9-16(周)[03-04节]南教楼101",
+        "parts": [
+          "<font color=\"#000000\">高等数学A(一)</font><br><font title=\"教师\">张伟</font><br><font title=\"周次(节次)\">1-16(周)[03-04节]</font><br><font title=\"教室\">南教楼101</font>---------------------<font color=\"#000000\">线性代数</font><br><font title=\"教师\">张伟</font><br><font title=\"周次(节次)\">9-16(周)[03-04节]</font><br><font title=\"教室\">南教楼101</font>"
+        ]
+      },
+      { "text": "", "parts": [] },
+      {
+        "text": "中国近现代史纲要刘敏1-16(周)[03-04节]文理楼105",
+        "parts": [
+          "<font color=\"#000000\">中国近现代史纲要</font><br><font title=\"教师\">刘敏</font><br><font title=\"周次(节次)\">1-16(周)[03-04节]</font><br><font title=\"教室\">文理楼105</font>"
+        ]
+      },
+      { "text": "", "parts": [] },
+      {
+        "text": "程序设计基础(C)陈静1-16(周)[03-04节]计算机楼302",
+        "parts": [
+          "<font color=\"#000000\">程序设计基础(C)</font><br><font title=\"教师\">陈静</font><br><font title=\"周次(节次)\">1-16(周)[03-04节]</font><br><font title=\"教室\">计算机楼302</font>"
+        ]
+      },
+      { "text": "", "parts": [] },
+      { "text": "", "parts": [] }
+    ],
+    [
+      { "text": "第5-6节", "parts": [] },
+      { "text": "", "parts": [] },
+      {
+        "text": "大学英语(一)李娜1-16(周)[05-06节]文理楼208",
+        "parts": [
+          "<font color=\"#000000\">大学英语(一)</font><br><font title=\"教师\">李娜</font><br><font title=\"周次(节次)\">1-16(周)[05-06节]</font><br><font title=\"教室\">文理楼208</font>"
+        ]
+      },
+      { "text": "", "parts": [] },
+      {
+        "text": "体育(一)赵刚1-16(周)[05-06节]体育馆",
+        "parts": [
+          "<font color=\"#000000\">体育(一)</font><br><font title=\"教师\">赵刚</font><br><font title=\"周次(节次)\">1-16(周)[05-06节]</font><br><font title=\"教室\">体育馆</font>"
+        ]
+      },
+      {
+        "text": "军事理论何军1-8(周)[05-06节]南教楼203大学生心理健康教育周丹9-16(周)[05-06节]文理楼306",
+        "parts": [
+          "<font color=\"#000000\">军事理论</font><br><font title=\"教师\">何军</font><br><font title=\"周次(节次)\">1-8(周)[05-06节]</font><br><font title=\"教室\">南教楼203</font>---------------------<font color=\"#000000\">大学生心理健康教育</font><br><font title=\"教师\">周丹</font><br><font title=\"周次(节次)\">9-16(周)[05-06节]</font><br><font title=\"教室\">文理楼306</font>"
+        ]
+      },
+      { "text": "", "parts": [] },
+      { "text": "", "parts": [] }
+    ],
+    [
+      { "text": "第7-8节", "parts": [] },
+      {
+        "text": "大学物理(上)王强1-8(周)[07-08节]",
+        "parts": [
+          "<font color=\"#000000\">大学物理(上)</font><br><font title=\"教师\">王强</font><br><font title=\"周次(节次)\">1-8(周)[07-08节]</font>"
+        ]
+      },
+      { "text": "", "parts": [] },
+      { "text": "", "parts": [] },
+      {
+        "text": "形势与政策李梅1-4,6-8,10-16(周)[07-08节]文理楼401",
+        "parts": [
+          "形势与政策<br><font title=\"教师\">李梅</font><br><font title=\"周次(节次)\">1-4,6-8,10-16(周)[07-08节]</font><br><font title=\"教室\">文理楼401</font>"
+        ]
+      },
+      { "text": "", "parts": [] },
+      { "text": "", "parts": [] },
+      { "text": "", "parts": [] }
+    ],
+    [
+      { "text": "第9-10节", "parts": [] },
+      { "text": "", "parts": [] },
+      { "text": "", "parts": [] },
+      {
+        "text": "石油工程概论孙涛9-16(周)[09-10节]工科楼A502",
+        "parts": [
+          "<font color=\"#000000\">石油工程概论</font><br><font title=\"教师\">孙涛</font><br><font title=\"周次(节次)\">9-16(周)[09-10节]</font><br><font title=\"教室\">工科楼A502</font>"
+        ]
+      },
+      { "text": "", "parts": [] },
+      {
+        "text": "音乐鉴赏吴倩1-16(周)[09-10节]大学生活动中心",
+        "parts": [
+          "<font color=\"#000000\">音乐鉴赏</font><br><font title=\"教师\">吴倩</font><br><font title=\"周次(节次)\">1-16(周)[09-10节]</font><br><font title=\"教室\">大学生活动中心</font>"
+        ]
+      },
+      { "text": "", "parts": [] },
+      { "text": "", "parts": [] }
+    ]
+  ]
+}

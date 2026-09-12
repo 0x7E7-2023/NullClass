@@ -1,0 +1,112 @@
+{
+  "_note": "合成数据，不是真实抓取：按中国石油大学（华东）强智学生端课表页（/jsxsd/xskb/xskb_list.do）的 DOM 形状编造，只用来回归 parse.js 的转换逻辑。用例名：边界（[0102节] 连堂两位写法、周次与节次拆成两条 font、教室名里的括号数字、只有分隔线的空格子、节次标签不完整时按行标签定位、双周写在「周」后 + [09,10节]、只剩节次残片算不出课名、节次解析跑飞、第 13-14 节超出内置作息表）。其中「第 13-14 节」「[12345678节]」「只剩节次残片」是**防御性用例**（上游内置作息只有 12 节），不是已知的真实写法。预期值按移植手册 §4 独立推出。",
+  "now": "2026-09-12",
+  "term": { "code": "2026-2027-1", "name": "2026-2027学年第一学期" },
+  "rows": [
+    [
+      { "text": "节次", "parts": [] },
+      { "text": "星期一", "parts": [] },
+      { "text": "星期二", "parts": [] },
+      { "text": "星期三", "parts": [] },
+      { "text": "星期四", "parts": [] },
+      { "text": "星期五", "parts": [] },
+      { "text": "星期六", "parts": [] },
+      { "text": "星期日", "parts": [] }
+    ],
+    [
+      { "text": "第1-2节", "parts": [] },
+      {
+        "text": "高等数学A(一)张伟1-16(周)[0102节]南教楼(1)101",
+        "parts": [
+          "<font color=\"#000000\">高等数学A(一)</font><br><font title=\"教师\">张伟</font><br><font title=\"周次(节次)\">1-16(周)[0102节]</font><br><font title=\"教室\">南教楼(1)101</font>"
+        ]
+      },
+      { "text": "", "parts": [] },
+      { "text": "", "parts": [] },
+      { "text": "", "parts": [] },
+      {
+        "text": "---------------------",
+        "parts": [
+          "---------------------"
+        ]
+      },
+      { "text": "", "parts": [] },
+      { "text": "", "parts": [] }
+    ],
+    [
+      { "text": "第5-6节", "parts": [] },
+      { "text": "", "parts": [] },
+      {
+        "text": "大学英语(一)李娜3-9(周)[0506节]文理楼208",
+        "parts": [
+          "<font color=\"#000000\">大学英语(一)</font><br><font title=\"教师\">李娜</font><br><font title=\"周次\">3-9(周)</font><br><font title=\"节次\">[0506节]</font><br><font title=\"教室\">文理楼208</font>"
+        ]
+      },
+      { "text": "", "parts": [] },
+      { "text": "", "parts": [] },
+      { "text": "", "parts": [] },
+      { "text": "", "parts": [] },
+      { "text": "", "parts": [] }
+    ],
+    [
+      { "text": "第7-8节", "parts": [] },
+      {
+        "text": "大学物理(上)王强1-8(周)基础楼B201",
+        "parts": [
+          "<font color=\"#000000\">大学物理(上)</font><br><font title=\"教师\">王强</font><br><font title=\"周次(节次)\">1-8(周)</font><br><font title=\"教室\">基础楼B201</font>"
+        ]
+      },
+      {
+        "text": "军事理论何军",
+        "parts": [
+          "<font color=\"#000000\">军事理论</font><br><font title=\"教师\">何军</font>"
+        ]
+      },
+      { "text": "", "parts": [] },
+      { "text": "", "parts": [] },
+      { "text": "", "parts": [] },
+      { "text": "", "parts": [] },
+      { "text": "", "parts": [] }
+    ],
+    [
+      { "text": "第9-10节", "parts": [] },
+      { "text": "", "parts": [] },
+      { "text": "", "parts": [] },
+      {
+        "text": "石油工程概论孙涛2-16双周[09,10节]工科楼A502",
+        "parts": [
+          "<font color=\"#000000\">石油工程概论</font><br><font title=\"教师\">孙涛</font><br><font title=\"周次(节次)\">2-16双周[09,10节]</font><br><font title=\"教室\">工科楼A502</font>"
+        ]
+      },
+      {
+        "text": "3-4某某1-16(周)[09-10节]",
+        "parts": [
+          "<font color=\"#000000\">3-4</font><br><font title=\"教师\">某某</font><br><font title=\"周次(节次)\">1-16(周)[09-10节]</font>"
+        ]
+      },
+      {
+        "text": "军事理论何军1-16(周)[12345678节]南教楼203",
+        "parts": [
+          "<font color=\"#000000\">军事理论</font><br><font title=\"教师\">何军</font><br><font title=\"周次(节次)\">1-16(周)[12345678节]</font><br><font title=\"教室\">南教楼203</font>"
+        ]
+      },
+      { "text": "", "parts": [] },
+      { "text": "", "parts": [] }
+    ],
+    [
+      { "text": "第13-14节", "parts": [] },
+      {
+        "text": "程序设计基础(C)陈静1-16(周)[13-14节]计算机楼302",
+        "parts": [
+          "<font color=\"#000000\">程序设计基础(C)</font><br><font title=\"教师\">陈静</font><br><font title=\"周次(节次)\">1-16(周)[13-14节]</font><br><font title=\"教室\">计算机楼302</font>"
+        ]
+      },
+      { "text": "", "parts": [] },
+      { "text": "", "parts": [] },
+      { "text": "", "parts": [] },
+      { "text": "", "parts": [] },
+      { "text": "", "parts": [] },
+      { "text": "", "parts": [] }
+    ]
+  ]
+}

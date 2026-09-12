@@ -1,0 +1,60 @@
+{
+  "specVersion": 1,
+  "kind": "schedule",
+  "ocrAssisted": false,
+  "warnings": [
+    "开学日期无法从教务获取，已按提取当天的周首日（2026-09-06，周日）推算，请在「学期管理」里核对（该口径取自上游适配器声明的 firstDayOfWeek=7）",
+    "教务不给学期总周数与作息时间：总周数按 20 周、节次时间按适配器内置的 12 节设定，请在「学期管理」里核对",
+    "课表里出现了第 16 节：内置作息表只有 12 节，第 13 节起已按每节 45 分钟顺延补出（补到第 14 节），请核对",
+    "有 1 个课程块用到了第 15 节及以后：再往后顺延就超过 23:59，作息表补不出这些节次的上下课时间。课块已保留，但没有时刻、课表上也画不出来，请核对"
+  ],
+  "terms": [
+    {
+      "name": "2026-2027学年第一学期",
+      "firstDay": "2026-09-06",
+      "totalWeeks": 20,
+      "periodTimes": [
+        { "periodIndex": 1, "start": "08:00", "end": "08:45" },
+        { "periodIndex": 2, "start": "08:50", "end": "09:35" },
+        { "periodIndex": 3, "start": "09:55", "end": "10:40" },
+        { "periodIndex": 4, "start": "10:45", "end": "11:30" },
+        { "periodIndex": 5, "start": "11:35", "end": "12:20" },
+        { "periodIndex": 6, "start": "14:00", "end": "14:45" },
+        { "periodIndex": 7, "start": "14:50", "end": "15:35" },
+        { "periodIndex": 8, "start": "15:55", "end": "16:40" },
+        { "periodIndex": 9, "start": "16:45", "end": "17:30" },
+        { "periodIndex": 10, "start": "19:00", "end": "19:45" },
+        { "periodIndex": 11, "start": "19:50", "end": "20:35" },
+        { "periodIndex": 12, "start": "20:40", "end": "21:25" },
+        { "periodIndex": 13, "start": "21:35", "end": "22:20" },
+        { "periodIndex": 14, "start": "22:30", "end": "23:15" }
+      ],
+      "courses": [
+        {
+          "name": "大学物理(上)",
+          "teacher": "王强",
+          "note": null,
+          "blocks": [
+            { "dayOfWeek": 1, "startPeriod": 1, "endPeriod": 2, "startWeek": 1, "endWeek": 16, "weekType": "ALL", "location": "基础楼B201" }
+          ]
+        },
+        {
+          "name": "中国近现代史纲要",
+          "teacher": "刘敏",
+          "note": null,
+          "blocks": [
+            { "dayOfWeek": 2, "startPeriod": 3, "endPeriod": 4, "startWeek": 3, "endWeek": 9, "weekType": "ALL", "location": "文理楼105" }
+          ]
+        },
+        {
+          "name": "高等数学A(一)",
+          "teacher": "张伟",
+          "note": null,
+          "blocks": [
+            { "dayOfWeek": 1, "startPeriod": 15, "endPeriod": 16, "startWeek": 1, "endWeek": 16, "weekType": "ALL", "location": "南教楼101" }
+          ]
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,68 @@
+{
+  "specVersion": 1,
+  "kind": "schedule",
+  "ocrAssisted": false,
+  "warnings": [
+    "正方课表接口不给开学日期，第 1 周按「第一学期 = 学年 9 月 1 日所在周的周一」推算为 2026-08-31，请在学期管理里核对成学校实际开学日",
+    "只导入了教务系统当前选中的学期（2026-2027学年第一学期）；要导入别的学期，请在教务页面里切到那个学期再点「提取课表」",
+    "学期总周数取的是课表里出现的最晚周次（30 周），不是校历周数，如与实际不符可在学期管理里改",
+    "有 1 行课表数据没有任何周次，已跳过：如发现少课请反馈",
+    "有 1 处周次的写法超出 1-30 周，超出部分已丢弃（教务给出的周次不正常）"
+  ],
+  "terms": [
+    {
+      "name": "2026-2027学年第一学期",
+      "firstDay": "2026-08-31",
+      "totalWeeks": 30,
+      "periodTimes": [
+        { "periodIndex": 1, "start": "08:00", "end": "08:45" },
+        { "periodIndex": 2, "start": "08:55", "end": "09:40" },
+        { "periodIndex": 3, "start": "09:55", "end": "10:40" },
+        { "periodIndex": 4, "start": "10:50", "end": "11:35" },
+        { "periodIndex": 5, "start": "11:45", "end": "12:30" },
+        { "periodIndex": 6, "start": "13:30", "end": "14:15" },
+        { "periodIndex": 7, "start": "14:25", "end": "15:10" },
+        { "periodIndex": 8, "start": "15:25", "end": "16:10" },
+        { "periodIndex": 9, "start": "16:20", "end": "17:05" },
+        { "periodIndex": 10, "start": "17:15", "end": "18:00" },
+        { "periodIndex": 11, "start": "19:00", "end": "19:45" },
+        { "periodIndex": 12, "start": "19:50", "end": "20:35" },
+        { "periodIndex": 13, "start": "20:40", "end": "21:25" }
+      ],
+      "courses": [
+        {
+          "name": "形势与政策",
+          "teacher": "李国华",
+          "note": null,
+          "blocks": [
+            {
+              "dayOfWeek": 2,
+              "startPeriod": 3,
+              "endPeriod": 4,
+              "startWeek": 1,
+              "endWeek": 30,
+              "weekType": "ALL",
+              "location": "郑东校区 教1-102"
+            }
+          ]
+        },
+        {
+          "name": "大学计算机基础",
+          "teacher": "周敏",
+          "note": null,
+          "blocks": [
+            {
+              "dayOfWeek": 4,
+              "startPeriod": 5,
+              "endPeriod": 6,
+              "startWeek": 1,
+              "endWeek": 16,
+              "weekType": "ALL",
+              "location": "郑东校区 机房A-402"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

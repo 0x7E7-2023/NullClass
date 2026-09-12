@@ -1,0 +1,187 @@
+{
+  "_note": "合成 fixture（不是真实抓取）：按上游 shiguang_warehouse 的 ZZU/zzu.js 实际读取的字段形状编造，我们没有该校账号 —— 见 docs/jw-adapter-testing.md §3。课程、教师、教室均为虚构（脱敏：没有任何真实学号/姓名）。它只保证「同样的输入永远得到同样的输出」，不保证真机上解析正确；拿到真实 dump 后请替换本文件并重跑 :importer:test。本用例覆盖：同课拆两条记录（周次要并集）、单双周、落单一周、连堂、room/building/campus 三种地点、teachers 的数组与字符串两种形态、教学班序号 (1)/[2]、5 条脏记录、2 个看不懂的周次值、教务作息表只给到第 10 节而课表用到第 12 节。",
+  "term": {
+    "id": "512",
+    "label": "2025-2026学年第一学期",
+    "pickedBy": "url"
+  },
+  "semesters": [
+    {
+      "id": "518",
+      "label": "2026-2027学年第一学期",
+      "selected": false
+    },
+    {
+      "id": "512",
+      "label": "2025-2026学年第一学期",
+      "selected": true
+    },
+    {
+      "id": "505",
+      "label": "2024-2025学年第二学期",
+      "selected": false
+    }
+  ],
+  "semesterMeta": {
+    "id": 512,
+    "nameZh": "2025-2026学年第一学期",
+    "startDate": "2025-09-01",
+    "endDate": "2026-01-18",
+    "weekStartOnSunday": false
+  },
+  "activities": [
+    {
+      "courseName": "高等数学(一)",
+      "teachers": ["王丽(1)"],
+      "room": "理科园 305",
+      "weekday": 1,
+      "startUnit": 1,
+      "endUnit": 2,
+      "weekIndexes": [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16]
+    },
+    {
+      "courseName": "高等数学(一)",
+      "teachers": ["王丽(1)"],
+      "room": "理科园 305",
+      "weekday": 1,
+      "startUnit": 1,
+      "endUnit": 2,
+      "weekIndexes": [17, 18]
+    },
+    {
+      "courseName": "大学英语(一)",
+      "teachers": ["李强(1)", "张敏[2]"],
+      "room": "文科园 210",
+      "weekday": 3,
+      "startUnit": 3,
+      "endUnit": 4,
+      "weekIndexes": [1, 3, 5, 7, 9, 11, 13, 15]
+    },
+    {
+      "courseName": "思想道德与法治",
+      "teachers": "周敏",
+      "room": "",
+      "building": "明德楼",
+      "campus": "主校区",
+      "weekday": 5,
+      "startUnit": 5,
+      "endUnit": 6,
+      "weekIndexes": [2, 4, 6, 8, 10, 12, 14, 16]
+    },
+    {
+      "courseName": "大学物理实验",
+      "teachers": ["陈刚"],
+      "room": "物理楼 B101",
+      "weekday": 2,
+      "startUnit": 9,
+      "endUnit": 10,
+      "weekIndexes": [4]
+    },
+    {
+      "courseName": "形势与政策",
+      "teachers": ["赵强"],
+      "room": "行政楼 报告厅",
+      "weekday": 1,
+      "startUnit": 11,
+      "endUnit": 12,
+      "weekIndexes": [3, 6, 9, 12]
+    },
+    {
+      "courseName": "军事理论",
+      "teachers": ["孙倩"],
+      "room": "体育馆",
+      "weekday": 6,
+      "startUnit": 1,
+      "endUnit": 2,
+      "weekIndexes": [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18]
+    },
+    {
+      "courseName": "大学体育(一)",
+      "teachers": ["吴磊"],
+      "room": "田径场",
+      "weekday": 4,
+      "startUnit": 7,
+      "endUnit": 8,
+      "weekIndexes": [1, 2, 3, 4, 5, 6, 7, 8, 10, 11, 12]
+    },
+    {
+      "courseName": "创新创业基础",
+      "teachers": ["郑华"],
+      "building": "众创空间",
+      "weekday": 7,
+      "startUnit": 3,
+      "endUnit": 3,
+      "weekIndexes": [16, 17]
+    },
+    {
+      "courseName": "劳动教育",
+      "teachers": ["钱进"],
+      "room": "实验楼 201",
+      "weekday": 2,
+      "startUnit": 11,
+      "endUnit": 11,
+      "weekIndexes": [1, 0, "3", "x"]
+    },
+    {
+      "courseName": "",
+      "teachers": ["测试"],
+      "room": "活动室",
+      "weekday": 2,
+      "startUnit": 3,
+      "endUnit": 4,
+      "weekIndexes": [1, 2]
+    },
+    {
+      "courseName": "没有星期的课",
+      "teachers": ["测试"],
+      "room": "活动室",
+      "weekday": "",
+      "startUnit": 5,
+      "endUnit": 6,
+      "weekIndexes": [1, 2]
+    },
+    {
+      "courseName": "节次反了的课",
+      "teachers": ["测试"],
+      "room": "活动室",
+      "weekday": 4,
+      "startUnit": 5,
+      "endUnit": 4,
+      "weekIndexes": [1, 2]
+    },
+    {
+      "courseName": "没有周次的课",
+      "teachers": ["测试"],
+      "room": "活动室",
+      "weekday": 4,
+      "startUnit": 1,
+      "endUnit": 2,
+      "weekIndexes": []
+    },
+    {
+      "courseName": "周次不是数组的课",
+      "teachers": ["测试"],
+      "room": "活动室",
+      "weekday": 4,
+      "startUnit": 1,
+      "endUnit": 2,
+      "weekIndexes": "1-16"
+    }
+  ],
+  "courseUnitList": [
+    { "indexNo": 1, "startTime": 800, "endTime": 845 },
+    { "indexNo": 2, "startTime": 855, "endTime": 940 },
+    { "indexNo": 3, "startTime": 1010, "endTime": 1055 },
+    { "indexNo": 4, "startTime": 1105, "endTime": 1150 },
+    { "indexNo": 5, "startTime": 1430, "endTime": 1515 },
+    { "indexNo": 6, "startTime": 1525, "endTime": 1610 },
+    { "indexNo": 7, "startTime": 1630, "endTime": 1715 },
+    { "indexNo": 8, "startTime": 1725, "endTime": 1810 },
+    { "indexNo": 9, "startTime": 1900, "endTime": 1945 },
+    { "indexNo": 10, "startTime": 1955, "endTime": 2040 }
+  ],
+  "pageInfo": {
+    "root": { "total": 15 },
+    "tableVm": null
+  }
+}

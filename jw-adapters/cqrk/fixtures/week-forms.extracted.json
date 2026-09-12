@@ -1,0 +1,182 @@
+{
+  "_note": "合成数据，不是真实抓取：按重庆人文科技学院强智课表页（/jsxsd/xskb/xskb_list.do）的 DOM 形状编造，只用来回归 parse.js 的转换逻辑。这一份专测本批统一的周次口径：『周』字写在括号里（1-16(周)，上游 cqrk_01.js 的 parseWeeks 注释就是这种形态）、单双写在周次前面（双周2-16）、单双被空白隔开（1-16周 双）、开头的括号序号（(1)1-12周）不是周次、单双同段与『隔周』这类认不出的标记要进 warnings 而不是静默改写。课程名/教师/教室均为虚构，无学号姓名。拿到真实 dump 请替换这一对 fixture。",
+  "pageUrl": "https://jwxt.cqrk.edu.cn:18080/jsxsd/xskb/xskb_list.do",
+  "now": "2026-09-12",
+  "term": {
+    "code": "2026-2027-1",
+    "name": "2026-2027学年第一学期"
+  },
+  "cols": 8,
+  "rows": [
+    [
+      { "col": 0, "text": "节次", "parts": [] },
+      { "col": 1, "text": "星期一", "parts": [] },
+      { "col": 2, "text": "星期二", "parts": [] },
+      { "col": 3, "text": "星期三", "parts": [] },
+      { "col": 4, "text": "星期四", "parts": [] },
+      { "col": 5, "text": "星期五", "parts": [] },
+      { "col": 6, "text": "星期六", "parts": [] },
+      { "col": 7, "text": "星期日", "parts": [] }
+    ],
+    [
+      { "col": 0, "text": "第1-2节", "parts": [] },
+      {
+        "col": 1,
+        "text": "线性代数张伟1-16(周)[01-02节]教学楼101",
+        "parts": [
+          "线性代数<br><font title=\"教师\">张伟</font><br><font title=\"周次(节次)\">1-16(周)[01-02节]</font><br><font title=\"教室\">教学楼101</font>"
+        ]
+      },
+      { "col": 2, "text": "", "parts": [] },
+      { "col": 3, "text": "", "parts": [] },
+      { "col": 4, "text": "", "parts": [] },
+      { "col": 5, "text": "", "parts": [] },
+      { "col": 6, "text": "", "parts": [] },
+      { "col": 7, "text": "", "parts": [] }
+    ],
+    [
+      { "col": 0, "text": "第3-4节", "parts": [] },
+      { "col": 1, "text": "", "parts": [] },
+      {
+        "col": 2,
+        "text": "概率论与数理统计李娜双周2-16[03-04节]教学楼202",
+        "parts": [
+          "概率论与数理统计<br><font title=\"教师\">李娜</font><br><font title=\"周次(节次)\">双周2-16[03-04节]</font><br><font title=\"教室\">教学楼202</font>"
+        ]
+      },
+      { "col": 3, "text": "", "parts": [] },
+      { "col": 4, "text": "", "parts": [] },
+      { "col": 5, "text": "", "parts": [] },
+      { "col": 6, "text": "", "parts": [] },
+      { "col": 7, "text": "", "parts": [] }
+    ],
+    [
+      { "col": 0, "text": "第5-6节", "parts": [] },
+      { "col": 1, "text": "", "parts": [] },
+      { "col": 2, "text": "", "parts": [] },
+      {
+        "col": 3,
+        "text": "大学计算机基础王强1-16周 双[05-06节]机房301",
+        "parts": [
+          "大学计算机基础<br><font title=\"教师\">王强</font><br><font title=\"周次(节次)\">1-16周 双[05-06节]</font><br><font title=\"教室\">机房301</font>"
+        ]
+      },
+      { "col": 4, "text": "", "parts": [] },
+      { "col": 5, "text": "", "parts": [] },
+      { "col": 6, "text": "", "parts": [] },
+      { "col": 7, "text": "", "parts": [] }
+    ],
+    [
+      { "col": 0, "text": "第7-8节", "parts": [] },
+      { "col": 1, "text": "", "parts": [] },
+      {
+        "col": 2,
+        "text": "大学物理（三）周强单周5-13[07-08节]实验楼201",
+        "parts": [
+          "大学物理（三）<br><font title=\"教师\">周强</font><br><font title=\"周次(节次)\">单周5-13[07-08节]</font><br><font title=\"教室\">实验楼201</font>"
+        ]
+      },
+      { "col": 3, "text": "", "parts": [] },
+      { "col": 4, "text": "", "parts": [] },
+      { "col": 5, "text": "", "parts": [] },
+      { "col": 6, "text": "", "parts": [] },
+      { "col": 7, "text": "", "parts": [] }
+    ],
+    [
+      { "col": 0, "text": "第7-8节", "parts": [] },
+      { "col": 1, "text": "", "parts": [] },
+      { "col": 2, "text": "", "parts": [] },
+      { "col": 3, "text": "", "parts": [] },
+      {
+        "col": 4,
+        "text": "马克思主义基本原理刘洋(1)1-12周[07-08节]教学楼401",
+        "parts": [
+          "马克思主义基本原理<br><font title=\"教师\">刘洋</font><br><font title=\"周次(节次)\">(1)1-12周[07-08节]</font><br><font title=\"教室\">教学楼401</font>"
+        ]
+      },
+      { "col": 5, "text": "", "parts": [] },
+      { "col": 6, "text": "", "parts": [] },
+      { "col": 7, "text": "", "parts": [] }
+    ],
+    [
+      { "col": 0, "text": "第9-10节", "parts": [] },
+      { "col": 1, "text": "", "parts": [] },
+      { "col": 2, "text": "", "parts": [] },
+      { "col": 3, "text": "", "parts": [] },
+      { "col": 4, "text": "", "parts": [] },
+      {
+        "col": 5,
+        "text": "大学体育（一）陈静(2)3-15周(单)[09-10节]体育馆",
+        "parts": [
+          "大学体育（一）<br><font title=\"教师\">陈静</font><br><font title=\"周次(节次)\">(2)3-15周(单)[09-10节]</font><br><font title=\"教室\">体育馆</font>"
+        ]
+      },
+      { "col": 6, "text": "", "parts": [] },
+      { "col": 7, "text": "", "parts": [] }
+    ],
+    [
+      { "col": 0, "text": "第11-12节", "parts": [] },
+      { "col": 1, "text": "", "parts": [] },
+      { "col": 2, "text": "", "parts": [] },
+      { "col": 3, "text": "", "parts": [] },
+      { "col": 4, "text": "", "parts": [] },
+      { "col": 5, "text": "", "parts": [] },
+      {
+        "col": 6,
+        "text": "思想道德与法治赵磊1-16周(单双)[11-12节]教学楼501",
+        "parts": [
+          "思想道德与法治<br><font title=\"教师\">赵磊</font><br><font title=\"周次(节次)\">1-16周(单双)[11-12节]</font><br><font title=\"教室\">教学楼501</font>"
+        ]
+      },
+      { "col": 7, "text": "", "parts": [] }
+    ],
+    [
+      { "col": 0, "text": "第9-10节", "parts": [] },
+      { "col": 1, "text": "", "parts": [] },
+      { "col": 2, "text": "", "parts": [] },
+      {
+        "col": 3,
+        "text": "形势与政策何静(1-2)5-8周[09-10节]行政楼报告厅",
+        "parts": [
+          "形势与政策<br><font title=\"教师\">何静</font><br><font title=\"周次(节次)\">(1-2)5-8周[09-10节]</font><br><font title=\"教室\">行政楼报告厅</font>"
+        ]
+      },
+      { "col": 4, "text": "", "parts": [] },
+      { "col": 5, "text": "", "parts": [] },
+      { "col": 6, "text": "", "parts": [] },
+      { "col": 7, "text": "", "parts": [] }
+    ],
+    [
+      { "col": 0, "text": "第11-12节", "parts": [] },
+      { "col": 1, "text": "", "parts": [] },
+      { "col": 2, "text": "", "parts": [] },
+      { "col": 3, "text": "", "parts": [] },
+      {
+        "col": 4,
+        "text": "大学语文吴敏(7)3,5,7周[11-12节]人文楼105",
+        "parts": [
+          "大学语文<br><font title=\"教师\">吴敏</font><br><font title=\"周次(节次)\">(7)3,5,7周[11-12节]</font><br><font title=\"教室\">人文楼105</font>"
+        ]
+      },
+      { "col": 5, "text": "", "parts": [] },
+      { "col": 6, "text": "", "parts": [] },
+      { "col": 7, "text": "", "parts": [] }
+    ],
+    [
+      { "col": 0, "text": "第5-6节", "parts": [] },
+      { "col": 1, "text": "", "parts": [] },
+      { "col": 2, "text": "", "parts": [] },
+      { "col": 3, "text": "", "parts": [] },
+      { "col": 4, "text": "", "parts": [] },
+      { "col": 5, "text": "", "parts": [] },
+      { "col": 6, "text": "", "parts": [] },
+      {
+        "col": 7,
+        "text": "大学生心理健康孙丽1-10周隔周[05-06节]大学生活动中心",
+        "parts": [
+          "大学生心理健康<br><font title=\"教师\">孙丽</font><br><font title=\"周次(节次)\">1-10周隔周[05-06节]</font><br><font title=\"教室\">大学生活动中心</font>"
+        ]
+      }
+    ]
+  ]
+}

@@ -1,0 +1,76 @@
+{
+  "_note": "合成数据，不是真实抓取（测试方案 §3），用例名：学期被更晚的周次抬高 + 超出内置作息表的节次。覆盖「总周数被课表里更晚的周次抬高时要进 warnings」与「连堂标签下 periodTimes 要覆盖每一节（缺的补出来并说明）」两条：课表里有到第 24 周的课，总周数不再是上游写死的 20；另有第 14 节的课，超出内置 12 节作息表。教师/教室/课名均为虚构。",
+  "pageUrl": "https://jwxt.cqrk.edu.cn:18080/jsxsd/xskb/xskb_list.do",
+  "now": "2026-09-12",
+  "term": {
+    "code": "2026-2027-1",
+    "name": "2026-2027学年第一学期"
+  },
+  "cols": 8,
+  "rows": [
+    [
+      { "col": 0, "text": "节次", "parts": [] },
+      { "col": 1, "text": "星期一", "parts": [] },
+      { "col": 2, "text": "星期二", "parts": [] },
+      { "col": 3, "text": "星期三", "parts": [] },
+      { "col": 4, "text": "星期四", "parts": [] },
+      { "col": 5, "text": "星期五", "parts": [] },
+      { "col": 6, "text": "星期六", "parts": [] },
+      { "col": 7, "text": "星期日", "parts": [] }
+    ],
+    [
+      { "col": 0, "text": "第1-2节", "parts": [] },
+      {
+        "col": 1,
+        "text": "高等数学A(一)刘敏1-24周[01-02节]数学楼101",
+        "parts": [
+          "高等数学A(一)<br><font title=\"教师\">刘敏</font><br><font title=\"周次(节次)\">1-24周[01-02节]</font><br><font title=\"教室\">数学楼101</font>"
+        ]
+      },
+      { "col": 2, "text": "", "parts": [] },
+      { "col": 3, "text": "", "parts": [] },
+      { "col": 4, "text": "", "parts": [] },
+      { "col": 5, "text": "", "parts": [] },
+      { "col": 6, "text": "", "parts": [] },
+      { "col": 7, "text": "", "parts": [] }
+    ],
+    [
+      { "col": 0, "text": "第3-4节", "parts": [] },
+      { "col": 1, "text": "", "parts": [] },
+      { "col": 2, "text": "", "parts": [] },
+      {
+        "col": 3,
+        "text": "电磁学钱伟1-20周(单)[03-04节]物理楼202",
+        "parts": [
+          "电磁学<br><font title=\"教师\">钱伟</font><br><font title=\"周次(节次)\">1-20周(单)[03-04节]</font><br><font title=\"教室\">物理楼202</font>"
+        ]
+      },
+      { "col": 4, "text": "", "parts": [] },
+      {
+        "col": 5,
+        "text": "电磁学钱伟4-20周(双)[03-04节]物理楼202",
+        "parts": [
+          "电磁学<br><font title=\"教师\">钱伟</font><br><font title=\"周次(节次)\">4-20周(双)[03-04节]</font><br><font title=\"教室\">物理楼202</font>"
+        ]
+      },
+      { "col": 6, "text": "", "parts": [] },
+      { "col": 7, "text": "", "parts": [] }
+    ],
+    [
+      { "col": 0, "text": "第13-14节", "parts": [] },
+      { "col": 1, "text": "", "parts": [] },
+      { "col": 2, "text": "", "parts": [] },
+      { "col": 3, "text": "", "parts": [] },
+      { "col": 4, "text": "", "parts": [] },
+      {
+        "col": 5,
+        "text": "大学英语（三）王芳2-18周[13-14节]外语楼401",
+        "parts": [
+          "大学英语（三）<br><font title=\"教师\">王芳</font><br><font title=\"周次(节次)\">2-18周[13-14节]</font><br><font title=\"教室\">外语楼401</font>"
+        ]
+      },
+      { "col": 6, "text": "", "parts": [] },
+      { "col": 7, "text": "", "parts": [] }
+    ]
+  ]
+}

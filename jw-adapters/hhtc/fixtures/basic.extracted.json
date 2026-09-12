@@ -1,0 +1,147 @@
+{
+  "_note": "合成数据，不是真实抓取：按怀化学院强智课表页（/jsxsd/xskb/xskb_list.do）的 DOM 形状编造，只用来回归 parse.js 的转换逻辑。形状取自上游 HHTC/hhtc.js 的选择器（#timetable / cell 里的 .kbcontent 与 .kbcontent1 / font[title=教师|周次(节次)|教室] / 课名放在没有 title 的 <font> 里）以及同平台 hynu 的写法（课名是裸文本节点）。用例覆盖：表头首列是节次列（星期要对齐，不能按「第几个格子」算）、两种课名写法、同格里两份明细（完全相同的副本 + 缩略副本）按内容去重、同格多门课用一长串减号分隔、方括号里读不出节次时回落本行的「第N节」标签、周次读不出（「见通知」）进 warnings。拿到真实 dump 请替换这一对 fixture。",
+  "now": "2026-09-12",
+  "term": {
+    "code": "2026-2027-1",
+    "name": "2026-2027学年第一学期"
+  },
+  "cols": 8,
+  "rows": [
+    {
+      "label": "节次",
+      "cells": [
+        {
+          "col": 0,
+          "text": "节次",
+          "parts": []
+        },
+        {
+          "col": 1,
+          "text": "星期一",
+          "parts": []
+        },
+        {
+          "col": 2,
+          "text": "星期二",
+          "parts": []
+        },
+        {
+          "col": 3,
+          "text": "星期三",
+          "parts": []
+        },
+        {
+          "col": 4,
+          "text": "星期四",
+          "parts": []
+        },
+        {
+          "col": 5,
+          "text": "星期五",
+          "parts": []
+        },
+        {
+          "col": 6,
+          "text": "星期六",
+          "parts": []
+        },
+        {
+          "col": 7,
+          "text": "星期日",
+          "parts": []
+        }
+      ]
+    },
+    {
+      "label": "第1-2节",
+      "cells": [
+        {
+          "col": 0,
+          "text": "第1-2节",
+          "parts": []
+        },
+        {
+          "col": 1,
+          "text": "高等数学（一）刘敏1-16(周)[01-02节]数学楼103",
+          "parts": [
+            "<font color=\"#0033cc\">高等数学（一）</font><br><font title=\"教师\">刘敏</font><br><font title=\"周次(节次)\">1-16(周)[01-02节]</font><br><font title=\"教室\">数学楼103</font><br><font title=\"上课时间\">11:10-11:50</font>"
+          ]
+        },
+        {
+          "col": 2,
+          "text": "大学英语（一）王芳大学英语（一）王芳1-16(周)[01-02节]外语楼205",
+          "parts": [
+            "大学英语（一）<br><font title=\"教师\">王芳</font>",
+            "大学英语（一）<br><font title=\"教师\">王芳</font><br><font title=\"周次(节次)\">1-16(周)[01-02节]</font><br><font title=\"教室\">外语楼205</font>"
+          ]
+        }
+      ]
+    },
+    {
+      "label": "第3-4节",
+      "cells": [
+        {
+          "col": 0,
+          "text": "第3-4节",
+          "parts": []
+        },
+        {
+          "col": 3,
+          "text": "现代汉语陈静3-17(周)[03-04节]文科楼302",
+          "parts": [
+            "<font>现代汉语</font><br><font title=\"教师\">陈静</font><br><font title=\"周次(节次)\">3-17(周)[03-04节]</font><br><font title=\"教室\">文科楼302</font>",
+            "<font>现代汉语</font><br><font title=\"教师\">陈静</font><br><font title=\"周次(节次)\">3-17(周)[03-04节]</font><br><font title=\"教室\">文科楼302</font>"
+          ]
+        },
+        {
+          "col": 4,
+          "text": "形势与政策李梅1-4,6-8,10-16(周)[03-04节]文科楼105书法基础罗静9-16(周)[03-04节]艺术楼203",
+          "parts": [
+            "<font>形势与政策</font><br><font title=\"教师\">李梅</font><br><font title=\"周次(节次)\">1-4,6-8,10-16(周)[03-04节]</font><br><font title=\"教室\">文科楼105</font>---------------------<font>书法基础</font><br><font title=\"教师\">罗静</font><br><font title=\"周次(节次)\">9-16(周)[03-04节]</font><br><font title=\"教室\">艺术楼203</font>"
+          ]
+        }
+      ]
+    },
+    {
+      "label": "第5-6节",
+      "cells": [
+        {
+          "col": 0,
+          "text": "第5-6节",
+          "parts": []
+        },
+        {
+          "col": 5,
+          "text": "教育见习周晓兰9-10(周)",
+          "parts": [
+            "<font>教育见习</font><br><font title=\"教师\">周晓兰</font><br><font title=\"周次(节次)\">9-10(周)</font>"
+          ]
+        },
+        {
+          "col": 7,
+          "text": "军事理论何军见通知",
+          "parts": [
+            "<font>军事理论</font><br><font title=\"教师\">何军</font><br><font title=\"周次(节次)\">见通知</font>"
+          ]
+        }
+      ]
+    },
+    {
+      "label": "晚上",
+      "cells": [
+        {
+          "col": 0,
+          "text": "晚上",
+          "parts": []
+        },
+        {
+          "col": 2,
+          "text": "大学生职业发展与就业指导何军1-16(周)[09-10节]",
+          "parts": [
+            "<font>大学生职业发展与就业指导</font><br><font title=\"教师\">何军</font><br><font title=\"周次(节次)\">1-16(周)[09-10节]</font>"
+          ]
+        }
+      ]
+    }
+  ]
+}

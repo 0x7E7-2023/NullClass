@@ -1,0 +1,90 @@
+{
+  "_note": "合成数据，不是真实抓取。这个用例专门盖上游 HNIU 与 HYNU 两个脚本**写法不同**的那块：节次 [01-02-03-04节]（HNIU 为它把正则改成「取括号里所有数字的 min/max」）、[0102节] 两位连写（HYNU 那边是这种）、[1314节] 用到第 13-14 节、以及同一天相邻两格的同一门课合并成一块。期望值按规范独立推出：1-4 节、1-2 节、13-14 节、合并后的 1-4 节。",
+  "now": "2026-09-12",
+  "term": {
+    "code": "2026-2027-1",
+    "name": "2026-2027学年第一学期"
+  },
+  "rows": [
+    [
+      { "text": "节次", "parts": [] },
+      { "text": "星期一", "parts": [] },
+      { "text": "星期二", "parts": [] },
+      { "text": "星期三", "parts": [] },
+      { "text": "星期四", "parts": [] },
+      { "text": "星期五", "parts": [] },
+      { "text": "星期六", "parts": [] },
+      { "text": "星期日", "parts": [] }
+    ],
+    [
+      { "text": "第1-2节", "parts": [] },
+      {
+        "text": "工程制图王强1-16(周)[01-02-03-04节]实训楼B101",
+        "parts": [
+          "工程制图<br><font title=\"教师\">王强</font><br><font title=\"周次(节次)\">1-16(周)[01-02-03-04节]</font><br><font title=\"教室\">实训楼B101</font>"
+        ]
+      },
+      { "text": "", "parts": [] },
+      {
+        "text": "计算机应用基础刘洋1-16(周)[0102节]机房A301",
+        "parts": [
+          "计算机应用基础<br><font title=\"教师\">刘洋</font><br><font title=\"周次(节次)\">1-16(周)[0102节]</font><br><font title=\"教室\">机房A301</font>"
+        ]
+      },
+      { "text": "", "parts": [] },
+      { "text": "", "parts": [] },
+      { "text": "", "parts": [] },
+      { "text": "", "parts": [] }
+    ],
+    [
+      { "text": "第3-4节", "parts": [] },
+      { "text": "", "parts": [] },
+      { "text": "", "parts": [] },
+      {
+        "text": "计算机应用基础刘洋1-16(周)[0304节]机房A301",
+        "parts": [
+          "计算机应用基础<br><font title=\"教师\">刘洋</font><br><font title=\"周次(节次)\">1-16(周)[0304节]</font><br><font title=\"教室\">机房A301</font>"
+        ]
+      },
+      { "text": "", "parts": [] },
+      {
+        "text": "毕业设计陈明15-16(周)[1314节]设计室",
+        "parts": [
+          "毕业设计<br><font title=\"教师\">陈明</font><br><font title=\"周次(节次)\">15-16(周)[1314节]</font><br><font title=\"教室\">设计室</font>"
+        ]
+      },
+      { "text": "", "parts": [] },
+      { "text": "", "parts": [] }
+    ],
+    [
+      { "text": "第7-8节", "parts": [] },
+      { "text": "", "parts": [] },
+      {
+        "text": "商务礼仪孙倩1-8(周)形体房",
+        "parts": [
+          "商务礼仪<br><font title=\"教师\">孙倩</font><br><font title=\"周次\">1-8(周)</font><br><font title=\"教室\">形体房</font>"
+        ]
+      },
+      { "text": "", "parts": [] },
+      { "text": "", "parts": [] },
+      { "text": "", "parts": [] },
+      { "text": "", "parts": [] },
+      { "text": "", "parts": [] }
+    ],
+    [
+      { "text": "第9-10节", "parts": [] },
+      {
+        "text": "顶岗实习陈明16-18(周)[09-10节]",
+        "parts": [
+          "顶岗实习<br><font title=\"教师\">陈明</font><br><font title=\"周次(节次)\">16-18(周)[09-10节]</font>"
+        ]
+      },
+      { "text": "", "parts": [] },
+      { "text": "", "parts": [] },
+      { "text": "", "parts": [] },
+      { "text": "", "parts": [] },
+      { "text": "", "parts": [] },
+      { "text": "", "parts": [] }
+    ]
+  ]
+}
