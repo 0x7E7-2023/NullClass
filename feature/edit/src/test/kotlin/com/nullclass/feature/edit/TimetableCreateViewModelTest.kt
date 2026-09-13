@@ -1,6 +1,7 @@
 package com.nullclass.feature.edit
 
 import com.nullclass.core.model.DefaultPeriodTimes
+import com.nullclass.core.model.MAX_TOTAL_WEEKS
 import com.nullclass.core.model.Term
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -101,7 +102,7 @@ class TimetableCreateViewModelTest {
         vm.state.first { it.firstDayEpochDay > 0 }
 
         vm.setTotalWeeks(99)
-        assertEquals(25, vm.state.value.totalWeeks)
+        assertEquals(MAX_TOTAL_WEEKS, vm.state.value.totalWeeks)
         vm.setTotalWeeks(0)
         assertEquals(1, vm.state.value.totalWeeks)
     }
