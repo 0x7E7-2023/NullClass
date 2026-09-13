@@ -1,5 +1,6 @@
 package com.nullclass.importer.jw
 
+import com.nullclass.core.model.MAX_TOTAL_WEEKS
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.SerializationException
 import kotlinx.serialization.json.Json
@@ -218,7 +219,9 @@ object JwPayloadCodec {
     private fun validateTerm(term: JwTerm, termIndex: Int) {
         val at = "第 ${termIndex + 1} 个学期"
         if (term.name.isBlank()) throw JwPackageException("$at 缺少名称 name")
-        if (term.totalWeeks !in 1..30) throw JwPackageException("$at 的 totalWeeks=${term.totalWeeks} 超出 1..30")
+        if (term.totalWeeks !in 1..MAX_TOTAL_WEEKS) {
+            throw JwPackageException("$at 的 totalWeeks=${term.totalWeeks} 超出 1..$MAX_TOTAL_WEEKS")
+        }
         if (term.firstDayEpochDay == null && term.firstDay == null) {
             throw JwPackageException("$at 缺少 firstDay（ISO 日期）")
         }

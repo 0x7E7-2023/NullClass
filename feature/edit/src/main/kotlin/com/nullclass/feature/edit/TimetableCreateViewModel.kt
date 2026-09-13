@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.nullclass.core.data.repository.TimetableRepository
 import com.nullclass.core.model.DefaultPeriodTimes
+import com.nullclass.core.model.MAX_TOTAL_WEEKS
 import com.nullclass.core.model.Term
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
@@ -55,7 +56,7 @@ class TimetableCreateViewModel @Inject constructor(
 
     fun setFirstDay(epochDay: Long) = _state.update { it.copy(firstDayEpochDay = epochDay) }
 
-    fun setTotalWeeks(value: Int) = _state.update { it.copy(totalWeeks = value.coerceIn(1, 25)) }
+    fun setTotalWeeks(value: Int) = _state.update { it.copy(totalWeeks = value.coerceIn(1, MAX_TOTAL_WEEKS)) }
 
     fun dismissError() = _state.update { it.copy(error = null) }
 

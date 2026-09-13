@@ -1,5 +1,6 @@
 package com.nullclass.importer.wakeup
 
+import com.nullclass.core.model.MAX_TOTAL_WEEKS
 import com.nullclass.importer.BlockDto
 import com.nullclass.importer.ImportProvenance
 import com.nullclass.importer.CourseDto
@@ -115,7 +116,7 @@ object WakeUpParser {
         val termName = settingsObj?.get("courseTableName")?.jsonPrimitive?.contentOrNull?.takeIf { it.isNotBlank() }
             ?: "导入的课表"
         val rawWeeks = settingsObj?.get("maxWeek")?.jsonPrimitive?.intOrNull ?: 20
-        val totalWeeks = rawWeeks.coerceIn(1, 25)
+        val totalWeeks = rawWeeks.coerceIn(1, MAX_TOTAL_WEEKS)
         if (totalWeeks != rawWeeks) warnings.add("学期周数 $rawWeeks 超出范围，已截断为 $totalWeeks")
         val firstDayEpochDay = parseFirstDay(settingsObj?.get("startTime")?.jsonPrimitive?.contentOrNull)
         val now = 0L // 导入文档统一 0 时间戳：merge 时同 id 不存在冲突，语义为"来自外部"

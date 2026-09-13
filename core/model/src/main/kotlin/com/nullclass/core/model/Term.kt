@@ -1,6 +1,16 @@
 package com.nullclass.core.model
 
 /**
+ * 学期周数上限。
+ *
+ * **必须与适配器载荷契约一致**（[com.nullclass.importer.jw.JwSchedulePayload] 校验 `1..30`）：
+ * 域模型卡得比载荷紧，导入时能过、写进库再读出来就会在 `require` 上崩
+ * （2026-09-13 由证伪者实测：`totalWeeks=30` 读写回环必炸）。反过来说，把载荷收紧到更小值
+ * 会让长学期学校**整次导入被拒**，所以两边取同一个上限。
+ */
+const val MAX_TOTAL_WEEKS: Int = 30
+
+/**
  * 学期。课表以学期为单位组织，同一时刻只有一个「当前学期」。
  *
  * id 为客户端生成的 UUID（同步就绪：多设备记录天然对齐）。
@@ -11,11 +21,13 @@ data class Term(
     val name: String,
     /** 第 1 周的第 1 天（epoch day，LocalDate.toEpochDay()） */
     val firstDayEpochDay: Long,
-    /** 学期总周数，1..25 */
+    /** 学期总周数，1..MAX_TOTAL_WEEKS */
     val totalWeeks: Int,
 ) {
     init {
-        require(totalWeeks in 1..25) { "totalWeeks must be in 1..25, was $totalWeeks" }
+        require(totalWeeks in 1..MAX_TOTAL_WEEKS) {
+            "totalWeeks must be in 1..$MAX_TOTAL_WEEKS, was $totalWeeks"
+        }
     }
 
     /**

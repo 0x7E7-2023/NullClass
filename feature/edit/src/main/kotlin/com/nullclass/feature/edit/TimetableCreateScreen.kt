@@ -40,6 +40,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
+import com.nullclass.core.model.MAX_TOTAL_WEEKS
 import com.nullclass.core.model.ScheduleFormat
 import java.time.LocalDate
 
@@ -143,7 +144,7 @@ fun TimetableCreateScreen(
                 NumberStepper(
                     label = "",
                     value = state.totalWeeks,
-                    range = 1..25,
+                    range = 1..MAX_TOTAL_WEEKS,
                     onChange = viewModel::setTotalWeeks,
                 )
                 Text("周", color = MaterialTheme.colorScheme.onSurfaceVariant)

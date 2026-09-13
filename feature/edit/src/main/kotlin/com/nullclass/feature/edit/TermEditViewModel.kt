@@ -4,6 +4,7 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.nullclass.core.model.DefaultPeriodTimes
+import com.nullclass.core.model.MAX_TOTAL_WEEKS
 import com.nullclass.core.data.repository.CourseRepository
 import com.nullclass.core.data.repository.TermRepository
 import com.nullclass.core.model.MINUTES_PER_DAY
@@ -147,7 +148,7 @@ class TermEditViewModel @Inject constructor(
     }
 
     fun setTotalWeeks(value: Int) = _state.update {
-        it.copy(totalWeeks = value.coerceIn(1, 25))
+        it.copy(totalWeeks = value.coerceIn(1, MAX_TOTAL_WEEKS))
     }
 
     fun updatePeriod(index: Int, period: EditablePeriod) = _state.update {

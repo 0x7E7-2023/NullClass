@@ -32,7 +32,7 @@ data class ScheduleBlock(
     val location: String? = null,
 ) {
     init {
-        require(startWeek in 1..25 && endWeek in 1..25 && startWeek <= endWeek) {
+        require(startWeek in 1..MAX_TOTAL_WEEKS && endWeek in 1..MAX_TOTAL_WEEKS && startWeek <= endWeek) {
             "invalid week range: $startWeek..$endWeek"
         }
         require(dayOfWeek in 1..7) { "dayOfWeek must be in 1..7, was $dayOfWeek" }
