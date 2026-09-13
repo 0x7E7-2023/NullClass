@@ -1,0 +1,78 @@
+{
+  "_note": "合成样例（不是真实抓取）：字段形状按上游 NEU/neu.js 与同平台 CAPU/capadap.js 读取的接口字段编造，只保证「同样的输入永远得到同样的输出」，不保证真实教务上的解析正确性。拿到真实 dump 请替换本文件并重跑 :importer:test。",
+  "_covers": "括号里的教学班序号不是周次（批次三检查表第 2 条）：`(1)1-16周`（序号在前 —— 老实现把括号符号删掉后粘成 11-16，**静默少掉 1-10 周**）、`1-16周(2)`（序号在后 —— 老实现粘成 1-162，周次被抬到 30 并产出一条假的「131 个周次超出 30 周」告警）、`(1-2)3-8周`（括号里是数字区间）、`1-4周（3）`（全角括号）。期望值全部按规范手推：三种写法的周次都应当是括号外的那个，序号一律不参与。另含两条护栏：`(1)` 单独成段时**整条排课不导入并进 warnings**（不许静默丢课），以及 `1-8周(单)` —— 括号里是**单双标记**而不是数字，必须照旧解析成单周。",
+  "term": {
+    "code": "2025-2026-1",
+    "name": null,
+    "source": "api",
+    "firstDay": "2025-09-01",
+    "firstDaySource": "termWeeks",
+    "totalWeeks": 18
+  },
+  "sections": [
+    { "name": "第1节", "startTime": "08:00", "endTime": "08:45" },
+    { "name": "第2节", "startTime": "08:55", "endTime": "09:40" },
+    { "name": "第3节", "startTime": "10:00", "endTime": "10:45" },
+    { "name": "第4节", "startTime": "10:55", "endTime": "11:40" },
+    { "name": "第5节", "startTime": "14:00", "endTime": "14:45" },
+    { "name": "第6节", "startTime": "14:55", "endTime": "15:40" },
+    { "name": "第7节", "startTime": "16:00", "endTime": "16:45" },
+    { "name": "第8节", "startTime": "16:55", "endTime": "17:40" }
+  ],
+  "rows": [
+    {
+      "courseName": "高等数学A(一)",
+      "dayOfWeek": 1,
+      "beginSection": 1,
+      "endSection": 2,
+      "beginTime": "08:00",
+      "endTime": "09:40",
+      "titleWeekTeacherClassroomDetail": ["(1)1-16周 王建国 教1-101"]
+    },
+    {
+      "courseName": "大学英语(一)",
+      "dayOfWeek": 2,
+      "beginSection": 3,
+      "endSection": 4,
+      "beginTime": "10:00",
+      "endTime": "11:40",
+      "titleWeekTeacherClassroomDetail": ["1-16周(2) 李梅 教2-105"]
+    },
+    {
+      "courseName": "大学物理",
+      "dayOfWeek": 3,
+      "beginSection": 5,
+      "endSection": 6,
+      "beginTime": "14:00",
+      "endTime": "15:40",
+      "titleWeekTeacherClassroomDetail": ["(1-2)3-8周 陈晓东 何世礼教学馆201"]
+    },
+    {
+      "courseName": "程序设计基础",
+      "dayOfWeek": 4,
+      "beginSection": 7,
+      "endSection": 8,
+      "beginTime": "16:00",
+      "endTime": "17:40",
+      "titleWeekTeacherClassroomDetail": ["1-4周（3） 孙宇航 计算中心B302"]
+    },
+    {
+      "courseName": "文献检索",
+      "dayOfWeek": 5,
+      "beginSection": 3,
+      "endSection": 4,
+      "beginTime": "10:00",
+      "endTime": "11:40",
+      "titleWeekTeacherClassroomDetail": ["(1) 高翔 图书馆"]
+    },
+    {
+      "courseName": "体育(一)",
+      "dayOfWeek": 6,
+      "beginSection": 1,
+      "endSection": 2,
+      "beginTime": "08:00",
+      "endTime": "09:40",
+      "titleWeekTeacherClassroomDetail": ["1-8周(单) 周凯 田径场"]
+    }
+  ]
+}

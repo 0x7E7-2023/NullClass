@@ -1,0 +1,31 @@
+{
+  "_note": "合成用例（不是真实抓取），专打本批检查表第 3 条的后半句：课表既没有星期表头、格子也没有 td[w] 星期属性（页面结构变了 / 换了一套前端），parse 必须把定位不了的格子**报进 warnings**，不许按行内格子个数或 td 下标猜列（上游那种 array.length - 7 的写法会在这里悄悄猜错）。顺便带一个字段不齐的格子（只有两个 span）。姓名学号等已脱敏。",
+  "url": "https://ehall.xzhmu.edu.cn/gsapp/sys/wdkb/*default/index.do",
+  "title": "个人课表",
+  "today": "2026-02-25",
+  "tableFound": true,
+  "currentWeek": null,
+  "currentWeekSource": null,
+  "semesterLabels": [],
+  "rows": [
+    {
+      "row": 0,
+      "cells": [
+        { "col": 0, "colSpan": 1, "rowSpan": 1, "day": "", "hidden": false, "text": "1", "blocks": [] },
+        { "col": 1, "colSpan": 1, "rowSpan": 1, "day": "", "hidden": false, "text": "高等数学A(一)1-16周教1-101张三",
+          "blocks": [ { "spans": ["高等数学A(一)", "1-16周", "教1-101"], "teacher": "张三" } ] }
+      ]
+    },
+    {
+      "row": 1,
+      "cells": [
+        { "col": 0, "colSpan": 1, "rowSpan": 1, "day": "", "hidden": false, "text": "2", "blocks": [] },
+        { "col": 1, "colSpan": 1, "rowSpan": 1, "day": "", "hidden": false, "text": "大学英语1-16周线性代数2-8周数智楼205王强",
+          "blocks": [
+            { "spans": ["大学英语", "1-16周"], "teacher": "" },
+            { "spans": ["线性代数", "2-8周", "数智楼205"], "teacher": "王强" }
+          ] }
+      ]
+    }
+  ]
+}

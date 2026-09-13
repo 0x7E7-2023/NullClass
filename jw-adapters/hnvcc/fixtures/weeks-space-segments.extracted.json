@@ -1,0 +1,400 @@
+{
+  "_note": "合成数据（由 basic 派生，非真实抓取），专打本批统一口径：**空白是周次分段符**——「1-3周 5-9周」必须读成 1-3 与 5-9 两个块，不许全文删空白（删掉会并成 \"1-35-9\" 或只剩 1-3，静默吞段）。期望值按规范手推：两段 = 两个 ALL 块（1-3 与 5-9），其余课不动。节次用全角波浪分隔（\"05～06节\"/\"第1～2节\"）：分隔符归一后读出的节次与半角写法一致，期望值不变；不归一的实现会读不出节次或读错（整块丢/只剩一节），该用例必须变红。",
+  "now": "2026-09-13",
+  "term": {
+    "code": "2026-2027-1",
+    "name": "2026-2027学年第一学期"
+  },
+  "totalWeeksText": "第1-20周 / 20周",
+  "rows": [
+    {
+      "cells": [
+        {
+          "col": 0,
+          "colSpan": 1,
+          "rowSpan": 1,
+          "text": "节次",
+          "boxes": []
+        },
+        {
+          "col": 1,
+          "colSpan": 1,
+          "rowSpan": 1,
+          "text": "星期一",
+          "boxes": []
+        },
+        {
+          "col": 2,
+          "colSpan": 1,
+          "rowSpan": 1,
+          "text": "星期二",
+          "boxes": []
+        },
+        {
+          "col": 3,
+          "colSpan": 1,
+          "rowSpan": 1,
+          "text": "星期三",
+          "boxes": []
+        },
+        {
+          "col": 4,
+          "colSpan": 1,
+          "rowSpan": 1,
+          "text": "星期四",
+          "boxes": []
+        },
+        {
+          "col": 5,
+          "colSpan": 1,
+          "rowSpan": 1,
+          "text": "星期五",
+          "boxes": []
+        },
+        {
+          "col": 6,
+          "colSpan": 1,
+          "rowSpan": 1,
+          "text": "星期六",
+          "boxes": []
+        },
+        {
+          "col": 7,
+          "colSpan": 1,
+          "rowSpan": 1,
+          "text": "星期日",
+          "boxes": []
+        }
+      ]
+    },
+    {
+      "cells": [
+        {
+          "col": 0,
+          "colSpan": 1,
+          "rowSpan": 1,
+          "text": "第一大节 第1～2节",
+          "boxes": []
+        },
+        {
+          "col": 1,
+          "colSpan": 1,
+          "rowSpan": 1,
+          "text": "高等数学A(一)教师：张伟学分：3南教楼101第1-3周 第5-9周线性代数教师：张伟学分：3南教楼101第9-16周",
+          "boxes": [
+            {
+              "name": "高等数学A(一)",
+              "teacher": "教师：张伟",
+              "spans": [
+                "南教楼101",
+                "第1-3周 第5-9周"
+              ]
+            },
+            {
+              "name": "线性代数",
+              "teacher": "教师：张伟",
+              "spans": [
+                "南教楼101",
+                "第9-16周"
+              ]
+            }
+          ]
+        },
+        {
+          "col": 2,
+          "colSpan": 1,
+          "rowSpan": 1,
+          "text": "",
+          "boxes": []
+        },
+        {
+          "col": 3,
+          "colSpan": 1,
+          "rowSpan": 1,
+          "text": "高等数学A(一)教师：张伟学分：3南教楼101第1-16周",
+          "boxes": [
+            {
+              "name": "高等数学A(一)",
+              "teacher": "教师：张伟",
+              "spans": [
+                "南教楼101",
+                "第1-16周"
+              ]
+            }
+          ]
+        },
+        {
+          "col": 4,
+          "colSpan": 1,
+          "rowSpan": 1,
+          "text": "",
+          "boxes": []
+        },
+        {
+          "col": 5,
+          "colSpan": 1,
+          "rowSpan": 1,
+          "text": "大学英语(一)教师：李娜学分：3文理楼208第1-16周(单)",
+          "boxes": [
+            {
+              "name": "大学英语(一)",
+              "teacher": "教师：李娜",
+              "spans": [
+                "文理楼208",
+                "第1-16周(单)"
+              ]
+            }
+          ]
+        },
+        {
+          "col": 6,
+          "colSpan": 1,
+          "rowSpan": 1,
+          "text": "",
+          "boxes": []
+        },
+        {
+          "col": 7,
+          "colSpan": 1,
+          "rowSpan": 1,
+          "text": "",
+          "boxes": []
+        }
+      ]
+    },
+    {
+      "cells": [
+        {
+          "col": 0,
+          "colSpan": 1,
+          "rowSpan": 1,
+          "text": "第二大节 第3-4节",
+          "boxes": []
+        },
+        {
+          "col": 1,
+          "colSpan": 1,
+          "rowSpan": 1,
+          "text": "高等数学A(一)教师：张伟学分：3南教楼101第1-3周 第5-9周",
+          "boxes": [
+            {
+              "name": "高等数学A(一)",
+              "teacher": "教师：张伟",
+              "spans": [
+                "南教楼101",
+                "第1-3周 第5-9周"
+              ]
+            }
+          ]
+        },
+        {
+          "col": 2,
+          "colSpan": 1,
+          "rowSpan": 1,
+          "text": "程序设计基础学分：3机房302第1-8周",
+          "boxes": [
+            {
+              "name": "程序设计基础",
+              "teacher": "学分：3",
+              "spans": [
+                "机房302",
+                "第1-8周"
+              ]
+            }
+          ]
+        },
+        {
+          "col": 3,
+          "colSpan": 1,
+          "rowSpan": 1,
+          "text": "高等数学A(一)教师：张伟学分：3南教楼101第1-16周",
+          "boxes": [
+            {
+              "name": "高等数学A(一)",
+              "teacher": "教师：张伟",
+              "spans": [
+                "南教楼101",
+                "第1-16周"
+              ]
+            }
+          ]
+        },
+        {
+          "col": 4,
+          "colSpan": 1,
+          "rowSpan": 1,
+          "text": "",
+          "boxes": []
+        },
+        {
+          "col": 5,
+          "colSpan": 1,
+          "rowSpan": 1,
+          "text": "",
+          "boxes": []
+        },
+        {
+          "col": 6,
+          "colSpan": 1,
+          "rowSpan": 1,
+          "text": "",
+          "boxes": []
+        },
+        {
+          "col": 7,
+          "colSpan": 1,
+          "rowSpan": 1,
+          "text": "",
+          "boxes": []
+        }
+      ]
+    },
+    {
+      "cells": [
+        {
+          "col": 0,
+          "colSpan": 1,
+          "rowSpan": 1,
+          "text": "第三大节 第5-6节",
+          "boxes": []
+        },
+        {
+          "col": 1,
+          "colSpan": 1,
+          "rowSpan": 1,
+          "text": "大学物理教师：陈静学分：3基础楼B201第1-4,6-8,10-16周",
+          "boxes": [
+            {
+              "name": "大学物理",
+              "teacher": "教师：陈静",
+              "spans": [
+                "基础楼B201",
+                "第1-4,6-8,10-16周"
+              ]
+            }
+          ]
+        },
+        {
+          "col": 2,
+          "colSpan": 1,
+          "rowSpan": 1,
+          "text": "",
+          "boxes": []
+        },
+        {
+          "col": 3,
+          "colSpan": 1,
+          "rowSpan": 1,
+          "text": "",
+          "boxes": []
+        },
+        {
+          "col": 4,
+          "colSpan": 1,
+          "rowSpan": 1,
+          "text": "体育(一)教师：赵强学分：3第1-16周",
+          "boxes": [
+            {
+              "name": "体育(一)",
+              "teacher": "教师：赵强",
+              "spans": [
+                "",
+                "第1-16周"
+              ]
+            }
+          ]
+        },
+        {
+          "col": 5,
+          "colSpan": 1,
+          "rowSpan": 1,
+          "text": "",
+          "boxes": []
+        },
+        {
+          "col": 6,
+          "colSpan": 1,
+          "rowSpan": 1,
+          "text": "",
+          "boxes": []
+        },
+        {
+          "col": 7,
+          "colSpan": 1,
+          "rowSpan": 1,
+          "text": "",
+          "boxes": []
+        }
+      ]
+    },
+    {
+      "cells": [
+        {
+          "col": 0,
+          "colSpan": 1,
+          "rowSpan": 1,
+          "text": "第四大节 第7-8节",
+          "boxes": []
+        },
+        {
+          "col": 1,
+          "colSpan": 1,
+          "rowSpan": 1,
+          "text": "",
+          "boxes": []
+        },
+        {
+          "col": 2,
+          "colSpan": 1,
+          "rowSpan": 1,
+          "text": "",
+          "boxes": []
+        },
+        {
+          "col": 3,
+          "colSpan": 1,
+          "rowSpan": 1,
+          "text": "",
+          "boxes": []
+        },
+        {
+          "col": 4,
+          "colSpan": 1,
+          "rowSpan": 1,
+          "text": "",
+          "boxes": []
+        },
+        {
+          "col": 5,
+          "colSpan": 1,
+          "rowSpan": 1,
+          "text": "",
+          "boxes": []
+        },
+        {
+          "col": 6,
+          "colSpan": 1,
+          "rowSpan": 1,
+          "text": "",
+          "boxes": []
+        },
+        {
+          "col": 7,
+          "colSpan": 1,
+          "rowSpan": 1,
+          "text": "军事理论教师：刘敏学分：3线上第1-4周",
+          "boxes": [
+            {
+              "name": "军事理论",
+              "teacher": "教师：刘敏",
+              "spans": [
+                "线上",
+                "第1-4周"
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

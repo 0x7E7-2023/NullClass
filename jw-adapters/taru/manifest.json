@@ -1,0 +1,41 @@
+{
+  "specVersion": 1,
+  "key": "taru",
+  "name": "塔里木大学",
+  "version": "1.0.0",
+  "author": "上游 星河欲转（MIT）；移植 0x7E-2023",
+  "homepage": "https://github.com/XingHeYuZhuan/shiguang_warehouse",
+  "loginUrl": "https://auth.taru.edu.cn/cas/login?service=https%3A%2F%2Fhall.taru.edu.cn%2FserviceHall",
+  "scheduleUrlHint": "https://jwgl.taru.edu.cn/jwglxt/kbcx/xskbcx_cxXskbcxIndex.html?gnmkdm=N2151&layout=default",
+  "minAppVersionCode": 11,
+  "extract": "extract.js",
+  "parse": "parse.js",
+  "allowHosts": ["jwgl.taru.edu.cn"],
+  "fixtures": [
+    {
+      "name": "基本课表（合成：完全重复的排课行 / 单周 1-16周(单) / 双周 2-16周(双) / 分段周次 1-4,6-8周 / 全角逗号 / 教师为空 / 教室为空 / 缺课名·缺星期·节次认不出来·缺周次的脏行 / 超出 1-30 的周次 / 教务节次时间接口）",
+      "extracted": "fixtures/basic.extracted.json",
+      "expected": "fixtures/basic.expected.json"
+    },
+    {
+      "name": "周次写法与括号序号（合成：1-16周(单) / (单)1-16周 / 1-16(单周) / 1-3,5-9周 混排 / 双周1-16 / 1-16(双周) / 全角括号 / (1-16周) 整串被包住 / (1)、(2) 是教学班序号不是周次 / 3-4、3-4节(2)、(0102) 三种节次写法 / 认不出单双的隔周1-16 / 节次时间取不到 / 记录总数对不上）",
+      "extracted": "fixtures/week-forms.extracted.json",
+      "expected": "fixtures/week-forms.expected.json"
+    },
+    {
+      "name": "周次分隔符与单双标记自成一段（合成：1-16周,双 / 全角逗号 1-16周，双 / 1-16周,双周 / 双周,1-16周 / 1-16周,单 五个标记段没有数字的输入 / 只有「双」没有周次范围必须进 warnings / 全角波浪 U+FF5E、全角减号 U+FF0D、数学减号 U+2212、en dash U+2013、em dash U+2014、「至」六种非半角减号的分隔符都要给出 1-16 周 / 半角标准形态 1-16周 与空格形态 1-16周 双 结果不变）",
+      "extracted": "fixtures/separators.extracted.json",
+      "expected": "fixtures/separators.expected.json"
+    },
+    {
+      "name": "作息时间越界过滤（合成：教务节次时间里混进 25:00 与 10:75 两条坏数据 / 课表只用第 1-2 节，剔掉坏数据后作息仍完整，periodTimes 照常交出并计数进 warnings）",
+      "extracted": "fixtures/times-invalid.extracted.json",
+      "expected": "fixtures/times-invalid.expected.json"
+    },
+    {
+      "name": "作息不完整就整份不交（合成：课表是 1-4 节连堂，教务的节次时间只回了第 1、2 节 / 缺第 3、4 节 → periodTimes 必须整份为空并在 warnings 里说明）",
+      "extracted": "fixtures/times-incomplete.extracted.json",
+      "expected": "fixtures/times-incomplete.expected.json"
+    }
+  ]
+}

@@ -1,0 +1,41 @@
+{
+  "specVersion": 1,
+  "key": "zcmu",
+  "name": "浙江中医药大学",
+  "version": "1.0.0",
+  "author": "上游 Daoguan-king（MIT）；移植 0x7E-2023",
+  "homepage": "https://github.com/XingHeYuZhuan/shiguang_warehouse",
+  "loginUrl": "https://jwmk.zcmu.edu.cn/jwglxt/xtgl/login_slogin.html",
+  "scheduleUrlHint": "https://jwmk.zcmu.edu.cn/jwglxt/kbcx/xskbcx_cxXskbcxIndex.html?gnmkdm=N2151&layout=default",
+  "minAppVersionCode": 11,
+  "extract": "extract.js",
+  "parse": "parse.js",
+  "allowHosts": [],
+  "fixtures": [
+    {
+      "name": "基本课表（合成：一行一条排课 / 完全重复行 / 单周 1-16周(单) / 双周 2-16周(双) / 分段周次 1-4,6-8周 / 同课多时间段合成多 block / 滨文校区作息表）",
+      "extracted": "fixtures/basic.extracted.json",
+      "expected": "fixtures/basic.expected.json"
+    },
+    {
+      "name": "周次四写法与括号序号（合成：1-16周(单) / (单)1-16周 / 1-16(单周) / 1-3,5-9周 / 1-3周 5-9周 空格分段（空白也是分段符） / 教学班序号 1-16周(1) 与 (1-2)1-16周 / 富春校区作息表）",
+      "extracted": "fixtures/weeks-forms.extracted.json",
+      "expected": "fixtures/weeks-forms.expected.json"
+    },
+    {
+      "name": "周次标记自成一段与破折号异体（B2/B11 回归件：1-16周,双 / 全角逗号 1-16周，双 / 1-16周,双周 / 双周,1-16周 标记在前 / 1-16周,单 / (1),双,1-16周 序号不截胡标记 / 全角波浪 U+FF5E、全角减号 U+FF0D、数学减号 U+2212、en dash U+2013、em dash U+2014、「至」六种非半角减号分隔符都要给出 1-16 周 / 只有「双周」没有周次范围必须进 warnings）",
+      "extracted": "fixtures/week-marks.extracted.json",
+      "expected": "fixtures/week-marks.expected.json"
+    },
+    {
+      "name": "脏行与兜底（合成：缺教师 / 缺教室的行必须留住 / 缺课名·星期·节次·周次的四类脏行 / 节次写法认不出 / 周次超 1-30 上限 / 排到第 30 周抬高总周数 / 没有校区时回落滨文校区）",
+      "extracted": "fixtures/dirty-rows.extracted.json",
+      "expected": "fixtures/dirty-rows.expected.json"
+    },
+    {
+      "name": "学年读不出来（合成：xnm 与 xnmText 都是空 → 开学日退回「今天所在周的周一」、学期名退化成「第一学期」）",
+      "extracted": "fixtures/no-year.extracted.json",
+      "expected": "fixtures/no-year.expected.json"
+    }
+  ]
+}

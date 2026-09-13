@@ -1,0 +1,31 @@
+{
+  "specVersion": 1,
+  "key": "cqcivc",
+  "name": "重庆化工职业学院",
+  "version": "1.0.0",
+  "author": "上游 星河欲转（MIT）；移植 0x7E-2023",
+  "homepage": "https://github.com/XingHeYuZhuan/shiguang_warehouse",
+  "loginUrl": "http://dc.cqcivc.cn/cas/login?service=http://jwxt.cqcivc.edu.cn/sso/zllogin",
+  "scheduleUrlHint": "http://jwxt.cqcivc.edu.cn/jwglxt/kbcx/xskbcx_cxXskbcxIndex.html?gnmkdm=N2151&layout=default",
+  "minAppVersionCode": 11,
+  "extract": "extract.js",
+  "parse": "parse.js",
+  "allowHosts": ["jwxt.cqcivc.edu.cn"],
+  "fixtures": [
+    {
+      "name": "合成用例：基本表格（每周都上 / 单周 / 双周 / 1-3,5-9周混排、教师与教室为空的课、重复排课行去重、课程名里的教学班序号 (1)、四类脏行各自计数、集中实践课进 warnings）",
+      "extracted": "fixtures/basic.extracted.json",
+      "expected": "fixtures/basic.expected.json"
+    },
+    {
+      "name": "合成用例：周次四种写法（1-16周(单) / (单)1-16周 / 1-16(单周) / 1-3,5-9周）与「括号里的纯数字不是周次」（3-16周,(1) 的 (1) 是教学班序号），外加 1-8周(单),9-16周(双)；学期是第二学期，钉住开学日锚点跨年与「1-16(单周)」这种上游整行丢课的写法",
+      "extracted": "fixtures/weeks-forms.extracted.json",
+      "expected": "fixtures/weeks-forms.expected.json"
+    },
+    {
+      "name": "合成用例：脏数据与边界（节次多段 1-2,5-6、两位一拼 0102、第9,10节、超出本校 11 节作息表的 13-14 节、周次 31-32 全超限、课表最大周次 24 抬高总周数、响应带记录总数 9 而实际 7 行、单/双标记自己成一段 1-16周 单）",
+      "extracted": "fixtures/dirty.extracted.json",
+      "expected": "fixtures/dirty.expected.json"
+    }
+  ]
+}

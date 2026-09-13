@@ -1,0 +1,164 @@
+{
+  "specVersion": 1,
+  "kind": "schedule",
+  "ocrAssisted": false,
+  "warnings": [
+    "只导入了教务系统当前选中的学期（2025-2026学年第二学期）；要导入别的学期，请在教务页面里切到那个学期再点「提取课表」",
+    "教务系统没有给出开学日期（学期周次校历接口没有返回可用数据），第 1 周按「第二学期 = 2 月 20 日所在周的周一」推算为 2026-02-16，请在学期管理里核对成学校实际开学日",
+    "学期总周数用的是适配器内置的 20 周（教务周次校历接口没有返回可用数据，这是上游脚本写死的值），如与实际不符可在学期管理里改",
+    "作息时间用的是适配器内置的青岛黄海学院 11 节作息表（第 1 节 08:00-08:45），没有向教务核对过，如与学校实际作息不符请在学期管理里改",
+    "有 1 处周次里带了认不出的说明（例如「前」「后」「实践」），周次按其中的数字解析，请核对"
+  ],
+  "terms": [
+    {
+      "name": "2025-2026学年第二学期",
+      "firstDay": "2026-02-16",
+      "totalWeeks": 20,
+      "periodTimes": [
+        { "periodIndex": 1, "start": "08:00", "end": "08:45" },
+        { "periodIndex": 2, "start": "08:50", "end": "09:35" },
+        { "periodIndex": 3, "start": "10:05", "end": "10:50" },
+        { "periodIndex": 4, "start": "10:55", "end": "11:40" },
+        { "periodIndex": 5, "start": "11:45", "end": "12:30" },
+        { "periodIndex": 6, "start": "14:00", "end": "14:45" },
+        { "periodIndex": 7, "start": "14:50", "end": "15:35" },
+        { "periodIndex": 8, "start": "16:05", "end": "16:50" },
+        { "periodIndex": 9, "start": "16:55", "end": "17:40" },
+        { "periodIndex": 10, "start": "19:10", "end": "19:55" },
+        { "periodIndex": 11, "start": "20:00", "end": "20:45" }
+      ],
+      "courses": [
+        {
+          "name": "周次写法一标记在周后",
+          "teacher": "教师甲",
+          "note": null,
+          "blocks": [
+            { "dayOfWeek": 1, "startPeriod": 1, "endPeriod": 2, "startWeek": 1, "endWeek": 15, "weekType": "ODD", "location": "教室1" }
+          ]
+        },
+        {
+          "name": "周次写法二标记在前",
+          "teacher": "教师乙",
+          "note": null,
+          "blocks": [
+            { "dayOfWeek": 2, "startPeriod": 3, "endPeriod": 4, "startWeek": 1, "endWeek": 15, "weekType": "ODD", "location": "教室2" }
+          ]
+        },
+        {
+          "name": "周次写法三单周在括号",
+          "teacher": "教师丙",
+          "note": null,
+          "blocks": [
+            { "dayOfWeek": 3, "startPeriod": 5, "endPeriod": 6, "startWeek": 1, "endWeek": 15, "weekType": "ODD", "location": "教室3" }
+          ]
+        },
+        {
+          "name": "周次写法四混排",
+          "teacher": "教师丁",
+          "note": null,
+          "blocks": [
+            { "dayOfWeek": 4, "startPeriod": 1, "endPeriod": 2, "startWeek": 1, "endWeek": 3, "weekType": "ALL", "location": "教室4" },
+            { "dayOfWeek": 4, "startPeriod": 1, "endPeriod": 2, "startWeek": 5, "endWeek": 9, "weekType": "ALL", "location": "教室4" }
+          ]
+        },
+        {
+          "name": "周次写法五双周",
+          "teacher": "教师戊",
+          "note": null,
+          "blocks": [
+            { "dayOfWeek": 5, "startPeriod": 3, "endPeriod": 4, "startWeek": 2, "endWeek": 16, "weekType": "EVEN", "location": "教室5" }
+          ]
+        },
+        {
+          "name": "教学班序号在周后",
+          "teacher": "教师己",
+          "note": null,
+          "blocks": [
+            { "dayOfWeek": 6, "startPeriod": 1, "endPeriod": 2, "startWeek": 1, "endWeek": 16, "weekType": "ALL", "location": "教室6" }
+          ]
+        },
+        {
+          "name": "教学班序号在前",
+          "teacher": "教师庚",
+          "note": null,
+          "blocks": [
+            { "dayOfWeek": 7, "startPeriod": 1, "endPeriod": 2, "startWeek": 1, "endWeek": 16, "weekType": "ALL", "location": "教室7" }
+          ]
+        },
+        {
+          "name": "单双标记自成一段",
+          "teacher": "教师辛",
+          "note": null,
+          "blocks": [
+            { "dayOfWeek": 1, "startPeriod": 3, "endPeriod": 4, "startWeek": 1, "endWeek": 15, "weekType": "ODD", "location": "教室8" }
+          ]
+        },
+        {
+          "name": "周次带认不出的说明",
+          "teacher": "教师壬",
+          "note": null,
+          "blocks": [
+            { "dayOfWeek": 2, "startPeriod": 5, "endPeriod": 6, "startWeek": 1, "endWeek": 16, "weekType": "ALL", "location": "教室9" }
+          ]
+        },
+        {
+          "name": "周次写法六破折号前有空格",
+          "teacher": "教师癸",
+          "note": null,
+          "blocks": [
+            { "dayOfWeek": 3, "startPeriod": 5, "endPeriod": 6, "startWeek": 1, "endWeek": 15, "weekType": "ODD", "location": "教室10" }
+          ]
+        },
+        {
+          "name": "周次写法七破折号后有空格",
+          "teacher": "教师子",
+          "note": null,
+          "blocks": [
+            { "dayOfWeek": 4, "startPeriod": 7, "endPeriod": 8, "startWeek": 1, "endWeek": 16, "weekType": "ALL", "location": "教室11" }
+          ]
+        },
+        {
+          "name": "周次写法八破折号两侧有空格",
+          "teacher": "教师丑",
+          "note": null,
+          "blocks": [
+            { "dayOfWeek": 5, "startPeriod": 9, "endPeriod": 10, "startWeek": 1, "endWeek": 16, "weekType": "ALL", "location": "教室12" }
+          ]
+        },
+        {
+          "name": "全角波浪班号在前",
+          "teacher": "教师寅",
+          "note": null,
+          "blocks": [
+            { "dayOfWeek": 6, "startPeriod": 1, "endPeriod": 2, "startWeek": 1, "endWeek": 16, "weekType": "ALL", "location": "教室13" }
+          ]
+        },
+        {
+          "name": "班号序号里带空格",
+          "teacher": "教师卯",
+          "note": null,
+          "blocks": [
+            { "dayOfWeek": 7, "startPeriod": 3, "endPeriod": 4, "startWeek": 1, "endWeek": 16, "weekType": "ALL", "location": "教室14" }
+          ]
+        },
+        {
+          "name": "空格分隔两段周次",
+          "teacher": "教师辰",
+          "note": null,
+          "blocks": [
+            { "dayOfWeek": 1, "startPeriod": 5, "endPeriod": 6, "startWeek": 1, "endWeek": 3, "weekType": "ALL", "location": "教室15" },
+            { "dayOfWeek": 1, "startPeriod": 5, "endPeriod": 6, "startWeek": 5, "endWeek": 9, "weekType": "ALL", "location": "教室15" }
+          ]
+        },
+        {
+          "name": "空格隔开单双标记",
+          "teacher": "教师巳",
+          "note": null,
+          "blocks": [
+            { "dayOfWeek": 2, "startPeriod": 7, "endPeriod": 8, "startWeek": 2, "endWeek": 16, "weekType": "EVEN", "location": "教室16" }
+          ]
+        }
+      ]
+    }
+  ]
+}

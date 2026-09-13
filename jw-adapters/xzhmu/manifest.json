@@ -1,0 +1,43 @@
+{
+  "specVersion": 1,
+  "key": "xzhmu",
+  "name": "徐州医科大学（研究生）",
+  "version": "1.0.0",
+  "author": "上游 星河欲转（MIT）；移植 0x7E-2023",
+  "homepage": "https://github.com/XingHeYuZhuan/shiguang_warehouse",
+  "loginUrl": "https://authserver.xzhmu.edu.cn/authserver/login?service=https%3A%2F%2Fehall.xzhmu.edu.cn%2Flogin",
+  "scheduleUrlHint": "https://ehall.xzhmu.edu.cn/",
+  "minAppVersionCode": 11,
+  "extract": "extract.js",
+  "parse": "parse.js",
+  "allowHosts": [
+    "ehall.xzhmu.edu.cn"
+  ],
+  "fixtures": [
+    {
+      "name": "基本课表（合成：13 节作息表、连堂 rowSpan、隐藏占位格、一格两门课）",
+      "extracted": "fixtures/basic.extracted.json",
+      "expected": "fixtures/basic.expected.json"
+    },
+    {
+      "name": "周次四种写法 + 无星期属性的网格列号对齐（合成）",
+      "extracted": "fixtures/weeks-and-columns.extracted.json",
+      "expected": "fixtures/weeks-and-columns.expected.json"
+    },
+    {
+      "name": "既无星期表头也无星期属性：定位不了就进 warnings（合成）",
+      "extracted": "fixtures/no-day-column.extracted.json",
+      "expected": "fixtures/no-day-column.expected.json"
+    },
+    {
+      "name": "括号里的纯数字 / 区间不是周次、带「节」的分段不参与周次（合成）",
+      "extracted": "fixtures/serial-and-section.extracted.json",
+      "expected": "fixtures/serial-and-section.expected.json"
+    },
+    {
+      "name": "空白分段（合成数据：由 basic 派生，一格周次写成空格两段「1-3周 5-9周」必须读成两个块、不许并段）",
+      "extracted": "fixtures/weeks-space-segments.extracted.json",
+      "expected": "fixtures/weeks-space-segments.expected.json"
+    }
+  ]
+}

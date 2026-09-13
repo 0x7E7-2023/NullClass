@@ -1,0 +1,251 @@
+{
+  "_note": "合成数据（**非真实抓取**）：专打方括号里的单双标记与全角区间分隔符两处缺陷。hnie 的 splitSpec() 从前把「周次(节次)」font 里所有方括号内容无条件整段删掉，于是 \"1-16周[单]\" 会塌成 \"1-16周\" —— 单周标记一声不吭地没了，整门课变成每周都上；而 weeksIn() 取区间时只收 [-—~至]，\"1～16周\"（U+FF5E）这种会落到「单数字回退」，静默读成「只上第 1 周」。本用例把这两类写法的期望值**按规范手推**：1-16周[单] → w1-15 ODD；全角 / 数学减 / en dash / em dash / ASCII ~ / 至 / 到 都是区间分隔符，1～16周 等一律等同于 1-16周 → w1-16 ALL。另外验「标记绑到最近的周次段」（1-8周[双],10-16周[单] 两段各判各的）与「[单双] 两个标记都写」按规范必须出声。",
+  "source": "qz-jsxsd",
+  "pageUrl": "http://jwcmis.hnie.edu.cn/jsxsd/xskb/xskb_list.do",
+  "now": "2027-03-10",
+  "term": {
+    "code": "2026-2027-2",
+    "name": ""
+  },
+  "season": {
+    "asked": false,
+    "picked": null
+  },
+  "cols": 8,
+  "calendar": {
+    "found": false,
+    "rows": []
+  },
+  "rows": [
+    [
+      {
+        "col": 0,
+        "span": 1,
+        "text": "节次",
+        "parts": []
+      },
+      {
+        "col": 1,
+        "span": 1,
+        "text": "星期一",
+        "parts": []
+      },
+      {
+        "col": 2,
+        "span": 1,
+        "text": "星期二",
+        "parts": []
+      },
+      {
+        "col": 3,
+        "span": 1,
+        "text": "星期三",
+        "parts": []
+      },
+      {
+        "col": 4,
+        "span": 1,
+        "text": "星期四",
+        "parts": []
+      },
+      {
+        "col": 5,
+        "span": 1,
+        "text": "星期五",
+        "parts": []
+      },
+      {
+        "col": 6,
+        "span": 1,
+        "text": "星期六",
+        "parts": []
+      },
+      {
+        "col": 7,
+        "span": 1,
+        "text": "星期日",
+        "parts": []
+      }
+    ],
+    [
+      {
+        "col": 0,
+        "span": 1,
+        "text": "第1-2节",
+        "parts": []
+      },
+      {
+        "col": 1,
+        "span": 1,
+        "text": "高等数学A(一)任课教师:张明1-16周[单]01-02节教1-101",
+        "parts": [
+          "高等数学A(一)<br><font title='教师'>任课教师:张明</font><br><font title='周次(节次)'>1-16周[单]</font><br><font title='节次'>01-02节</font><br><font title='教室'>教1-101</font>"
+        ]
+      },
+      {
+        "col": 2,
+        "span": 1,
+        "text": "大学英语(一)任课教师:李红1-16周[单][01-02节]外语楼B203",
+        "parts": [
+          "大学英语(一)<br><font title='教师'>任课教师:李红</font><br><font title='周次(节次)'>1-16周[单][01-02节]</font><br><font title='教室'>外语楼B203</font>"
+        ]
+      },
+      {
+        "col": 3,
+        "span": 1,
+        "text": "线性代数任课教师:王强1-16周[双]01-02节教2-201",
+        "parts": [
+          "线性代数<br><font title='教师'>任课教师:王强</font><br><font title='周次(节次)'>1-16周[双]</font><br><font title='节次'>01-02节</font><br><font title='教室'>教2-201</font>"
+        ]
+      },
+      {
+        "col": 4,
+        "span": 1,
+        "text": "概率论与数理统计任课教师:赵敏1～16周[01-02节]教3-305",
+        "parts": [
+          "概率论与数理统计<br><font title='教师'>任课教师:赵敏</font><br><font title='周次(节次)'>1～16周[01-02节]</font><br><font title='教室'>教3-305</font>"
+        ]
+      },
+      {
+        "col": 5,
+        "span": 1,
+        "text": "数据结构任课教师:陈刚1－16周[01-02节]信息楼A401",
+        "parts": [
+          "数据结构<br><font title='教师'>任课教师:陈刚</font><br><font title='周次(节次)'>1－16周[01-02节]</font><br><font title='教室'>信息楼A401</font>"
+        ]
+      },
+      {
+        "col": 6,
+        "span": 1,
+        "text": "操作系统任课教师:刘洋1−16周[01-02节]信息楼A402",
+        "parts": [
+          "操作系统<br><font title='教师'>任课教师:刘洋</font><br><font title='周次(节次)'>1−16周[01-02节]</font><br><font title='教室'>信息楼A402</font>"
+        ]
+      },
+      {
+        "col": 7,
+        "span": 1,
+        "text": "计算机网络任课教师:孙丽1–16周[01-02节]信息楼A403",
+        "parts": [
+          "计算机网络<br><font title='教师'>任课教师:孙丽</font><br><font title='周次(节次)'>1–16周[01-02节]</font><br><font title='教室'>信息楼A403</font>"
+        ]
+      }
+    ],
+    [
+      {
+        "col": 0,
+        "span": 1,
+        "text": "第3-4节",
+        "parts": []
+      },
+      {
+        "col": 1,
+        "span": 1,
+        "text": "离散数学任课教师:马超1-8周[双],10-16周[单]03-04节教5-101",
+        "parts": [
+          "离散数学<br><font title='教师'>任课教师:马超</font><br><font title='周次(节次)'>1-8周[双],10-16周[单]</font><br><font title='节次'>03-04节</font><br><font title='教室'>教5-101</font>"
+        ]
+      },
+      {
+        "col": 2,
+        "span": 1,
+        "text": "编译原理任课教师:周涛1—16周[03-04节]教5-102",
+        "parts": [
+          "编译原理<br><font title='教师'>任课教师:周涛</font><br><font title='周次(节次)'>1—16周[03-04节]</font><br><font title='教室'>教5-102</font>"
+        ]
+      },
+      {
+        "col": 3,
+        "span": 1,
+        "text": "软件工程任课教师:吴敏1~16周[03-04节]教5-103",
+        "parts": [
+          "软件工程<br><font title='教师'>任课教师:吴敏</font><br><font title='周次(节次)'>1~16周[03-04节]</font><br><font title='教室'>教5-103</font>"
+        ]
+      },
+      {
+        "col": 4,
+        "span": 1,
+        "text": "数字逻辑任课教师:郑凯1至16周[03-04节]教5-104",
+        "parts": [
+          "数字逻辑<br><font title='教师'>任课教师:郑凯</font><br><font title='周次(节次)'>1至16周[03-04节]</font><br><font title='教室'>教5-104</font>"
+        ]
+      },
+      {
+        "col": 5,
+        "span": 1,
+        "text": "微机原理任课教师:冯雪1到16周[03-04节]教5-105",
+        "parts": [
+          "微机原理<br><font title='教师'>任课教师:冯雪</font><br><font title='周次(节次)'>1到16周[03-04节]</font><br><font title='教室'>教5-105</font>"
+        ]
+      },
+      {
+        "col": 6,
+        "span": 1,
+        "text": "大学物理任课教师:何军1-16周[单双][03-04节]教5-106",
+        "parts": [
+          "大学物理<br><font title='教师'>任课教师:何军</font><br><font title='周次(节次)'>1-16周[单双][03-04节]</font><br><font title='教室'>教5-106</font>"
+        ]
+      },
+      {
+        "col": 7,
+        "span": 1,
+        "text": "工程制图任课教师:曹阳1-16周[03-04节]教5-107",
+        "parts": [
+          "工程制图<br><font title='教师'>任课教师:曹阳</font><br><font title='周次(节次)'>1-16周[03-04节]</font><br><font title='教室'>教5-107</font>"
+        ]
+      }
+    ],
+    [
+      {
+        "col": 0,
+        "span": 1,
+        "text": "第5-6节",
+        "parts": []
+      },
+      {
+        "col": 1,
+        "span": 1,
+        "text": "形势与政策任课教师:许静1～16周[05～06节]教6-201",
+        "parts": [
+          "形势与政策<br><font title='教师'>任课教师:许静</font><br><font title='周次(节次)'>1～16周[05～06节]</font><br><font title='教室'>教6-201</font>"
+        ]
+      },
+      {
+        "col": 2,
+        "span": 1,
+        "text": "",
+        "parts": []
+      },
+      {
+        "col": 3,
+        "span": 1,
+        "text": "",
+        "parts": []
+      },
+      {
+        "col": 4,
+        "span": 1,
+        "text": "",
+        "parts": []
+      },
+      {
+        "col": 5,
+        "span": 1,
+        "text": "",
+        "parts": []
+      },
+      {
+        "col": 6,
+        "span": 1,
+        "text": "",
+        "parts": []
+      },
+      {
+        "col": 7,
+        "span": 1,
+        "text": "",
+        "parts": []
+      }
+    ]
+  ]
+}

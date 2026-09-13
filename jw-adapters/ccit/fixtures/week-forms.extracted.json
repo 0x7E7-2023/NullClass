@@ -1,0 +1,98 @@
+{
+  "_note": "合成数据，不是真实抓取：按长春工程学院强智课表页（/jsxsd/xskb/xskb_list.do，经 WebVPN）的 DOM 形状编造。这一份专测两件事：① 周次四种写法（1-16周(单) 标记在「周」后、 (单)1-16周 标记在前、 1-16(单周) 连周字一起进括号、 1-3,5-9周 逗号混排）与「括号里纯数字是教学班序号」(1)；② 一个格子里两门课用一长串减号分隔。上游 ccit.js 的 parseWeeks 是 weekStr.split('(')[0]，前三种写法都会塌成「每周都上」（(单)1-16周 更是一周都不剩），正是要钉住的那处。课程名/教师/教室均为虚构，无学号姓名。拿到真实 dump 请替换这一对 fixture。",
+  "source": "qz-jsxsd-xskb",
+  "pageUrl": "https://http-10-198-47-148-8080.webvpn.ccit.edu.cn/jsxsd/xskb/xskb_list.do",
+  "now": "2026-09-13",
+  "term": {
+    "code": "2026-2027-1",
+    "name": "2026-2027学年第一学期"
+  },
+  "cols": 8,
+  "rows": [
+    [
+      { "col": 0, "span": 1, "text": "节次", "parts": [] },
+      { "col": 1, "span": 1, "text": "星期一", "parts": [] },
+      { "col": 2, "span": 1, "text": "星期二", "parts": [] },
+      { "col": 3, "span": 1, "text": "星期三", "parts": [] },
+      { "col": 4, "span": 1, "text": "星期四", "parts": [] },
+      { "col": 5, "span": 1, "text": "星期五", "parts": [] },
+      { "col": 6, "span": 1, "text": "星期六", "parts": [] },
+      { "col": 7, "span": 1, "text": "星期日", "parts": [] }
+    ],
+    [
+      { "col": 0, "span": 1, "text": "1-2节", "parts": [] },
+      {
+        "col": 1,
+        "span": 1,
+        "text": "高等数学A(一)张伟1-16周(单)[01-02节]教1-101",
+        "parts": [
+          "高等数学A(一)<br><font title=\"老师\">张伟</font><br><font title=\"周次(节次)\">1-16周(单)[01-02节]</font><br><font title=\"教室\">教1-101</font>"
+        ]
+      },
+      {
+        "col": 2,
+        "span": 1,
+        "text": "线性代数陈静(单)1-16周[01-02节]教1-102",
+        "parts": [
+          "线性代数<br><font title=\"老师\">陈静</font><br><font title=\"周次(节次)\">(单)1-16周[01-02节]</font><br><font title=\"教室\">教1-102</font>"
+        ]
+      },
+      {
+        "col": 3,
+        "span": 1,
+        "text": "概率论与数理统计刘洋1-16(单周)[01-02节]教1-103",
+        "parts": [
+          "概率论与数理统计<br><font title=\"老师\">刘洋</font><br><font title=\"周次(节次)\">1-16(单周)[01-02节]</font><br><font title=\"教室\">教1-103</font>"
+        ]
+      },
+      {
+        "col": 4,
+        "span": 1,
+        "text": "离散数学孙丽1-3,5-9周[01-02节]教1-104",
+        "parts": [
+          "离散数学<br><font title=\"老师\">孙丽</font><br><font title=\"周次(节次)\">1-3,5-9周[01-02节]</font><br><font title=\"教室\">教1-104</font>"
+        ]
+      },
+      {
+        "col": 5,
+        "span": 1,
+        "text": "数据结构吴强(1)1-16周[01-02节]教1-105",
+        "parts": [
+          "数据结构<br><font title=\"老师\">吴强</font><br><font title=\"周次(节次)\">(1)1-16周[01-02节]</font><br><font title=\"教室\">教1-105</font>"
+        ]
+      },
+      {
+        "col": 6,
+        "span": 1,
+        "text": "操作系统郑华2-16周(双)[01-02节]教1-106",
+        "parts": [
+          "操作系统<br><font title=\"老师\">郑华</font><br><font title=\"周次(节次)\">2-16周(双)[01-02节]</font><br><font title=\"教室\">教1-106</font>"
+        ]
+      },
+      {
+        "col": 7,
+        "span": 1,
+        "text": "计算机网络冯军1-16周 双[01-02节]DJ1-12教室",
+        "parts": [
+          "计算机网络<br><font title=\"老师\">冯军</font><br><font title=\"周次(节次)\">1-16周 双[01-02节]</font><br><font title=\"教室\">DJ1-12教室</font>"
+        ]
+      }
+    ],
+    [
+      { "col": 1, "span": 1, "text": "", "parts": [] },
+      { "col": 2, "span": 1, "text": "", "parts": [] },
+      {
+        "col": 3,
+        "span": 1,
+        "text": "编译原理何静1-15周(单)[03-04节]教2-201---------------------软件工程刘敏单双周1-16[03-04节]教2-202",
+        "parts": [
+          "编译原理<br><font title=\"老师\">何静</font><br><font title=\"周次(节次)\">1-15周(单)[03-04节]</font><br><font title=\"教室\">教2-201</font>---------------------软件工程<br><font title=\"老师\">刘敏</font><br><font title=\"周次(节次)\">单双周1-16[03-04节]</font><br><font title=\"教室\">教2-202</font>"
+        ]
+      },
+      { "col": 4, "span": 1, "text": "", "parts": [] },
+      { "col": 5, "span": 1, "text": "", "parts": [] },
+      { "col": 6, "span": 1, "text": "", "parts": [] },
+      { "col": 7, "span": 1, "text": "", "parts": [] }
+    ]
+  ]
+}

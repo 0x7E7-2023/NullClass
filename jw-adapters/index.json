@@ -140,6 +140,84 @@
       "name": "郑州大学",
       "version": "1.0.0",
       "path": "zzu"
+    },
+    {
+      "key": "ccit",
+      "name": "长春工程学院",
+      "version": "1.0.0",
+      "path": "ccit"
+    },
+    {
+      "key": "hnie",
+      "name": "湖南工程学院",
+      "version": "1.0.0",
+      "path": "hnie"
+    },
+    {
+      "key": "stcnchu",
+      "name": "南昌航空大学科技学院",
+      "version": "1.0.0",
+      "path": "stcnchu"
+    },
+    {
+      "key": "hnvcc",
+      "name": "湖南商务职业技术学院",
+      "version": "1.0.0",
+      "path": "hnvcc"
+    },
+    {
+      "key": "xzhmu",
+      "name": "徐州医科大学（研究生）",
+      "version": "1.0.0",
+      "path": "xzhmu"
+    },
+    {
+      "key": "taru",
+      "name": "塔里木大学",
+      "version": "1.0.0",
+      "path": "taru"
+    },
+    {
+      "key": "xawl",
+      "name": "西安文理学院",
+      "version": "1.0.0",
+      "path": "xawl"
+    },
+    {
+      "key": "zcmu",
+      "name": "浙江中医药大学",
+      "version": "1.0.0",
+      "path": "zcmu"
+    },
+    {
+      "key": "gsmc",
+      "name": "甘肃医学院",
+      "version": "1.0.0",
+      "path": "gsmc"
+    },
+    {
+      "key": "qdhhc",
+      "name": "青岛黄海学院",
+      "version": "1.0.0",
+      "path": "qdhhc"
+    },
+    {
+      "key": "cqcivc",
+      "name": "重庆化工职业学院",
+      "version": "1.0.0",
+      "path": "cqcivc"
+    },
+    {
+      "key": "whut",
+      "name": "武汉理工大学",
+      "version": "1.0.0",
+      "path": "whut"
+    },
+    {
+      "key": "neu",
+      "name": "东北大学",
+      "version": "1.0.0",
+      "path": "neu"
     }
   ]
 }

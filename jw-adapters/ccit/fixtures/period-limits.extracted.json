@@ -1,0 +1,75 @@
+{
+  "_note": "合成数据，不是真实抓取：按长春工程学院强智课表页（/jsxsd/xskb/xskb_list.do，经 WebVPN）的 DOM 形状编造。这一份专打**节次上限与占位作息**这条路径（原本三份 fixture 的节次最大只到 6 节，MAX_PERIOD=16 的夹取与补占位作息的 pad2(7+节次) 公式一行都没跑到）：① 节次在 13-16 之间 —— 内置作息表只有 12 节，必须补出占位时刻，且补出来的必须是合法的 HH:mm（08:00-23:45）；② 第 15-16 节正好压在 MAX_PERIOD=16 的边界上，必须收下；③ [17-18节]、[19节]、[1718节]（连写脏数据）三种越界形态都超出 MAX_PERIOD，必须整块跳过并点名 —— 收下的话占位作息会补出 24:00 这种非法时刻，载荷校验一拒整次导入都白导；④ 顺带放一门只用内置作息表的第 11-12 节做对照，证明内置那 12 条没被改坏。课程名/教师/教室均为虚构，无学号姓名。拿到真实 dump 请替换这一对 fixture。",
+  "source": "qz-jsxsd-xskb",
+  "pageUrl": "https://http-10-198-47-148-8080.webvpn.ccit.edu.cn/jsxsd/xskb/xskb_list.do",
+  "now": "2026-09-13",
+  "term": {
+    "code": "2026-2027-1",
+    "name": "2026-2027学年第一学期"
+  },
+  "cols": 8,
+  "rows": [
+    [
+      { "col": 0, "span": 1, "text": "节次", "parts": [] },
+      { "col": 1, "span": 1, "text": "星期一", "parts": [] },
+      { "col": 2, "span": 1, "text": "星期二", "parts": [] },
+      { "col": 3, "span": 1, "text": "星期三", "parts": [] },
+      { "col": 4, "span": 1, "text": "星期四", "parts": [] },
+      { "col": 5, "span": 1, "text": "星期五", "parts": [] },
+      { "col": 6, "span": 1, "text": "星期六", "parts": [] },
+      { "col": 7, "span": 1, "text": "星期日", "parts": [] }
+    ],
+    [
+      { "col": 0, "span": 1, "text": "第1-2节", "parts": [] },
+      {
+        "col": 1,
+        "span": 1,
+        "text": "占位作息课张老师1-16周[13-14节]教1-101",
+        "parts": [
+          "占位作息课<br><font title=\"教师\">张老师</font><br><font title=\"周次(节次)\">1-16周[13-14节]</font><br><font title=\"教室\">教1-101</font>"
+        ]
+      },
+      {
+        "col": 2,
+        "span": 1,
+        "text": "上限边界课李老师1-16周[15-16节]教1-102",
+        "parts": [
+          "上限边界课<br><font title=\"教师\">李老师</font><br><font title=\"周次(节次)\">1-16周[15-16节]</font><br><font title=\"教室\">教1-102</font>"
+        ]
+      },
+      {
+        "col": 3,
+        "span": 1,
+        "text": "越界课王老师1-16周[17-18节]教1-103",
+        "parts": [
+          "越界课<br><font title=\"教师\">王老师</font><br><font title=\"周次(节次)\">1-16周[17-18节]</font><br><font title=\"教室\">教1-103</font>"
+        ]
+      },
+      {
+        "col": 4,
+        "span": 1,
+        "text": "内置末节课赵老师1-16周[11-12节]教1-104",
+        "parts": [
+          "内置末节课<br><font title=\"教师\">赵老师</font><br><font title=\"周次(节次)\">1-16周[11-12节]</font><br><font title=\"教室\">教1-104</font>"
+        ]
+      },
+      {
+        "col": 5,
+        "span": 1,
+        "text": "越界单节课孙老师1-16周[19节]教1-105",
+        "parts": [
+          "越界单节课<br><font title=\"教师\">孙老师</font><br><font title=\"周次(节次)\">1-16周[19节]</font><br><font title=\"教室\">教1-105</font>"
+        ]
+      },
+      {
+        "col": 6,
+        "span": 1,
+        "text": "连写脏数据课周老师1-16周[1718节]教1-106",
+        "parts": [
+          "连写脏数据课<br><font title=\"教师\">周老师</font><br><font title=\"周次(节次)\">1-16周[1718节]</font><br><font title=\"教室\">教1-106</font>"
+        ]
+      },
+      { "col": 7, "span": 1, "text": "", "parts": [] }
+    ]
+  ]
+}

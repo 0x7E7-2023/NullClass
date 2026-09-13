@@ -1,0 +1,56 @@
+{
+  "_note": "合成数据，不是真实抓取：按湖南商务职业技术学院强智学生端课表片段的 DOM 形状编造，只用来回归 parse.js 的转换逻辑。这一份专测**学期名兜底**（本批次检查表第 7 条）：页面上既没有学年学期下拉框、也没有任何带学期字样的文字（term 全空）——学期名只能按提取日期推算（2026-02 落在第二学期 →「2025-2026学年第二学期」），并且**必须**在 warnings 里说明这是推算的；顺带覆盖 2 月提取时作息季节判成冬季、以及教务给的 18 周总周数原样采用（不抬高、不报警）。预期值按移植手册 §4 独立推出后与 parse.js 对照。拿到真实 dump 请替换这一对 fixture。",
+  "now": "2026-02-25",
+  "term": { "code": null, "name": null },
+  "totalWeeksText": "第1-18周 / 18周",
+  "rows": [
+    {
+      "cells": [
+        { "col": 0, "colSpan": 1, "rowSpan": 1, "text": "节次", "boxes": [] },
+        { "col": 1, "colSpan": 1, "rowSpan": 1, "text": "星期一", "boxes": [] },
+        { "col": 2, "colSpan": 1, "rowSpan": 1, "text": "星期二", "boxes": [] },
+        { "col": 3, "colSpan": 1, "rowSpan": 1, "text": "星期三", "boxes": [] },
+        { "col": 4, "colSpan": 1, "rowSpan": 1, "text": "星期四", "boxes": [] },
+        { "col": 5, "colSpan": 1, "rowSpan": 1, "text": "星期五", "boxes": [] },
+        { "col": 6, "colSpan": 1, "rowSpan": 1, "text": "星期六", "boxes": [] },
+        { "col": 7, "colSpan": 1, "rowSpan": 1, "text": "星期日", "boxes": [] }
+      ]
+    },
+    {
+      "cells": [
+        { "col": 0, "colSpan": 1, "rowSpan": 1, "text": "第一大节 第1-2节", "boxes": [] },
+        {
+          "col": 1, "colSpan": 1, "rowSpan": 1,
+          "text": "会计基础教师：彭伟学分：3B201第1-18周",
+          "boxes": [{ "name": "会计基础", "teacher": "教师：彭伟", "spans": ["B201", "第1-18周"] }]
+        },
+        { "col": 2, "colSpan": 1, "rowSpan": 1, "text": "", "boxes": [] },
+        {
+          "col": 3, "colSpan": 1, "rowSpan": 1,
+          "text": "市场营销教师：刘婷学分：3B202第1-9周",
+          "boxes": [{ "name": "市场营销", "teacher": "教师：刘婷", "spans": ["B202", "第1-9周"] }]
+        },
+        { "col": 4, "colSpan": 1, "rowSpan": 1, "text": "", "boxes": [] },
+        { "col": 5, "colSpan": 1, "rowSpan": 1, "text": "", "boxes": [] },
+        { "col": 6, "colSpan": 1, "rowSpan": 1, "text": "", "boxes": [] },
+        { "col": 7, "colSpan": 1, "rowSpan": 1, "text": "", "boxes": [] }
+      ]
+    },
+    {
+      "cells": [
+        { "col": 0, "colSpan": 1, "rowSpan": 1, "text": "第二大节 第3-4节", "boxes": [] },
+        { "col": 1, "colSpan": 1, "rowSpan": 1, "text": "", "boxes": [] },
+        { "col": 2, "colSpan": 1, "rowSpan": 1, "text": "", "boxes": [] },
+        { "col": 3, "colSpan": 1, "rowSpan": 1, "text": "", "boxes": [] },
+        { "col": 4, "colSpan": 1, "rowSpan": 1, "text": "", "boxes": [] },
+        {
+          "col": 5, "colSpan": 1, "rowSpan": 1,
+          "text": "商务英语教师：陈芳学分：3语音室1第2-18周(双)",
+          "boxes": [{ "name": "商务英语", "teacher": "教师：陈芳", "spans": ["语音室1", "第2-18周(双)"] }]
+        },
+        { "col": 6, "colSpan": 1, "rowSpan": 1, "text": "", "boxes": [] },
+        { "col": 7, "colSpan": 1, "rowSpan": 1, "text": "", "boxes": [] }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,91 @@
+{
+  "_note": "合成数据，不是真实抓取：按湖南商务职业技术学院强智学生端课表片段的 DOM 形状编造，只用来回归 parse.js 的转换逻辑。这一份专测**边界**：课表没有星期表头（只能按网格列号对星期，不许按数组长度猜列 —— 本批次检查表第 3 条）、节次格 rowspan=2（第二行没有节次格）、节次格里的钟点区间（第13-14节 21:35-22:20）、超出内置 12 节作息表的第 15-16 节（顺延出的时刻越界，必须截断成合法 HH:mm 并进 warnings —— 检查表第 4 条）、以及整行节次读不出来但格子里有课。注意：这份 fixture 里第 15-16 节的课块**刻意保留**在课表里、而 periodTimes 只到第 14 节 —— 载荷不要求作息表覆盖所有课块，但不能出现 24:10 那种非法时刻（那会让整份载荷被拒）。预期值按移植手册 §4 独立推出后与 parse.js 对照。",
+  "now": "2026-11-20",
+  "term": { "code": "2026-2027-1", "name": "2026-2027学年第一学期" },
+  "totalWeeksText": "",
+  "rows": [
+    {
+      "cells": [
+        { "col": 0, "colSpan": 1, "rowSpan": 2, "text": "第一大节 第1-2节", "boxes": [] },
+        { "col": 1, "colSpan": 1, "rowSpan": 1, "text": "", "boxes": [] },
+        {
+          "col": 2, "colSpan": 1, "rowSpan": 1,
+          "text": "计算机应用基础教师：周明学分：3实训楼401第1-16周",
+          "boxes": [{ "name": "计算机应用基础", "teacher": "教师：周明", "spans": ["实训楼401", "第1-16周"] }]
+        },
+        { "col": 3, "colSpan": 1, "rowSpan": 1, "text": "", "boxes": [] },
+        { "col": 4, "colSpan": 1, "rowSpan": 1, "text": "", "boxes": [] },
+        { "col": 5, "colSpan": 1, "rowSpan": 1, "text": "", "boxes": [] },
+        { "col": 6, "colSpan": 1, "rowSpan": 1, "text": "", "boxes": [] },
+        { "col": 7, "colSpan": 1, "rowSpan": 1, "text": "", "boxes": [] }
+      ]
+    },
+    {
+      "cells": [
+        {
+          "col": 1, "colSpan": 1, "rowSpan": 1,
+          "text": "大学语文学分：3博学楼205第1-16周",
+          "boxes": [{ "name": "大学语文", "teacher": "学分：3", "spans": ["博学楼205", "第1-16周"] }]
+        },
+        { "col": 2, "colSpan": 1, "rowSpan": 1, "text": "", "boxes": [] },
+        {
+          "col": 3, "colSpan": 1, "rowSpan": 1,
+          "text": "计算机应用基础教师：周明学分：3实训楼401第3-16周",
+          "boxes": [{ "name": "计算机应用基础", "teacher": "教师：周明", "spans": ["实训楼401", "第3-16周"] }]
+        },
+        { "col": 4, "colSpan": 1, "rowSpan": 1, "text": "", "boxes": [] },
+        { "col": 5, "colSpan": 1, "rowSpan": 1, "text": "", "boxes": [] },
+        { "col": 6, "colSpan": 1, "rowSpan": 1, "text": "", "boxes": [] },
+        { "col": 7, "colSpan": 1, "rowSpan": 1, "text": "", "boxes": [] }
+      ]
+    },
+    {
+      "cells": [
+        { "col": 0, "colSpan": 1, "rowSpan": 1, "text": "第五大节 第13-14节 21:35-22:20", "boxes": [] },
+        { "col": 1, "colSpan": 1, "rowSpan": 1, "text": "", "boxes": [] },
+        { "col": 2, "colSpan": 1, "rowSpan": 1, "text": "", "boxes": [] },
+        { "col": 3, "colSpan": 1, "rowSpan": 1, "text": "", "boxes": [] },
+        {
+          "col": 4, "colSpan": 1, "rowSpan": 1,
+          "text": "形势与政策教师：黄丽学分：3报告厅第9-12周",
+          "boxes": [{ "name": "形势与政策", "teacher": "教师：黄丽", "spans": ["报告厅", "第9-12周"] }]
+        },
+        { "col": 5, "colSpan": 1, "rowSpan": 1, "text": "", "boxes": [] },
+        { "col": 6, "colSpan": 1, "rowSpan": 1, "text": "", "boxes": [] },
+        { "col": 7, "colSpan": 1, "rowSpan": 1, "text": "", "boxes": [] }
+      ]
+    },
+    {
+      "cells": [
+        { "col": 0, "colSpan": 1, "rowSpan": 1, "text": "第六大节 第15-16节", "boxes": [] },
+        { "col": 1, "colSpan": 1, "rowSpan": 1, "text": "", "boxes": [] },
+        { "col": 2, "colSpan": 1, "rowSpan": 1, "text": "", "boxes": [] },
+        { "col": 3, "colSpan": 1, "rowSpan": 1, "text": "", "boxes": [] },
+        { "col": 4, "colSpan": 1, "rowSpan": 1, "text": "", "boxes": [] },
+        {
+          "col": 5, "colSpan": 1, "rowSpan": 1,
+          "text": "创新创业基础教师：孙涛学分：3创业园201第1-8周",
+          "boxes": [{ "name": "创新创业基础", "teacher": "教师：孙涛", "spans": ["创业园201", "第1-8周"] }]
+        },
+        { "col": 6, "colSpan": 1, "rowSpan": 1, "text": "", "boxes": [] },
+        { "col": 7, "colSpan": 1, "rowSpan": 1, "text": "", "boxes": [] }
+      ]
+    },
+    {
+      "cells": [
+        { "col": 0, "colSpan": 1, "rowSpan": 1, "text": "上午 08:20-09:05", "boxes": [] },
+        {
+          "col": 1, "colSpan": 1, "rowSpan": 1,
+          "text": "微积分教师：李明学分：3A201第1-8周",
+          "boxes": [{ "name": "微积分", "teacher": "教师：李明", "spans": ["A201", "第1-8周"] }]
+        },
+        { "col": 2, "colSpan": 1, "rowSpan": 1, "text": "", "boxes": [] },
+        { "col": 3, "colSpan": 1, "rowSpan": 1, "text": "", "boxes": [] },
+        { "col": 4, "colSpan": 1, "rowSpan": 1, "text": "", "boxes": [] },
+        { "col": 5, "colSpan": 1, "rowSpan": 1, "text": "", "boxes": [] },
+        { "col": 6, "colSpan": 1, "rowSpan": 1, "text": "", "boxes": [] },
+        { "col": 7, "colSpan": 1, "rowSpan": 1, "text": "", "boxes": [] }
+      ]
+    }
+  ]
+}

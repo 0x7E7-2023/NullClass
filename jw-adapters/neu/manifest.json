@@ -1,0 +1,35 @@
+{
+  "specVersion": 1,
+  "key": "neu",
+  "name": "东北大学",
+  "version": "1.0.0",
+  "author": "上游 Vera-zero（MIT）；移植 0x7E-2023",
+  "homepage": "https://github.com/XingHeYuZhuan/shiguang_warehouse",
+  "loginUrl": "http://jwxt.neu.edu.cn/",
+  "minAppVersionCode": 11,
+  "extract": "extract.js",
+  "parse": "parse.js",
+  "allowHosts": [],
+  "fixtures": [
+    {
+      "name": "基本课表（学期编号、开学日、作息表都来自教务接口）",
+      "extracted": "fixtures/basic.extracted.json",
+      "expected": "fixtures/basic.expected.json"
+    },
+    {
+      "name": "位串周次（连续 / 奇数隔周 / 偶数隔周 / 单周落单 + 文本优先于位串）",
+      "extracted": "fixtures/bitstring.extracted.json",
+      "expected": "fixtures/bitstring.expected.json"
+    },
+    {
+      "name": "降级与脏数据（学期编号与开学日推算、无作息表、认不出的周次、超上限周次、缺字段）",
+      "extracted": "fixtures/fallback.extracted.json",
+      "expected": "fixtures/fallback.expected.json"
+    },
+    {
+      "name": "括号里的教学班序号不是周次（序号在前 / 在后 / 数字区间 / 全角括号 / 单独成段，以及括号里的单双标记仍照旧解析）",
+      "extracted": "fixtures/bracketindex.extracted.json",
+      "expected": "fixtures/bracketindex.expected.json"
+    }
+  ]
+}

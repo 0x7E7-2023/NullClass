@@ -1,0 +1,79 @@
+{
+  "_note": "合成数据，不是真实抓取：按长春工程学院强智课表页（/jsxsd/xskb/xskb_list.do，经 WebVPN）的 DOM 形状编造。这一份专测「没有星期表头时按网格列号对齐」：整张表没有 星期一..星期日 那一行，首列是「节次」列（col 0）且用 rowspan 跨两行 —— 被跨掉的那一行第一个 td 落在 col 1，按「第几个 td 就是星期几」算，第 1 行的课会整体前移一天（col 1 的课被读成星期二），col 4/col 2 的课会直接丢。真值：col 1 = 星期一、col 2 = 星期二、col 4 = 星期四、col 7 = 星期日。课程名/教师/教室均为虚构，无学号姓名。拿到真实 dump 请替换这一对 fixture。",
+  "source": "qz-jsxsd-xskb",
+  "pageUrl": "https://http-10-198-47-148-8080.webvpn.ccit.edu.cn/jsxsd/xskb/xskb_list.do",
+  "now": "2026-09-13",
+  "term": {
+    "code": "2026-2027-1",
+    "name": "2026-2027学年第一学期"
+  },
+  "cols": 8,
+  "rows": [
+    [
+      { "col": 0, "span": 1, "text": "1-2节", "parts": [] },
+      {
+        "col": 1,
+        "span": 1,
+        "text": "工程制图赵磊1-16周[01-02节]教4-101",
+        "parts": [
+          "工程制图<br><font title=\"老师\">赵磊</font><br><font title=\"周次(节次)\">1-16周[01-02节]</font><br><font title=\"教室\">教4-101</font>"
+        ]
+      },
+      { "col": 2, "span": 1, "text": "", "parts": [] },
+      { "col": 3, "span": 1, "text": "", "parts": [] },
+      { "col": 4, "span": 1, "text": "", "parts": [] },
+      { "col": 5, "span": 1, "text": "", "parts": [] },
+      { "col": 6, "span": 1, "text": "", "parts": [] },
+      { "col": 7, "span": 1, "text": "", "parts": [] }
+    ],
+    [
+      { "col": 1, "span": 1, "text": "", "parts": [] },
+      { "col": 2, "span": 1, "text": "", "parts": [] },
+      { "col": 3, "span": 1, "text": "", "parts": [] },
+      {
+        "col": 4,
+        "span": 1,
+        "text": "大学化学钱伟2-15周[01-02节]教4-102",
+        "parts": [
+          "大学化学<br><font title=\"老师\">钱伟</font><br><font title=\"周次(节次)\">2-15周[01-02节]</font><br><font title=\"教室\">教4-102</font>"
+        ]
+      },
+      { "col": 5, "span": 1, "text": "", "parts": [] },
+      { "col": 6, "span": 1, "text": "", "parts": [] },
+      { "col": 7, "span": 1, "text": "", "parts": [] }
+    ],
+    [
+      { "col": 0, "span": 1, "text": "3-4节", "parts": [] },
+      { "col": 1, "span": 1, "text": "", "parts": [] },
+      { "col": 2, "span": 1, "text": "", "parts": [] },
+      { "col": 3, "span": 1, "text": "", "parts": [] },
+      { "col": 4, "span": 1, "text": "", "parts": [] },
+      { "col": 5, "span": 1, "text": "", "parts": [] },
+      { "col": 6, "span": 1, "text": "", "parts": [] },
+      {
+        "col": 7,
+        "span": 1,
+        "text": "大学语文孙梅1-14周(单)[03-04节]教5-201",
+        "parts": [
+          "大学语文<br><font title=\"老师\">孙梅</font><br><font title=\"周次(节次)\">1-14周(单)[03-04节]</font><br><font title=\"教室\">教5-201</font>"
+        ]
+      }
+    ],
+    [
+      { "col": 1, "span": 1, "text": "", "parts": [] },
+      {
+        "col": 2,
+        "span": 1,
+        "text": "体育（一）周涛1-12周[03-04节]体育馆",
+        "parts": [
+          "体育（一）<br><font title=\"老师\">周涛</font><br><font title=\"周次(节次)\">1-12周[03-04节]</font><br><font title=\"教室\">体育馆</font>"
+        ]
+      },
+      { "col": 3, "span": 1, "text": "", "parts": [] },
+      { "col": 4, "span": 1, "text": "", "parts": [] },
+      { "col": 5, "span": 1, "text": "", "parts": [] },
+      { "col": 6, "span": 1, "text": "", "parts": [] },
+      { "col": 7, "span": 1, "text": "", "parts": [] }
+    ]
+  ]
+}

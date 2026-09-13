@@ -1,0 +1,147 @@
+{
+  "specVersion": 1,
+  "kind": "schedule",
+  "ocrAssisted": false,
+  "warnings": [
+    "开学日期无法从教务获取，已按最近的周一（2026-09-07）推算，请在「学期管理」里核对",
+    "教务页面不提供学期总周数：已按 20 周起算，请在「学期管理」里核对",
+    "作息时间用的是适配器内置的「共青城校区·冬令时（第一学期）」12 节表（教务页面不提供，上游是让用户选校区）：上海路校区与另一个季节的第 5-12 节时间不同，请到「学期管理」里核对"
+  ],
+  "terms": [
+    {
+      "name": "2026-2027学年第一学期",
+      "firstDay": "2026-09-07",
+      "totalWeeks": 20,
+      "periodTimes": [
+        { "periodIndex": 1, "start": "08:30", "end": "09:10" },
+        { "periodIndex": 2, "start": "09:15", "end": "09:55" },
+        { "periodIndex": 3, "start": "10:05", "end": "10:45" },
+        { "periodIndex": 4, "start": "10:50", "end": "11:30" },
+        { "periodIndex": 5, "start": "13:20", "end": "14:00" },
+        { "periodIndex": 6, "start": "14:05", "end": "14:45" },
+        { "periodIndex": 7, "start": "14:55", "end": "15:35" },
+        { "periodIndex": 8, "start": "15:40", "end": "16:20" },
+        { "periodIndex": 9, "start": "19:00", "end": "19:40" },
+        { "periodIndex": 10, "start": "19:45", "end": "20:25" },
+        { "periodIndex": 11, "start": "20:30", "end": "21:10" },
+        { "periodIndex": 12, "start": "21:15", "end": "21:55" }
+      ],
+      "courses": [
+        {
+          "name": "数据结构",
+          "teacher": "陈磊",
+          "note": null,
+          "blocks": [
+            {
+              "dayOfWeek": 1,
+              "startPeriod": 1,
+              "endPeriod": 2,
+              "startWeek": 1,
+              "endWeek": 8,
+              "weekType": "ALL",
+              "location": "博学楼A201"
+            },
+            {
+              "dayOfWeek": 1,
+              "startPeriod": 1,
+              "endPeriod": 2,
+              "startWeek": 10,
+              "endWeek": 16,
+              "weekType": "ALL",
+              "location": "博学楼A201"
+            }
+          ]
+        },
+        {
+          "name": "计算机网络",
+          "teacher": "吴迪",
+          "note": null,
+          "blocks": [
+            {
+              "dayOfWeek": 3,
+              "startPeriod": 1,
+              "endPeriod": 2,
+              "startWeek": 1,
+              "endWeek": 16,
+              "weekType": "ALL",
+              "location": "博学楼C102"
+            }
+          ]
+        },
+        {
+          "name": "操作系统",
+          "teacher": "孙倩",
+          "note": null,
+          "blocks": [
+            {
+              "dayOfWeek": 2,
+              "startPeriod": 3,
+              "endPeriod": 4,
+              "startWeek": 1,
+              "endWeek": 8,
+              "weekType": "ALL",
+              "location": "博学楼B305"
+            },
+            {
+              "dayOfWeek": 2,
+              "startPeriod": 3,
+              "endPeriod": 4,
+              "startWeek": 10,
+              "endWeek": 16,
+              "weekType": "ALL",
+              "location": "博学楼B305"
+            }
+          ]
+        },
+        {
+          "name": "数据库原理",
+          "teacher": "郑爽",
+          "note": null,
+          "blocks": [
+            {
+              "dayOfWeek": 4,
+              "startPeriod": 3,
+              "endPeriod": 4,
+              "startWeek": 1,
+              "endWeek": 16,
+              "weekType": "ALL",
+              "location": "博学楼D205"
+            }
+          ]
+        },
+        {
+          "name": "软件工程",
+          "teacher": "何静",
+          "note": null,
+          "blocks": [
+            {
+              "dayOfWeek": 5,
+              "startPeriod": 5,
+              "endPeriod": 6,
+              "startWeek": 1,
+              "endWeek": 16,
+              "weekType": "ALL",
+              "location": "实验楼E401"
+            }
+          ]
+        },
+        {
+          "name": "离散数学",
+          "teacher": "许峰",
+          "note": null,
+          "blocks": [
+            {
+              "dayOfWeek": 6,
+              "startPeriod": 5,
+              "endPeriod": 6,
+              "startWeek": 1,
+              "endWeek": 16,
+              "weekType": "ALL",
+              "location": "博学楼A408"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

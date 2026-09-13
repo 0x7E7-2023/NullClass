@@ -1,0 +1,73 @@
+{
+  "specVersion": 1,
+  "kind": "schedule",
+  "ocrAssisted": false,
+  "warnings": [
+    "开学日期无法从教务获取（课表页不给开学日），已按提取当天所在周的周一 2026-11-16 推算，请在「学期管理」里核对",
+    "作息时间取自适配器内置的作息表（冬季作息 12 节）：教务页面取不到上下课时间，季节按提取日期 2026-11-20 不在 5-9 月判定为冬季，请在「学期管理」里核对",
+    "教务页面上没读到学期总周数，已按 20 周设定，请在「学期管理」里核对",
+    "课表里没找到星期表头，已按除节次列外的 7 个网格列从左到右对应周一到周日，请核对导入结果",
+    "有 1 行的节次读不出来（例如「上午 08:20-09:05」），已跳过这些行的课程",
+    "课表里出现了第 16 节：内置作息表只到第 12 节，第 13 节起已按每节 45 分钟、课间 10 分钟顺延补出（补到第 14 节），请核对",
+    "第 14 节的顺延下课时间会超过 23:59，已截断到 23:59（载荷的时刻只收 00:00-23:59，写出 24:10 会让整次导入失败）",
+    "有 1 个课程块用到了第 15 节及以后：再往后顺延就超过 23:59，作息表补不出这些节次的上下课时间。课块已保留，但没有时刻、课表上也画不出来，请核对"
+  ],
+  "terms": [
+    {
+      "name": "2026-2027学年第一学期",
+      "firstDay": "2026-11-16",
+      "totalWeeks": 20,
+      "periodTimes": [
+        { "periodIndex": 1, "start": "08:20", "end": "09:05" },
+        { "periodIndex": 2, "start": "09:15", "end": "10:00" },
+        { "periodIndex": 3, "start": "10:20", "end": "11:05" },
+        { "periodIndex": 4, "start": "11:15", "end": "12:00" },
+        { "periodIndex": 5, "start": "14:30", "end": "15:15" },
+        { "periodIndex": 6, "start": "15:25", "end": "16:10" },
+        { "periodIndex": 7, "start": "16:25", "end": "17:10" },
+        { "periodIndex": 8, "start": "17:20", "end": "18:05" },
+        { "periodIndex": 9, "start": "19:00", "end": "19:45" },
+        { "periodIndex": 10, "start": "19:55", "end": "20:40" },
+        { "periodIndex": 11, "start": "20:45", "end": "21:30" },
+        { "periodIndex": 12, "start": "21:35", "end": "22:20" },
+        { "periodIndex": 13, "start": "22:30", "end": "23:15" },
+        { "periodIndex": 14, "start": "23:25", "end": "23:59" }
+      ],
+      "courses": [
+        {
+          "name": "计算机应用基础",
+          "teacher": "周明",
+          "note": null,
+          "blocks": [
+            { "dayOfWeek": 2, "startPeriod": 1, "endPeriod": 2, "startWeek": 1, "endWeek": 16, "weekType": "ALL", "location": "实训楼401" },
+            { "dayOfWeek": 3, "startPeriod": 1, "endPeriod": 2, "startWeek": 3, "endWeek": 16, "weekType": "ALL", "location": "实训楼401" }
+          ]
+        },
+        {
+          "name": "大学语文",
+          "teacher": null,
+          "note": null,
+          "blocks": [
+            { "dayOfWeek": 1, "startPeriod": 1, "endPeriod": 2, "startWeek": 1, "endWeek": 16, "weekType": "ALL", "location": "博学楼205" }
+          ]
+        },
+        {
+          "name": "形势与政策",
+          "teacher": "黄丽",
+          "note": null,
+          "blocks": [
+            { "dayOfWeek": 4, "startPeriod": 13, "endPeriod": 14, "startWeek": 9, "endWeek": 12, "weekType": "ALL", "location": "报告厅" }
+          ]
+        },
+        {
+          "name": "创新创业基础",
+          "teacher": "孙涛",
+          "note": null,
+          "blocks": [
+            { "dayOfWeek": 5, "startPeriod": 15, "endPeriod": 16, "startWeek": 1, "endWeek": 8, "weekType": "ALL", "location": "创业园201" }
+          ]
+        }
+      ]
+    }
+  ]
+}

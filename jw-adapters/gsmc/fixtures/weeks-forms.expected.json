@@ -1,0 +1,112 @@
+{
+  "specVersion": 1,
+  "kind": "schedule",
+  "ocrAssisted": false,
+  "warnings": [
+    "只导入了教务系统当前选中的学期（2026-2027学年第一学期）；要导入别的学期，请在教务页面里切到那个学期再点「提取课表」",
+    "教务系统没有给出开学日期（学期周次校历接口没有返回可用数据），第 1 周按「第一学期 = 9 月 1 日所在周的周一」推算为 2026-08-31，请在学期管理里核对成学校实际开学日",
+    "学期周次校历接口没有返回可用数据，学期总周数按适配器内置的 20 周导入（课表里最晚排到第 16 周），如与实际不符可在学期管理里改",
+    "教务的作息时间接口没有返回可用的作息表，已用适配器内置的 12 节作息表（第 1 节 08:00-08:45），时间可能与学校实际作息不符，请在学期管理里核对",
+    "有 2 行课表数据不全（缺周次（或周次全超出 1-30 周）2 行、认不出的周次写法如「(3)」「单周」），已跳过：教务数据不完整时会出现，如发现少课请反馈",
+    "有 3 处括号里只写了纯数字（如「(1)」「(1-2)」）：那是教学班序号不是周次，已忽略，请核对这几门课的周次",
+    "有 1 处「单/双」标记找不到对应的周次（教务数据写得不完整），这些标记已忽略",
+    "有 1 处周次里「单」「双」同时出现（如「1-16周(单双周)」），已按每周都上处理，请核对"
+  ],
+  "terms": [
+    {
+      "name": "2026-2027学年第一学期",
+      "firstDay": "2026-08-31",
+      "totalWeeks": 20,
+      "periodTimes": [
+        { "periodIndex": 1, "start": "08:00", "end": "08:45" },
+        { "periodIndex": 2, "start": "08:55", "end": "09:40" },
+        { "periodIndex": 3, "start": "10:00", "end": "10:45" },
+        { "periodIndex": 4, "start": "10:55", "end": "11:40" },
+        { "periodIndex": 5, "start": "14:30", "end": "15:15" },
+        { "periodIndex": 6, "start": "15:25", "end": "16:10" },
+        { "periodIndex": 7, "start": "16:30", "end": "17:15" },
+        { "periodIndex": 8, "start": "17:25", "end": "18:10" },
+        { "periodIndex": 9, "start": "18:20", "end": "19:05" },
+        { "periodIndex": 10, "start": "19:30", "end": "20:15" },
+        { "periodIndex": 11, "start": "20:25", "end": "21:10" },
+        { "periodIndex": 12, "start": "21:20", "end": "22:05" }
+      ],
+      "courses": [
+        {
+          "name": "A 单周标记在周后",
+          "teacher": "教师甲",
+          "note": null,
+          "blocks": [
+            { "dayOfWeek": 1, "startPeriod": 1, "endPeriod": 2, "startWeek": 1, "endWeek": 15, "weekType": "ODD", "location": "教室A" }
+          ]
+        },
+        {
+          "name": "B 单周标记在最前",
+          "teacher": "教师乙",
+          "note": null,
+          "blocks": [
+            { "dayOfWeek": 2, "startPeriod": 1, "endPeriod": 2, "startWeek": 1, "endWeek": 15, "weekType": "ODD", "location": "教室B" }
+          ]
+        },
+        {
+          "name": "C 单周标记在括号里",
+          "teacher": "教师丙",
+          "note": null,
+          "blocks": [
+            { "dayOfWeek": 3, "startPeriod": 1, "endPeriod": 2, "startWeek": 1, "endWeek": 15, "weekType": "ODD", "location": "教室C" }
+          ]
+        },
+        {
+          "name": "D 混排多段",
+          "teacher": "教师丁",
+          "note": null,
+          "blocks": [
+            { "dayOfWeek": 4, "startPeriod": 1, "endPeriod": 2, "startWeek": 1, "endWeek": 3, "weekType": "ALL", "location": "教室D" },
+            { "dayOfWeek": 4, "startPeriod": 1, "endPeriod": 2, "startWeek": 5, "endWeek": 9, "weekType": "ALL", "location": "教室D" }
+          ]
+        },
+        {
+          "name": "E 尾部教学班序号",
+          "teacher": "教师戊",
+          "note": null,
+          "blocks": [
+            { "dayOfWeek": 5, "startPeriod": 1, "endPeriod": 2, "startWeek": 1, "endWeek": 16, "weekType": "ALL", "location": "教室E" }
+          ]
+        },
+        {
+          "name": "F 前部教学班序号加双周",
+          "teacher": "教师己",
+          "note": null,
+          "blocks": [
+            { "dayOfWeek": 6, "startPeriod": 1, "endPeriod": 2, "startWeek": 2, "endWeek": 16, "weekType": "EVEN", "location": "教室F" }
+          ]
+        },
+        {
+          "name": "I 单双同时写",
+          "teacher": "教师壬",
+          "note": null,
+          "blocks": [
+            { "dayOfWeek": 2, "startPeriod": 3, "endPeriod": 4, "startWeek": 1, "endWeek": 16, "weekType": "ALL", "location": "教室I" }
+          ]
+        },
+        {
+          "name": "J 单周一周",
+          "teacher": "教师癸",
+          "note": null,
+          "blocks": [
+            { "dayOfWeek": 3, "startPeriod": 3, "endPeriod": 4, "startWeek": 16, "endWeek": 16, "weekType": "ALL", "location": "教室J" }
+          ]
+        },
+        {
+          "name": "K 空格分段两段",
+          "teacher": "教师甲",
+          "note": null,
+          "blocks": [
+            { "dayOfWeek": 4, "startPeriod": 3, "endPeriod": 4, "startWeek": 1, "endWeek": 3, "weekType": "ALL", "location": "教室K" },
+            { "dayOfWeek": 4, "startPeriod": 3, "endPeriod": 4, "startWeek": 5, "endWeek": 9, "weekType": "ALL", "location": "教室K" }
+          ]
+        }
+      ]
+    }
+  ]
+}

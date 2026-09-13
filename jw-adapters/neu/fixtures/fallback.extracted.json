@@ -1,0 +1,72 @@
+{
+  "_note": "合成样例（不是真实抓取）：字段形状按上游 NEU/neu.js 与同平台 CAPU/capadap.js 读取的接口字段编造，只保证「同样的输入永远得到同样的输出」。这一对专门盖「教务什么都没给」与「数据脏」的路径。拿到真实 dump 请替换本文件并重跑 :importer:test。",
+  "_covers": "降级与脏数据：学期编号与开学日都是推算的（两条对应警告）；教务没给作息表（不写 periodTimes，进 warnings）；认不出的周次片段「单周」；单双标记与明写周次矛盾「3周(双)」；周次超出 30 周被截断；缺星期 / 节次倒挂 / 空占位行；校历总周数(16)小于课表最大周次(30) 的冲突。",
+  "term": {
+    "code": "2026-2027-2",
+    "name": null,
+    "source": "guess",
+    "firstDay": "2026-03-02",
+    "firstDaySource": "guess",
+    "totalWeeks": 16
+  },
+  "sections": [],
+  "rows": [
+    {
+      "courseName": "概率论与数理统计",
+      "dayOfWeek": 1,
+      "beginSection": 1,
+      "endSection": 2,
+      "titleWeekTeacherClassroomDetail": ["1-16周 张伟 教1-301"]
+    },
+    {
+      "courseName": "大学物理实验",
+      "dayOfWeek": 2,
+      "beginSection": 3,
+      "endSection": 4,
+      "titleWeekTeacherClassroomDetail": ["1-8,10-16 吴敏 物理实验楼205"]
+    },
+    {
+      "courseName": "认识实习",
+      "dayOfWeek": 3,
+      "beginSection": 5,
+      "endSection": 6,
+      "titleWeekTeacherClassroomDetail": ["3周(双) 刘洋 校外实习基地"]
+    },
+    {
+      "courseName": "文献检索",
+      "dayOfWeek": 4,
+      "beginSection": 7,
+      "endSection": 8,
+      "titleWeekTeacherClassroomDetail": ["单周 高翔 图书馆"]
+    },
+    {},
+    {
+      "courseName": "形势与政策",
+      "dayOfWeek": null,
+      "beginSection": 1,
+      "endSection": 2,
+      "titleWeekTeacherClassroomDetail": ["1-8周 赵磊 教4-201"]
+    },
+    {
+      "courseName": "中国近现代史纲要",
+      "dayOfWeek": 5,
+      "beginSection": 5,
+      "endSection": 4,
+      "titleWeekTeacherClassroomDetail": ["1-8周 钱进 教3-101"]
+    },
+    {
+      "courseName": "大学计算机",
+      "dayOfWeek": 6,
+      "beginSection": 1,
+      "endSection": 2,
+      "titleWeekTeacherClassroomDetail": ["1-32周 孙丽 计算中心A101"]
+    },
+    {
+      "courseName": "",
+      "dayOfWeek": 2,
+      "beginSection": 1,
+      "endSection": 2,
+      "titleWeekTeacherClassroomDetail": ["1-8周 周涛 教2-201"]
+    }
+  ]
+}

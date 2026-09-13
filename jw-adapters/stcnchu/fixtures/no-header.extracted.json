@@ -1,0 +1,95 @@
+{
+  "_note": "合成数据，不是真实抓取：按南昌航空大学科技学院强智课表页（/jsxsd/xskb/xskb_list.do）的 DOM 形状编造，专测**没有星期表头**时的列对齐。这份课表首列是「节次」列且 rowspan=2（所以每两行里的第二行 td 会整体前移一格，网格上没有 col 0），星期完全靠 extract.js 交出来的**网格列号 col** 对齐 —— 按「第几个 td 就是星期几」或 row.length - 7 这类按数组长度猜列的实现，会把第二行整行错一天、甚至整门课读不出星期而丢掉。表格没有表头（强智有的部署把表头画在图片里），所以对齐方式按表宽 8 列推「第 2-8 列 = 周一到周日」，并进 warnings。最后一行的格子 colspan=2（横跨周六），课只落在覆盖的第一天（周五）。课程名/教师/教室均为虚构，无学号姓名。",
+  "source": "qz-jsxsd-xskb",
+  "pageUrl": "http://qzjwxt.stcnchu.edu.cn:800/jsxsd/xskb/xskb_list.do",
+  "now": "2026-09-13",
+  "term": {
+    "code": "2026-2027-1",
+    "name": "2026-2027学年第一学期"
+  },
+  "cols": 8,
+  "rows": [
+    [
+      { "col": 0, "span": 1, "text": "第1-2节", "parts": [] },
+      {
+        "col": 1,
+        "span": 1,
+        "text": "高等数学（一）刘敏1-16(周)[01-02节]博学楼A101",
+        "parts": [
+          "高等数学（一）<br><font title=\"老师\">刘敏</font><br><font title=\"周次(节次)\">1-16(周)[01-02节]</font><br><font title=\"教室\">博学楼A101</font>"
+        ]
+      },
+      { "col": 2, "span": 1, "text": "", "parts": [] },
+      { "col": 3, "span": 1, "text": "", "parts": [] },
+      { "col": 4, "span": 1, "text": "", "parts": [] },
+      { "col": 5, "span": 1, "text": "", "parts": [] },
+      { "col": 6, "span": 1, "text": "", "parts": [] },
+      { "col": 7, "span": 1, "text": "", "parts": [] }
+    ],
+    [
+      {
+        "col": 1,
+        "span": 1,
+        "text": "线性代数陈涛1-8(周)[01-02节]博学楼A202",
+        "parts": [
+          "线性代数<br><font title=\"教师\">陈涛</font><br><font title=\"周次(节次)\">1-8(周)[01-02节]</font><br><font title=\"教室\">博学楼A202</font>"
+        ]
+      },
+      { "col": 2, "span": 1, "text": "", "parts": [] },
+      { "col": 3, "span": 1, "text": "", "parts": [] },
+      { "col": 4, "span": 1, "text": "", "parts": [] },
+      { "col": 5, "span": 1, "text": "", "parts": [] },
+      { "col": 6, "span": 1, "text": "", "parts": [] },
+      { "col": 7, "span": 1, "text": "", "parts": [] }
+    ],
+    [
+      { "col": 0, "span": 1, "text": "第3-4节", "parts": [] },
+      { "col": 1, "span": 1, "text": "", "parts": [] },
+      { "col": 2, "span": 1, "text": "", "parts": [] },
+      {
+        "col": 3,
+        "span": 1,
+        "text": "大学物理黄丽3-14(周)[03-04节]博学楼A301",
+        "parts": [
+          "大学物理<br><font title=\"老师\">黄丽</font><br><font title=\"周次(节次)\">3-14(周)[03-04节]</font><br><font title=\"教室\">博学楼A301</font>"
+        ]
+      },
+      { "col": 4, "span": 1, "text": "", "parts": [] },
+      { "col": 5, "span": 1, "text": "", "parts": [] },
+      { "col": 6, "span": 1, "text": "", "parts": [] },
+      { "col": 7, "span": 1, "text": "", "parts": [] }
+    ],
+    [
+      { "col": 1, "span": 1, "text": "", "parts": [] },
+      { "col": 2, "span": 1, "text": "", "parts": [] },
+      {
+        "col": 3,
+        "span": 1,
+        "text": "大学物理实验黄丽5-10(周)[03-04节]实验楼B102",
+        "parts": [
+          "大学物理实验<br><font title=\"教师\">黄丽</font><br><font title=\"周次(节次)\">5-10(周)[03-04节]</font><br><font title=\"教室\">实验楼B102</font>"
+        ]
+      },
+      { "col": 4, "span": 1, "text": "", "parts": [] },
+      { "col": 5, "span": 1, "text": "", "parts": [] },
+      { "col": 6, "span": 1, "text": "", "parts": [] },
+      { "col": 7, "span": 1, "text": "", "parts": [] }
+    ],
+    [
+      { "col": 0, "span": 1, "text": "第5-6节", "parts": [] },
+      { "col": 1, "span": 1, "text": "", "parts": [] },
+      { "col": 2, "span": 1, "text": "", "parts": [] },
+      { "col": 3, "span": 1, "text": "", "parts": [] },
+      { "col": 4, "span": 1, "text": "", "parts": [] },
+      {
+        "col": 5,
+        "span": 2,
+        "text": "金工实习吴强9-10(周)[05-06节]工程训练中心",
+        "parts": [
+          "金工实习<br><font title=\"教师\">吴强</font><br><font title=\"周次(节次)\">9-10(周)[05-06节]</font><br><font title=\"教室\">工程训练中心</font>"
+        ]
+      },
+      { "col": 7, "span": 1, "text": "", "parts": [] }
+    ]
+  ]
+}

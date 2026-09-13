@@ -1,0 +1,41 @@
+{
+  "specVersion": 1,
+  "key": "qdhhc",
+  "name": "青岛黄海学院",
+  "version": "1.0.0",
+  "author": "上游 星河欲转（MIT）；移植 0x7E-2023",
+  "homepage": "https://github.com/XingHeYuZhuan/shiguang_warehouse",
+  "loginUrl": "http://jwxt.qdhhc.edu.cn/jwglxt/xtgl/login_slogin.html",
+  "scheduleUrlHint": "http://jwxt.qdhhc.edu.cn/jwglxt/kbcx/xskbcx_cxXskbcxIndex.html?gnmkdm=N2151&layout=default",
+  "minAppVersionCode": 11,
+  "extract": "extract.js",
+  "parse": "parse.js",
+  "allowHosts": [],
+  "fixtures": [
+    {
+      "name": "合成用例：基本表格（连堂 1-2 节 + 3-4 节合并成 1-4 节、完全重复的排课行、周次分段合并 1-8 周 + 9-16 周、1 行缺课名、空教师与空教室、教务周次校历 20 周 + 开学日、内置 11 节作息表）",
+      "extracted": "fixtures/basic.extracted.json",
+      "expected": "fixtures/basic.expected.json"
+    },
+    {
+      "name": "合成用例：周次的写法（1-16周(单) / (单)1-16周 / 1-16(单周) / 1-3,5-9周 / 1-16周(双) / 1-16周(1) 与 (1-2)1-16周 里的括号纯数字是教学班序号不是周次 / 单双标记自成一段 / 带「前」这类认不出的说明 / 破折号旁有空格（1 -16周(单)、1- 16周、1 - 16周）/ 空白是分段符（1-3周 5-9周 切成两段、1-16周 双 标记并回）/ 班号序号里带空格 (1 -2)1-16周 与全角波浪 (1～2)1-16周 / 校历接口不返回时开学日推算 + 总周数回落到上游写死的 20）",
+      "extracted": "fixtures/weeks-forms.extracted.json",
+      "expected": "fixtures/weeks-forms.expected.json"
+    },
+    {
+      "name": "合成用例：教务周次校历给 26 周（课表最晚只到第 16 周，所以 26 只可能来自校历）—— 钉住「总周数取自校历」这条路径",
+      "extracted": "fixtures/calendar-26.extracted.json",
+      "expected": "fixtures/calendar-26.expected.json"
+    },
+    {
+      "name": "合成用例：校历第 1 周从 2026-09-09（周三）开始 —— 开学日必须回退到第 1 周的那个周一 2026-09-07，校历共 18 周",
+      "extracted": "fixtures/calendar-nonmonday.extracted.json",
+      "expected": "fixtures/calendar-nonmonday.expected.json"
+    },
+    {
+      "name": "合成用例：脏数据（缺星期/缺节次/缺周次、周次 31-40 全超限、节次写成多段 1-2,5-6、两位一拼的 0304、第9-10节、第 12 节超出内置作息表要补、总周数被第 22 周抬高、记录总数说 9 条只回 8 条）",
+      "extracted": "fixtures/dirty-rows.extracted.json",
+      "expected": "fixtures/dirty-rows.expected.json"
+    }
+  ]
+}

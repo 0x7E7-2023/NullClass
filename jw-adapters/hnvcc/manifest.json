@@ -1,0 +1,47 @@
+{
+  "specVersion": 1,
+  "key": "hnvcc",
+  "name": "湖南商务职业技术学院",
+  "version": "1.0.0",
+  "author": "上游 星河欲转（拾光课程表社区，MIT）；移植 0x7E-2023",
+  "homepage": "https://github.com/XingHeYuZhuan/shiguang_warehouse",
+  "loginUrl": "http://jwxt.hnvcc.edu.cn/",
+  "minAppVersionCode": 11,
+  "extract": "extract.js",
+  "parse": "parse.js",
+  "allowHosts": [
+    "jwxt.hnvcc.edu.cn"
+  ],
+  "fixtures": [
+    {
+      "name": "基本课表（合成数据：连堂合并、同一门课跨两天、一格两门课、缺教师、缺教室、周次多段、单周标记）",
+      "extracted": "fixtures/basic.extracted.json",
+      "expected": "fixtures/basic.expected.json"
+    },
+    {
+      "name": "周次写法（合成数据：单双周四种写法、括号里的教学班序号、见通知、越界周次、周次里混节次、总周数抬高、学期名从句号推出）",
+      "extracted": "fixtures/weeks.extracted.json",
+      "expected": "fixtures/weeks.expected.json"
+    },
+    {
+      "name": "边界（合成数据：没有星期表头只能按网格列号、节次格 rowspan、节次格里的钟点、超出内置作息表的第 15-16 节截断到 23:59）",
+      "extracted": "fixtures/edge.extracted.json",
+      "expected": "fixtures/edge.expected.json"
+    },
+    {
+      "name": "学期名兜底（合成数据：页面读不到学年学期，按提取日期推算学期名并进 warnings，2 月提取判冬季作息）",
+      "extracted": "fixtures/term.extracted.json",
+      "expected": "fixtures/term.expected.json"
+    },
+    {
+      "name": "星期表头带 colSpan（合成数据：表头首格 colSpan=2，星期一的网格列号 2 ≠ 数组下标 1，必须按列号对星期）",
+      "extracted": "fixtures/header-colspan.extracted.json",
+      "expected": "fixtures/header-colspan.expected.json"
+    },
+    {
+      "name": "空白分段与全角节次（合成数据：由 basic 派生，第一格周次写成空格两段「第1-3周 第5-9周」连堂合并后必须读成两个块、不许并段；行标签节次用全角波浪「第1～2节」读出的节次与半角一致）",
+      "extracted": "fixtures/weeks-space-segments.extracted.json",
+      "expected": "fixtures/weeks-space-segments.expected.json"
+    }
+  ]
+}

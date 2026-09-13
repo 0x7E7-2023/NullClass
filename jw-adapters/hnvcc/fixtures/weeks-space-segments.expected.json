@@ -1,0 +1,228 @@
+{
+  "specVersion": 1,
+  "kind": "schedule",
+  "ocrAssisted": false,
+  "warnings": [
+    "开学日期无法从教务获取（课表页不给开学日），已按提取当天所在周的周一 2026-09-07 推算，请在「学期管理」里核对",
+    "作息时间取自适配器内置的作息表（夏季作息 12 节）：教务页面取不到上下课时间，季节按提取日期 2026-09-13 落在 5-9 月判定为夏季，请在「学期管理」里核对"
+  ],
+  "terms": [
+    {
+      "name": "2026-2027学年第一学期",
+      "firstDay": "2026-09-07",
+      "totalWeeks": 20,
+      "periodTimes": [
+        {
+          "periodIndex": 1,
+          "start": "08:20",
+          "end": "09:05"
+        },
+        {
+          "periodIndex": 2,
+          "start": "09:15",
+          "end": "10:00"
+        },
+        {
+          "periodIndex": 3,
+          "start": "10:20",
+          "end": "11:05"
+        },
+        {
+          "periodIndex": 4,
+          "start": "11:15",
+          "end": "12:00"
+        },
+        {
+          "periodIndex": 5,
+          "start": "14:00",
+          "end": "14:45"
+        },
+        {
+          "periodIndex": 6,
+          "start": "14:55",
+          "end": "15:40"
+        },
+        {
+          "periodIndex": 7,
+          "start": "15:55",
+          "end": "16:40"
+        },
+        {
+          "periodIndex": 8,
+          "start": "16:50",
+          "end": "17:35"
+        },
+        {
+          "periodIndex": 9,
+          "start": "19:00",
+          "end": "19:45"
+        },
+        {
+          "periodIndex": 10,
+          "start": "19:55",
+          "end": "20:40"
+        },
+        {
+          "periodIndex": 11,
+          "start": "20:45",
+          "end": "21:30"
+        },
+        {
+          "periodIndex": 12,
+          "start": "21:35",
+          "end": "22:20"
+        }
+      ],
+      "courses": [
+        {
+          "name": "高等数学A(一)",
+          "teacher": "张伟",
+          "note": null,
+          "blocks": [
+            {
+              "dayOfWeek": 1,
+              "startPeriod": 1,
+              "endPeriod": 4,
+              "startWeek": 1,
+              "endWeek": 3,
+              "weekType": "ALL",
+              "location": "南教楼101"
+            },
+            {
+              "dayOfWeek": 1,
+              "startPeriod": 1,
+              "endPeriod": 4,
+              "startWeek": 5,
+              "endWeek": 9,
+              "weekType": "ALL",
+              "location": "南教楼101"
+            },
+            {
+              "dayOfWeek": 3,
+              "startPeriod": 1,
+              "endPeriod": 4,
+              "startWeek": 1,
+              "endWeek": 16,
+              "weekType": "ALL",
+              "location": "南教楼101"
+            }
+          ]
+        },
+        {
+          "name": "线性代数",
+          "teacher": "张伟",
+          "note": null,
+          "blocks": [
+            {
+              "dayOfWeek": 1,
+              "startPeriod": 1,
+              "endPeriod": 2,
+              "startWeek": 9,
+              "endWeek": 16,
+              "weekType": "ALL",
+              "location": "南教楼101"
+            }
+          ]
+        },
+        {
+          "name": "大学英语(一)",
+          "teacher": "李娜",
+          "note": null,
+          "blocks": [
+            {
+              "dayOfWeek": 5,
+              "startPeriod": 1,
+              "endPeriod": 2,
+              "startWeek": 1,
+              "endWeek": 15,
+              "weekType": "ODD",
+              "location": "文理楼208"
+            }
+          ]
+        },
+        {
+          "name": "程序设计基础",
+          "teacher": null,
+          "note": null,
+          "blocks": [
+            {
+              "dayOfWeek": 2,
+              "startPeriod": 3,
+              "endPeriod": 4,
+              "startWeek": 1,
+              "endWeek": 8,
+              "weekType": "ALL",
+              "location": "机房302"
+            }
+          ]
+        },
+        {
+          "name": "大学物理",
+          "teacher": "陈静",
+          "note": null,
+          "blocks": [
+            {
+              "dayOfWeek": 1,
+              "startPeriod": 5,
+              "endPeriod": 6,
+              "startWeek": 1,
+              "endWeek": 4,
+              "weekType": "ALL",
+              "location": "基础楼B201"
+            },
+            {
+              "dayOfWeek": 1,
+              "startPeriod": 5,
+              "endPeriod": 6,
+              "startWeek": 6,
+              "endWeek": 8,
+              "weekType": "ALL",
+              "location": "基础楼B201"
+            },
+            {
+              "dayOfWeek": 1,
+              "startPeriod": 5,
+              "endPeriod": 6,
+              "startWeek": 10,
+              "endWeek": 16,
+              "weekType": "ALL",
+              "location": "基础楼B201"
+            }
+          ]
+        },
+        {
+          "name": "体育(一)",
+          "teacher": "赵强",
+          "note": null,
+          "blocks": [
+            {
+              "dayOfWeek": 4,
+              "startPeriod": 5,
+              "endPeriod": 6,
+              "startWeek": 1,
+              "endWeek": 16,
+              "weekType": "ALL",
+              "location": null
+            }
+          ]
+        },
+        {
+          "name": "军事理论",
+          "teacher": "刘敏",
+          "note": null,
+          "blocks": [
+            {
+              "dayOfWeek": 7,
+              "startPeriod": 7,
+              "endPeriod": 8,
+              "startWeek": 1,
+              "endWeek": 4,
+              "weekType": "ALL",
+              "location": "线上"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

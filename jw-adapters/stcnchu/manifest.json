@@ -1,0 +1,48 @@
+{
+  "specVersion": 1,
+  "key": "stcnchu",
+  "name": "南昌航空大学科技学院",
+  "version": "1.0.0",
+  "author": "上游 星河欲转（MIT）；移植 0x7E-2023",
+  "homepage": "https://github.com/XingHeYuZhuan/shiguang_warehouse",
+  "loginUrl": "http://qzjwxt.stcnchu.edu.cn:800/jsxsd/",
+  "scheduleUrlHint": "http://qzjwxt.stcnchu.edu.cn:800/jsxsd/xskb/xskb_list.do",
+  "minAppVersionCode": 11,
+  "extract": "extract.js",
+  "parse": "parse.js",
+  "allowHosts": [
+    "qzjwxt.stcnchu.edu.cn"
+  ],
+  "fixtures": [
+    {
+      "name": "基本课表（合成数据）",
+      "extracted": "fixtures/basic.extracted.json",
+      "expected": "fixtures/basic.expected.json"
+    },
+    {
+      "name": "边界：周次四写法与括号里的教学班序号（合成数据）",
+      "extracted": "fixtures/week-forms.extracted.json",
+      "expected": "fixtures/week-forms.expected.json"
+    },
+    {
+      "name": "边界：无星期表头时按网格列号对齐（合成数据）",
+      "extracted": "fixtures/no-header.extracted.json",
+      "expected": "fixtures/no-header.expected.json"
+    },
+    {
+      "name": "边界：节次越界、周次越界与超长警告（合成数据）",
+      "extracted": "fixtures/dirty-limits.extracted.json",
+      "expected": "fixtures/dirty-limits.expected.json"
+    },
+    {
+      "name": "边界：同一格多段周次与全角区间分隔符（合成数据）",
+      "extracted": "fixtures/multi-spec.extracted.json",
+      "expected": "fixtures/multi-spec.expected.json"
+    },
+    {
+      "name": "空白分段与全角节次（合成数据：由 basic 派生，一格周次写成空格两段「1-3(周) 5-9(周)」必须读成两个块、不许并段；另一格节次用全角波浪「[05～06节]」读出的节次与半角一致）",
+      "extracted": "fixtures/weeks-space-segments.extracted.json",
+      "expected": "fixtures/weeks-space-segments.expected.json"
+    }
+  ]
+}

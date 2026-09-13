@@ -1,0 +1,41 @@
+{
+  "specVersion": 1,
+  "key": "gsmc",
+  "name": "甘肃医学院",
+  "version": "1.0.0",
+  "author": "上游 星河欲转（MIT）；移植 0x7E-2023",
+  "homepage": "https://github.com/XingHeYuZhuan/shiguang_warehouse",
+  "loginUrl": "https://jw.gsmc.edu.cn/jwglxt/xtgl/login_slogin.html",
+  "scheduleUrlHint": "https://jw.gsmc.edu.cn/jwglxt/kbcx/xskbcx_cxXskbcxIndex.html?gnmkdm=N2151&layout=default",
+  "minAppVersionCode": 11,
+  "extract": "extract.js",
+  "parse": "parse.js",
+  "allowHosts": [],
+  "fixtures": [
+    {
+      "name": "合成用例：基本表格（学期从课表页读到、教务不给校历与作息 → 开学日推算 / 总周数用内置 20 周 / 作息回落上游那张 12 节表；含单双周、无教师、无教室、重复排课行、集中实践课）",
+      "extracted": "fixtures/basic.extracted.json",
+      "expected": "fixtures/basic.expected.json"
+    },
+    {
+      "name": "合成用例：周次写法四连（1-16周(单) / (单)1-16周 / 1-16(单周) / 1-3,5-9周）+ 括号里是教学班序号（(1)、(1-2)、整格只有 (3)）+ 单双同时写 + 只有单周标记没有周次",
+      "extracted": "fixtures/weeks-forms.extracted.json",
+      "expected": "fixtures/weeks-forms.expected.json"
+    },
+    {
+      "name": "合成用例：教务的校历与作息都取到（开学日与总周数取自校历、作息用教务的）+ 脏行（缺星期/缺节次/缺周次/周次从 0 开始）+ 节次多段 + 节次超出作息表 + 记录总数对账 + 集中实践课",
+      "extracted": "fixtures/calendar-extra.extracted.json",
+      "expected": "fixtures/calendar-extra.expected.json"
+    },
+    {
+      "name": "合成用例：第二学期 + 校历接口忽略参数回了第一学期的日期（判为不可信并推算）+ 课表里有第 20 周的课（顶高总周数）+ 周次混排多段 + 记录总数与行数一致",
+      "extracted": "fixtures/second-term.extracted.json",
+      "expected": "fixtures/second-term.expected.json"
+    },
+    {
+      "name": "合成用例：教务校历第 1 周的日期不是周一（zs=1 给 2026-09-09 周三）→ 开学日必须回退到那一周的周一 2026-09-07",
+      "extracted": "fixtures/calendar-weekday.extracted.json",
+      "expected": "fixtures/calendar-weekday.expected.json"
+    }
+  ]
+}

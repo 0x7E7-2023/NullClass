@@ -1,0 +1,82 @@
+{
+  "specVersion": 1,
+  "kind": "schedule",
+  "ocrAssisted": false,
+  "warnings": [
+    "开学日期教务没有提供，已按你填的「第 3 周」反推为 2026-08-24，请在学期管理里核对",
+    "学期总周数教务没有提供，已按 20 周计（课表里最大的周次是 16 周），如校历不同请在学期管理里调整",
+    "节次时间用的是适配器内置的徐州医科大学作息表（13 节），如与教务不一致请在节次设置里调整"
+  ],
+  "terms": [
+    {
+      "name": "2026-2027学年第一学期",
+      "firstDay": "2026-08-24",
+      "totalWeeks": 20,
+      "periodTimes": [
+        { "periodIndex": 1, "start": "08:00", "end": "08:40" },
+        { "periodIndex": 2, "start": "08:50", "end": "09:30" },
+        { "periodIndex": 3, "start": "09:40", "end": "10:20" },
+        { "periodIndex": 4, "start": "10:30", "end": "11:10" },
+        { "periodIndex": 5, "start": "11:20", "end": "12:00" },
+        { "periodIndex": 6, "start": "14:00", "end": "14:40" },
+        { "periodIndex": 7, "start": "14:50", "end": "15:30" },
+        { "periodIndex": 8, "start": "15:40", "end": "16:20" },
+        { "periodIndex": 9, "start": "16:30", "end": "17:10" },
+        { "periodIndex": 10, "start": "17:20", "end": "18:00" },
+        { "periodIndex": 11, "start": "19:00", "end": "19:40" },
+        { "periodIndex": 12, "start": "19:50", "end": "20:30" },
+        { "periodIndex": 13, "start": "20:40", "end": "21:20" }
+      ],
+      "courses": [
+        {
+          "name": "大学体育（一）",
+          "teacher": "刘洋",
+          "note": null,
+          "blocks": [
+            { "dayOfWeek": 6, "startPeriod": 8, "endPeriod": 8, "startWeek": 1, "endWeek": 16, "weekType": "ALL", "location": "体育馆" }
+          ]
+        },
+        {
+          "name": "大学生就业指导",
+          "teacher": "孙磊",
+          "note": null,
+          "blocks": [
+            { "dayOfWeek": 2, "startPeriod": 3, "endPeriod": 3, "startWeek": 6, "endWeek": 7, "weekType": "ALL", "location": "教学楼C102" }
+          ]
+        },
+        {
+          "name": "大学英语",
+          "teacher": "李娜",
+          "note": null,
+          "blocks": [
+            { "dayOfWeek": 3, "startPeriod": 2, "endPeriod": 2, "startWeek": 1, "endWeek": 16, "weekType": "ALL", "location": "教学楼B202" }
+          ]
+        },
+        {
+          "name": "形势与政策",
+          "teacher": "赵敏",
+          "note": null,
+          "blocks": [
+            { "dayOfWeek": 2, "startPeriod": 3, "endPeriod": 3, "startWeek": 2, "endWeek": 5, "weekType": "ALL", "location": "教学楼C101" }
+          ]
+        },
+        {
+          "name": "程序设计基础",
+          "teacher": "陈晨",
+          "note": null,
+          "blocks": [
+            { "dayOfWeek": 4, "startPeriod": 5, "endPeriod": 6, "startWeek": 2, "endWeek": 5, "weekType": "ALL", "location": "机房A303" }
+          ]
+        },
+        {
+          "name": "高等数学A(一)",
+          "teacher": "张三",
+          "note": null,
+          "blocks": [
+            { "dayOfWeek": 1, "startPeriod": 1, "endPeriod": 2, "startWeek": 1, "endWeek": 16, "weekType": "ALL", "location": "教1-101" }
+          ]
+        }
+      ]
+    }
+  ]
+}

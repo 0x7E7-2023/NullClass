@@ -1,0 +1,63 @@
+{
+  "_note": "合成样例（不是真实抓取）：字段形状按上游 CAPU/capadap.js 与 XJZFU/xjzfu.js 读**同族接口**（kbapp/api/wdkbcx/getMyScheduleDetail.do、…/student/getMyScheduleDetail.do）的方式编造，只保证「同样的输入永远得到同样的输出」。拿到真实 dump 请替换本文件并重跑 :importer:test。",
+  "_covers": "位串周次（本批检查表第 1 条点名的金智编码）：连续段 1111…、奇数隔周 1010…、偶数隔周 0101…、单周落单 000…1…；以及「片段文本里的周次优先于行级位串」这条优先级（最后一条同时给了位串和文本，文本应当赢）；学期名来自教务（itemName）。",
+  "term": {
+    "code": "2026-2027-1",
+    "name": "2026-2027学年秋季学期",
+    "source": "api",
+    "firstDay": "2026-09-07",
+    "firstDaySource": "termWeeks",
+    "totalWeeks": 20
+  },
+  "sections": [
+    { "name": "第1节", "startTime": "08:30", "endTime": "09:15" },
+    { "name": "第2节", "startTime": "09:25", "endTime": "10:10" },
+    { "name": "第3节", "startTime": "10:30", "endTime": "11:15" },
+    { "name": "第4节", "startTime": "11:25", "endTime": "12:10" },
+    { "name": "第5节", "startTime": "14:00", "endTime": "14:45" },
+    { "name": "第6节", "startTime": "14:55", "endTime": "15:40" },
+    { "name": "第7节", "startTime": "16:00", "endTime": "16:45" },
+    { "name": "第8节", "startTime": "16:55", "endTime": "17:40" }
+  ],
+  "rows": [
+    {
+      "courseName": "数据结构",
+      "dayOfWeek": 1,
+      "beginSection": 1,
+      "endSection": 2,
+      "week": "11111111111111110000",
+      "placeName": "教1-201"
+    },
+    {
+      "courseName": "操作系统",
+      "dayOfWeek": 2,
+      "beginSection": 3,
+      "endSection": 4,
+      "week": "10101010101010100000",
+      "placeName": "教3-305"
+    },
+    {
+      "courseName": "计算机网络",
+      "dayOfWeek": 3,
+      "beginSection": 5,
+      "endSection": 6,
+      "week": "01010101010101010000",
+      "placeName": "信息楼A401"
+    },
+    {
+      "courseName": "人工智能导论",
+      "dayOfWeek": 4,
+      "beginSection": 7,
+      "endSection": 8,
+      "week": "00000000010000000000"
+    },
+    {
+      "courseName": "大学英语(一)",
+      "dayOfWeek": 5,
+      "beginSection": 3,
+      "endSection": 4,
+      "week": "11111111111111111111",
+      "titleWeekTeacherClassroomDetail": ["1-4,6-9周 郑楠 教2-101"]
+    }
+  ]
+}

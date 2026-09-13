@@ -1,0 +1,87 @@
+{
+  "specVersion": 1,
+  "kind": "schedule",
+  "ocrAssisted": false,
+  "warnings": [
+    "只导入了教务系统当前选中的学期（2026-2027学年第一学期）；要导入别的学期，请在教务页面里切到那个学期再点「提取课表」",
+    "教务系统没有给出开学日期，第 1 周按「第一学期 = 9 月 1 日所在周的周一」推算为 2026-08-31，请在学期管理里核对成学校实际开学日",
+    "适配器默认一学期 20 周，课表里有第 24 周的课，已按 24 周导入（否则第 21 周起的课放不下），如与实际不符可在学期管理里改",
+    "作息时间用的是适配器内置的本校作息表（11 节，第 1 节 08:30-09:10），如与学校实际作息不符请在学期管理里核对",
+    "课表里用到第 14 节，而本校作息表只到第 11 节：第 12 节按空课内建节次表补了时间；第 13 节及之后没有可用的作息时间，请核对",
+    "教务系统说这个学期有 9 条排课记录，实际只取到 7 条，课表可能不完整，请重试或反馈",
+    "有 1 行课表数据不全（缺周次（或周次全超出 1-30 周）1 行），已跳过：教务数据不完整时会出现，如发现少课请反馈",
+    "有 2 个周次超出 1-30 周，已丢弃（教务给出的周次不正常）",
+    "有 1 行课表的节次写成了多段（例如「1-2,5-6」），已按最大跨度放入（中间几节也算上），请核对"
+  ],
+  "terms": [
+    {
+      "name": "2026-2027学年第一学期",
+      "firstDay": "2026-08-31",
+      "totalWeeks": 24,
+      "periodTimes": [
+        { "periodIndex": 1, "start": "08:30", "end": "09:10" },
+        { "periodIndex": 2, "start": "09:20", "end": "10:00" },
+        { "periodIndex": 3, "start": "10:20", "end": "11:00" },
+        { "periodIndex": 4, "start": "11:10", "end": "11:50" },
+        { "periodIndex": 5, "start": "14:00", "end": "14:40" },
+        { "periodIndex": 6, "start": "14:50", "end": "15:30" },
+        { "periodIndex": 7, "start": "15:40", "end": "16:20" },
+        { "periodIndex": 8, "start": "16:30", "end": "17:10" },
+        { "periodIndex": 9, "start": "18:30", "end": "19:10" },
+        { "periodIndex": 10, "start": "19:20", "end": "20:00" },
+        { "periodIndex": 11, "start": "20:10", "end": "20:50" },
+        { "periodIndex": 12, "start": "21:15", "end": "22:00" }
+      ],
+      "courses": [
+        {
+          "name": "有机化学",
+          "teacher": "何静",
+          "note": null,
+          "blocks": [
+            { "dayOfWeek": 1, "startPeriod": 1, "endPeriod": 6, "startWeek": 1, "endWeek": 16, "weekType": "ALL", "location": "实训楼C-105" }
+          ]
+        },
+        {
+          "name": "物理化学",
+          "teacher": "许峰",
+          "note": null,
+          "blocks": [
+            { "dayOfWeek": 2, "startPeriod": 1, "endPeriod": 2, "startWeek": 1, "endWeek": 8, "weekType": "ALL", "location": "教学楼B-303" }
+          ]
+        },
+        {
+          "name": "化工安全技术",
+          "teacher": "邓超",
+          "note": null,
+          "blocks": [
+            { "dayOfWeek": 3, "startPeriod": 9, "endPeriod": 10, "startWeek": 1, "endWeek": 16, "weekType": "ALL", "location": "教学楼A-105" }
+          ]
+        },
+        {
+          "name": "仪器分析",
+          "teacher": "冯磊",
+          "note": null,
+          "blocks": [
+            { "dayOfWeek": 4, "startPeriod": 13, "endPeriod": 14, "startWeek": 1, "endWeek": 16, "weekType": "ALL", "location": "实训楼C-208" }
+          ]
+        },
+        {
+          "name": "化工设备基础",
+          "teacher": "杨帆",
+          "note": null,
+          "blocks": [
+            { "dayOfWeek": 5, "startPeriod": 3, "endPeriod": 4, "startWeek": 1, "endWeek": 24, "weekType": "ALL", "location": "教学楼B-401" }
+          ]
+        },
+        {
+          "name": "工业分析",
+          "teacher": "秦海",
+          "note": null,
+          "blocks": [
+            { "dayOfWeek": 7, "startPeriod": 7, "endPeriod": 8, "startWeek": 1, "endWeek": 15, "weekType": "ODD", "location": "实训楼C-107" }
+          ]
+        }
+      ]
+    }
+  ]
+}

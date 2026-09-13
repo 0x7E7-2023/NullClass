@@ -1,0 +1,128 @@
+{
+  "_note": "合成数据，不是真实抓取：按湖南商务职业技术学院强智学生端课表片段的 DOM 形状编造，只用来回归 parse.js 的转换逻辑。这一份专测**周次写法**（本批次检查表第 1、2 条）：标记写在「周」后（第1-16周(单)）、写在前面（(双)第1-16周）、写在括号里（第1-16(单周)）、混排（第1-8周,第10-16周(双)）、逗号列（第2,4,6,8周）、括号里是教学班序号（(1-2)第2-8周）、认不出（见通知）、越界（第28-31周）、周次里混着节次（第9-10节 第5-8周）、以及一行节次读不出来。第三大节里另加了四条**标记自成一段、用分隔符跟在周次后面**的写法（第1-16周,双 / 第1-16周、单周 / 第1-12周;双 三种分隔符 + 末尾标记；第1-8周,双,第10-16周 是标记落在中间那一段）：这四条里标记都在**周次后面**，不许丢、也不许给到后面那一段去。term 这里**故意只给编号不给学期名**（页面下拉框只有 value 没有文字的情形）——学期名应从句号推出「2026-2027学年第一学期」，且**不该**报「学期名是推算的」。预期值按移植手册 §4 独立推出后与 parse.js 对照。拿到真实 dump 请替换这一对 fixture。",
+  "now": "2026-11-20",
+  "term": { "code": "2026-2027-1", "name": null },
+  "totalWeeksText": "第1-20周 / 20周",
+  "rows": [
+    {
+      "cells": [
+        { "col": 0, "colSpan": 1, "rowSpan": 1, "text": "节次", "boxes": [] },
+        { "col": 1, "colSpan": 1, "rowSpan": 1, "text": "星期一", "boxes": [] },
+        { "col": 2, "colSpan": 1, "rowSpan": 1, "text": "星期二", "boxes": [] },
+        { "col": 3, "colSpan": 1, "rowSpan": 1, "text": "星期三", "boxes": [] },
+        { "col": 4, "colSpan": 1, "rowSpan": 1, "text": "星期四", "boxes": [] },
+        { "col": 5, "colSpan": 1, "rowSpan": 1, "text": "星期五", "boxes": [] },
+        { "col": 6, "colSpan": 1, "rowSpan": 1, "text": "星期六", "boxes": [] },
+        { "col": 7, "colSpan": 1, "rowSpan": 1, "text": "星期日", "boxes": [] }
+      ]
+    },
+    {
+      "cells": [
+        { "col": 0, "colSpan": 1, "rowSpan": 1, "text": "第一大节 第1-2节", "boxes": [] },
+        {
+          "col": 1, "colSpan": 1, "rowSpan": 1,
+          "text": "课程甲教师：甲老师学分：3A101第1-16周(单)",
+          "boxes": [{ "name": "课程甲", "teacher": "教师：甲老师", "spans": ["A101", "第1-16周(单)"] }]
+        },
+        {
+          "col": 2, "colSpan": 1, "rowSpan": 1,
+          "text": "课程乙教师：乙老师学分：3A102(双)第1-16周",
+          "boxes": [{ "name": "课程乙", "teacher": "教师：乙老师", "spans": ["A102", "(双)第1-16周"] }]
+        },
+        {
+          "col": 3, "colSpan": 1, "rowSpan": 1,
+          "text": "课程丙教师：丙老师学分：3A103第1-16(单周)",
+          "boxes": [{ "name": "课程丙", "teacher": "教师：丙老师", "spans": ["A103", "第1-16(单周)"] }]
+        },
+        {
+          "col": 4, "colSpan": 1, "rowSpan": 1,
+          "text": "课程丁教师：丁老师学分：3A104第1-3,5-9周",
+          "boxes": [{ "name": "课程丁", "teacher": "教师：丁老师", "spans": ["A104", "第1-3,5-9周"] }]
+        },
+        { "col": 5, "colSpan": 1, "rowSpan": 1, "text": "", "boxes": [] },
+        { "col": 6, "colSpan": 1, "rowSpan": 1, "text": "", "boxes": [] },
+        { "col": 7, "colSpan": 1, "rowSpan": 1, "text": "", "boxes": [] }
+      ]
+    },
+    {
+      "cells": [
+        { "col": 0, "colSpan": 1, "rowSpan": 1, "text": "第二大节 第3-4节", "boxes": [] },
+        { "col": 1, "colSpan": 1, "rowSpan": 1, "text": "", "boxes": [] },
+        { "col": 2, "colSpan": 1, "rowSpan": 1, "text": "", "boxes": [] },
+        { "col": 3, "colSpan": 1, "rowSpan": 1, "text": "", "boxes": [] },
+        { "col": 4, "colSpan": 1, "rowSpan": 1, "text": "", "boxes": [] },
+        {
+          "col": 5, "colSpan": 1, "rowSpan": 1,
+          "text": "课程戊教师：戊老师学分：3A105(1-2)第2-8周",
+          "boxes": [{ "name": "课程戊", "teacher": "教师：戊老师", "spans": ["A105", "(1-2)第2-8周"] }]
+        },
+        {
+          "col": 6, "colSpan": 1, "rowSpan": 1,
+          "text": "课程己教师：己老师学分：3A106见通知",
+          "boxes": [{ "name": "课程己", "teacher": "教师：己老师", "spans": ["A106", "见通知"] }]
+        },
+        {
+          "col": 7, "colSpan": 1, "rowSpan": 1,
+          "text": "课程庚教师：庚老师学分：3A107第1-8周,第10-16周(双)",
+          "boxes": [{ "name": "课程庚", "teacher": "教师：庚老师", "spans": ["A107", "第1-8周,第10-16周(双)"] }]
+        }
+      ]
+    },
+    {
+      "cells": [
+        { "col": 0, "colSpan": 1, "rowSpan": 1, "text": "第三大节 第5-6节", "boxes": [] },
+        {
+          "col": 1, "colSpan": 1, "rowSpan": 1,
+          "text": "课程辛教师：辛老师学分：3A108第28-31周",
+          "boxes": [{ "name": "课程辛", "teacher": "教师：辛老师", "spans": ["A108", "第28-31周"] }]
+        },
+        {
+          "col": 2, "colSpan": 1, "rowSpan": 1,
+          "text": "课程壬教师：壬老师学分：3A109第2,4,6,8周",
+          "boxes": [{ "name": "课程壬", "teacher": "教师：壬老师", "spans": ["A109", "第2,4,6,8周"] }]
+        },
+        {
+          "col": 3, "colSpan": 1, "rowSpan": 1,
+          "text": "课程癸教师：癸老师学分：3A110第9-10节 第5-8周",
+          "boxes": [{ "name": "课程癸", "teacher": "教师：癸老师", "spans": ["A110", "第9-10节 第5-8周"] }]
+        },
+        {
+          "col": 4, "colSpan": 1, "rowSpan": 1,
+          "text": "数据结构基础教师：甲老师学分：3A112第1-16周,双",
+          "boxes": [{ "name": "数据结构基础", "teacher": "教师：甲老师", "spans": ["A112", "第1-16周,双"] }]
+        },
+        {
+          "col": 5, "colSpan": 1, "rowSpan": 1,
+          "text": "概率论教师：乙老师学分：3A113第1-16周、单周",
+          "boxes": [{ "name": "概率论", "teacher": "教师：乙老师", "spans": ["A113", "第1-16周、单周"] }]
+        },
+        {
+          "col": 6, "colSpan": 1, "rowSpan": 1,
+          "text": "离散数学教师：丙老师学分：3A114第1-12周;双",
+          "boxes": [{ "name": "离散数学", "teacher": "教师：丙老师", "spans": ["A114", "第1-12周;双"] }]
+        },
+        {
+          "col": 7, "colSpan": 1, "rowSpan": 1,
+          "text": "计算方法教师：丁老师学分：3A115第1-8周,双,第10-16周",
+          "boxes": [{ "name": "计算方法", "teacher": "教师：丁老师", "spans": ["A115", "第1-8周,双,第10-16周"] }]
+        }
+      ]
+    },
+    {
+      "cells": [
+        { "col": 0, "colSpan": 1, "rowSpan": 1, "text": "上午 08:20-09:05", "boxes": [] },
+        {
+          "col": 1, "colSpan": 1, "rowSpan": 1,
+          "text": "课程子教师：子老师学分：3A111第1-8周",
+          "boxes": [{ "name": "课程子", "teacher": "教师：子老师", "spans": ["A111", "第1-8周"] }]
+        },
+        { "col": 2, "colSpan": 1, "rowSpan": 1, "text": "", "boxes": [] },
+        { "col": 3, "colSpan": 1, "rowSpan": 1, "text": "", "boxes": [] },
+        { "col": 4, "colSpan": 1, "rowSpan": 1, "text": "", "boxes": [] },
+        { "col": 5, "colSpan": 1, "rowSpan": 1, "text": "", "boxes": [] },
+        { "col": 6, "colSpan": 1, "rowSpan": 1, "text": "", "boxes": [] },
+        { "col": 7, "colSpan": 1, "rowSpan": 1, "text": "", "boxes": [] }
+      ]
+    }
+  ]
+}

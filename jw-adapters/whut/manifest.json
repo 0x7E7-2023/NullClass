@@ -1,0 +1,35 @@
+{
+  "specVersion": 1,
+  "key": "whut",
+  "name": "武汉理工大学",
+  "version": "1.0.0",
+  "author": "上游 星河欲转（MIT）；移植 0x7E-2023",
+  "homepage": "https://github.com/XingHeYuZhuan/shiguang_warehouse",
+  "loginUrl": "https://jwxt.whut.edu.cn/",
+  "minAppVersionCode": 11,
+  "extract": "extract.js",
+  "parse": "parse.js",
+  "allowHosts": [],
+  "fixtures": [
+    {
+      "name": "基本课表（节次字典与学期校历都可用）",
+      "extracted": "fixtures/basic.extracted.json",
+      "expected": "fixtures/basic.expected.json"
+    },
+    {
+      "name": "周次位串的连续段 / 单周段 / 双周段 / 落单与混排，节次字典按接口顺序数",
+      "extracted": "fixtures/weeks.extracted.json",
+      "expected": "fixtures/weeks.expected.json"
+    },
+    {
+      "name": "降级路径（校历与节次字典都拿不到）",
+      "extracted": "fixtures/degraded.extracted.json",
+      "expected": "fixtures/degraded.expected.json"
+    },
+    {
+      "name": "总周数取自校历：校历 25 周、课表位串只有 20 周、内置兜底也是 20（三者互不相等，专门守住 calendarWeeks 那条路）",
+      "extracted": "fixtures/calendar-weeks.extracted.json",
+      "expected": "fixtures/calendar-weeks.expected.json"
+    }
+  ]
+}

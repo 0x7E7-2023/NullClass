@@ -1,0 +1,70 @@
+{
+  "specVersion": 1,
+  "kind": "schedule",
+  "ocrAssisted": false,
+  "warnings": [
+    "没拿到校区选择（提问桥不可用，或用户取消了），节次时间按滨文校区导入；如果你不在滨文校区，请在学期管理里核对作息时间",
+    "正方课表接口不给开学日期，第 1 周按「第一学期 = 9 月 1 日所在周的周一」推算为 2026-08-31，请在学期管理里核对成学校实际开学日",
+    "只导入了教务系统当前选中的学期（2026-2027学年第一学期）；要导入别的学期，请在教务页面里切到那个学期再点「提取课表」",
+    "课表里最晚排到第 30 周，超出按 20 周估算的学期长度，学期总周数已按 30 周导入，请核对",
+    "有 5 行课表数据缺课程名 / 星期 / 节次 / 周次，已跳过：教务数据不完整时会出现，如发现少课请反馈",
+    "有 1 行的节次写法认不出来（如「连堂」），已跳过：如发现少课请反馈",
+    "有 2 处周次超出 1-30 周，已丢弃（教务给出的周次不正常）"
+  ],
+  "terms": [
+    {
+      "name": "2026-2027学年第一学期",
+      "firstDay": "2026-08-31",
+      "totalWeeks": 30,
+      "periodTimes": [
+        { "periodIndex": 1, "start": "08:15", "end": "08:55" },
+        { "periodIndex": 2, "start": "09:00", "end": "09:40" },
+        { "periodIndex": 3, "start": "09:55", "end": "10:35" },
+        { "periodIndex": 4, "start": "10:40", "end": "11:20" },
+        { "periodIndex": 5, "start": "11:25", "end": "12:05" },
+        { "periodIndex": 6, "start": "13:45", "end": "14:25" },
+        { "periodIndex": 7, "start": "14:30", "end": "15:10" },
+        { "periodIndex": 8, "start": "15:20", "end": "16:00" },
+        { "periodIndex": 9, "start": "16:05", "end": "16:45" },
+        { "periodIndex": 10, "start": "16:50", "end": "17:55" },
+        { "periodIndex": 11, "start": "18:00", "end": "18:40" },
+        { "periodIndex": 12, "start": "18:45", "end": "19:25" },
+        { "periodIndex": 13, "start": "19:30", "end": "20:10" }
+      ],
+      "courses": [
+        {
+          "name": "中医内科学",
+          "teacher": "罗建国",
+          "note": null,
+          "blocks": [
+            { "dayOfWeek": 2, "startPeriod": 1, "endPeriod": 2, "startWeek": 1, "endWeek": 16, "weekType": "ALL", "location": "门诊楼E-201" }
+          ]
+        },
+        {
+          "name": "医学伦理学",
+          "teacher": null,
+          "note": null,
+          "blocks": [
+            { "dayOfWeek": 3, "startPeriod": 3, "endPeriod": 4, "startWeek": 1, "endWeek": 8, "weekType": "ALL", "location": "人文楼D-105" }
+          ]
+        },
+        {
+          "name": "病理学",
+          "teacher": "蒋文博",
+          "note": null,
+          "blocks": [
+            { "dayOfWeek": 4, "startPeriod": 5, "endPeriod": 6, "startWeek": 1, "endWeek": 16, "weekType": "ALL", "location": null }
+          ]
+        },
+        {
+          "name": "免疫学",
+          "teacher": "秦立冬",
+          "note": null,
+          "blocks": [
+            { "dayOfWeek": 5, "startPeriod": 7, "endPeriod": 8, "startWeek": 28, "endWeek": 30, "weekType": "ALL", "location": "基础楼C-208" }
+          ]
+        }
+      ]
+    }
+  ]
+}

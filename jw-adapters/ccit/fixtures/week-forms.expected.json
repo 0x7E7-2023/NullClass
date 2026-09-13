@@ -1,0 +1,187 @@
+{
+  "specVersion": 1,
+  "kind": "schedule",
+  "ocrAssisted": false,
+  "warnings": [
+    "开学日期无法从教务获取，已按最近的周一（2026-09-07）推算，请在「学期管理」里核对",
+    "教务页面不提供学期总周数与作息时间：总周数按 20 周起算、节次时间按适配器内置的 12 节设定，请在「学期管理」里核对",
+    "有 1 处周次里的单双/隔周标记认不出来（单双周1-16），这些周次已按「每周都上」处理，请核对导入结果",
+    "有 1 门课的上课地点属于学校的错峰作息（不同教学楼/楼层的上下课时间相差约 10 分钟），课表已统一按内置作息时间排列，时间对不上请到「学期管理」里核对。涉及：计算机网络"
+  ],
+  "terms": [
+    {
+      "name": "2026-2027学年第一学期",
+      "firstDay": "2026-09-07",
+      "totalWeeks": 20,
+      "periodTimes": [
+        { "periodIndex": 1, "start": "08:00", "end": "08:45" },
+        { "periodIndex": 2, "start": "08:50", "end": "09:35" },
+        { "periodIndex": 3, "start": "10:05", "end": "10:50" },
+        { "periodIndex": 4, "start": "10:55", "end": "11:40" },
+        { "periodIndex": 5, "start": "13:30", "end": "14:15" },
+        { "periodIndex": 6, "start": "14:20", "end": "15:05" },
+        { "periodIndex": 7, "start": "15:35", "end": "16:20" },
+        { "periodIndex": 8, "start": "16:25", "end": "17:10" },
+        { "periodIndex": 9, "start": "18:00", "end": "18:45" },
+        { "periodIndex": 10, "start": "18:50", "end": "19:35" },
+        { "periodIndex": 11, "start": "19:40", "end": "20:25" },
+        { "periodIndex": 12, "start": "20:30", "end": "21:15" }
+      ],
+      "courses": [
+        {
+          "name": "高等数学A(一)",
+          "teacher": "张伟",
+          "note": null,
+          "blocks": [
+            {
+              "dayOfWeek": 1,
+              "startPeriod": 1,
+              "endPeriod": 2,
+              "startWeek": 1,
+              "endWeek": 15,
+              "weekType": "ODD",
+              "location": "教1-101"
+            }
+          ]
+        },
+        {
+          "name": "线性代数",
+          "teacher": "陈静",
+          "note": null,
+          "blocks": [
+            {
+              "dayOfWeek": 2,
+              "startPeriod": 1,
+              "endPeriod": 2,
+              "startWeek": 1,
+              "endWeek": 15,
+              "weekType": "ODD",
+              "location": "教1-102"
+            }
+          ]
+        },
+        {
+          "name": "概率论与数理统计",
+          "teacher": "刘洋",
+          "note": null,
+          "blocks": [
+            {
+              "dayOfWeek": 3,
+              "startPeriod": 1,
+              "endPeriod": 2,
+              "startWeek": 1,
+              "endWeek": 15,
+              "weekType": "ODD",
+              "location": "教1-103"
+            }
+          ]
+        },
+        {
+          "name": "离散数学",
+          "teacher": "孙丽",
+          "note": null,
+          "blocks": [
+            {
+              "dayOfWeek": 4,
+              "startPeriod": 1,
+              "endPeriod": 2,
+              "startWeek": 1,
+              "endWeek": 3,
+              "weekType": "ALL",
+              "location": "教1-104"
+            },
+            {
+              "dayOfWeek": 4,
+              "startPeriod": 1,
+              "endPeriod": 2,
+              "startWeek": 5,
+              "endWeek": 9,
+              "weekType": "ALL",
+              "location": "教1-104"
+            }
+          ]
+        },
+        {
+          "name": "数据结构",
+          "teacher": "吴强",
+          "note": null,
+          "blocks": [
+            {
+              "dayOfWeek": 5,
+              "startPeriod": 1,
+              "endPeriod": 2,
+              "startWeek": 1,
+              "endWeek": 16,
+              "weekType": "ALL",
+              "location": "教1-105"
+            }
+          ]
+        },
+        {
+          "name": "操作系统",
+          "teacher": "郑华",
+          "note": null,
+          "blocks": [
+            {
+              "dayOfWeek": 6,
+              "startPeriod": 1,
+              "endPeriod": 2,
+              "startWeek": 2,
+              "endWeek": 16,
+              "weekType": "EVEN",
+              "location": "教1-106"
+            }
+          ]
+        },
+        {
+          "name": "计算机网络",
+          "teacher": "冯军",
+          "note": null,
+          "blocks": [
+            {
+              "dayOfWeek": 7,
+              "startPeriod": 1,
+              "endPeriod": 2,
+              "startWeek": 2,
+              "endWeek": 16,
+              "weekType": "EVEN",
+              "location": "DJ1-12教室"
+            }
+          ]
+        },
+        {
+          "name": "编译原理",
+          "teacher": "何静",
+          "note": null,
+          "blocks": [
+            {
+              "dayOfWeek": 3,
+              "startPeriod": 3,
+              "endPeriod": 4,
+              "startWeek": 1,
+              "endWeek": 15,
+              "weekType": "ODD",
+              "location": "教2-201"
+            }
+          ]
+        },
+        {
+          "name": "软件工程",
+          "teacher": "刘敏",
+          "note": null,
+          "blocks": [
+            {
+              "dayOfWeek": 3,
+              "startPeriod": 3,
+              "endPeriod": 4,
+              "startWeek": 1,
+              "endWeek": 16,
+              "weekType": "ALL",
+              "location": "教2-202"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

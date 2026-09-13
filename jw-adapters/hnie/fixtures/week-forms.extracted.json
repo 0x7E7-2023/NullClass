@@ -1,0 +1,42 @@
+{
+  "_note": "合成数据（**非真实抓取**）：专打本批检查表第 1、2 条 —— 周次编码的四种写法（1-16周(单) 标记在「周」后、(单)1-16周 标记在前、1-16(单周) 标记在括号里、1-3,5-9周 混排）。上游 hnie_01.js 的 parseWeeks() 是 weekStr.split('(')[0] 之后再数数字，而 '(' 后面正是单双标记，所以前三种会被读成「每周都上」且一声不吭 —— 这一对用例就是看着这处修复的。第 2 条（括号里只有数字 / 数字区间的 (1)、(1-2) 是教学班序号，不是周次）也在这一对里。另外含两处认不出单双的写法（1-16周(单双)、1-16周隔周），期望值是「按每周处理 + 出声」，不许静默。教学周历这一对故意缺（found=false），用来验开学日期推算与作息推断两条 warning；期望值按规范独立推出，不是把 parse.js 的输出贴进来。",
+  "source": "qz-jsxsd",
+  "pageUrl": "http://jwcmis.hnie.edu.cn/jsxsd/xskb/xskb_list.do",
+  "now": "2027-03-10",
+  "term": { "code": "2026-2027-2", "name": "" },
+  "season": { "asked": false, "picked": null },
+  "cols": 8,
+  "calendar": { "found": false, "rows": [] },
+  "rows": [
+    [
+      { "col": 0, "span": 1, "text": "节次", "parts": [] },
+      { "col": 1, "span": 1, "text": "星期一", "parts": [] },
+      { "col": 2, "span": 1, "text": "星期二", "parts": [] },
+      { "col": 3, "span": 1, "text": "星期三", "parts": [] },
+      { "col": 4, "span": 1, "text": "星期四", "parts": [] },
+      { "col": 5, "span": 1, "text": "星期五", "parts": [] },
+      { "col": 6, "span": 1, "text": "星期六", "parts": [] },
+      { "col": 7, "span": 1, "text": "星期日", "parts": [] }
+    ],
+    [
+      { "col": 0, "span": 1, "text": "第1-2节", "parts": [] },
+      { "col": 1, "span": 1, "text": "高等数学A(一) 任课教师:张明 1-16周(单)[01-02节] 教1-101", "parts": ["高等数学A(一)<br><font title=\"教师\">任课教师:张明</font><br><font title=\"周次(节次)\">1-16周(单)[01-02节]</font><br><font title=\"教室\">教1-101</font>"] },
+      { "col": 2, "span": 1, "text": "大学英语(一) 任课教师:李红 (单)1-16周[01-02节] 外语楼B203", "parts": ["大学英语(一)<br><font title=\"教师\">任课教师:李红</font><br><font title=\"周次(节次)\">(单)1-16周[01-02节]</font><br><font title=\"教室\">外语楼B203</font>"] },
+      { "col": 3, "span": 1, "text": "线性代数 任课教师:王强 1-16(单周)[01-02节] 教2-305", "parts": ["线性代数<br><font title=\"教师\">任课教师:王强</font><br><font title=\"周次(节次)\">1-16(单周)[01-02节]</font><br><font title=\"教室\">教2-305</font>"] },
+      { "col": 4, "span": 1, "text": "大学物理 任课教师:孙丽 1-3,5-9周[01-02节] 教1-208", "parts": ["大学物理<br><font title=\"教师\">任课教师:孙丽</font><br><font title=\"周次(节次)\">1-3,5-9周[01-02节]</font><br><font title=\"教室\">教1-208</font>"] },
+      { "col": 5, "span": 1, "text": "概率论与数理统计 任课教师:吴敏 双周2-16[01-02节] 教4-102", "parts": ["概率论与数理统计<br><font title=\"教师\">任课教师:吴敏</font><br><font title=\"周次(节次)\">双周2-16[01-02节]</font><br><font title=\"教室\">教4-102</font>"] },
+      { "col": 6, "span": 1, "text": "数据结构 任课教师:郑凯 1-16周 双[01-02节] 计算机楼A302", "parts": ["数据结构<br><font title=\"教师\">任课教师:郑凯</font><br><font title=\"周次(节次)\">1-16周 双[01-02节]</font><br><font title=\"教室\">计算机楼A302</font>"] },
+      { "col": 7, "span": 1, "text": "计算机组成原理 任课教师:冯磊 (1)1-16周[01-02节] 计算机楼A305", "parts": ["计算机组成原理<br><font title=\"教师\">任课教师:冯磊</font><br><font title=\"周次(节次)\">(1)1-16周[01-02节]</font><br><font title=\"教室\">计算机楼A305</font>"] }
+    ],
+    [
+      { "col": 0, "span": 1, "text": "第3-4节", "parts": [] },
+      { "col": 1, "span": 1, "text": "操作系统 任课教师:陈涛 1-16周(1-2)[03-04节] 计算机楼A201", "parts": ["操作系统<br><font title=\"教师\">任课教师:陈涛</font><br><font title=\"周次(节次)\">1-16周(1-2)[03-04节]</font><br><font title=\"教室\">计算机楼A201</font>"] },
+      { "col": 2, "span": 1, "text": "编译原理 任课教师:许晴 1-8周(单),10-16周(双)[03-04节] 计算机楼A202", "parts": ["编译原理<br><font title=\"教师\">任课教师:许晴</font><br><font title=\"周次(节次)\">1-8周(单),10-16周(双)[03-04节]</font><br><font title=\"教室\">计算机楼A202</font>"] },
+      { "col": 3, "span": 1, "text": "软件工程 任课教师:何洁 1-16周(单双)[03-04节] 计算机楼A203", "parts": ["软件工程<br><font title=\"教师\">任课教师:何洁</font><br><font title=\"周次(节次)\">1-16周(单双)[03-04节]</font><br><font title=\"教室\">计算机楼A203</font>"] },
+      { "col": 4, "span": 1, "text": "计算机网络 任课教师:马超 1-16周隔周[03-04节] 计算机楼A204", "parts": ["计算机网络<br><font title=\"教师\">任课教师:马超</font><br><font title=\"周次(节次)\">1-16周隔周[03-04节]</font><br><font title=\"教室\">计算机楼A204</font>"] },
+      { "col": 5, "span": 1, "text": "数据库原理 任课教师:曹阳 第3周[03-04节] 计算机楼A205", "parts": ["数据库原理<br><font title=\"教师\">任课教师:曹阳</font><br><font title=\"周次(节次)\">第3周[03-04节]</font><br><font title=\"教室\">计算机楼A205</font>"] },
+      { "col": 6, "span": 1, "text": "离散数学 任课教师:邓超 1-16(周)[03-04节] 教3-101", "parts": ["离散数学<br><font title=\"教师\">任课教师:邓超</font><br><font title=\"周次(节次)\">1-16(周)[03-04节]</font><br><font title=\"教室\">教3-101</font>"] },
+      { "col": 7, "span": 1, "text": "", "parts": [] }
+    ]
+  ]
+}

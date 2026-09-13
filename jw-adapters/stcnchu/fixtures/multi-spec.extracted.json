@@ -1,0 +1,225 @@
+{
+  "_note": "合成数据，不是真实抓取：按南昌航空大学科技学院强智课表页（/jsxsd/xskb/xskb_list.do）的 DOM 形状编造。专测两处周次解析缺陷：(1) 同一个格子里写了**两段**周次 —— 星期二那格是两个 font（1-8周[01-02节] 与 10-16周[01-02节]），星期三那格是**一个** font 里连着写两段（1-8周[03-04节]10-16周[03-04节]）；两段必须各自成块，不许命中第一段就收手。(2) 区间分隔符写成全角/异体（全角波浪 U+FF5E、全角减号 U+FF0D、数学减号 U+2212、短破折 U+2013），必须与半角连字符一样读成 1-16 周，不许静默退化成「只上第 1 周」。星期四-星期日四格分别用这四种分隔符。课程名/教师/教室均为虚构，无学号姓名。",
+  "source": "qz-jsxsd-xskb",
+  "pageUrl": "http://qzjwxt.stcnchu.edu.cn:800/jsxsd/xskb/xskb_list.do",
+  "now": "2026-09-13",
+  "term": {
+    "code": "2026-2027-1",
+    "name": "2026-2027学年第一学期"
+  },
+  "cols": 8,
+  "rows": [
+    [
+      {
+        "col": 0,
+        "span": 1,
+        "text": "节次",
+        "parts": []
+      },
+      {
+        "col": 1,
+        "span": 1,
+        "text": "星期一",
+        "parts": []
+      },
+      {
+        "col": 2,
+        "span": 1,
+        "text": "星期二",
+        "parts": []
+      },
+      {
+        "col": 3,
+        "span": 1,
+        "text": "星期三",
+        "parts": []
+      },
+      {
+        "col": 4,
+        "span": 1,
+        "text": "星期四",
+        "parts": []
+      },
+      {
+        "col": 5,
+        "span": 1,
+        "text": "星期五",
+        "parts": []
+      },
+      {
+        "col": 6,
+        "span": 1,
+        "text": "星期六",
+        "parts": []
+      },
+      {
+        "col": 7,
+        "span": 1,
+        "text": "星期日",
+        "parts": []
+      }
+    ],
+    [
+      {
+        "col": 0,
+        "span": 1,
+        "text": "第1-2节",
+        "parts": []
+      },
+      {
+        "col": 1,
+        "span": 1,
+        "text": "数据结构陈磊1-8周[01-02节]10-16周[01-02节]博学楼A201",
+        "parts": [
+          "数据结构<br><font title=\"老师\">陈磊</font><br><font title=\"周次(节次)\">1-8周[01-02节]</font><br><font title=\"周次(节次)\">10-16周[01-02节]</font><br><font title=\"教室\">博学楼A201</font>"
+        ]
+      },
+      {
+        "col": 2,
+        "span": 1,
+        "text": "",
+        "parts": []
+      },
+      {
+        "col": 3,
+        "span": 1,
+        "text": "计算机网络吴迪1～16周[01-02节]博学楼C102",
+        "parts": [
+          "计算机网络<br><font title=\"老师\">吴迪</font><br><font title=\"周次(节次)\">1～16周[01-02节]</font><br><font title=\"教室\">博学楼C102</font>"
+        ]
+      },
+      {
+        "col": 4,
+        "span": 1,
+        "text": "",
+        "parts": []
+      },
+      {
+        "col": 5,
+        "span": 1,
+        "text": "",
+        "parts": []
+      },
+      {
+        "col": 6,
+        "span": 1,
+        "text": "",
+        "parts": []
+      },
+      {
+        "col": 7,
+        "span": 1,
+        "text": "",
+        "parts": []
+      }
+    ],
+    [
+      {
+        "col": 0,
+        "span": 1,
+        "text": "第3-4节",
+        "parts": []
+      },
+      {
+        "col": 1,
+        "span": 1,
+        "text": "",
+        "parts": []
+      },
+      {
+        "col": 2,
+        "span": 1,
+        "text": "操作系统孙倩1-8周[03-04节]10-16周[03-04节]博学楼B305",
+        "parts": [
+          "操作系统<br><font title=\"老师\">孙倩</font><br><font title=\"周次(节次)\">1-8周[03-04节]10-16周[03-04节]</font><br><font title=\"教室\">博学楼B305</font>"
+        ]
+      },
+      {
+        "col": 3,
+        "span": 1,
+        "text": "",
+        "parts": []
+      },
+      {
+        "col": 4,
+        "span": 1,
+        "text": "数据库原理郑爽1－16周[03-04节]博学楼D205",
+        "parts": [
+          "数据库原理<br><font title=\"老师\">郑爽</font><br><font title=\"周次(节次)\">1－16周[03-04节]</font><br><font title=\"教室\">博学楼D205</font>"
+        ]
+      },
+      {
+        "col": 5,
+        "span": 1,
+        "text": "",
+        "parts": []
+      },
+      {
+        "col": 6,
+        "span": 1,
+        "text": "",
+        "parts": []
+      },
+      {
+        "col": 7,
+        "span": 1,
+        "text": "",
+        "parts": []
+      }
+    ],
+    [
+      {
+        "col": 0,
+        "span": 1,
+        "text": "第5-6节",
+        "parts": []
+      },
+      {
+        "col": 1,
+        "span": 1,
+        "text": "",
+        "parts": []
+      },
+      {
+        "col": 2,
+        "span": 1,
+        "text": "",
+        "parts": []
+      },
+      {
+        "col": 3,
+        "span": 1,
+        "text": "",
+        "parts": []
+      },
+      {
+        "col": 4,
+        "span": 1,
+        "text": "",
+        "parts": []
+      },
+      {
+        "col": 5,
+        "span": 1,
+        "text": "软件工程何静1−16周[05-06节]实验楼E401",
+        "parts": [
+          "软件工程<br><font title=\"老师\">何静</font><br><font title=\"周次(节次)\">1−16周[05-06节]</font><br><font title=\"教室\">实验楼E401</font>"
+        ]
+      },
+      {
+        "col": 6,
+        "span": 1,
+        "text": "离散数学许峰1–16周[05-06节]博学楼A408",
+        "parts": [
+          "离散数学<br><font title=\"老师\">许峰</font><br><font title=\"周次(节次)\">1–16周[05-06节]</font><br><font title=\"教室\">博学楼A408</font>"
+        ]
+      },
+      {
+        "col": 7,
+        "span": 1,
+        "text": "",
+        "parts": []
+      }
+    ]
+  ]
+}

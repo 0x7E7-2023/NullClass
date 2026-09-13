@@ -1,0 +1,65 @@
+{
+  "_note": "合成样例（不是真实抓取）：字段形状按上游 WHUT/whut_01.js 读取的接口字段编造，只保证「同样的输入永远得到同样的输出」。本用例专测降级路径：校历与节次字典都没拿到（学期编号与开学日都是推算的、节次走内置对照表），另含一条非位串周次、一条对照表里查不到的节次编码、一条位串长度超出 30 周的记录和一条空占位行。拿到真实 dump 请替换本文件并重跑 :importer:test。",
+  "term": {
+    "code": "2026-2027-1",
+    "name": null,
+    "source": "guess",
+    "firstDay": "2026-09-07",
+    "firstDaySource": "guess",
+    "totalWeeks": null
+  },
+  "sectionRows": [],
+  "totalSize": 6,
+  "rows": [
+    {
+      "XNXQDM": "2026-2027-1",
+      "KCM": "数据结构",
+      "SKXQ": "2",
+      "KSJC": "1",
+      "JSJC": "2",
+      "SKZC": "11111111111111110000",
+      "SKJS": "吴涛",
+      "JASMC": "教5-101"
+    },
+    {
+      "XNXQDM": "2026-2027-1",
+      "KCM": "编译原理",
+      "SKXQ": "3",
+      "KSJC": "3",
+      "JSJC": "4",
+      "SKZC": "1-16周",
+      "SKJS": "郑华",
+      "JASMC": "教5-202"
+    },
+    {
+      "XNXQDM": "2026-2027-1",
+      "KCM": "计算机网络",
+      "SKXQ": "4",
+      "KSJC": "6",
+      "JSJC": "7",
+      "SKZC": "11111111111111110000",
+      "SKJS": "何丽",
+      "JASMC": "教5-303"
+    },
+    {
+      "XNXQDM": "2026-2027-1",
+      "KCM": "大学生心理健康",
+      "SKXQ": "5",
+      "KSJC": "1",
+      "JSJC": "2",
+      "SKZC": "11111000000000000000000000000011111",
+      "SKJS": "秦芳",
+      "JASMC": "教6-101"
+    },
+    {
+      "XNXQDM": null,
+      "KCM": null,
+      "SKXQ": null,
+      "KSJC": null,
+      "JSJC": null,
+      "SKZC": null,
+      "SKJS": null,
+      "JASMC": null
+    }
+  ]
+}

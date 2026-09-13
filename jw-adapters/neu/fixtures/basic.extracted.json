@@ -1,0 +1,79 @@
+{
+  "_note": "合成样例（不是真实抓取）：字段形状按上游 NEU/neu.js 读取的接口字段、以及同平台 CAPU/capadap.js 对**同一个接口**（kbapp/api/wdkbcx/getMyScheduleDetail.do）的读法编造，只保证「同样的输入永远得到同样的输出」，不保证真实教务上的解析正确性。拿到真实 dump 请替换本文件并重跑 :importer:test。",
+  "_covers": "基本课表：学期编号来自教务接口；开学日来自教务校历但**不是周一**（2025-09-03 周三 → 必须回退到 2025-09-01 周一，手册 §4.3）；作息表来自教务节次接口，其中第 9 节的时间是 24:00（非法，必须丢掉并进 warnings，绝不写进载荷）；上课安排文本用「周次 教师 教室」三段式；覆盖四种周次写法里的「(单)1-16周」（标记在前）、「2-16周(双)」（标记在「周」后）、「1-16(单周)」（标记在括号里）、「1-3,5-9周」混排，以及落单的一周；另有一条只有两段（周次 + 教室）的记录，验证教室不会被当成教师。",
+  "term": {
+    "code": "2025-2026-1",
+    "name": null,
+    "source": "api",
+    "firstDay": "2025-09-03",
+    "firstDaySource": "termWeeks",
+    "totalWeeks": 18
+  },
+  "sections": [
+    { "name": "第1节", "startTime": "08:00", "endTime": "08:45" },
+    { "name": "第2节", "startTime": "08:55", "endTime": "09:40" },
+    { "name": "第3节", "startTime": "10:00", "endTime": "10:45" },
+    { "name": "第4节", "startTime": "10:55", "endTime": "11:40" },
+    { "name": "第5节", "startTime": "14:00", "endTime": "14:45" },
+    { "name": "第6节", "startTime": "14:55", "endTime": "15:40" },
+    { "name": "第7节", "startTime": "16:00", "endTime": "16:45" },
+    { "name": "第8节", "startTime": "16:55", "endTime": "17:40" },
+    { "name": "第9节", "startTime": "24:00", "endTime": "24:45" }
+  ],
+  "rows": [
+    {
+      "courseName": "高等数学A(一)",
+      "dayOfWeek": 1,
+      "beginSection": 1,
+      "endSection": 2,
+      "beginTime": "08:00",
+      "endTime": "09:40",
+      "titleWeekTeacherClassroomDetail": ["1-16周 王建国 教1-101"]
+    },
+    {
+      "courseName": "大学英语(一)",
+      "dayOfWeek": 2,
+      "beginSection": 3,
+      "endSection": 4,
+      "beginTime": "10:00",
+      "endTime": "11:40",
+      "titleWeekTeacherClassroomDetail": ["(单)1-16周 李梅 教2-105", "2-16周(双) 李梅 教2-105"]
+    },
+    {
+      "courseName": "大学物理",
+      "dayOfWeek": 3,
+      "beginSection": 5,
+      "endSection": 6,
+      "beginTime": "14:00",
+      "endTime": "15:40",
+      "titleWeekTeacherClassroomDetail": ["1-3,5-9周 陈晓东 何世礼教学馆201"]
+    },
+    {
+      "courseName": "程序设计基础",
+      "dayOfWeek": 4,
+      "beginSection": 7,
+      "endSection": 8,
+      "beginTime": "16:00",
+      "endTime": "17:40",
+      "titleWeekTeacherClassroomDetail": ["1-16(单周) 孙宇航 计算中心B302"]
+    },
+    {
+      "courseName": "体育(一)",
+      "dayOfWeek": 5,
+      "beginSection": 3,
+      "endSection": 4,
+      "beginTime": "10:00",
+      "endTime": "11:40",
+      "titleWeekTeacherClassroomDetail": ["6周 周凯 田径场"]
+    },
+    {
+      "courseName": "军事理论",
+      "dayOfWeek": 6,
+      "beginSection": 3,
+      "endSection": 4,
+      "beginTime": "10:00",
+      "endTime": "11:40",
+      "titleWeekTeacherClassroomDetail": ["1-8周 何世礼教学馆101"]
+    }
+  ]
+}

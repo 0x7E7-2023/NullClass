@@ -1,0 +1,50 @@
+{
+  "specVersion": 1,
+  "kind": "schedule",
+  "ocrAssisted": false,
+  "warnings": [
+    "只导入了教务系统当前选中的学期（2026-2027学年第一学期）；要导入别的学期，请在教务页面里切到那个学期再点「提取课表」",
+    "开学日期取自教务系统的学期周次校历：第 1 周从 2026-09-07 开始，请在学期管理里核对",
+    "学期总周数用的是教务周次校历（26 周），如与实际不符可在学期管理里改",
+    "作息时间用的是适配器内置的青岛黄海学院 11 节作息表（第 1 节 08:00-08:45），没有向教务核对过，如与学校实际作息不符请在学期管理里改"
+  ],
+  "terms": [
+    {
+      "name": "2026-2027学年第一学期",
+      "firstDay": "2026-09-07",
+      "totalWeeks": 26,
+      "periodTimes": [
+        { "periodIndex": 1, "start": "08:00", "end": "08:45" },
+        { "periodIndex": 2, "start": "08:50", "end": "09:35" },
+        { "periodIndex": 3, "start": "10:05", "end": "10:50" },
+        { "periodIndex": 4, "start": "10:55", "end": "11:40" },
+        { "periodIndex": 5, "start": "11:45", "end": "12:30" },
+        { "periodIndex": 6, "start": "14:00", "end": "14:45" },
+        { "periodIndex": 7, "start": "14:50", "end": "15:35" },
+        { "periodIndex": 8, "start": "16:05", "end": "16:50" },
+        { "periodIndex": 9, "start": "16:55", "end": "17:40" },
+        { "periodIndex": 10, "start": "19:10", "end": "19:55" },
+        { "periodIndex": 11, "start": "20:00", "end": "20:45" }
+      ],
+      "courses": [
+        {
+          "name": "工程制图",
+          "teacher": "孟凡",
+          "note": null,
+          "blocks": [
+            { "dayOfWeek": 1, "startPeriod": 1, "endPeriod": 2, "startWeek": 1, "endWeek": 12, "weekType": "ALL", "location": "教学楼A-201" },
+            { "dayOfWeek": 3, "startPeriod": 3, "endPeriod": 4, "startWeek": 1, "endWeek": 12, "weekType": "ALL", "location": "教学楼A-201" }
+          ]
+        },
+        {
+          "name": "大学物理实验",
+          "teacher": "许静",
+          "note": null,
+          "blocks": [
+            { "dayOfWeek": 5, "startPeriod": 5, "endPeriod": 6, "startWeek": 4, "endWeek": 14, "weekType": "EVEN", "location": "实验楼C-105" }
+          ]
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,172 @@
+{
+  "specVersion": 1,
+  "kind": "schedule",
+  "ocrAssisted": false,
+  "warnings": [
+    "只导入了教务系统当前选中的学期（2026-2027学年第二学期）；要导入别的学期，请在教务页面里切到那个学期再点「提取课表」",
+    "教务系统没有给出开学日期，第 1 周按「第二学期 = 2 月 20 日所在周的周一」推算为 2027-02-15，请在学期管理里核对成学校实际开学日",
+    "学期总周数用的是适配器默认的 20 周（教务没有给出总周数），如与学校实际不符可在学期管理里改",
+    "作息时间用的是适配器内置的本校作息表（11 节，第 1 节 08:30-09:10），如与学校实际作息不符请在学期管理里核对"
+  ],
+  "terms": [
+    {
+      "name": "2026-2027学年第二学期",
+      "firstDay": "2027-02-15",
+      "totalWeeks": 20,
+      "periodTimes": [
+        { "periodIndex": 1, "start": "08:30", "end": "09:10" },
+        { "periodIndex": 2, "start": "09:20", "end": "10:00" },
+        { "periodIndex": 3, "start": "10:20", "end": "11:00" },
+        { "periodIndex": 4, "start": "11:10", "end": "11:50" },
+        { "periodIndex": 5, "start": "14:00", "end": "14:40" },
+        { "periodIndex": 6, "start": "14:50", "end": "15:30" },
+        { "periodIndex": 7, "start": "15:40", "end": "16:20" },
+        { "periodIndex": 8, "start": "16:30", "end": "17:10" },
+        { "periodIndex": 9, "start": "18:30", "end": "19:10" },
+        { "periodIndex": 10, "start": "19:20", "end": "20:00" },
+        { "periodIndex": 11, "start": "20:10", "end": "20:50" }
+      ],
+      "courses": [
+        {
+          "name": "概率论与数理统计",
+          "teacher": "郑十二",
+          "note": null,
+          "blocks": [
+            { "dayOfWeek": 1, "startPeriod": 1, "endPeriod": 2, "startWeek": 1, "endWeek": 15, "weekType": "ODD", "location": "教学楼B-301" }
+          ]
+        },
+        {
+          "name": "马克思主义基本原理",
+          "teacher": "王九",
+          "note": null,
+          "blocks": [
+            { "dayOfWeek": 2, "startPeriod": 3, "endPeriod": 4, "startWeek": 1, "endWeek": 15, "weekType": "ODD", "location": "教学楼A-401" }
+          ]
+        },
+        {
+          "name": "分析化学",
+          "teacher": "李十三",
+          "note": null,
+          "blocks": [
+            { "dayOfWeek": 3, "startPeriod": 5, "endPeriod": 6, "startWeek": 1, "endWeek": 15, "weekType": "ODD", "location": "实训楼C-201" }
+          ]
+        },
+        {
+          "name": "化工仪表及自动化",
+          "teacher": "张三",
+          "note": null,
+          "blocks": [
+            { "dayOfWeek": 4, "startPeriod": 7, "endPeriod": 8, "startWeek": 1, "endWeek": 3, "weekType": "ALL", "location": "教学楼B-105" },
+            { "dayOfWeek": 4, "startPeriod": 7, "endPeriod": 8, "startWeek": 5, "endWeek": 9, "weekType": "ALL", "location": "教学楼B-105" }
+          ]
+        },
+        {
+          "name": "大学物理",
+          "teacher": "赵十四",
+          "note": null,
+          "blocks": [
+            { "dayOfWeek": 5, "startPeriod": 1, "endPeriod": 2, "startWeek": 2, "endWeek": 16, "weekType": "EVEN", "location": "教学楼A-207" }
+          ]
+        },
+        {
+          "name": "精细化工技术",
+          "teacher": "钱十五",
+          "note": null,
+          "blocks": [
+            { "dayOfWeek": 6, "startPeriod": 3, "endPeriod": 4, "startWeek": 3, "endWeek": 16, "weekType": "ALL", "location": "实训楼C-303" }
+          ]
+        },
+        {
+          "name": "环境保护概论",
+          "teacher": "孙十六",
+          "note": null,
+          "blocks": [
+            { "dayOfWeek": 7, "startPeriod": 5, "endPeriod": 6, "startWeek": 1, "endWeek": 7, "weekType": "ODD", "location": "教学楼B-202" },
+            { "dayOfWeek": 7, "startPeriod": 5, "endPeriod": 6, "startWeek": 10, "endWeek": 16, "weekType": "EVEN", "location": "教学楼B-202" }
+          ]
+        },
+        {
+          "name": "计算机应用基础",
+          "teacher": "周十七",
+          "note": null,
+          "blocks": [
+            { "dayOfWeek": 1, "startPeriod": 7, "endPeriod": 8, "startWeek": 1, "endWeek": 15, "weekType": "ODD", "location": "教学楼A-101" }
+          ]
+        },
+        {
+          "name": "体育",
+          "teacher": "吴十八",
+          "note": null,
+          "blocks": [
+            { "dayOfWeek": 2, "startPeriod": 1, "endPeriod": 2, "startWeek": 1, "endWeek": 16, "weekType": "ALL", "location": "体育馆" }
+          ]
+        },
+        {
+          "name": "大学英语",
+          "teacher": "郑十九",
+          "note": null,
+          "blocks": [
+            { "dayOfWeek": 3, "startPeriod": 3, "endPeriod": 4, "startWeek": 1, "endWeek": 16, "weekType": "ALL", "location": "教学楼A-305" }
+          ]
+        },
+        {
+          "name": "高等数学",
+          "teacher": "王二十",
+          "note": null,
+          "blocks": [
+            { "dayOfWeek": 4, "startPeriod": 5, "endPeriod": 6, "startWeek": 1, "endWeek": 16, "weekType": "ALL", "location": "教学楼A-402" }
+          ]
+        },
+        {
+          "name": "无机化学",
+          "teacher": "李二一",
+          "note": null,
+          "blocks": [
+            { "dayOfWeek": 5, "startPeriod": 7, "endPeriod": 8, "startWeek": 1, "endWeek": 16, "weekType": "ALL", "location": "实训楼C-101" }
+          ]
+        },
+        {
+          "name": "化工原理",
+          "teacher": "张二二",
+          "note": null,
+          "blocks": [
+            { "dayOfWeek": 6, "startPeriod": 1, "endPeriod": 2, "startWeek": 1, "endWeek": 16, "weekType": "ALL", "location": "教学楼B-108" }
+          ]
+        },
+        {
+          "name": "电工电子技术",
+          "teacher": "赵二三",
+          "note": null,
+          "blocks": [
+            { "dayOfWeek": 7, "startPeriod": 3, "endPeriod": 4, "startWeek": 1, "endWeek": 16, "weekType": "ALL", "location": "实训楼C-402" }
+          ]
+        },
+        {
+          "name": "化工制图",
+          "teacher": "钱二四",
+          "note": null,
+          "blocks": [
+            { "dayOfWeek": 1, "startPeriod": 9, "endPeriod": 10, "startWeek": 1, "endWeek": 16, "weekType": "ALL", "location": "教学楼B-310" }
+          ]
+        },
+        {
+          "name": "物理化学实验",
+          "teacher": "孙二五",
+          "note": null,
+          "blocks": [
+            { "dayOfWeek": 2, "startPeriod": 5, "endPeriod": 6, "startWeek": 3, "endWeek": 16, "weekType": "ALL", "location": "实训楼C-505" }
+          ]
+        },
+        {
+          "name": "工业催化",
+          "teacher": "周二六",
+          "note": null,
+          "blocks": [
+            { "dayOfWeek": 3, "startPeriod": 7, "endPeriod": 8, "startWeek": 1, "endWeek": 3, "weekType": "ALL", "location": "教学楼B-405" },
+            { "dayOfWeek": 3, "startPeriod": 7, "endPeriod": 8, "startWeek": 5, "endWeek": 9, "weekType": "ALL", "location": "教学楼B-405" }
+          ]
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,132 @@
+{
+  "specVersion": 1,
+  "kind": "schedule",
+  "ocrAssisted": false,
+  "warnings": [
+    "正方课表接口不给开学日期，第 1 周按「第一学期 = 9 月 1 日所在周的周一」推算为 2026-08-31，请在学期管理里核对成学校实际开学日",
+    "只导入了教务系统当前选中的学期（2026-2027学年第一学期）；要导入别的学期，请在教务页面里切到那个学期再点「提取课表」",
+    "教务没有给出学期总周数，已按 20 周导入（课表里最晚到第 16 周），如与实际不符可在学期管理里改",
+    "有 1 行课表数据缺课程名 / 星期 / 节次 / 周次，已跳过：教务数据不完整时会出现，如发现少课请反馈",
+    "有 1 行的周次写法认不出单双（如「双周」），已按每周都上导入，请核对"
+  ],
+  "terms": [
+    {
+      "name": "2026-2027学年第一学期",
+      "firstDay": "2026-08-31",
+      "totalWeeks": 20,
+      "periodTimes": [
+        { "periodIndex": 1, "start": "08:15", "end": "08:55" },
+        { "periodIndex": 2, "start": "09:00", "end": "09:40" },
+        { "periodIndex": 3, "start": "09:55", "end": "10:35" },
+        { "periodIndex": 4, "start": "10:40", "end": "11:20" },
+        { "periodIndex": 5, "start": "11:25", "end": "12:05" },
+        { "periodIndex": 6, "start": "13:45", "end": "14:25" },
+        { "periodIndex": 7, "start": "14:30", "end": "15:10" },
+        { "periodIndex": 8, "start": "15:20", "end": "16:00" },
+        { "periodIndex": 9, "start": "16:05", "end": "16:45" },
+        { "periodIndex": 10, "start": "16:50", "end": "17:55" },
+        { "periodIndex": 11, "start": "18:00", "end": "18:40" },
+        { "periodIndex": 12, "start": "18:45", "end": "19:25" },
+        { "periodIndex": 13, "start": "19:30", "end": "20:10" }
+      ],
+      "courses": [
+        {
+          "name": "中医妇科学",
+          "teacher": "沈曼青",
+          "note": null,
+          "blocks": [
+            { "dayOfWeek": 1, "startPeriod": 1, "endPeriod": 2, "startWeek": 2, "endWeek": 16, "weekType": "EVEN", "location": "滨文1-201" }
+          ]
+        },
+        {
+          "name": "中医儿科学",
+          "teacher": "罗允之",
+          "note": null,
+          "blocks": [
+            { "dayOfWeek": 2, "startPeriod": 3, "endPeriod": 4, "startWeek": 2, "endWeek": 16, "weekType": "EVEN", "location": "滨文1-202" }
+          ]
+        },
+        {
+          "name": "中医骨伤科学",
+          "teacher": "贺兰亭",
+          "note": null,
+          "blocks": [
+            { "dayOfWeek": 3, "startPeriod": 5, "endPeriod": 6, "startWeek": 2, "endWeek": 16, "weekType": "EVEN", "location": "滨文1-203" }
+          ]
+        },
+        {
+          "name": "中医眼科学",
+          "teacher": "宋知微",
+          "note": null,
+          "blocks": [
+            { "dayOfWeek": 4, "startPeriod": 7, "endPeriod": 8, "startWeek": 2, "endWeek": 16, "weekType": "EVEN", "location": "滨文1-204" }
+          ]
+        },
+        {
+          "name": "中医耳鼻咽喉科学",
+          "teacher": "崔映雪",
+          "note": null,
+          "blocks": [
+            { "dayOfWeek": 5, "startPeriod": 9, "endPeriod": 10, "startWeek": 1, "endWeek": 15, "weekType": "ODD", "location": "滨文1-205" }
+          ]
+        },
+        {
+          "name": "中医外科学",
+          "teacher": "范予同",
+          "note": null,
+          "blocks": [
+            { "dayOfWeek": 6, "startPeriod": 11, "endPeriod": 12, "startWeek": 2, "endWeek": 16, "weekType": "EVEN", "location": "滨文1-206" }
+          ]
+        },
+        {
+          "name": "全角波浪号",
+          "teacher": "甲",
+          "note": null,
+          "blocks": [
+            { "dayOfWeek": 1, "startPeriod": 2, "endPeriod": 3, "startWeek": 1, "endWeek": 16, "weekType": "ALL", "location": "滨文2-101" }
+          ]
+        },
+        {
+          "name": "全角减号",
+          "teacher": "乙",
+          "note": null,
+          "blocks": [
+            { "dayOfWeek": 2, "startPeriod": 4, "endPeriod": 5, "startWeek": 1, "endWeek": 16, "weekType": "ALL", "location": "滨文2-102" }
+          ]
+        },
+        {
+          "name": "数学减号",
+          "teacher": "丙",
+          "note": null,
+          "blocks": [
+            { "dayOfWeek": 3, "startPeriod": 6, "endPeriod": 7, "startWeek": 1, "endWeek": 16, "weekType": "ALL", "location": "滨文2-103" }
+          ]
+        },
+        {
+          "name": "短破折号",
+          "teacher": "丁",
+          "note": null,
+          "blocks": [
+            { "dayOfWeek": 4, "startPeriod": 8, "endPeriod": 9, "startWeek": 1, "endWeek": 16, "weekType": "ALL", "location": "滨文2-104" }
+          ]
+        },
+        {
+          "name": "长破折号",
+          "teacher": "戊",
+          "note": null,
+          "blocks": [
+            { "dayOfWeek": 5, "startPeriod": 10, "endPeriod": 11, "startWeek": 1, "endWeek": 16, "weekType": "ALL", "location": "滨文2-105" }
+          ]
+        },
+        {
+          "name": "中文至字",
+          "teacher": "己",
+          "note": null,
+          "blocks": [
+            { "dayOfWeek": 6, "startPeriod": 12, "endPeriod": 13, "startWeek": 1, "endWeek": 16, "weekType": "ALL", "location": "滨文2-106" }
+          ]
+        }
+      ]
+    }
+  ]
+}

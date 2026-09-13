@@ -1,0 +1,95 @@
+{
+  "specVersion": 1,
+  "kind": "schedule",
+  "ocrAssisted": false,
+  "warnings": [
+    "只导入了教务系统当前选中的学期（2026-2027学年第一学期）；要导入别的学期，请在教务页面里切到那个学期再点「提取课表」",
+    "开学日期取自教务系统的学期周次校历：第 1 周从 2026-09-07 开始，请在学期管理里核对",
+    "学期总周数取自教务校历（18 周），如与实际不符可在学期管理里改",
+    "课表里用到第 14 节，而作息表只到第 12 节：第 13 节及之后没有可用的作息时间，请核对",
+    "教务系统说这个学期有 30 条排课记录，实际只取到 10 条，课表可能不完整，请重试或反馈",
+    "教务系统另外给了 2 门集中实践课（临床技能实训、社会实践）：它们没有固定的星期与节次，排不进周课表，请自行在学期里添加",
+    "有 3 行课表数据不全（缺星期（或星期不在 1-7）1 行、缺节次（或节次超出 1-20 节）1 行、缺周次（或周次全超出 1-30 周）1 行），已跳过：教务数据不完整时会出现，如发现少课请反馈",
+    "有 1 个周次超出 1-30 周，已丢弃（教务给出的周次不正常）",
+    "有 1 行课表的节次写成了多段（例如「1-2,5-6」），已按最大跨度放入（中间几节也算上），请核对"
+  ],
+  "terms": [
+    {
+      "name": "2026-2027学年第一学期",
+      "firstDay": "2026-09-07",
+      "totalWeeks": 18,
+      "periodTimes": [
+        { "periodIndex": 1, "start": "08:00", "end": "08:45" },
+        { "periodIndex": 2, "start": "08:55", "end": "09:40" },
+        { "periodIndex": 3, "start": "10:00", "end": "10:45" },
+        { "periodIndex": 4, "start": "10:55", "end": "11:40" },
+        { "periodIndex": 5, "start": "14:20", "end": "15:05" },
+        { "periodIndex": 6, "start": "15:15", "end": "16:00" },
+        { "periodIndex": 7, "start": "16:20", "end": "17:05" },
+        { "periodIndex": 8, "start": "17:15", "end": "18:00" },
+        { "periodIndex": 9, "start": "18:20", "end": "19:05" },
+        { "periodIndex": 10, "start": "19:30", "end": "20:15" },
+        { "periodIndex": 11, "start": "20:25", "end": "21:10" },
+        { "periodIndex": 12, "start": "21:20", "end": "22:05" }
+      ],
+      "courses": [
+        {
+          "name": "系统解剖学",
+          "teacher": "刘洋",
+          "note": null,
+          "blocks": [
+            { "dayOfWeek": 1, "startPeriod": 1, "endPeriod": 2, "startWeek": 1, "endWeek": 18, "weekType": "ALL", "location": "解剖楼A101" }
+          ]
+        },
+        {
+          "name": "组织学与胚胎学",
+          "teacher": "陈静",
+          "note": null,
+          "blocks": [
+            { "dayOfWeek": 2, "startPeriod": 3, "endPeriod": 4, "startWeek": 2, "endWeek": 18, "weekType": "EVEN", "location": "基础楼C303" }
+          ]
+        },
+        {
+          "name": "医学免疫学",
+          "teacher": "孙丽",
+          "note": null,
+          "blocks": [
+            { "dayOfWeek": 3, "startPeriod": 1, "endPeriod": 6, "startWeek": 3, "endWeek": 18, "weekType": "ALL", "location": "实验楼D202" }
+          ]
+        },
+        {
+          "name": "病理生理学",
+          "teacher": "周强",
+          "note": null,
+          "blocks": [
+            { "dayOfWeek": 4, "startPeriod": 5, "endPeriod": 6, "startWeek": 1, "endWeek": 18, "weekType": "ALL", "location": "教学楼1-401" }
+          ]
+        },
+        {
+          "name": "医学文献检索",
+          "teacher": "吴敏",
+          "note": null,
+          "blocks": [
+            { "dayOfWeek": 5, "startPeriod": 13, "endPeriod": 14, "startWeek": 9, "endWeek": 18, "weekType": "ALL", "location": "图书馆E501" }
+          ]
+        },
+        {
+          "name": "大学语文",
+          "teacher": null,
+          "note": null,
+          "blocks": [
+            { "dayOfWeek": 4, "startPeriod": 7, "endPeriod": 8, "startWeek": 1, "endWeek": 18, "weekType": "ALL", "location": null }
+          ]
+        },
+        {
+          "name": "预防医学",
+          "teacher": "李强",
+          "note": null,
+          "blocks": [
+            { "dayOfWeek": 5, "startPeriod": 9, "endPeriod": 10, "startWeek": 1, "endWeek": 16, "weekType": "ALL", "location": "教学楼3-202" }
+          ]
+        }
+      ]
+    }
+  ]
+}

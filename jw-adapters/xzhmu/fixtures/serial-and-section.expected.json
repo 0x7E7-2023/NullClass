@@ -1,0 +1,92 @@
+{
+  "specVersion": 1,
+  "kind": "schedule",
+  "ocrAssisted": false,
+  "warnings": [
+    "有 2 处课程格子没能解析出周次，已跳过，请核对课表",
+    "开学日期教务没有提供，已按最近的周一（2026-09-07）推算，请在学期管理里核对",
+    "学期名教务没有提供，已按导入日期推算为「徐州医科大学 2026-2027学年第一学期」，如与实际不符可在学期管理里改名",
+    "学期总周数教务没有提供，已按 20 周计（课表里最大的周次是 16 周），如校历不同请在学期管理里调整",
+    "节次时间用的是适配器内置的徐州医科大学作息表（13 节），如与教务不一致请在节次设置里调整"
+  ],
+  "terms": [
+    {
+      "name": "徐州医科大学 2026-2027学年第一学期",
+      "firstDay": "2026-09-07",
+      "totalWeeks": 20,
+      "periodTimes": [
+        { "periodIndex": 1, "start": "08:00", "end": "08:40" },
+        { "periodIndex": 2, "start": "08:50", "end": "09:30" },
+        { "periodIndex": 3, "start": "09:40", "end": "10:20" },
+        { "periodIndex": 4, "start": "10:30", "end": "11:10" },
+        { "periodIndex": 5, "start": "11:20", "end": "12:00" },
+        { "periodIndex": 6, "start": "14:00", "end": "14:40" },
+        { "periodIndex": 7, "start": "14:50", "end": "15:30" },
+        { "periodIndex": 8, "start": "15:40", "end": "16:20" },
+        { "periodIndex": 9, "start": "16:30", "end": "17:10" },
+        { "periodIndex": 10, "start": "17:20", "end": "18:00" },
+        { "periodIndex": 11, "start": "19:00", "end": "19:40" },
+        { "periodIndex": 12, "start": "19:50", "end": "20:30" },
+        { "periodIndex": 13, "start": "20:40", "end": "21:20" }
+      ],
+      "courses": [
+        {
+          "name": "课程丁",
+          "teacher": "丁老师",
+          "note": null,
+          "blocks": [
+            { "dayOfWeek": 1, "startPeriod": 4, "endPeriod": 4, "startWeek": 2, "endWeek": 8, "weekType": "ALL", "location": "A104" }
+          ]
+        },
+        {
+          "name": "课程丙",
+          "teacher": "丙老师",
+          "note": null,
+          "blocks": [
+            { "dayOfWeek": 3, "startPeriod": 3, "endPeriod": 3, "startWeek": 5, "endWeek": 8, "weekType": "ALL", "location": "A103" }
+          ]
+        },
+        {
+          "name": "课程乙",
+          "teacher": "乙老师",
+          "note": null,
+          "blocks": [
+            { "dayOfWeek": 2, "startPeriod": 2, "endPeriod": 2, "startWeek": 3, "endWeek": 16, "weekType": "ALL", "location": "A102" }
+          ]
+        },
+        {
+          "name": "课程壬",
+          "teacher": "壬老师",
+          "note": null,
+          "blocks": [
+            { "dayOfWeek": 3, "startPeriod": 9, "endPeriod": 9, "startWeek": 14, "endWeek": 15, "weekType": "ALL", "location": "A109" }
+          ]
+        },
+        {
+          "name": "课程戊",
+          "teacher": "戊老师",
+          "note": null,
+          "blocks": [
+            { "dayOfWeek": 2, "startPeriod": 5, "endPeriod": 5, "startWeek": 2, "endWeek": 8, "weekType": "ALL", "location": "A105" }
+          ]
+        },
+        {
+          "name": "课程甲",
+          "teacher": "甲老师",
+          "note": null,
+          "blocks": [
+            { "dayOfWeek": 1, "startPeriod": 1, "endPeriod": 1, "startWeek": 2, "endWeek": 8, "weekType": "ALL", "location": "A101" }
+          ]
+        },
+        {
+          "name": "课程辛",
+          "teacher": "辛老师",
+          "note": null,
+          "blocks": [
+            { "dayOfWeek": 2, "startPeriod": 8, "endPeriod": 8, "startWeek": 10, "endWeek": 12, "weekType": "ALL", "location": "A108" }
+          ]
+        }
+      ]
+    }
+  ]
+}

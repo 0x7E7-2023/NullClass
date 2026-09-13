@@ -1,0 +1,93 @@
+{
+  "_note": "合成用例（不是真实抓取），专打本批批次三专项检查表第 2 条「括号里纯数字不是周次」。周次文本里混进了两种**不是周次**的东西：① 括号里的纯数字 / 区间（教学班序号一类的选中标记，(1) / (1-2) / 全角（1-2））；② 带「节」的节次分段（第9-10节）。期望值按规范手推：括号整组不算周次、带「节」的分段不参与周次、删完认不出周次的格子进 warnings 而不是硬凑一个周次。三个错例 + 三个对照 + 一个「节次写在周次后面」的顺序对照 + 两个「删完认不出周次」的降级例。行号即节次（1-9 节），格子全部没有 td[w] 属性、靠星期表头对列。",
+  "url": "https://ehall.xzhmu.edu.cn/gsapp/sys/wdkb/*default/index.do",
+  "title": "个人课表",
+  "today": "2026-09-13",
+  "tableFound": true,
+  "currentWeek": null,
+  "currentWeekSource": null,
+  "semesterLabels": [],
+  "rows": [
+    {
+      "row": 0,
+      "cells": [
+        { "col": 0, "colSpan": 1, "rowSpan": 1, "day": "", "hidden": false, "text": "节次", "blocks": [] },
+        { "col": 1, "colSpan": 1, "rowSpan": 1, "day": "", "hidden": false, "text": "星期一", "blocks": [] },
+        { "col": 2, "colSpan": 1, "rowSpan": 1, "day": "", "hidden": false, "text": "星期二", "blocks": [] },
+        { "col": 3, "colSpan": 1, "rowSpan": 1, "day": "", "hidden": false, "text": "星期三", "blocks": [] }
+      ]
+    },
+    {
+      "row": 1,
+      "cells": [
+        { "col": 0, "colSpan": 1, "rowSpan": 1, "day": "", "hidden": false, "text": "1", "blocks": [] },
+        { "col": 1, "colSpan": 1, "rowSpan": 1, "day": "", "hidden": false, "text": "课程甲(1-2)第2-8周A101甲老师",
+          "blocks": [ { "spans": ["课程甲", "(1-2)第2-8周", "A101"], "teacher": "甲老师" } ] }
+      ]
+    },
+    {
+      "row": 2,
+      "cells": [
+        { "col": 0, "colSpan": 1, "rowSpan": 1, "day": "", "hidden": false, "text": "2", "blocks": [] },
+        { "col": 2, "colSpan": 1, "rowSpan": 1, "day": "", "hidden": false, "text": "课程乙3-16周,(1)A102乙老师",
+          "blocks": [ { "spans": ["课程乙", "3-16周,(1)", "A102"], "teacher": "乙老师" } ] }
+      ]
+    },
+    {
+      "row": 3,
+      "cells": [
+        { "col": 0, "colSpan": 1, "rowSpan": 1, "day": "", "hidden": false, "text": "3", "blocks": [] },
+        { "col": 3, "colSpan": 1, "rowSpan": 1, "day": "", "hidden": false, "text": "课程丙第9-10节 第5-8周A103丙老师",
+          "blocks": [ { "spans": ["课程丙", "第9-10节 第5-8周", "A103"], "teacher": "丙老师" } ] }
+      ]
+    },
+    {
+      "row": 4,
+      "cells": [
+        { "col": 0, "colSpan": 1, "rowSpan": 1, "day": "", "hidden": false, "text": "4", "blocks": [] },
+        { "col": 1, "colSpan": 1, "rowSpan": 1, "day": "", "hidden": false, "text": "课程丁第2-8周A104丁老师",
+          "blocks": [ { "spans": ["课程丁", "第2-8周", "A104"], "teacher": "丁老师" } ] }
+      ]
+    },
+    {
+      "row": 5,
+      "cells": [
+        { "col": 0, "colSpan": 1, "rowSpan": 1, "day": "", "hidden": false, "text": "5", "blocks": [] },
+        { "col": 2, "colSpan": 1, "rowSpan": 1, "day": "", "hidden": false, "text": "课程戊(1)第2-8周A105戊老师",
+          "blocks": [ { "spans": ["课程戊", "(1)第2-8周", "A105"], "teacher": "戊老师" } ] }
+      ]
+    },
+    {
+      "row": 6,
+      "cells": [
+        { "col": 0, "colSpan": 1, "rowSpan": 1, "day": "", "hidden": false, "text": "6", "blocks": [] },
+        { "col": 3, "colSpan": 1, "rowSpan": 1, "day": "", "hidden": false, "text": "课程己第9-10节A106己老师",
+          "blocks": [ { "spans": ["课程己", "第9-10节", "A106"], "teacher": "己老师" } ] }
+      ]
+    },
+    {
+      "row": 7,
+      "cells": [
+        { "col": 0, "colSpan": 1, "rowSpan": 1, "day": "", "hidden": false, "text": "7", "blocks": [] },
+        { "col": 1, "colSpan": 1, "rowSpan": 1, "day": "", "hidden": false, "text": "课程庚(1-2)A107庚老师",
+          "blocks": [ { "spans": ["课程庚", "(1-2)", "A107"], "teacher": "庚老师" } ] }
+      ]
+    },
+    {
+      "row": 8,
+      "cells": [
+        { "col": 0, "colSpan": 1, "rowSpan": 1, "day": "", "hidden": false, "text": "8", "blocks": [] },
+        { "col": 2, "colSpan": 1, "rowSpan": 1, "day": "", "hidden": false, "text": "课程辛（1-2）第10-12周A108辛老师",
+          "blocks": [ { "spans": ["课程辛", "（1-2）第10-12周", "A108"], "teacher": "辛老师" } ] }
+      ]
+    },
+    {
+      "row": 9,
+      "cells": [
+        { "col": 0, "colSpan": 1, "rowSpan": 1, "day": "", "hidden": false, "text": "9", "blocks": [] },
+        { "col": 3, "colSpan": 1, "rowSpan": 1, "day": "", "hidden": false, "text": "课程壬第14-15周 第9-10节A109壬老师",
+          "blocks": [ { "spans": ["课程壬", "第14-15周 第9-10节", "A109"], "teacher": "壬老师" } ] }
+      ]
+    }
+  ]
+}

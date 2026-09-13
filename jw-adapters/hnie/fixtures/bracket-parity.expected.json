@@ -1,0 +1,325 @@
+{
+  "specVersion": 1,
+  "kind": "schedule",
+  "ocrAssisted": false,
+  "warnings": [
+    "开学日期无法从教务获取（教学周历的表格结构认不出来），已按最近的周一（2027-03-08）推算，请在「学期管理」里核对",
+    "作息时间（冬令时 / 夏令时）无法从教务确认，已按第二学期取「夏令时」，下午与晚上的节次时间可能差半小时，请到「学期管理」里核对",
+    "有 1 处周次里的单双 / 隔周标记认不出来（1-16周单双），这些周次已按「每周都上」处理，请核对导入结果"
+  ],
+  "terms": [
+    {
+      "name": "2026-2027学年第二学期",
+      "firstDay": "2027-03-08",
+      "totalWeeks": 20,
+      "periodTimes": [
+        {
+          "periodIndex": 1,
+          "start": "08:00",
+          "end": "08:45"
+        },
+        {
+          "periodIndex": 2,
+          "start": "08:55",
+          "end": "09:40"
+        },
+        {
+          "periodIndex": 3,
+          "start": "10:10",
+          "end": "10:55"
+        },
+        {
+          "periodIndex": 4,
+          "start": "11:05",
+          "end": "11:50"
+        },
+        {
+          "periodIndex": 5,
+          "start": "14:30",
+          "end": "15:15"
+        },
+        {
+          "periodIndex": 6,
+          "start": "15:25",
+          "end": "16:10"
+        },
+        {
+          "periodIndex": 7,
+          "start": "16:40",
+          "end": "17:25"
+        },
+        {
+          "periodIndex": 8,
+          "start": "17:35",
+          "end": "18:20"
+        },
+        {
+          "periodIndex": 9,
+          "start": "19:30",
+          "end": "20:15"
+        },
+        {
+          "periodIndex": 10,
+          "start": "20:25",
+          "end": "21:10"
+        },
+        {
+          "periodIndex": 11,
+          "start": "21:20",
+          "end": "22:05"
+        }
+      ],
+      "courses": [
+        {
+          "name": "高等数学A(一)",
+          "teacher": "张明",
+          "note": null,
+          "blocks": [
+            {
+              "dayOfWeek": 1,
+              "startPeriod": 1,
+              "endPeriod": 2,
+              "startWeek": 1,
+              "endWeek": 15,
+              "weekType": "ODD",
+              "location": "教1-101"
+            }
+          ]
+        },
+        {
+          "name": "大学英语(一)",
+          "teacher": "李红",
+          "note": null,
+          "blocks": [
+            {
+              "dayOfWeek": 2,
+              "startPeriod": 1,
+              "endPeriod": 2,
+              "startWeek": 1,
+              "endWeek": 15,
+              "weekType": "ODD",
+              "location": "外语楼B203"
+            }
+          ]
+        },
+        {
+          "name": "线性代数",
+          "teacher": "王强",
+          "note": null,
+          "blocks": [
+            {
+              "dayOfWeek": 3,
+              "startPeriod": 1,
+              "endPeriod": 2,
+              "startWeek": 2,
+              "endWeek": 16,
+              "weekType": "EVEN",
+              "location": "教2-201"
+            }
+          ]
+        },
+        {
+          "name": "概率论与数理统计",
+          "teacher": "赵敏",
+          "note": null,
+          "blocks": [
+            {
+              "dayOfWeek": 4,
+              "startPeriod": 1,
+              "endPeriod": 2,
+              "startWeek": 1,
+              "endWeek": 16,
+              "weekType": "ALL",
+              "location": "教3-305"
+            }
+          ]
+        },
+        {
+          "name": "数据结构",
+          "teacher": "陈刚",
+          "note": null,
+          "blocks": [
+            {
+              "dayOfWeek": 5,
+              "startPeriod": 1,
+              "endPeriod": 2,
+              "startWeek": 1,
+              "endWeek": 16,
+              "weekType": "ALL",
+              "location": "信息楼A401"
+            }
+          ]
+        },
+        {
+          "name": "操作系统",
+          "teacher": "刘洋",
+          "note": null,
+          "blocks": [
+            {
+              "dayOfWeek": 6,
+              "startPeriod": 1,
+              "endPeriod": 2,
+              "startWeek": 1,
+              "endWeek": 16,
+              "weekType": "ALL",
+              "location": "信息楼A402"
+            }
+          ]
+        },
+        {
+          "name": "计算机网络",
+          "teacher": "孙丽",
+          "note": null,
+          "blocks": [
+            {
+              "dayOfWeek": 7,
+              "startPeriod": 1,
+              "endPeriod": 2,
+              "startWeek": 1,
+              "endWeek": 16,
+              "weekType": "ALL",
+              "location": "信息楼A403"
+            }
+          ]
+        },
+        {
+          "name": "离散数学",
+          "teacher": "马超",
+          "note": null,
+          "blocks": [
+            {
+              "dayOfWeek": 1,
+              "startPeriod": 3,
+              "endPeriod": 4,
+              "startWeek": 2,
+              "endWeek": 8,
+              "weekType": "EVEN",
+              "location": "教5-101"
+            },
+            {
+              "dayOfWeek": 1,
+              "startPeriod": 3,
+              "endPeriod": 4,
+              "startWeek": 11,
+              "endWeek": 15,
+              "weekType": "ODD",
+              "location": "教5-101"
+            }
+          ]
+        },
+        {
+          "name": "编译原理",
+          "teacher": "周涛",
+          "note": null,
+          "blocks": [
+            {
+              "dayOfWeek": 2,
+              "startPeriod": 3,
+              "endPeriod": 4,
+              "startWeek": 1,
+              "endWeek": 16,
+              "weekType": "ALL",
+              "location": "教5-102"
+            }
+          ]
+        },
+        {
+          "name": "软件工程",
+          "teacher": "吴敏",
+          "note": null,
+          "blocks": [
+            {
+              "dayOfWeek": 3,
+              "startPeriod": 3,
+              "endPeriod": 4,
+              "startWeek": 1,
+              "endWeek": 16,
+              "weekType": "ALL",
+              "location": "教5-103"
+            }
+          ]
+        },
+        {
+          "name": "数字逻辑",
+          "teacher": "郑凯",
+          "note": null,
+          "blocks": [
+            {
+              "dayOfWeek": 4,
+              "startPeriod": 3,
+              "endPeriod": 4,
+              "startWeek": 1,
+              "endWeek": 16,
+              "weekType": "ALL",
+              "location": "教5-104"
+            }
+          ]
+        },
+        {
+          "name": "微机原理",
+          "teacher": "冯雪",
+          "note": null,
+          "blocks": [
+            {
+              "dayOfWeek": 5,
+              "startPeriod": 3,
+              "endPeriod": 4,
+              "startWeek": 1,
+              "endWeek": 16,
+              "weekType": "ALL",
+              "location": "教5-105"
+            }
+          ]
+        },
+        {
+          "name": "大学物理",
+          "teacher": "何军",
+          "note": null,
+          "blocks": [
+            {
+              "dayOfWeek": 6,
+              "startPeriod": 3,
+              "endPeriod": 4,
+              "startWeek": 1,
+              "endWeek": 16,
+              "weekType": "ALL",
+              "location": "教5-106"
+            }
+          ]
+        },
+        {
+          "name": "工程制图",
+          "teacher": "曹阳",
+          "note": null,
+          "blocks": [
+            {
+              "dayOfWeek": 7,
+              "startPeriod": 3,
+              "endPeriod": 4,
+              "startWeek": 1,
+              "endWeek": 16,
+              "weekType": "ALL",
+              "location": "教5-107"
+            }
+          ]
+        },
+        {
+          "name": "形势与政策",
+          "teacher": "许静",
+          "note": null,
+          "blocks": [
+            {
+              "dayOfWeek": 1,
+              "startPeriod": 5,
+              "endPeriod": 6,
+              "startWeek": 1,
+              "endWeek": 16,
+              "weekType": "ALL",
+              "location": "教6-201"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,123 @@
+{
+  "_note": "合成数据，不是真实抓取：按湖南商务职业技术学院强智学生端课表片段（/jsxsd/framework/mainV_index_loadkb.htmlx）的 DOM 形状编造，只用来回归 parse.js 的转换逻辑。形状取自上游 HNVCC/HNVCC_01.js 的选择器（#timetable、tbody>tr 第一格是节次、第 1..7 格是周一到周日、格子里 .item-box 的直接子 <p> 是一门课、紧随其后的 .tch-name 给教师、带 item1.png 图标的 div 里两个 span 给地点与周次）。预期值是按移植手册 §4 独立推出的（先写 expected、再跑 parse.js 对照），不是把 parse.js 的输出贴回来的。用例名：基本课表（连堂合并、同一门课跨两天、一格两门课、缺教师、缺教室、周次多段、单周标记）。拿到真实 dump 请替换这一对 fixture。",
+  "now": "2026-09-13",
+  "term": { "code": "2026-2027-1", "name": "2026-2027学年第一学期" },
+  "totalWeeksText": "第1-20周 / 20周",
+  "rows": [
+    {
+      "cells": [
+        { "col": 0, "colSpan": 1, "rowSpan": 1, "text": "节次", "boxes": [] },
+        { "col": 1, "colSpan": 1, "rowSpan": 1, "text": "星期一", "boxes": [] },
+        { "col": 2, "colSpan": 1, "rowSpan": 1, "text": "星期二", "boxes": [] },
+        { "col": 3, "colSpan": 1, "rowSpan": 1, "text": "星期三", "boxes": [] },
+        { "col": 4, "colSpan": 1, "rowSpan": 1, "text": "星期四", "boxes": [] },
+        { "col": 5, "colSpan": 1, "rowSpan": 1, "text": "星期五", "boxes": [] },
+        { "col": 6, "colSpan": 1, "rowSpan": 1, "text": "星期六", "boxes": [] },
+        { "col": 7, "colSpan": 1, "rowSpan": 1, "text": "星期日", "boxes": [] }
+      ]
+    },
+    {
+      "cells": [
+        { "col": 0, "colSpan": 1, "rowSpan": 1, "text": "第一大节 第1-2节", "boxes": [] },
+        {
+          "col": 1, "colSpan": 1, "rowSpan": 1,
+          "text": "高等数学A(一)教师：张伟学分：3南教楼101第1-16周线性代数教师：张伟学分：3南教楼101第9-16周",
+          "boxes": [
+            { "name": "高等数学A(一)", "teacher": "教师：张伟", "spans": ["南教楼101", "第1-16周"] },
+            { "name": "线性代数", "teacher": "教师：张伟", "spans": ["南教楼101", "第9-16周"] }
+          ]
+        },
+        { "col": 2, "colSpan": 1, "rowSpan": 1, "text": "", "boxes": [] },
+        {
+          "col": 3, "colSpan": 1, "rowSpan": 1,
+          "text": "高等数学A(一)教师：张伟学分：3南教楼101第1-16周",
+          "boxes": [
+            { "name": "高等数学A(一)", "teacher": "教师：张伟", "spans": ["南教楼101", "第1-16周"] }
+          ]
+        },
+        { "col": 4, "colSpan": 1, "rowSpan": 1, "text": "", "boxes": [] },
+        {
+          "col": 5, "colSpan": 1, "rowSpan": 1,
+          "text": "大学英语(一)教师：李娜学分：3文理楼208第1-16周(单)",
+          "boxes": [
+            { "name": "大学英语(一)", "teacher": "教师：李娜", "spans": ["文理楼208", "第1-16周(单)"] }
+          ]
+        },
+        { "col": 6, "colSpan": 1, "rowSpan": 1, "text": "", "boxes": [] },
+        { "col": 7, "colSpan": 1, "rowSpan": 1, "text": "", "boxes": [] }
+      ]
+    },
+    {
+      "cells": [
+        { "col": 0, "colSpan": 1, "rowSpan": 1, "text": "第二大节 第3-4节", "boxes": [] },
+        {
+          "col": 1, "colSpan": 1, "rowSpan": 1,
+          "text": "高等数学A(一)教师：张伟学分：3南教楼101第1-16周",
+          "boxes": [
+            { "name": "高等数学A(一)", "teacher": "教师：张伟", "spans": ["南教楼101", "第1-16周"] }
+          ]
+        },
+        {
+          "col": 2, "colSpan": 1, "rowSpan": 1,
+          "text": "程序设计基础学分：3机房302第1-8周",
+          "boxes": [
+            { "name": "程序设计基础", "teacher": "学分：3", "spans": ["机房302", "第1-8周"] }
+          ]
+        },
+        {
+          "col": 3, "colSpan": 1, "rowSpan": 1,
+          "text": "高等数学A(一)教师：张伟学分：3南教楼101第1-16周",
+          "boxes": [
+            { "name": "高等数学A(一)", "teacher": "教师：张伟", "spans": ["南教楼101", "第1-16周"] }
+          ]
+        },
+        { "col": 4, "colSpan": 1, "rowSpan": 1, "text": "", "boxes": [] },
+        { "col": 5, "colSpan": 1, "rowSpan": 1, "text": "", "boxes": [] },
+        { "col": 6, "colSpan": 1, "rowSpan": 1, "text": "", "boxes": [] },
+        { "col": 7, "colSpan": 1, "rowSpan": 1, "text": "", "boxes": [] }
+      ]
+    },
+    {
+      "cells": [
+        { "col": 0, "colSpan": 1, "rowSpan": 1, "text": "第三大节 第5-6节", "boxes": [] },
+        {
+          "col": 1, "colSpan": 1, "rowSpan": 1,
+          "text": "大学物理教师：陈静学分：3基础楼B201第1-4,6-8,10-16周",
+          "boxes": [
+            { "name": "大学物理", "teacher": "教师：陈静", "spans": ["基础楼B201", "第1-4,6-8,10-16周"] }
+          ]
+        },
+        { "col": 2, "colSpan": 1, "rowSpan": 1, "text": "", "boxes": [] },
+        { "col": 3, "colSpan": 1, "rowSpan": 1, "text": "", "boxes": [] },
+        {
+          "col": 4, "colSpan": 1, "rowSpan": 1,
+          "text": "体育(一)教师：赵强学分：3第1-16周",
+          "boxes": [
+            { "name": "体育(一)", "teacher": "教师：赵强", "spans": ["", "第1-16周"] }
+          ]
+        },
+        { "col": 5, "colSpan": 1, "rowSpan": 1, "text": "", "boxes": [] },
+        { "col": 6, "colSpan": 1, "rowSpan": 1, "text": "", "boxes": [] },
+        { "col": 7, "colSpan": 1, "rowSpan": 1, "text": "", "boxes": [] }
+      ]
+    },
+    {
+      "cells": [
+        { "col": 0, "colSpan": 1, "rowSpan": 1, "text": "第四大节 第7-8节", "boxes": [] },
+        { "col": 1, "colSpan": 1, "rowSpan": 1, "text": "", "boxes": [] },
+        { "col": 2, "colSpan": 1, "rowSpan": 1, "text": "", "boxes": [] },
+        { "col": 3, "colSpan": 1, "rowSpan": 1, "text": "", "boxes": [] },
+        { "col": 4, "colSpan": 1, "rowSpan": 1, "text": "", "boxes": [] },
+        { "col": 5, "colSpan": 1, "rowSpan": 1, "text": "", "boxes": [] },
+        { "col": 6, "colSpan": 1, "rowSpan": 1, "text": "", "boxes": [] },
+        {
+          "col": 7, "colSpan": 1, "rowSpan": 1,
+          "text": "军事理论教师：刘敏学分：3线上第1-4周",
+          "boxes": [
+            { "name": "军事理论", "teacher": "教师：刘敏", "spans": ["线上", "第1-4周"] }
+          ]
+        }
+      ]
+    }
+  ]
+}

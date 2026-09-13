@@ -1,0 +1,48 @@
+{
+  "specVersion": 1,
+  "key": "hnie",
+  "name": "湖南工程学院",
+  "version": "1.0.0",
+  "author": "上游 Mercury（MIT）；移植 0x7E-2023",
+  "homepage": "https://github.com/XingHeYuZhuan/shiguang_warehouse",
+  "loginUrl": "http://jwcmis.hnie.edu.cn",
+  "scheduleUrlHint": "http://jwcmis.hnie.edu.cn/jsxsd/xskb/xskb_list.do",
+  "minAppVersionCode": 11,
+  "extract": "extract.js",
+  "parse": "parse.js",
+  "allowHosts": [
+    "jwcmis.hnie.edu.cn"
+  ],
+  "fixtures": [
+    {
+      "name": "基本课表（含单双周、多段周次、一格两门课，合成数据）",
+      "extracted": "fixtures/basic.extracted.json",
+      "expected": "fixtures/basic.expected.json"
+    },
+    {
+      "name": "边界：周次四写法与教学班序号（合成数据）",
+      "extracted": "fixtures/week-forms.extracted.json",
+      "expected": "fixtures/week-forms.expected.json"
+    },
+    {
+      "name": "边界：无星期表头时的网格列对齐（合成数据）",
+      "extracted": "fixtures/col-align.extracted.json",
+      "expected": "fixtures/col-align.expected.json"
+    },
+    {
+      "name": "边界：节次越界、超长警告截断与跳过块点名（合成数据）",
+      "extracted": "fixtures/dropped-limits.extracted.json",
+      "expected": "fixtures/dropped-limits.expected.json"
+    },
+    {
+      "name": "边界：方括号里的单双标记与全角区间分隔符（合成数据）",
+      "extracted": "fixtures/bracket-parity.extracted.json",
+      "expected": "fixtures/bracket-parity.expected.json"
+    },
+    {
+      "name": "空白分段与全角节次（合成数据：由 basic 派生，一格周次写成空格两段「1-3周 5-9周」必须读成两个块、不许并段；另一格节次用全角波浪「[05～06节]」读出的节次与半角一致）",
+      "extracted": "fixtures/weeks-space-segments.extracted.json",
+      "expected": "fixtures/weeks-space-segments.expected.json"
+    }
+  ]
+}

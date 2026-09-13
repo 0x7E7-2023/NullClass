@@ -1,0 +1,36 @@
+{
+  "specVersion": 1,
+  "key": "xawl",
+  "name": "西安文理学院",
+  "version": "1.0.0",
+  "author": "上游 星河欲转（MIT）；移植 0x7E-2023",
+  "homepage": "https://github.com/XingHeYuZhuan/shiguang_warehouse",
+  "loginUrl": "http://jwgl.xawl.edu.cn/jwglxt/",
+  "scheduleUrlHint": "http://jwgl.xawl.edu.cn/jwglxt/kbcx/xskbcx_cxXskbcxIndex.html?gnmkdm=N2151&layout=default",
+  "minAppVersionCode": 11,
+  "extract": "extract.js",
+  "parse": "parse.js",
+  "allowHosts": [],
+  "fixtures": [
+    {
+      "name": "合成用例：基本表格（单周 / 双周 / 分段周次 / 连堂、完全重复的排课行、1 行教师为空）",
+      "extracted": "fixtures/basic.extracted.json",
+      "expected": "fixtures/basic.expected.json"
+    },
+    {
+      "name": "合成用例：单/双周的四种写法（1-16周(单) / (单)1-16周 / 1-16(单周) / 标记自己成段）+ 括号里的教学班序号不是周次（(1)、(1-2)、序号写在前面）+ 孤儿标记与整串只有序号",
+      "extracted": "fixtures/weeks-parity.extracted.json",
+      "expected": "fixtures/weeks-parity.expected.json"
+    },
+    {
+      "name": "合成用例：脏数据与节次写法（第9-10节 / 1,2 / 两位一拼的 0102 / 多段节次 / 超出作息表的第 11-12 节 / 缺课名·缺星期·缺节次·缺周次各一行 / 周次超出 1-30 周 / 字段名不是 kbList / 记录总数对不上）",
+      "extracted": "fixtures/dirty-rows.extracted.json",
+      "expected": "fixtures/dirty-rows.expected.json"
+    },
+    {
+      "name": "合成用例：周次分隔符与破折号写法（破折号两侧的空白 1 -16周(单) / 1- 16周 / 1 - 16周(双)、全角连字符与波浪号、汉字「至」、全角逗号·全角分号·顿号分段、空白分段、节次只写在 jc）",
+      "extracted": "fixtures/week-spacing.extracted.json",
+      "expected": "fixtures/week-spacing.expected.json"
+    }
+  ]
+}

@@ -1,0 +1,142 @@
+{
+  "_note": "合成数据，不是真实抓取：按南昌航空大学科技学院强智课表页（/jsxsd/xskb/xskb_list.do）的 DOM 形状编造，专测周次编码的四种写法与「括号里的纯数字不是周次」。这四条正是上游 stcnchu.js 的 parseWeeks() 会出错的地方（它 weekStr.split('(')[0] 一刀切）：① 单双写在「周」字后面（1-16周(单)）时它把区间读成空（Number(\"16周\") 是 NaN）；② 单双写在数字前面（(双)2-16周）；③ 单双与「周」字一起写在括号里（1-16(单周)，本平台的主要形态是 1-9,11-17(周)）；④ 逗号分段混排（1-3,5-9周）要按段各自判。⑤⑥ 是「括号里只有数字/数字区间 = 教学班序号」，当成周次会读出错的一周（(2)5周 → 5 周，误读成第 2 周）；⑦ 只写「隔周」没写单双，定不下来 —— 必须按每周处理并进 warnings。课程名/教师/教室均为虚构，无学号姓名。",
+  "source": "qz-jsxsd-xskb",
+  "pageUrl": "http://qzjwxt.stcnchu.edu.cn:800/jsxsd/xskb/xskb_list.do",
+  "now": "2026-09-13",
+  "term": {
+    "code": "2026-2027-1",
+    "name": "2026-2027学年第一学期"
+  },
+  "cols": 8,
+  "rows": [
+    [
+      { "col": 0, "span": 1, "text": "节次", "parts": [] },
+      { "col": 1, "span": 1, "text": "星期一", "parts": [] },
+      { "col": 2, "span": 1, "text": "星期二", "parts": [] },
+      { "col": 3, "span": 1, "text": "星期三", "parts": [] },
+      { "col": 4, "span": 1, "text": "星期四", "parts": [] },
+      { "col": 5, "span": 1, "text": "星期五", "parts": [] },
+      { "col": 6, "span": 1, "text": "星期六", "parts": [] },
+      { "col": 7, "span": 1, "text": "星期日", "parts": [] }
+    ],
+    [
+      { "col": 0, "span": 1, "text": "第1-2节", "parts": [] },
+      {
+        "col": 1,
+        "span": 1,
+        "text": "认识实习陈刚1-16周(单)[01-02节]实训楼101",
+        "parts": [
+          "认识实习<br><font title=\"老师\">陈刚</font><br><font title=\"周次(节次)\">1-16周(单)[01-02节]</font><br><font title=\"教室\">实训楼101</font>"
+        ]
+      },
+      { "col": 2, "span": 1, "text": "", "parts": [] },
+      { "col": 3, "span": 1, "text": "", "parts": [] },
+      { "col": 4, "span": 1, "text": "", "parts": [] },
+      { "col": 5, "span": 1, "text": "", "parts": [] },
+      { "col": 6, "span": 1, "text": "", "parts": [] },
+      { "col": 7, "span": 1, "text": "", "parts": [] }
+    ],
+    [
+      { "col": 0, "span": 1, "text": "第3-4节", "parts": [] },
+      { "col": 1, "span": 1, "text": "", "parts": [] },
+      {
+        "col": 2,
+        "span": 1,
+        "text": "电子工艺实验刘洋(双)2-16周[03-04节]实验楼C201",
+        "parts": [
+          "电子工艺实验<br><font title=\"教师\">刘洋</font><br><font title=\"周次(节次)\">(双)2-16周[03-04节]</font><br><font title=\"教室\">实验楼C201</font>"
+        ]
+      },
+      { "col": 3, "span": 1, "text": "", "parts": [] },
+      { "col": 4, "span": 1, "text": "", "parts": [] },
+      { "col": 5, "span": 1, "text": "", "parts": [] },
+      { "col": 6, "span": 1, "text": "", "parts": [] },
+      { "col": 7, "span": 1, "text": "", "parts": [] }
+    ],
+    [
+      { "col": 0, "span": 1, "text": "第5-6节", "parts": [] },
+      { "col": 1, "span": 1, "text": "", "parts": [] },
+      { "col": 2, "span": 1, "text": "", "parts": [] },
+      {
+        "col": 3,
+        "span": 1,
+        "text": "体育（三）赵磊1-16(单周)[05-06节]田径场",
+        "parts": [
+          "体育（三）<br><font title=\"老师\">赵磊</font><br><font title=\"周次(节次)\">1-16(单周)[05-06节]</font><br><font title=\"教室\">田径场</font>"
+        ]
+      },
+      { "col": 4, "span": 1, "text": "", "parts": [] },
+      { "col": 5, "span": 1, "text": "", "parts": [] },
+      { "col": 6, "span": 1, "text": "", "parts": [] },
+      { "col": 7, "span": 1, "text": "", "parts": [] }
+    ],
+    [
+      { "col": 0, "span": 1, "text": "第7-8节", "parts": [] },
+      { "col": 1, "span": 1, "text": "", "parts": [] },
+      { "col": 2, "span": 1, "text": "", "parts": [] },
+      { "col": 3, "span": 1, "text": "", "parts": [] },
+      {
+        "col": 4,
+        "span": 1,
+        "text": "形势与政策孙倩1-3,5-9周[07-08节]教学楼D301",
+        "parts": [
+          "形势与政策<br><font title=\"教师\">孙倩</font><br><font title=\"周次(节次)\">1-3,5-9周[07-08节]</font><br><font title=\"教室\">教学楼D301</font>"
+        ]
+      },
+      { "col": 5, "span": 1, "text": "", "parts": [] },
+      { "col": 6, "span": 1, "text": "", "parts": [] },
+      { "col": 7, "span": 1, "text": "", "parts": [] }
+    ],
+    [
+      { "col": 0, "span": 1, "text": "第9-10节", "parts": [] },
+      { "col": 1, "span": 1, "text": "", "parts": [] },
+      { "col": 2, "span": 1, "text": "", "parts": [] },
+      { "col": 3, "span": 1, "text": "", "parts": [] },
+      { "col": 4, "span": 1, "text": "", "parts": [] },
+      {
+        "col": 5,
+        "span": 1,
+        "text": "军事理论王强(2)5周[09-10节]报告厅",
+        "parts": [
+          "军事理论<br><font title=\"老师\">王强</font><br><font title=\"周次(节次)\">(2)5周[09-10节]</font><br><font title=\"教室\">报告厅</font>"
+        ]
+      },
+      { "col": 6, "span": 1, "text": "", "parts": [] },
+      { "col": 7, "span": 1, "text": "", "parts": [] }
+    ],
+    [
+      { "col": 0, "span": 1, "text": "第11-12节", "parts": [] },
+      { "col": 1, "span": 1, "text": "", "parts": [] },
+      { "col": 2, "span": 1, "text": "", "parts": [] },
+      { "col": 3, "span": 1, "text": "", "parts": [] },
+      { "col": 4, "span": 1, "text": "", "parts": [] },
+      { "col": 5, "span": 1, "text": "", "parts": [] },
+      {
+        "col": 6,
+        "span": 1,
+        "text": "职业规划讲座李娜(1-2)7周[11-12节]教学楼E205",
+        "parts": [
+          "职业规划讲座<br><font title=\"教师\">李娜</font><br><font title=\"周次(节次)\">(1-2)7周[11-12节]</font><br><font title=\"教室\">教学楼E205</font>"
+        ]
+      },
+      { "col": 7, "span": 1, "text": "", "parts": [] }
+    ],
+    [
+      { "col": 0, "span": 1, "text": "第9-10节", "parts": [] },
+      { "col": 1, "span": 1, "text": "", "parts": [] },
+      { "col": 2, "span": 1, "text": "", "parts": [] },
+      { "col": 3, "span": 1, "text": "", "parts": [] },
+      { "col": 4, "span": 1, "text": "", "parts": [] },
+      { "col": 5, "span": 1, "text": "", "parts": [] },
+      { "col": 6, "span": 1, "text": "", "parts": [] },
+      {
+        "col": 7,
+        "span": 1,
+        "text": "创新创业研讨周敏1-8周(隔周)[09-10节]创客空间",
+        "parts": [
+          "创新创业研讨<br><font title=\"老师\">周敏</font><br><font title=\"周次(节次)\">1-8周(隔周)[09-10节]</font><br><font title=\"教室\">创客空间</font>"
+        ]
+      }
+    ]
+  ]
+}

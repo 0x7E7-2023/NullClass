@@ -1,0 +1,104 @@
+{
+  "specVersion": 1,
+  "kind": "schedule",
+  "ocrAssisted": false,
+  "warnings": [
+    "学年学期读的是课表页上当前选中的「2025-2026学年第一学期」；要导入别的学期，请在教务系统里把学年学期切到那个学期，再点「提取课表」",
+    "教务系统没有给出开学日期（这个课表接口只返回周次编号，没有校历），第 1 周按「第一学期 = 9 月 1 日所在周的周一」推算为 2025-09-01，请在学期管理里核对成学校实际开学日",
+    "学期总周数取的是课表里出现的最大周次（30 周），不是校历周数（这个接口不给总周数），如与实际不符可在学期管理里改",
+    "作息时间按学校的非夏季作息写入（第 1 节 08:00-08:50，第 5 节 14:00 起）；学校的夏季作息下午与晚上都更晚（第 5 节 14:30 起、第 9 节 19:30 起），如与课表时间不符请在学期管理里换一张作息表",
+    "课表里用到第 12 节，而学校作息表只到第 10 节：第 11-12 节按空课内建节次表补了时间，请核对",
+    "教务系统返回的课表字段名不是预期的 kbList（实际是「items」），本适配器按它读取了；如果发现课程不对请反馈",
+    "教务系统说这个学期有 20 条排课记录，实际只取到 13 条，课表可能不完整，请重试或反馈",
+    "有 5 行课表数据不全（缺课程名 1 行、缺星期 1 行、缺节次（或节次超出第 12 节）2 行、缺周次（或周次全超出 1-30 周）1 行），已跳过：教务数据不完整时会出现，如发现少课请反馈",
+    "有 10 个周次超出 1-30 周，已丢弃（教务给出的周次不正常）",
+    "有 1 行课表的节次写成了多段（例如「1-2,5-6」），已按最大跨度放入（中间几节也算上），请核对"
+  ],
+  "terms": [
+    {
+      "name": "2025-2026学年第一学期",
+      "firstDay": "2025-09-01",
+      "totalWeeks": 30,
+      "periodTimes": [
+        { "periodIndex": 1, "start": "08:00", "end": "08:50" },
+        { "periodIndex": 2, "start": "09:00", "end": "09:50" },
+        { "periodIndex": 3, "start": "10:10", "end": "11:00" },
+        { "periodIndex": 4, "start": "11:10", "end": "12:00" },
+        { "periodIndex": 5, "start": "14:00", "end": "14:50" },
+        { "periodIndex": 6, "start": "15:00", "end": "15:50" },
+        { "periodIndex": 7, "start": "16:10", "end": "17:00" },
+        { "periodIndex": 8, "start": "17:10", "end": "18:00" },
+        { "periodIndex": 9, "start": "19:00", "end": "19:50" },
+        { "periodIndex": 10, "start": "20:00", "end": "20:50" },
+        { "periodIndex": 11, "start": "20:20", "end": "21:05" },
+        { "periodIndex": 12, "start": "21:15", "end": "22:00" }
+      ],
+      "courses": [
+        {
+          "name": "正常课",
+          "teacher": "教师一",
+          "note": null,
+          "blocks": [
+            { "dayOfWeek": 1, "startPeriod": 1, "endPeriod": 2, "startWeek": 1, "endWeek": 16, "weekType": "ALL", "location": "教室1" }
+          ]
+        },
+        {
+          "name": "第X节写法",
+          "teacher": "教师二",
+          "note": null,
+          "blocks": [
+            { "dayOfWeek": 2, "startPeriod": 3, "endPeriod": 4, "startWeek": 1, "endWeek": 16, "weekType": "ALL", "location": "教室2" }
+          ]
+        },
+        {
+          "name": "逗号节次",
+          "teacher": "教师三",
+          "note": null,
+          "blocks": [
+            { "dayOfWeek": 2, "startPeriod": 5, "endPeriod": 6, "startWeek": 1, "endWeek": 16, "weekType": "ALL", "location": "教室3" }
+          ]
+        },
+        {
+          "name": "四位拼节次",
+          "teacher": "教师四",
+          "note": null,
+          "blocks": [
+            { "dayOfWeek": 3, "startPeriod": 7, "endPeriod": 8, "startWeek": 1, "endWeek": 16, "weekType": "ALL", "location": "教室4" }
+          ]
+        },
+        {
+          "name": "多段节次",
+          "teacher": "教师五",
+          "note": null,
+          "blocks": [
+            { "dayOfWeek": 3, "startPeriod": 1, "endPeriod": 6, "startWeek": 1, "endWeek": 16, "weekType": "ALL", "location": "教室5" }
+          ]
+        },
+        {
+          "name": "超出作息表",
+          "teacher": "教师六",
+          "note": null,
+          "blocks": [
+            { "dayOfWeek": 4, "startPeriod": 11, "endPeriod": 12, "startWeek": 1, "endWeek": 16, "weekType": "ALL", "location": "教室6" }
+          ]
+        },
+        {
+          "name": "周次超限",
+          "teacher": "教师十",
+          "note": null,
+          "blocks": [
+            { "dayOfWeek": 5, "startPeriod": 1, "endPeriod": 2, "startWeek": 1, "endWeek": 30, "weekType": "ALL", "location": "教室10" }
+          ]
+        },
+        {
+          "name": "自习",
+          "teacher": null,
+          "note": null,
+          "blocks": [
+            { "dayOfWeek": 5, "startPeriod": 9, "endPeriod": 10, "startWeek": 1, "endWeek": 16, "weekType": "ALL", "location": null }
+          ]
+        }
+      ]
+    }
+  ]
+}

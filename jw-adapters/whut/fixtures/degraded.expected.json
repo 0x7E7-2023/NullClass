@@ -1,0 +1,54 @@
+{
+  "specVersion": 1,
+  "kind": "schedule",
+  "ocrAssisted": false,
+  "warnings": [
+    "学期编号 2026-2027-1 是按本机日期推算的（没能从教务获取），请核对导入的是不是本学期",
+    "开学日期无法从教务获取，已按最近的周一推算，请在学期管理里核对",
+    "节次字典没能从教务获取，已按内置的节次对照表换算，请核对课表里的节次顺序",
+    "教务只返回了 5 条排课记录（共 6 条），可能有课程没取到，请在教务页面核对",
+    "有 1 条排课记录的节次编码对不上节次对照表（查不到，或结束节早于开始节），没有导入",
+    "有 1 条排课记录的周次编码不是 0/1 位串（可能是教务改了格式），没有导入",
+    "有 5 个周次超出 30 周（课表数据的上限），没有导入"
+  ],
+  "terms": [
+    {
+      "name": "2026-2027学年第一学期",
+      "firstDay": "2026-09-07",
+      "totalWeeks": 30,
+      "periodTimes": [
+        { "periodIndex": 1, "start": "08:00", "end": "08:45" },
+        { "periodIndex": 2, "start": "08:50", "end": "09:35" },
+        { "periodIndex": 3, "start": "09:55", "end": "10:40" },
+        { "periodIndex": 4, "start": "10:45", "end": "11:30" },
+        { "periodIndex": 5, "start": "11:35", "end": "12:20" },
+        { "periodIndex": 6, "start": "14:00", "end": "14:45" },
+        { "periodIndex": 7, "start": "14:50", "end": "15:35" },
+        { "periodIndex": 8, "start": "15:40", "end": "16:25" },
+        { "periodIndex": 9, "start": "16:45", "end": "17:30" },
+        { "periodIndex": 10, "start": "17:35", "end": "18:20" },
+        { "periodIndex": 11, "start": "19:00", "end": "19:45" },
+        { "periodIndex": 12, "start": "19:50", "end": "20:35" },
+        { "periodIndex": 13, "start": "20:40", "end": "21:25" }
+      ],
+      "courses": [
+        {
+          "name": "数据结构",
+          "teacher": "吴涛",
+          "note": null,
+          "blocks": [
+            { "dayOfWeek": 2, "startPeriod": 1, "endPeriod": 2, "startWeek": 1, "endWeek": 16, "weekType": "ALL", "location": "教5-101" }
+          ]
+        },
+        {
+          "name": "大学生心理健康",
+          "teacher": "秦芳",
+          "note": null,
+          "blocks": [
+            { "dayOfWeek": 5, "startPeriod": 1, "endPeriod": 2, "startWeek": 1, "endWeek": 5, "weekType": "ALL", "location": "教6-101" }
+          ]
+        }
+      ]
+    }
+  ]
+}

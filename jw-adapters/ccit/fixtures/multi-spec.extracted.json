@@ -1,0 +1,82 @@
+{
+  "_note": "合成数据，不是真实抓取：按长春工程学院强智课表页（/jsxsd/xskb/xskb_list.do，经 WebVPN）的 DOM 形状编造。这一份专打两处**静默丢数据**的缺陷：① 同一个课程块里写了**两段周次**（两种形态：两个 font[title=周次(节次)] 各一段；一段文本里并排两组）—— 命中第一段就 return 的写法会让第二段整段消失（周次、节次一起丢，连 warnings 都没有）；② 区间分隔符写成全角波浪 ～(U+FF5E)、全角减号 －(U+FF0D)、数学减号 −(U+2212)、en dash –(U+2013) —— 只认半角字符的写法会掉进「单数字回退」，1～16周 变成只上第 1 周且没有任何告警。最后一天放标准半角写法做对照（结果必须不变）。课程名/教师/教室均为虚构，无学号姓名。拿到真实 dump 请替换这一对 fixture。",
+  "source": "qz-jsxsd-xskb",
+  "pageUrl": "https://http-10-198-47-148-8080.webvpn.ccit.edu.cn/jsxsd/xskb/xskb_list.do",
+  "now": "2026-09-13",
+  "term": {
+    "code": "2026-2027-1",
+    "name": "2026-2027学年第一学期"
+  },
+  "cols": 8,
+  "rows": [
+    [
+      { "col": 0, "span": 1, "text": "节次", "parts": [] },
+      { "col": 1, "span": 1, "text": "星期一", "parts": [] },
+      { "col": 2, "span": 1, "text": "星期二", "parts": [] },
+      { "col": 3, "span": 1, "text": "星期三", "parts": [] },
+      { "col": 4, "span": 1, "text": "星期四", "parts": [] },
+      { "col": 5, "span": 1, "text": "星期五", "parts": [] },
+      { "col": 6, "span": 1, "text": "星期六", "parts": [] },
+      { "col": 7, "span": 1, "text": "星期日", "parts": [] }
+    ],
+    [
+      { "col": 0, "span": 1, "text": "1-2节", "parts": [] },
+      {
+        "col": 1,
+        "span": 1,
+        "text": "多段周次课张老师1-8周[01-02节]10-16周[03-04节]教1-101",
+        "parts": [
+          "多段周次课<br><font title=\"教师\">张老师</font><br><font title=\"周次(节次)\">1-8周[01-02节]</font><br><font title=\"周次(节次)\">10-16周[03-04节]</font><br><font title=\"教室\">教1-101</font>"
+        ]
+      },
+      {
+        "col": 2,
+        "span": 1,
+        "text": "单段两组课李老师1-8周[01-02节],10-16周[03-04节]教2-202",
+        "parts": [
+          "单段两组课<br><font title=\"教师\">李老师</font><br><font title=\"周次(节次)\">1-8周[01-02节],10-16周[03-04节]</font><br><font title=\"教室\">教2-202</font>"
+        ]
+      },
+      {
+        "col": 3,
+        "span": 1,
+        "text": "全角波浪课王老师1～16周[01-02节]教3-303",
+        "parts": [
+          "全角波浪课<br><font title=\"教师\">王老师</font><br><font title=\"周次(节次)\">1～16周[01-02节]</font><br><font title=\"教室\">教3-303</font>"
+        ]
+      },
+      {
+        "col": 4,
+        "span": 1,
+        "text": "全角减号课赵老师1－16周[03-04节]教4-404",
+        "parts": [
+          "全角减号课<br><font title=\"教师\">赵老师</font><br><font title=\"周次(节次)\">1－16周[03-04节]</font><br><font title=\"教室\">教4-404</font>"
+        ]
+      },
+      {
+        "col": 5,
+        "span": 1,
+        "text": "数学减号课孙老师1−16周[05-06节]教5-505",
+        "parts": [
+          "数学减号课<br><font title=\"教师\">孙老师</font><br><font title=\"周次(节次)\">1−16周[05-06节]</font><br><font title=\"教室\">教5-505</font>"
+        ]
+      },
+      {
+        "col": 6,
+        "span": 1,
+        "text": "短横课周老师1–16周[07-08节]教6-606",
+        "parts": [
+          "短横课<br><font title=\"教师\">周老师</font><br><font title=\"周次(节次)\">1–16周[07-08节]</font><br><font title=\"教室\">教6-606</font>"
+        ]
+      },
+      {
+        "col": 7,
+        "span": 1,
+        "text": "标准形态课吴老师1-16周[09-10节]教7-707",
+        "parts": [
+          "标准形态课<br><font title=\"教师\">吴老师</font><br><font title=\"周次(节次)\">1-16周[09-10节]</font><br><font title=\"教室\">教7-707</font>"
+        ]
+      }
+    ]
+  ]
+}

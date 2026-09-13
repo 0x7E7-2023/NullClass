@@ -1,0 +1,96 @@
+{
+  "_note": "合成用例（不是真实抓取），专打本批检查表第 1、3 条：① 周次四种写法（1-16周(单) / (单)1-16周 / 1-16(单周) / 1-3,5-9周）；② 绝大多数格子没有 td[w] 星期属性、靠星期表头对列，且行内 td 下标与网格列号**不相等**（第 1 行有 rowSpan=3 的格子把后面几行的格子挤开，第 5 行连节次标签格都被上一行的 rowSpan 盖住）；③ 最后一行的格子自带 w=Monday、与表头那一列的「星期日」对不上 —— 格子自带的属性优先（上游就只认它）。姓名学号等已脱敏。",
+  "url": "https://ehall.xzhmu.edu.cn/gsapp/sys/wdkb/*default/index.do",
+  "title": "个人课表",
+  "today": "2026-09-13",
+  "tableFound": true,
+  "currentWeek": null,
+  "currentWeekSource": null,
+  "semesterLabels": [],
+  "rows": [
+    {
+      "row": 0,
+      "cells": [
+        { "col": 0, "colSpan": 1, "rowSpan": 1, "day": "", "hidden": false, "text": "节次", "blocks": [] },
+        { "col": 1, "colSpan": 1, "rowSpan": 1, "day": "", "hidden": false, "text": "星期一", "blocks": [] },
+        { "col": 2, "colSpan": 1, "rowSpan": 1, "day": "", "hidden": false, "text": "星期二", "blocks": [] },
+        { "col": 3, "colSpan": 1, "rowSpan": 1, "day": "", "hidden": false, "text": "星期三", "blocks": [] },
+        { "col": 4, "colSpan": 1, "rowSpan": 1, "day": "", "hidden": false, "text": "星期四", "blocks": [] },
+        { "col": 5, "colSpan": 1, "rowSpan": 1, "day": "", "hidden": false, "text": "星期五", "blocks": [] },
+        { "col": 6, "colSpan": 1, "rowSpan": 1, "day": "", "hidden": false, "text": "星期六", "blocks": [] },
+        { "col": 7, "colSpan": 1, "rowSpan": 1, "day": "", "hidden": false, "text": "星期日", "blocks": [] }
+      ]
+    },
+    {
+      "row": 1,
+      "cells": [
+        { "col": 0, "colSpan": 1, "rowSpan": 1, "day": "", "hidden": false, "text": "1", "blocks": [] },
+        { "col": 1, "colSpan": 1, "rowSpan": 3, "day": "", "hidden": false, "text": "高等数学A(一)1-16周(单)教1-101张三",
+          "blocks": [ { "spans": ["高等数学A(一)", "1-16周(单)", "教1-101"], "teacher": "张三" } ] },
+        { "col": 2, "colSpan": 1, "rowSpan": 1, "day": "", "hidden": false, "text": "", "blocks": [] },
+        { "col": 3, "colSpan": 1, "rowSpan": 3, "day": "", "hidden": false, "text": "大学英语(单)1-16周教学楼B202李娜",
+          "blocks": [ { "spans": ["大学英语", "(单)1-16周", "教学楼B202"], "teacher": "李娜" } ] }
+      ]
+    },
+    {
+      "row": 2,
+      "cells": [
+        { "col": 0, "colSpan": 1, "rowSpan": 1, "day": "", "hidden": false, "text": "第2节 08:50-09:30", "blocks": [] },
+        { "col": 2, "colSpan": 1, "rowSpan": 1, "day": "", "hidden": false, "text": "线性代数1-16(单周)数智楼205王强",
+          "blocks": [ { "spans": ["线性代数", "1-16(单周)", "数智楼205"], "teacher": "王强" } ] }
+      ]
+    },
+    {
+      "row": 3,
+      "cells": [
+        { "col": 0, "colSpan": 1, "rowSpan": 1, "day": "", "hidden": false, "text": "3", "blocks": [] },
+        { "col": 2, "colSpan": 1, "rowSpan": 1, "day": "", "hidden": false, "text": "形势与政策1-3,5-9周教学楼C101赵敏",
+          "blocks": [ { "spans": ["形势与政策", "1-3,5-9周", "教学楼C101"], "teacher": "赵敏" } ] },
+        { "col": 4, "colSpan": 1, "rowSpan": 1, "day": "", "hidden": false, "text": "程序设计基础双周2-6、10周机房A303陈晨",
+          "blocks": [ { "spans": ["程序设计基础", "双周2-6、10周", "机房A303"], "teacher": "陈晨" } ] }
+      ]
+    },
+    {
+      "row": 4,
+      "cells": [
+        { "col": 0, "colSpan": 1, "rowSpan": 2, "day": "", "hidden": false, "text": "第5-6节", "blocks": [] },
+        { "col": 1, "colSpan": 5, "rowSpan": 1, "day": "", "hidden": false, "text": "", "blocks": [] },
+        { "col": 6, "colSpan": 1, "rowSpan": 1, "day": "", "hidden": false, "text": "大学物理1-16周(单)实验楼401周涛大学物理1-16周(双)实验楼401周涛",
+          "blocks": [
+            { "spans": ["大学物理", "1-16周(单)", "实验楼401"], "teacher": "周涛" },
+            { "spans": ["大学物理", "1-16周(双)", "实验楼401"], "teacher": "周涛" }
+          ] }
+      ]
+    },
+    {
+      "row": 5,
+      "cells": [
+        { "col": 1, "colSpan": 1, "rowSpan": 1, "day": "", "hidden": false, "text": "大学体育（一）1,3,5,7周体育馆刘洋",
+          "blocks": [ { "spans": ["大学体育（一）", "1,3,5,7周", "体育馆"], "teacher": "刘洋" } ] }
+      ]
+    },
+    {
+      "row": 6,
+      "cells": [
+        { "col": 0, "colSpan": 1, "rowSpan": 1, "day": "", "hidden": false, "text": "14", "blocks": [] },
+        { "col": 1, "colSpan": 1, "rowSpan": 1, "day": "", "hidden": false, "text": "", "blocks": [] },
+        { "col": 2, "colSpan": 2, "rowSpan": 1, "day": "", "hidden": false, "text": "大学化学2-16周(双)实验楼202孙磊",
+          "blocks": [ { "spans": ["大学化学", "2-16周(双)", "实验楼202"], "teacher": "孙磊" } ] }
+      ]
+    },
+    {
+      "row": 7,
+      "cells": [
+        { "col": 0, "colSpan": 1, "rowSpan": 1, "day": "", "hidden": false, "text": "7", "blocks": [] },
+        { "col": 1, "colSpan": 1, "rowSpan": 1, "day": "", "hidden": false, "text": "", "blocks": [] },
+        { "col": 2, "colSpan": 1, "rowSpan": 1, "day": "", "hidden": false, "text": "", "blocks": [] },
+        { "col": 3, "colSpan": 1, "rowSpan": 1, "day": "", "hidden": false, "text": "", "blocks": [] },
+        { "col": 4, "colSpan": 1, "rowSpan": 1, "day": "", "hidden": false, "text": "", "blocks": [] },
+        { "col": 5, "colSpan": 1, "rowSpan": 1, "day": "", "hidden": false, "text": "", "blocks": [] },
+        { "col": 6, "colSpan": 1, "rowSpan": 1, "day": "", "hidden": false, "text": "", "blocks": [] },
+        { "col": 7, "colSpan": 1, "rowSpan": 1, "day": "Monday", "hidden": false, "text": "医学统计学1-16周教2-201王芳",
+          "blocks": [ { "spans": ["医学统计学", "1-16周", "教2-201"], "teacher": "王芳" } ] }
+      ]
+    }
+  ]
+}

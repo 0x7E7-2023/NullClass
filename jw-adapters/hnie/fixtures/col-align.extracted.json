@@ -1,0 +1,72 @@
+{
+  "_note": "合成数据（**非真实抓取**）：专打本批检查表第 3 条 —— **没有星期表头**时的列对齐。这张表没有「星期一…星期日」表头行，首列是节次列，而且节次格 rowspan=2（「第1-2节」占住 col=0 的两行、「第3-4节」占住 col=0 的两行）：被 rowspan 占掉的那一列在下一行不出现，所以第 2、4 行的 cells 从 col=1 起（extract.js 的 carry 计数算出来的，不是手写的）—— 按「第几个 td」算星期会整行错位。另有 col=5 的 colspan=2 合并格（课落到它跨到的周五与周六两天）与一处重复块（同一格里两段一模一样的课程明细，只能算一条）。断言的期望值：星期全部按 **col** 对齐（本表 8 列，节次列占 col=0，所以周一到周日在 col=1..7），不是按数组下标。含 18 周的教学周历（验「周历比内置 20 周短」那条提示）与用户选定的夏令时。期望值按规范独立推出。",
+  "source": "qz-jsxsd",
+  "pageUrl": "http://jwcmis.hnie.edu.cn/jsxsd/xskb/xskb_list.do",
+  "now": "2027-03-10",
+  "term": { "code": "2026-2027-2", "name": "2026-2027学年第二学期" },
+  "season": { "asked": true, "picked": "summer" },
+  "cols": 8,
+  "calendar": {
+    "found": true,
+    "rows": [
+      [{ "col": 0, "text": "周次" }, { "col": 1, "text": "日" }, { "col": 2, "text": "一" }, { "col": 3, "text": "二" }, { "col": 4, "text": "三" }, { "col": 5, "text": "四" }, { "col": 6, "text": "五" }, { "col": 7, "text": "六" }],
+      [{ "col": 0, "text": "1" }, { "col": 1, "title": "2027年02月28日" }, { "col": 2, "title": "2027年03月01日" }, { "col": 3, "title": "2027年03月02日" }, { "col": 4, "title": "2027年03月03日" }, { "col": 5, "title": "2027年03月04日" }, { "col": 6, "title": "2027年03月05日" }, { "col": 7, "title": "2027年03月06日" }],
+      [{ "col": 0, "text": "2" }],
+      [{ "col": 0, "text": "3" }],
+      [{ "col": 0, "text": "4" }],
+      [{ "col": 0, "text": "5" }],
+      [{ "col": 0, "text": "6" }],
+      [{ "col": 0, "text": "7" }],
+      [{ "col": 0, "text": "8" }],
+      [{ "col": 0, "text": "9" }],
+      [{ "col": 0, "text": "10" }],
+      [{ "col": 0, "text": "11" }],
+      [{ "col": 0, "text": "12" }],
+      [{ "col": 0, "text": "13" }],
+      [{ "col": 0, "text": "14" }],
+      [{ "col": 0, "text": "15" }],
+      [{ "col": 0, "text": "16" }],
+      [{ "col": 0, "text": "17" }],
+      [{ "col": 0, "text": "18" }]
+    ]
+  },
+  "rows": [
+    [
+      { "col": 0, "span": 1, "text": "第1-2节", "parts": [] },
+      { "col": 1, "span": 1, "text": "大学物理 任课教师:孙丽 1-16周[01-02节] 教1-208", "parts": ["大学物理<br><font title=\"教师\">任课教师:孙丽</font><br><font title=\"周次(节次)\">1-16周[01-02节]</font><br><font title=\"教室\">教1-208</font>"] },
+      { "col": 2, "span": 1, "text": "", "parts": [] },
+      { "col": 3, "span": 1, "text": "", "parts": [] },
+      { "col": 4, "span": 1, "text": "", "parts": [] },
+      { "col": 5, "span": 1, "text": "", "parts": [] },
+      { "col": 6, "span": 1, "text": "", "parts": [] },
+      { "col": 7, "span": 1, "text": "", "parts": [] }
+    ],
+    [
+      { "col": 1, "span": 1, "text": "", "parts": [] },
+      { "col": 2, "span": 1, "text": "", "parts": [] },
+      { "col": 3, "span": 1, "text": "线性代数 任课教师:王强 1-16周[01-02节] 教2-305", "parts": ["线性代数<br><font title=\"教师\">任课教师:王强</font><br><font title=\"周次(节次)\">1-16周[01-02节]</font><br><font title=\"教室\">教2-305</font>"] },
+      { "col": 4, "span": 1, "text": "", "parts": [] },
+      { "col": 5, "span": 2, "text": "体育(一) 任课教师:赵云 1-16周[01-02节] 体育馆", "parts": ["体育(一)<br><font title=\"教师\">任课教师:赵云</font><br><font title=\"周次(节次)\">1-16周[01-02节]</font><br><font title=\"教室\">体育馆</font>"] },
+      { "col": 7, "span": 1, "text": "", "parts": [] }
+    ],
+    [
+      { "col": 0, "span": 1, "text": "第3-4节", "parts": [] },
+      { "col": 1, "span": 1, "text": "", "parts": [] },
+      { "col": 2, "span": 1, "text": "形势与政策 任课教师:钱伟 9-16周[03-04节] 教3-201", "parts": ["形势与政策<br><font title=\"教师\">任课教师:钱伟</font><br><font title=\"周次(节次)\">9-16周[03-04节]</font><br><font title=\"教室\">教3-201</font>---------------------形势与政策<br><font title=\"教师\">任课教师:钱伟</font><br><font title=\"周次(节次)\">9-16周[03-04节]</font><br><font title=\"教室\">教3-201</font>"] },
+      { "col": 3, "span": 1, "text": "", "parts": [] },
+      { "col": 4, "span": 1, "text": "", "parts": [] },
+      { "col": 5, "span": 1, "text": "", "parts": [] },
+      { "col": 6, "span": 1, "text": "", "parts": [] },
+      { "col": 7, "span": 1, "text": "", "parts": [] }
+    ],
+    [
+      { "col": 1, "span": 1, "text": "", "parts": [] },
+      { "col": 2, "span": 1, "text": "", "parts": [] },
+      { "col": 3, "span": 1, "text": "", "parts": [] },
+      { "col": 4, "span": 1, "text": "", "parts": [] },
+      { "col": 5, "span": 1, "text": "", "parts": [] },
+      { "col": 6, "span": 1, "text": "", "parts": [] },
+      { "col": 7, "span": 1, "text": "概率论与数理统计 任课教师:吴敏 1-16周(双)[03-04节] 教4-102", "parts": ["概率论与数理统计<br><font title=\"教师\">任课教师:吴敏</font><br><font title=\"周次(节次)\">1-16周(双)[03-04节]</font><br><font title=\"教室\">教4-102</font>"] }
+    ]
+  ]
+}

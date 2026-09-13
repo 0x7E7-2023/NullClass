@@ -1,0 +1,325 @@
+{
+  "_note": "合成数据（由 basic 派生，非真实抓取），专打本批统一口径：**空白是周次分段符**——「1-3周 5-9周」必须读成 1-3 与 5-9 两个块，不许全文删空白（删掉会并成 \"1-35-9\" 或只剩 1-3，静默吞段）。期望值按规范手推：两段 = 两个 ALL 块（1-3 与 5-9），其余课不动。节次用全角波浪分隔（\"05～06节\"/\"第1～2节\"）：分隔符归一后读出的节次与半角写法一致，期望值不变；不归一的实现会读不出节次或读错（整块丢/只剩一节），该用例必须变红。",
+  "source": "qz-jsxsd-xskb",
+  "pageUrl": "http://qzjwxt.stcnchu.edu.cn:800/jsxsd/xskb/xskb_list.do",
+  "now": "2026-09-13",
+  "term": {
+    "code": "2026-2027-1",
+    "name": "2026-2027学年第一学期"
+  },
+  "cols": 8,
+  "rows": [
+    [
+      {
+        "col": 0,
+        "span": 1,
+        "text": "节次",
+        "parts": []
+      },
+      {
+        "col": 1,
+        "span": 1,
+        "text": "星期一",
+        "parts": []
+      },
+      {
+        "col": 2,
+        "span": 1,
+        "text": "星期二",
+        "parts": []
+      },
+      {
+        "col": 3,
+        "span": 1,
+        "text": "星期三",
+        "parts": []
+      },
+      {
+        "col": 4,
+        "span": 1,
+        "text": "星期四",
+        "parts": []
+      },
+      {
+        "col": 5,
+        "span": 1,
+        "text": "星期五",
+        "parts": []
+      },
+      {
+        "col": 6,
+        "span": 1,
+        "text": "星期六",
+        "parts": []
+      },
+      {
+        "col": 7,
+        "span": 1,
+        "text": "星期日",
+        "parts": []
+      }
+    ],
+    [
+      {
+        "col": 0,
+        "span": 1,
+        "text": "第1-2节",
+        "parts": []
+      },
+      {
+        "col": 1,
+        "span": 1,
+        "text": "高等数学A(一)刘敏1-3(周) 5-9(周)[01-02节]博学楼A101",
+        "parts": [
+          "高等数学A(一)<br><font title=\"老师\">刘敏</font><br><font title=\"周次(节次)\">1-3(周) 5-9(周)[01-02节]</font><br><font title=\"教室\">博学楼A101</font>"
+        ]
+      },
+      {
+        "col": 2,
+        "span": 1,
+        "text": "",
+        "parts": []
+      },
+      {
+        "col": 3,
+        "span": 1,
+        "text": "",
+        "parts": []
+      },
+      {
+        "col": 4,
+        "span": 1,
+        "text": "",
+        "parts": []
+      },
+      {
+        "col": 5,
+        "span": 1,
+        "text": "",
+        "parts": []
+      },
+      {
+        "col": 6,
+        "span": 1,
+        "text": "",
+        "parts": []
+      },
+      {
+        "col": 7,
+        "span": 1,
+        "text": "",
+        "parts": []
+      }
+    ],
+    [
+      {
+        "col": 0,
+        "span": 1,
+        "text": "第3-4节",
+        "parts": []
+      },
+      {
+        "col": 1,
+        "span": 1,
+        "text": "",
+        "parts": []
+      },
+      {
+        "col": 2,
+        "span": 1,
+        "text": "",
+        "parts": []
+      },
+      {
+        "col": 3,
+        "span": 1,
+        "text": "大学英语（二）王芳1-15(单周)[03-04节]博学楼B203",
+        "parts": [
+          "大学英语（二）<br><font title=\"教师\">王芳</font><br><font title=\"周次(节次)\">1-15(单周)[03-04节]</font><br><font title=\"教室\">博学楼B203</font>"
+        ]
+      },
+      {
+        "col": 4,
+        "span": 1,
+        "text": "计算机应用基础李强2-16(双周)[03-04节]实验楼C305",
+        "parts": [
+          "计算机应用基础<br><font title=\"老师\">李强</font><br><font title=\"周次(节次)\">2-16(双周)[03-04节]</font><br><font title=\"教室\">实验楼C305</font>"
+        ]
+      },
+      {
+        "col": 5,
+        "span": 1,
+        "text": "",
+        "parts": []
+      },
+      {
+        "col": 6,
+        "span": 1,
+        "text": "",
+        "parts": []
+      },
+      {
+        "col": 7,
+        "span": 1,
+        "text": "",
+        "parts": []
+      }
+    ],
+    [
+      {
+        "col": 0,
+        "span": 1,
+        "text": "第5-6节",
+        "parts": []
+      },
+      {
+        "col": 1,
+        "span": 1,
+        "text": "大学物理任课教师:1-14(周)[05～06节]博学楼A301",
+        "parts": [
+          "大学物理<br><font title=\"老师\">任课教师:</font><br><font title=\"周次(节次)\">1-14(周)[05～06节]</font><br><font title=\"教室\">博学楼A301</font>"
+        ]
+      },
+      {
+        "col": 2,
+        "span": 1,
+        "text": "",
+        "parts": []
+      },
+      {
+        "col": 3,
+        "span": 1,
+        "text": "",
+        "parts": []
+      },
+      {
+        "col": 4,
+        "span": 1,
+        "text": "",
+        "parts": []
+      },
+      {
+        "col": 5,
+        "span": 1,
+        "text": "",
+        "parts": []
+      },
+      {
+        "col": 6,
+        "span": 1,
+        "text": "",
+        "parts": []
+      },
+      {
+        "col": 7,
+        "span": 1,
+        "text": "",
+        "parts": []
+      }
+    ],
+    [
+      {
+        "col": 0,
+        "span": 1,
+        "text": "第7-8节",
+        "parts": []
+      },
+      {
+        "col": 1,
+        "span": 1,
+        "text": "",
+        "parts": []
+      },
+      {
+        "col": 2,
+        "span": 1,
+        "text": "",
+        "parts": []
+      },
+      {
+        "col": 3,
+        "span": 1,
+        "text": "",
+        "parts": []
+      },
+      {
+        "col": 4,
+        "span": 1,
+        "text": "",
+        "parts": []
+      },
+      {
+        "col": 5,
+        "span": 1,
+        "text": "中国近现代史纲要周红2-18(周)[07-08节]博学楼D102",
+        "parts": [
+          "中国近现代史纲要<br><font title=\"教师\">周红</font><br><font title=\"周次(节次)\">2-18(周)[07-08节]</font><br><font title=\"教室\">博学楼D102</font>"
+        ]
+      },
+      {
+        "col": 6,
+        "span": 1,
+        "text": "",
+        "parts": []
+      },
+      {
+        "col": 7,
+        "span": 1,
+        "text": "",
+        "parts": []
+      }
+    ],
+    [
+      {
+        "col": 0,
+        "span": 1,
+        "text": "第9-10节",
+        "parts": []
+      },
+      {
+        "col": 1,
+        "span": 1,
+        "text": "",
+        "parts": []
+      },
+      {
+        "col": 2,
+        "span": 1,
+        "text": "",
+        "parts": []
+      },
+      {
+        "col": 3,
+        "span": 1,
+        "text": "大学生心理健康教育赵敏3-12(周)[09,10节]大学生活动中心",
+        "parts": [
+          "大学生心理健康教育<br><font title=\"教师\">赵敏</font><br><font title=\"周次(节次)\">3-12(周)[09,10节]</font><br><font title=\"教室\">大学生活动中心</font>"
+        ]
+      },
+      {
+        "col": 4,
+        "span": 1,
+        "text": "",
+        "parts": []
+      },
+      {
+        "col": 5,
+        "span": 1,
+        "text": "",
+        "parts": []
+      },
+      {
+        "col": 6,
+        "span": 1,
+        "text": "",
+        "parts": []
+      },
+      {
+        "col": 7,
+        "span": 1,
+        "text": "",
+        "parts": []
+      }
+    ]
+  ]
+}

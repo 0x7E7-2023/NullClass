@@ -1,0 +1,148 @@
+{
+  "specVersion": 1,
+  "kind": "schedule",
+  "ocrAssisted": false,
+  "warnings": [
+    "没能从课表页读到当前学年学期（页面上没有 #xnm / #xqm 下拉框），已按今天的日期推定为「2025-2026学年第二学期」；如果不对，请在教务系统里打开「信息查询 - 学生课表查询」并把学年学期选对，再点「提取课表」",
+    "教务系统没有给出开学日期（这个课表接口只返回周次编号，没有校历），第 1 周按「第二学期 = 2 月 20 日所在周的周一」推算为 2026-02-16，请在学期管理里核对成学校实际开学日",
+    "学期总周数取的是课表里出现的最大周次（16 周），不是校历周数（这个接口不给总周数），如与实际不符可在学期管理里改",
+    "作息时间按学校的非夏季作息写入（第 1 节 08:00-08:50，第 5 节 14:00 起）；学校的夏季作息下午与晚上都更晚（第 5 节 14:30 起、第 9 节 19:30 起），如与课表时间不符请在学期管理里换一张作息表",
+    "有 2 行课表数据不全（缺周次（或周次全超出 1-30 周）2 行），已跳过：教务数据不完整时会出现，如发现少课请反馈",
+    "有 1 行课表的周次字段里只有括号里的教学班序号（例如「(1)」「(1-2)」），没有可用的周次，已跳过；如发现少课请反馈",
+    "有 1 处「单/双」标记找不到对应的周次（教务数据写得不完整），这些标记已忽略"
+  ],
+  "terms": [
+    {
+      "name": "2025-2026学年第二学期",
+      "firstDay": "2026-02-16",
+      "totalWeeks": 16,
+      "periodTimes": [
+        { "periodIndex": 1, "start": "08:00", "end": "08:50" },
+        { "periodIndex": 2, "start": "09:00", "end": "09:50" },
+        { "periodIndex": 3, "start": "10:10", "end": "11:00" },
+        { "periodIndex": 4, "start": "11:10", "end": "12:00" },
+        { "periodIndex": 5, "start": "14:00", "end": "14:50" },
+        { "periodIndex": 6, "start": "15:00", "end": "15:50" },
+        { "periodIndex": 7, "start": "16:10", "end": "17:00" },
+        { "periodIndex": 8, "start": "17:10", "end": "18:00" },
+        { "periodIndex": 9, "start": "19:00", "end": "19:50" },
+        { "periodIndex": 10, "start": "20:00", "end": "20:50" }
+      ],
+      "courses": [
+        {
+          "name": "单周写法一",
+          "teacher": "王一",
+          "note": null,
+          "blocks": [
+            { "dayOfWeek": 1, "startPeriod": 1, "endPeriod": 2, "startWeek": 1, "endWeek": 15, "weekType": "ODD", "location": "教1-101" }
+          ]
+        },
+        {
+          "name": "单周写法二",
+          "teacher": "李二",
+          "note": null,
+          "blocks": [
+            { "dayOfWeek": 1, "startPeriod": 3, "endPeriod": 4, "startWeek": 1, "endWeek": 15, "weekType": "ODD", "location": "教1-102" }
+          ]
+        },
+        {
+          "name": "单周写法三",
+          "teacher": "张三",
+          "note": null,
+          "blocks": [
+            { "dayOfWeek": 1, "startPeriod": 5, "endPeriod": 6, "startWeek": 1, "endWeek": 15, "weekType": "ODD", "location": "教1-103" }
+          ]
+        },
+        {
+          "name": "混排周次",
+          "teacher": "刘四",
+          "note": null,
+          "blocks": [
+            { "dayOfWeek": 2, "startPeriod": 1, "endPeriod": 2, "startWeek": 1, "endWeek": 3, "weekType": "ALL", "location": "教2-201" },
+            { "dayOfWeek": 2, "startPeriod": 1, "endPeriod": 2, "startWeek": 5, "endWeek": 9, "weekType": "ALL", "location": "教2-201" }
+          ]
+        },
+        {
+          "name": "双周写法三",
+          "teacher": "陈五",
+          "note": null,
+          "blocks": [
+            { "dayOfWeek": 2, "startPeriod": 3, "endPeriod": 4, "startWeek": 2, "endWeek": 16, "weekType": "EVEN", "location": "教2-202" }
+          ]
+        },
+        {
+          "name": "双周写法一",
+          "teacher": "杨六",
+          "note": null,
+          "blocks": [
+            { "dayOfWeek": 3, "startPeriod": 1, "endPeriod": 2, "startWeek": 2, "endWeek": 16, "weekType": "EVEN", "location": "教2-203" }
+          ]
+        },
+        {
+          "name": "双周写法二",
+          "teacher": "黄七",
+          "note": null,
+          "blocks": [
+            { "dayOfWeek": 3, "startPeriod": 3, "endPeriod": 4, "startWeek": 2, "endWeek": 16, "weekType": "EVEN", "location": "教2-204" }
+          ]
+        },
+        {
+          "name": "序号不是周次一",
+          "teacher": "周八",
+          "note": null,
+          "blocks": [
+            { "dayOfWeek": 4, "startPeriod": 1, "endPeriod": 2, "startWeek": 1, "endWeek": 16, "weekType": "ALL", "location": "教3-301" }
+          ]
+        },
+        {
+          "name": "序号不是周次二",
+          "teacher": "吴九",
+          "note": null,
+          "blocks": [
+            { "dayOfWeek": 4, "startPeriod": 3, "endPeriod": 4, "startWeek": 1, "endWeek": 16, "weekType": "ALL", "location": "教3-302" }
+          ]
+        },
+        {
+          "name": "序号写在前面",
+          "teacher": "郑十",
+          "note": null,
+          "blocks": [
+            { "dayOfWeek": 5, "startPeriod": 1, "endPeriod": 2, "startWeek": 1, "endWeek": 16, "weekType": "ALL", "location": "教3-303" }
+          ]
+        },
+        {
+          "name": "单双都在",
+          "teacher": "冯甲",
+          "note": null,
+          "blocks": [
+            { "dayOfWeek": 5, "startPeriod": 3, "endPeriod": 4, "startWeek": 1, "endWeek": 16, "weekType": "ALL", "location": "教3-304" }
+          ]
+        },
+        {
+          "name": "单周只有一节",
+          "teacher": "蒋乙",
+          "note": null,
+          "blocks": [
+            { "dayOfWeek": 6, "startPeriod": 1, "endPeriod": 2, "startWeek": 3, "endWeek": 3, "weekType": "ALL", "location": "教4-401" }
+          ]
+        },
+        {
+          "name": "标记自己成段",
+          "teacher": "沈丙",
+          "note": null,
+          "blocks": [
+            { "dayOfWeek": 6, "startPeriod": 3, "endPeriod": 4, "startWeek": 2, "endWeek": 16, "weekType": "EVEN", "location": "教4-402" }
+          ]
+        },
+        {
+          "name": "标记用空格分开",
+          "teacher": "卫己",
+          "note": null,
+          "blocks": [
+            { "dayOfWeek": 7, "startPeriod": 1, "endPeriod": 2, "startWeek": 2, "endWeek": 16, "weekType": "EVEN", "location": "教4-405" }
+          ]
+        }
+      ]
+    }
+  ]
+}

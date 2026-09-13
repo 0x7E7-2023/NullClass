@@ -1,0 +1,102 @@
+{
+  "_note": "合成用例（不是真实抓取）：形状照上游 XZHMU/xzhmu_01.js 实际读取的字段编 —— table#kb.curriculum 的格子、格子的网格列号与 rowSpan、格子自带的星期属性 td[w]、以及 .C_kc_subject 里的 span 三段（课名/周次/地点）+ 夹在周次与地点之间的教师名。姓名学号等已脱敏。",
+  "url": "https://ehall.xzhmu.edu.cn/gsapp/sys/wdkb/*default/index.do",
+  "title": "个人课表",
+  "today": "2026-09-13",
+  "tableFound": true,
+  "currentWeek": 3,
+  "currentWeekSource": "ask",
+  "semesterLabels": ["2026-2027学年第一学期"],
+  "rows": [
+    {
+      "row": 0,
+      "cells": [
+        { "col": 0, "colSpan": 1, "rowSpan": 1, "day": "", "hidden": false, "text": "节次", "blocks": [] },
+        { "col": 1, "colSpan": 1, "rowSpan": 1, "day": "", "hidden": false, "text": "星期一", "blocks": [] },
+        { "col": 2, "colSpan": 1, "rowSpan": 1, "day": "", "hidden": false, "text": "星期二", "blocks": [] },
+        { "col": 3, "colSpan": 1, "rowSpan": 1, "day": "", "hidden": false, "text": "星期三", "blocks": [] },
+        { "col": 4, "colSpan": 1, "rowSpan": 1, "day": "", "hidden": false, "text": "星期四", "blocks": [] },
+        { "col": 5, "colSpan": 1, "rowSpan": 1, "day": "", "hidden": false, "text": "星期五", "blocks": [] },
+        { "col": 6, "colSpan": 1, "rowSpan": 1, "day": "", "hidden": false, "text": "星期六", "blocks": [] },
+        { "col": 7, "colSpan": 1, "rowSpan": 1, "day": "", "hidden": false, "text": "星期日", "blocks": [] }
+      ]
+    },
+    {
+      "row": 1,
+      "cells": [
+        { "col": 0, "colSpan": 1, "rowSpan": 1, "day": "", "hidden": false, "text": "1", "blocks": [] },
+        { "col": 1, "colSpan": 1, "rowSpan": 2, "day": "Monday", "hidden": false, "text": "高等数学A(一)1-16周教1-101张三",
+          "blocks": [ { "spans": ["高等数学A(一)", "1-16周", "教1-101"], "teacher": "张三" } ] }
+      ]
+    },
+    {
+      "row": 2,
+      "cells": [
+        { "col": 0, "colSpan": 1, "rowSpan": 1, "day": "", "hidden": false, "text": "2", "blocks": [] },
+        { "col": 2, "colSpan": 1, "rowSpan": 1, "day": "Tuesday", "hidden": true, "text": "大学英语1-16周教学楼B202李娜",
+          "blocks": [ { "spans": ["大学英语", "1-16周", "教学楼B202"], "teacher": "李娜" } ] },
+        { "col": 3, "colSpan": 1, "rowSpan": 1, "day": "Wednesday", "hidden": false, "text": "大学英语1-16周教学楼B202李娜",
+          "blocks": [ { "spans": ["大学英语", "1-16周", "教学楼B202"], "teacher": "李娜" } ] }
+      ]
+    },
+    {
+      "row": 3,
+      "cells": [
+        { "col": 0, "colSpan": 1, "rowSpan": 1, "day": "", "hidden": false, "text": "3", "blocks": [] },
+        { "col": 1, "colSpan": 1, "rowSpan": 1, "day": "Monday", "hidden": false, "text": "", "blocks": [] },
+        { "col": 2, "colSpan": 1, "rowSpan": 1, "day": "Tuesday", "hidden": false, "text": "形势与政策2-5周教学楼C101赵敏大学生就业指导6-7周教学楼C102孙磊",
+          "blocks": [
+            { "spans": ["形势与政策", "2-5周", "教学楼C101"], "teacher": "赵敏" },
+            { "spans": ["大学生就业指导", "6-7周", "教学楼C102"], "teacher": "孙磊" }
+          ] }
+      ]
+    },
+    {
+      "row": 4,
+      "cells": [
+        { "col": 0, "colSpan": 1, "rowSpan": 1, "day": "", "hidden": false, "text": "4", "blocks": [] }
+      ]
+    },
+    {
+      "row": 5,
+      "cells": [
+        { "col": 0, "colSpan": 1, "rowSpan": 1, "day": "", "hidden": false, "text": "5", "blocks": [] },
+        { "col": 1, "colSpan": 1, "rowSpan": 1, "day": "Monday", "hidden": false, "text": "", "blocks": [] },
+        { "col": 2, "colSpan": 1, "rowSpan": 1, "day": "Tuesday", "hidden": false, "text": "", "blocks": [] },
+        { "col": 3, "colSpan": 1, "rowSpan": 1, "day": "Wednesday", "hidden": false, "text": "", "blocks": [] },
+        { "col": 4, "colSpan": 1, "rowSpan": 1, "day": "Thursday", "hidden": false, "text": "程序设计基础2-5周机房A303陈晨",
+          "blocks": [ { "spans": ["程序设计基础", "2-5周", "机房A303"], "teacher": "陈晨" } ] }
+      ]
+    },
+    {
+      "row": 6,
+      "cells": [
+        { "col": 0, "colSpan": 1, "rowSpan": 1, "day": "", "hidden": false, "text": "6", "blocks": [] },
+        { "col": 1, "colSpan": 1, "rowSpan": 1, "day": "Monday", "hidden": false, "text": "", "blocks": [] },
+        { "col": 2, "colSpan": 1, "rowSpan": 1, "day": "Tuesday", "hidden": false, "text": "", "blocks": [] },
+        { "col": 3, "colSpan": 1, "rowSpan": 1, "day": "Wednesday", "hidden": false, "text": "", "blocks": [] },
+        { "col": 4, "colSpan": 1, "rowSpan": 1, "day": "Thursday", "hidden": false, "text": "程序设计基础2-5周机房A303陈晨",
+          "blocks": [ { "spans": ["程序设计基础", "2-5周", "机房A303"], "teacher": "陈晨" } ] }
+      ]
+    },
+    {
+      "row": 7,
+      "cells": [
+        { "col": 0, "colSpan": 1, "rowSpan": 1, "day": "", "hidden": false, "text": "7", "blocks": [] }
+      ]
+    },
+    {
+      "row": 8,
+      "cells": [
+        { "col": 0, "colSpan": 1, "rowSpan": 1, "day": "", "hidden": false, "text": "8", "blocks": [] },
+        { "col": 1, "colSpan": 1, "rowSpan": 1, "day": "Monday", "hidden": false, "text": "", "blocks": [] },
+        { "col": 2, "colSpan": 1, "rowSpan": 1, "day": "Tuesday", "hidden": false, "text": "", "blocks": [] },
+        { "col": 3, "colSpan": 1, "rowSpan": 1, "day": "Wednesday", "hidden": false, "text": "", "blocks": [] },
+        { "col": 4, "colSpan": 1, "rowSpan": 1, "day": "Thursday", "hidden": false, "text": "", "blocks": [] },
+        { "col": 5, "colSpan": 1, "rowSpan": 1, "day": "Friday", "hidden": false, "text": "", "blocks": [] },
+        { "col": 6, "colSpan": 1, "rowSpan": 1, "day": "Saturday", "hidden": false, "text": "大学体育（一）1-16周体育馆刘洋",
+          "blocks": [ { "spans": ["大学体育（一）", "1-16周", "体育馆"], "teacher": "刘洋" } ] }
+      ]
+    }
+  ]
+}

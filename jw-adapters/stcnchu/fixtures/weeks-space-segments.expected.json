@@ -1,0 +1,186 @@
+{
+  "specVersion": 1,
+  "kind": "schedule",
+  "ocrAssisted": false,
+  "warnings": [
+    "开学日期无法从教务获取，已按最近的周一（2026-09-07）推算，请在「学期管理」里核对",
+    "教务页面不提供学期总周数：已按 20 周起算，请在「学期管理」里核对",
+    "作息时间用的是适配器内置的「共青城校区·冬令时（第一学期）」12 节表（教务页面不提供，上游是让用户选校区）：上海路校区与另一个季节的第 5-12 节时间不同，请到「学期管理」里核对"
+  ],
+  "terms": [
+    {
+      "name": "2026-2027学年第一学期",
+      "firstDay": "2026-09-07",
+      "totalWeeks": 20,
+      "periodTimes": [
+        {
+          "periodIndex": 1,
+          "start": "08:30",
+          "end": "09:10"
+        },
+        {
+          "periodIndex": 2,
+          "start": "09:15",
+          "end": "09:55"
+        },
+        {
+          "periodIndex": 3,
+          "start": "10:05",
+          "end": "10:45"
+        },
+        {
+          "periodIndex": 4,
+          "start": "10:50",
+          "end": "11:30"
+        },
+        {
+          "periodIndex": 5,
+          "start": "13:20",
+          "end": "14:00"
+        },
+        {
+          "periodIndex": 6,
+          "start": "14:05",
+          "end": "14:45"
+        },
+        {
+          "periodIndex": 7,
+          "start": "14:55",
+          "end": "15:35"
+        },
+        {
+          "periodIndex": 8,
+          "start": "15:40",
+          "end": "16:20"
+        },
+        {
+          "periodIndex": 9,
+          "start": "19:00",
+          "end": "19:40"
+        },
+        {
+          "periodIndex": 10,
+          "start": "19:45",
+          "end": "20:25"
+        },
+        {
+          "periodIndex": 11,
+          "start": "20:30",
+          "end": "21:10"
+        },
+        {
+          "periodIndex": 12,
+          "start": "21:15",
+          "end": "21:55"
+        }
+      ],
+      "courses": [
+        {
+          "name": "高等数学A(一)",
+          "teacher": "刘敏",
+          "note": null,
+          "blocks": [
+            {
+              "dayOfWeek": 1,
+              "startPeriod": 1,
+              "endPeriod": 2,
+              "startWeek": 1,
+              "endWeek": 3,
+              "weekType": "ALL",
+              "location": "博学楼A101"
+            },
+            {
+              "dayOfWeek": 1,
+              "startPeriod": 1,
+              "endPeriod": 2,
+              "startWeek": 5,
+              "endWeek": 9,
+              "weekType": "ALL",
+              "location": "博学楼A101"
+            }
+          ]
+        },
+        {
+          "name": "大学英语（二）",
+          "teacher": "王芳",
+          "note": null,
+          "blocks": [
+            {
+              "dayOfWeek": 3,
+              "startPeriod": 3,
+              "endPeriod": 4,
+              "startWeek": 1,
+              "endWeek": 15,
+              "weekType": "ODD",
+              "location": "博学楼B203"
+            }
+          ]
+        },
+        {
+          "name": "计算机应用基础",
+          "teacher": "李强",
+          "note": null,
+          "blocks": [
+            {
+              "dayOfWeek": 4,
+              "startPeriod": 3,
+              "endPeriod": 4,
+              "startWeek": 2,
+              "endWeek": 16,
+              "weekType": "EVEN",
+              "location": "实验楼C305"
+            }
+          ]
+        },
+        {
+          "name": "大学物理",
+          "teacher": null,
+          "note": null,
+          "blocks": [
+            {
+              "dayOfWeek": 1,
+              "startPeriod": 5,
+              "endPeriod": 6,
+              "startWeek": 1,
+              "endWeek": 14,
+              "weekType": "ALL",
+              "location": "博学楼A301"
+            }
+          ]
+        },
+        {
+          "name": "中国近现代史纲要",
+          "teacher": "周红",
+          "note": null,
+          "blocks": [
+            {
+              "dayOfWeek": 5,
+              "startPeriod": 7,
+              "endPeriod": 8,
+              "startWeek": 2,
+              "endWeek": 18,
+              "weekType": "ALL",
+              "location": "博学楼D102"
+            }
+          ]
+        },
+        {
+          "name": "大学生心理健康教育",
+          "teacher": "赵敏",
+          "note": null,
+          "blocks": [
+            {
+              "dayOfWeek": 3,
+              "startPeriod": 9,
+              "endPeriod": 10,
+              "startWeek": 3,
+              "endWeek": 12,
+              "weekType": "ALL",
+              "location": "大学生活动中心"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
