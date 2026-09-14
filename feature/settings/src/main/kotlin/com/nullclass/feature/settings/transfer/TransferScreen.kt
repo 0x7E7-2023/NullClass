@@ -342,7 +342,7 @@ private fun ImportPreviewDialog(
                 }
                 if (preview.activateTermId != null) {
                     Text(
-                        "WakeUp 课表将作为新学期导入并设为当前学期。",
+                        "导入后设为当前学期，今日 / 课表 / 小组件立即切到它。",
                         style = MaterialTheme.typography.bodySmall,
                     )
                 }

@@ -46,7 +46,7 @@ data class ImportPreview(
      * 「这是那个适配器说的，不是空课说的」—— 否则脚本逐字复制宿主文案就能冒充我们。
      */
     val adapterNotes: List<String> = emptyList(),
-    /** WakeUp 导入作为新学期，合并后设为当前学期。 */
+    /** WakeUp 导入作为新学期，合并后设为当前学期（教务导入的学期由 ImportAligner 在合并里激活）。 */
     val activateTermId: String? = null,
     /**
      * 与本地库对比的删除预警：导入文档里携带的、会按 LWW 赢过本地的墓碑数
@@ -193,8 +193,12 @@ class TransferViewModel @Inject constructor(
         parseRaw({ QrPayload.decode(payload) }, source = "二维码")
     }
 
-    /** 教务导入回传的 ScheduleDocument JSON → 预览（复用同一条管线）。 */
-    /** 教务提取回来的文档 → 预览。[adapterNotes] 是适配器要求重点核对的话，原样显示（标明来源）。 */
+    /**
+     * 教务提取回来的文档 → 预览。[adapterNotes] 是适配器要求重点核对的话，原样显示（标明来源）。
+     *
+     * 「设为当前学期」不在这里决定：合并时 [com.nullclass.sync.ImportAligner] 按来源
+     * （教务 = 开始用新学期，备份/扫码 = 不动）处理。
+     */
     fun parseExtractedDocument(json: String, source: String, adapterNotes: List<String> = emptyList()) {
         parseRaw({ NullClassCodec.decode(json) }, source = source, adapterNotes = adapterNotes)
     }
@@ -278,6 +282,7 @@ class TransferViewModel @Inject constructor(
                 // dump→merge→apply 交错互相覆盖（尤其 periodTimes 整表替换，B9）
                 val result = syncManager.mergeImport(preview.document)
                 // WakeUp 作为新学期导入 → 设为当前学期方便立即查看
+                // （教务导入的学期由 ImportAligner 在合并里标成当前；备份/扫码不动用户的当前学期）
                 preview.activateTermId?.let { termId ->
                     result.merged.terms.firstOrNull { it.id == termId }?.let { termRepository.setCurrent(it.id) }
                 }
