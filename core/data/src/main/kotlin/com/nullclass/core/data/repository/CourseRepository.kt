@@ -3,6 +3,7 @@ package com.nullclass.core.data.repository
 import androidx.room.withTransaction
 import com.nullclass.core.data.db.NullClassDatabase
 import com.nullclass.core.data.db.dao.CourseDao
+import com.nullclass.core.data.db.dao.ExamDao
 import com.nullclass.core.data.db.entity.ScheduleBlockEntity
 import com.nullclass.core.model.Course
 import com.nullclass.core.model.CourseWithBlocks
@@ -48,6 +49,7 @@ interface CourseRepository {
 class CourseRepositoryImpl @Inject constructor(
     private val db: NullClassDatabase,
     private val courseDao: CourseDao,
+    private val examDao: ExamDao,
 ) : CourseRepository {
 
     override fun observeSchedule(termId: String): Flow<List<CourseWithBlocks>> =
@@ -100,6 +102,7 @@ class CourseRepositoryImpl @Inject constructor(
         db.withTransaction {
             courseDao.tombstoneCourse(courseId, now)
             courseDao.tombstoneBlocksOfCourse(courseId, now)
+            examDao.tombstoneOfCourse(courseId, now)
         }
     }
 

@@ -1,6 +1,7 @@
 package com.nullclass.app.notification
 
 import com.nullclass.core.data.repository.CourseRepository
+import com.nullclass.core.data.repository.ExamRepository
 import com.nullclass.core.data.repository.TermRepository
 import com.nullclass.core.data.prefs.UserPreferencesRepository
 import kotlinx.coroutines.CoroutineScope
@@ -16,13 +17,14 @@ import kotlin.coroutines.CoroutineContext
 import kotlinx.coroutines.Dispatchers
 
 /**
- * 提醒控制器：Application 常驻，观察课表/学期/偏好变化 → 防抖 → 全量重排。
+ * 提醒控制器：Application 常驻，观察课表/考试/学期/偏好变化 → 防抖 → 全量重排。
  */
 @Singleton
 class ReminderController @Inject constructor(
     private val scheduler: ReminderScheduler,
     private val termRepository: TermRepository,
     private val courseRepository: CourseRepository,
+    private val examRepository: ExamRepository,
     private val userPrefs: UserPreferencesRepository,
 ) {
 
@@ -31,9 +33,17 @@ class ReminderController @Inject constructor(
             combine(
                 termRepository.observeCurrent(),
                 userPrefs.reminderLeadMinutes,
-            ) { term, lead -> term to lead }
-                .flatMapLatest { (term, _) ->
-                    if (term == null) flowOf(emptyList()) else courseRepository.observeSchedule(term.id)
+                userPrefs.examReminderLeadMinutes,
+            ) { term, classLead, examLead -> Triple(term, classLead, examLead) }
+                .flatMapLatest { (term, _, _) ->
+                    if (term == null) {
+                        flowOf(Unit)
+                    } else {
+                        combine(
+                            courseRepository.observeSchedule(term.id),
+                            examRepository.observeForTerm(term.id),
+                        ) { _, _ -> Unit }
+                    }
                 }
                 // 编辑保存连发多条通知，防抖合并
                 .debounce(800)

@@ -74,6 +74,7 @@ object SyncEngine {
             terms = mergedTerms,
             courses = mergeByKey(local.courses, remote.courses, key = { it.id }, updatedAt = { it.updatedAt }),
             blocks = mergeByKey(local.blocks, remote.blocks, key = { it.id }, updatedAt = { it.updatedAt }),
+            exams = mergeByKey(local.exams, remote.exams, key = { it.id }, updatedAt = { it.updatedAt }),
             periodTimes = mergePeriodTimes(local, remote),
         )
     }

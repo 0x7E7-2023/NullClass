@@ -4,6 +4,8 @@ import android.content.Context
 import android.net.Uri
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.nullclass.core.data.repository.CourseRepository
+import com.nullclass.core.data.repository.ExamRepository
 import com.nullclass.core.data.repository.TermRepository
 import com.nullclass.importer.NullClassCodec
 import com.nullclass.importer.QrPayload
@@ -27,6 +29,7 @@ data class TermSummary(
     val totalWeeks: Int,
     val courseCount: Int,
     val blockCount: Int,
+    val examCount: Int = 0,
 )
 
 /** 导入预览：解析成功 → 用户确认合并。 */
@@ -67,6 +70,8 @@ class TransferViewModel @Inject constructor(
     private val codec: SnapshotCodec,
     private val syncManager: SyncManager,
     private val termRepository: TermRepository,
+    private val courseRepository: CourseRepository,
+    private val examRepository: ExamRepository,
 ) : ViewModel() {
 
     private val _state = MutableStateFlow(TransferUiState())
@@ -82,6 +87,12 @@ class TransferViewModel @Inject constructor(
     suspend fun suggestedFileName(): String {
         val name = termRepository.getCurrent()?.name?.replace(Regex("[\\\\/:*?\"<>|]"), "-") ?: "schedule"
         return "nullclass-$name.nullclass"
+    }
+
+    /** 当前学期的日历导出文件名。日历文件只导出当前学期，避免把历史学期混进系统日历。 */
+    suspend fun suggestedIcsFileName(): String {
+        val name = termRepository.getCurrent()?.name?.replace(Regex("[\\\\/:*?\"<>|]"), "-") ?: "schedule"
+        return "nullclass-$name.ics"
     }
 
     /** 导出全部数据（含所有学期与墓碑，与同步快照同构）。 */
@@ -102,6 +113,45 @@ class TransferViewModel @Inject constructor(
                 _state.update { it.copy(busy = false, message = "导出失败：${e.message}", messageIsError = true) }
             }
         }
+    }
+
+    /** 生成当前学期的标准 iCalendar 文件并写入 SAF 目标。 */
+    fun writeIcsTo(uri: Uri) {
+        viewModelScope.launch {
+            _state.update { it.copy(busy = true, message = null) }
+            try {
+                val result = withContext(Dispatchers.IO) { buildCurrentTermIcs() }
+                withContext(Dispatchers.IO) {
+                    appContext.contentResolver.openOutputStream(uri)?.use { out ->
+                        out.write(result.content.toByteArray(Charsets.UTF_8))
+                    } ?: error("无法打开目标文件")
+                }
+                val skipped = if (result.skippedBlockCount == 0) {
+                    ""
+                } else {
+                    "，跳过 ${result.skippedBlockCount} 条缺少完整节次时间的安排"
+                }
+                _state.update {
+                    it.copy(
+                        busy = false,
+                        message = "已导出日历文件：${result.courseEventCount} 个课程安排、${result.examEventCount} 场考试$skipped",
+                        messageIsError = false,
+                    )
+                }
+            } catch (e: Exception) {
+                _state.update { it.copy(busy = false, message = "日历导出失败：${e.message}", messageIsError = true) }
+            }
+        }
+    }
+
+    private suspend fun buildCurrentTermIcs(): IcsExportResult {
+        val term = termRepository.getCurrent() ?: error("当前没有学期")
+        return IcsCalendar.build(
+            term = term,
+            schedule = courseRepository.getSchedule(term.id),
+            periodTimes = termRepository.getPeriodTimes(term.id),
+            exams = examRepository.getForTerm(term.id),
+        )
     }
 
     /** 把导出内容写到 cacheDir/shared/ 供系统分享面板发送。 @return FileProvider 可用的文件。 */
@@ -203,6 +253,7 @@ class TransferViewModel @Inject constructor(
                                     totalWeeks = result.term.totalWeeks,
                                     courseCount = result.courses.size,
                                     blockCount = result.blocks.size,
+                                    examCount = 0,
                                 ),
                             ),
                             warnings = result.warnings,
@@ -264,11 +315,16 @@ class TransferViewModel @Inject constructor(
                 return
             }
             val summaries = document.terms.filter { it.deletedAt == null }.map { term ->
+                val courseIds = document.courses
+                    .filter { it.deletedAt == null && it.termId == term.id }
+                    .map { it.id }
+                    .toSet()
                 TermSummary(
                     name = term.name,
                     totalWeeks = term.totalWeeks,
                     courseCount = document.courses.count { it.deletedAt == null && it.termId == term.id },
                     blockCount = document.blocks.count { it.deletedAt == null && it.termId == term.id },
+                    examCount = document.exams.count { it.deletedAt == null && it.courseId in courseIds },
                 )
             }
             viewModelScope.launch {
@@ -313,6 +369,7 @@ class TransferViewModel @Inject constructor(
         return pending(document.timetables, local.timetables, { it.id }, { it.deletedAt != null }) +
             pending(document.terms, local.terms, { it.id }, { it.deletedAt != null }) +
             pending(document.courses, local.courses, { it.id }, { it.deletedAt != null }) +
-            pending(document.blocks, local.blocks, { it.id }, { it.deletedAt != null })
+            pending(document.blocks, local.blocks, { it.id }, { it.deletedAt != null }) +
+            pending(document.exams, local.exams, { it.id }, { it.deletedAt != null })
     }
 }

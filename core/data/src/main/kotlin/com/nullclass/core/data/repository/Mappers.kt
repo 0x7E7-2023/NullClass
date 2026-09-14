@@ -2,12 +2,16 @@ package com.nullclass.core.data.repository
 
 import com.nullclass.core.data.db.entity.CourseEntity
 import com.nullclass.core.data.db.entity.CourseWithBlocksEntity
+import com.nullclass.core.data.db.entity.ExamEntity
+import com.nullclass.core.data.db.entity.ExamWithCourseEntity
 import com.nullclass.core.data.db.entity.PeriodTimeEntity
 import com.nullclass.core.data.db.entity.ScheduleBlockEntity
 import com.nullclass.core.data.db.entity.TermEntity
 import com.nullclass.core.data.db.entity.TimetableEntity
 import com.nullclass.core.model.Course
 import com.nullclass.core.model.CourseWithBlocks
+import com.nullclass.core.model.Exam
+import com.nullclass.core.model.ExamWithCourse
 import com.nullclass.core.model.PeriodTime
 import com.nullclass.core.model.ScheduleBlock
 import com.nullclass.core.model.Term
@@ -109,4 +113,35 @@ internal fun PeriodTime.toEntity(updatedAt: Long) = PeriodTimeEntity(
 internal fun CourseWithBlocksEntity.toModel() = CourseWithBlocks(
     course = course.toModel(),
     blocks = blocks.filter { it.deletedAt == null }.map { it.toModel() },
+)
+
+internal fun ExamEntity.toModel() = Exam(
+    id = id,
+    courseId = courseId,
+    title = title,
+    dateEpochDay = dateEpochDay,
+    startMinuteOfDay = startMinuteOfDay,
+    endMinuteOfDay = endMinuteOfDay,
+    location = location,
+    seat = seat,
+    note = note,
+)
+
+internal fun Exam.toEntity(createdAt: Long, updatedAt: Long) = ExamEntity(
+    id = id,
+    courseId = courseId,
+    title = title,
+    dateEpochDay = dateEpochDay,
+    startMinuteOfDay = startMinuteOfDay,
+    endMinuteOfDay = endMinuteOfDay,
+    location = location,
+    seat = seat,
+    note = note,
+    createdAt = createdAt,
+    updatedAt = updatedAt,
+)
+
+internal fun ExamWithCourseEntity.toModel() = ExamWithCourse(
+    exam = exam.toModel(),
+    course = course.toModel(),
 )

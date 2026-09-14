@@ -22,7 +22,13 @@ object ReminderNotifier {
      * 发一条提醒通知。未授权 POST_NOTIFICATIONS 或投递异常时返回 false（不落「已发送」，
      * 之后授权了还能由迟发补发路径补上）。
      */
-    fun post(context: Context, tag: String, title: String, text: String): Boolean {
+    fun post(
+        context: Context,
+        tag: String,
+        title: String,
+        text: String,
+        channelId: String = NotificationChannels.CLASS_REMINDER,
+    ): Boolean {
         if (ContextCompat.checkSelfPermission(context, Manifest.permission.POST_NOTIFICATIONS) !=
             PackageManager.PERMISSION_GRANTED
         ) {
@@ -41,7 +47,7 @@ object ReminderNotifier {
             }
         val notification: Notification = NotificationCompat.Builder(
             context,
-            NotificationChannels.CLASS_REMINDER,
+            channelId,
         )
             .setSmallIcon(com.nullclass.app.R.drawable.ic_notification)
             .setContentTitle(title)

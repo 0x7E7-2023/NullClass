@@ -4,13 +4,17 @@ import android.content.Context
 import androidx.room.Room
 import com.nullclass.core.data.db.NullClassDatabase
 import com.nullclass.core.data.db.MIGRATION_2_3
+import com.nullclass.core.data.db.MIGRATION_3_4
 import com.nullclass.core.data.db.dao.CourseDao
+import com.nullclass.core.data.db.dao.ExamDao
 import com.nullclass.core.data.db.dao.PeriodTimeDao
 import com.nullclass.core.data.db.dao.SyncStateDao
 import com.nullclass.core.data.db.dao.TermDao
 import com.nullclass.core.data.db.dao.TimetableDao
 import com.nullclass.core.data.repository.CourseRepository
 import com.nullclass.core.data.repository.CourseRepositoryImpl
+import com.nullclass.core.data.repository.ExamRepository
+import com.nullclass.core.data.repository.ExamRepositoryImpl
 import com.nullclass.core.data.repository.TermRepository
 import com.nullclass.core.data.repository.TermRepositoryImpl
 import com.nullclass.core.data.repository.TimetableRepository
@@ -38,6 +42,7 @@ internal object DataModule {
             // v2 已发布上线：漏写迁移必须当场崩，绝不能静默清空用户的课表
             // （v1→v2 的破坏性迁移只服务过没有存量的开发期，随 v3 一并移除）
             .addMigrations(MIGRATION_2_3)
+            .addMigrations(MIGRATION_3_4)
             .build()
 
     @Provides
@@ -48,6 +53,9 @@ internal object DataModule {
 
     @Provides
     fun provideCourseDao(db: NullClassDatabase): CourseDao = db.courseDao()
+
+    @Provides
+    fun provideExamDao(db: NullClassDatabase): ExamDao = db.examDao()
 
     @Provides
     fun providePeriodTimeDao(db: NullClassDatabase): PeriodTimeDao = db.periodTimeDao()
@@ -62,6 +70,9 @@ internal interface RepositoryModule {
 
     @Binds
     fun bindCourseRepository(impl: CourseRepositoryImpl): CourseRepository
+
+    @Binds
+    fun bindExamRepository(impl: ExamRepositoryImpl): ExamRepository
 
     @Binds
     fun bindTermRepository(impl: TermRepositoryImpl): TermRepository

@@ -80,6 +80,7 @@ dependencies {
     implementation(project(":feature:schedule"))
     implementation(project(":feature:edit"))
     implementation(project(":feature:settings"))
+    implementation(project(":feature:exam"))
     implementation(project(":widget"))
     implementation(project(":importer"))
     implementation(project(":sync"))

@@ -16,7 +16,7 @@ import javax.inject.Singleton
 
 private val Context.userPrefs by preferencesDataStore(name = "user_prefs")
 
-/** 用户偏好（提醒提前量等）。与 WebDAV 凭证（:sync）分库存储。 */
+/** 用户偏好（课程/考试提醒提前量等）。与 WebDAV 凭证（:sync）分库存储。 */
 @Singleton
 class UserPreferencesRepository @Inject constructor(
     @ApplicationContext private val context: Context,
@@ -25,10 +25,12 @@ class UserPreferencesRepository @Inject constructor(
     private object Keys {
         val ACTIVE_TIMETABLE_ID = stringPreferencesKey("active_timetable_id")
         val REMINDER_LEAD_MINUTES = intPreferencesKey("reminder_lead_minutes")
+        val EXAM_REMINDER_LEAD_MINUTES = intPreferencesKey("exam_reminder_lead_minutes")
         val NOTIFICATION_PERMISSION_ASKED = booleanPreferencesKey("notification_permission_asked")
         val SHOW_WEEKEND = booleanPreferencesKey("show_weekend")
         val SHOW_TIME_IN_CARDS = booleanPreferencesKey("show_time_in_cards")
         val SHOW_NOW_LINE = booleanPreferencesKey("show_now_line")
+        val SHOW_GRID_LINES = booleanPreferencesKey("show_grid_lines")
         val SHOW_OTHER_WEEK_COURSES = booleanPreferencesKey("show_other_week_courses")
         val WIDGET_FONT_SIZE = stringPreferencesKey("widget_font_size")
         val SENT_REMINDER_KEYS = stringSetPreferencesKey("sent_reminder_keys")
@@ -54,6 +56,18 @@ class UserPreferencesRepository @Inject constructor(
     suspend fun setReminderLeadMinutes(value: Int) {
         val clamped = value.coerceIn(0, 120)
         context.userPrefs.edit { it[Keys.REMINDER_LEAD_MINUTES] = clamped }
+    }
+
+    /** 考试提醒提前量；0 = 关闭，默认考试前 1 天。 */
+    val examReminderLeadMinutes: Flow<Int> =
+        context.userPrefs.data.map {
+            (it[Keys.EXAM_REMINDER_LEAD_MINUTES] ?: DEFAULT_EXAM_REMINDER_LEAD_MINUTES)
+                .coerceIn(0, MAX_EXAM_REMINDER_LEAD_MINUTES)
+        }
+
+    suspend fun setExamReminderLeadMinutes(value: Int) {
+        val clamped = value.coerceIn(0, MAX_EXAM_REMINDER_LEAD_MINUTES)
+        context.userPrefs.edit { it[Keys.EXAM_REMINDER_LEAD_MINUTES] = clamped }
     }
 
     /** 通知权限引导是否已展示过（一次性引导，拒绝不打扰）。 */
@@ -88,6 +102,14 @@ class UserPreferencesRepository @Inject constructor(
         context.userPrefs.edit { it[Keys.SHOW_NOW_LINE] = value }
     }
 
+    /** 周视图是否显示每个节次与星期列的网格线。默认关闭。 */
+    val showGridLines: Flow<Boolean> =
+        context.userPrefs.data.map { it[Keys.SHOW_GRID_LINES] ?: false }
+
+    suspend fun setShowGridLines(value: Boolean) {
+        context.userPrefs.edit { it[Keys.SHOW_GRID_LINES] = value }
+    }
+
     /** 周视图是否在当周空着的时段里，把「别的周要上」的课以灰色显示。默认关闭。 */
     val showOtherWeekCourses: Flow<Boolean> =
         context.userPrefs.data.map { it[Keys.SHOW_OTHER_WEEK_COURSES] ?: false }
@@ -105,7 +127,7 @@ class UserPreferencesRepository @Inject constructor(
     }
 
     /**
-     * 已实际发出的提醒通知 tag 集合（「blockId:startAt」），迟发补发用它去重，
+     * 已实际发出的提醒通知 tag 集合（课程/考试各自的 reminder tag），迟发补发用它去重，
      * 防止每次重排都复活用户已划掉的通知。写入时顺手清掉 24h 前的旧键，集合不会无限膨胀。
      */
     val sentReminderKeys: Flow<Set<String>> =
@@ -126,6 +148,8 @@ class UserPreferencesRepository @Inject constructor(
 
     companion object {
         const val DEFAULT_LEAD_MINUTES = 15
+        const val DEFAULT_EXAM_REMINDER_LEAD_MINUTES = 24 * 60
+        private const val MAX_EXAM_REMINDER_LEAD_MINUTES = 7 * 24 * 60
         private const val PRUNE_AFTER_MS = 24L * 3600 * 1000
     }
 }

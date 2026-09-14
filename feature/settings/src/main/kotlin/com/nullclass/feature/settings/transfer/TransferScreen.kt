@@ -73,6 +73,12 @@ fun TransferScreen(
         uri?.let { viewModel.writeDocumentTo(uri) }
     }
 
+    val saveIcsLauncher = rememberLauncherForActivityResult(
+        ActivityResultContracts.CreateDocument("text/calendar"),
+    ) { uri ->
+        uri?.let { viewModel.writeIcsTo(uri) }
+    }
+
     val openFileLauncher = rememberLauncherForActivityResult(
         ActivityResultContracts.OpenDocument(),
     ) { uri ->
@@ -183,6 +189,26 @@ fun TransferScreen(
                 enabled = !state.busy,
                 modifier = Modifier.fillMaxWidth(),
             ) { Text("生成二维码") }
+
+            HorizontalDivider(modifier = Modifier.padding(vertical = 8.dp))
+
+            // ---- 日历导出 ----
+            Text("日历导出", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold)
+            Text(
+                "将当前学期的课程和考试导出为标准 .ics 文件，可用手机日历、Google 日历等打开。" +
+                    "这是一次性导出，课程或考试修改后需要重新导出。",
+                style = MaterialTheme.typography.bodySmall,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+            )
+            OutlinedButton(
+                onClick = {
+                    scope.launch {
+                        saveIcsLauncher.launch(viewModel.suggestedIcsFileName())
+                    }
+                },
+                enabled = !state.busy,
+                modifier = Modifier.fillMaxWidth(),
+            ) { Text("导出当前学期 .ics") }
 
             HorizontalDivider(modifier = Modifier.padding(vertical = 8.dp))
 
@@ -300,7 +326,8 @@ private fun ImportPreviewDialog(
                 )
                 preview.termSummaries.forEach { term ->
                     Text(
-                        "学期「${term.name}」· ${term.totalWeeks} 周 · ${term.courseCount} 门课 · ${term.blockCount} 条安排",
+                        "学期「${term.name}」· ${term.totalWeeks} 周 · ${term.courseCount} 门课 · " +
+                            "${term.blockCount} 条安排 · ${term.examCount} 场考试",
                         style = MaterialTheme.typography.bodyMedium,
                     )
                 }

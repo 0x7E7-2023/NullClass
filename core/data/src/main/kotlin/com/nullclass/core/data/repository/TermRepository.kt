@@ -3,6 +3,7 @@ package com.nullclass.core.data.repository
 import androidx.room.withTransaction
 import com.nullclass.core.data.db.NullClassDatabase
 import com.nullclass.core.data.db.dao.PeriodTimeDao
+import com.nullclass.core.data.db.dao.ExamDao
 import com.nullclass.core.data.db.dao.TermDao
 import com.nullclass.core.data.db.dao.TimetableDao
 import com.nullclass.core.data.prefs.UserPreferencesRepository
@@ -64,6 +65,7 @@ class TermRepositoryImpl @Inject constructor(
     private val db: NullClassDatabase,
     private val termDao: TermDao,
     private val periodTimeDao: PeriodTimeDao,
+    private val examDao: ExamDao,
     private val timetableDao: TimetableDao,
     private val userPreferences: UserPreferencesRepository,
 ) : TermRepository {
@@ -164,6 +166,7 @@ class TermRepositoryImpl @Inject constructor(
             termDao.tombstoneTerm(termId, now)
             termDao.tombstoneCoursesOfTerm(termId, now)
             termDao.tombstoneBlocksOfTerm(termId, now)
+            examDao.tombstoneOfTerm(termId, now)
             if (termDao.getCurrentOf(timetableId) == null) {
                 termDao.getLatestByFirstDay(timetableId)?.let { next ->
                     termDao.setCurrent(timetableId, next.id, now)

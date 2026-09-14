@@ -13,6 +13,7 @@ import kotlinx.serialization.Serializable
  * v2 起新增字段必须给默认值（codec 配置 encodeDefaults + ignoreUnknownKeys，旧版本可读可写）。
  * 「课表」（[TimetableDto] / [TermDto.timetableId]）就是按这个约定加的：
  * 旧版本写的快照里没有这些字段 → 归属为空 → 由 SyncEngine 解析到当前课表。
+ * 考试记录同样作为文档末尾的可选字段加入，旧版本读取时会得到空列表。
  */
 @Serializable
 data class ScheduleDocument(
@@ -24,6 +25,8 @@ data class ScheduleDocument(
     val courses: List<CourseDto>,
     val blocks: List<BlockDto>,
     val periodTimes: List<PeriodTimeDto>,
+    /** 课程考试；旧快照没有该字段时按空列表读取。 */
+    val exams: List<ExamDto> = emptyList(),
 ) {
     companion object {
         const val FORMAT_VERSION = 2
@@ -113,6 +116,23 @@ data class PeriodTimeDto(
     val endMinuteOfDay: Int,
     val session: Int,
     val updatedAt: Long,
+)
+
+/** 一门课程的一次考试；courseId 是唯一归属来源。 */
+@Serializable
+data class ExamDto(
+    val id: String,
+    val courseId: String,
+    val title: String,
+    val dateEpochDay: Long,
+    val startMinuteOfDay: Int? = null,
+    val endMinuteOfDay: Int? = null,
+    val location: String? = null,
+    val seat: String? = null,
+    val note: String? = null,
+    val createdAt: Long,
+    val updatedAt: Long,
+    val deletedAt: Long? = null,
 )
 
 /** manifest.json：WebDAV 远端版本指针（同步专用，不进 .nullclass 文件）。 */

@@ -47,9 +47,17 @@ class SettingsViewModel @Inject constructor(
     val lastSyncAt: StateFlow<Long?> = syncSettings.lastSyncAtFlow
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), null)
 
-    /** 提前提醒分钟数（0 = 关闭）。 */
+    /** 课程提醒提前量（0 = 关闭）。 */
     val reminderLeadMinutes: StateFlow<Int> = userPreferences.reminderLeadMinutes
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), UserPreferencesRepository.DEFAULT_LEAD_MINUTES)
+
+    /** 考试提醒提前量（0 = 关闭）。 */
+    val examReminderLeadMinutes: StateFlow<Int> = userPreferences.examReminderLeadMinutes
+        .stateIn(
+            viewModelScope,
+            SharingStarted.WhileSubscribed(5_000),
+            UserPreferencesRepository.DEFAULT_EXAM_REMINDER_LEAD_MINUTES,
+        )
 
     /** 自动同步周期。 */
     val autoSyncInterval: StateFlow<AutoSyncInterval> = syncSettings.autoSyncInterval
@@ -65,6 +73,10 @@ class SettingsViewModel @Inject constructor(
 
     fun setReminderLeadMinutes(value: Int) {
         viewModelScope.launch { userPreferences.setReminderLeadMinutes(value) }
+    }
+
+    fun setExamReminderLeadMinutes(value: Int) {
+        viewModelScope.launch { userPreferences.setExamReminderLeadMinutes(value) }
     }
 
     fun setShowOtherWeekCourses(value: Boolean) {

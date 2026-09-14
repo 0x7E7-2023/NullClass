@@ -129,7 +129,7 @@ fun ProfileScreen(
                 EntryRow(
                     icon = Icons.Default.Settings,
                     title = "应用设置",
-                    subtitle = "WebDAV 同步、课前提醒、桌面小组件",
+                    subtitle = "WebDAV 同步、课程/考试提醒、桌面小组件",
                     onClick = onOpenSettings,
                 )
                 EntryRow(

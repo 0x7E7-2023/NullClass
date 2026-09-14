@@ -2,6 +2,7 @@ package com.nullclass.sync
 
 import com.nullclass.importer.BlockDto
 import com.nullclass.importer.CourseDto
+import com.nullclass.importer.ExamDto
 import com.nullclass.importer.ManifestDto
 import com.nullclass.importer.PeriodTimeDto
 import com.nullclass.core.model.DefaultTimetable
@@ -46,10 +47,11 @@ class SyncEngineTest {
         blocks: List<BlockDto> = emptyList(),
         periodTimes: List<PeriodTimeDto> = emptyList(),
         timetables: List<TimetableDto> = emptyList(),
+        exams: List<ExamDto> = emptyList(),
     ) = ScheduleDocument(
         deviceId = deviceId, generatedAt = now,
         timetables = timetables, terms = terms, courses = courses, blocks = blocks,
-        periodTimes = periodTimes,
+        periodTimes = periodTimes, exams = exams,
     )
 
     private fun timetable(
@@ -113,6 +115,31 @@ class SyncEngineTest {
 
         assertNull(merged.courses.single().deletedAt)
         assertEquals("restored", merged.courses.single().name)
+    }
+
+    @Test
+    fun `考试记录按 id 做 LWW 合并并传播删除`() {
+        fun exam(updatedAt: Long, deletedAt: Long? = null, title: String = "期末考试") = ExamDto(
+            id = "exam-1",
+            courseId = "course-1",
+            title = title,
+            dateEpochDay = 20800,
+            createdAt = 1,
+            updatedAt = updatedAt,
+            deletedAt = deletedAt,
+        )
+
+        val local = snapshot(exams = listOf(exam(updatedAt = 10, title = "旧名称")))
+        val remote = snapshot(deviceId = "remote", exams = listOf(exam(updatedAt = 20, deletedAt = 20)))
+        val merged = SyncEngine.merge(local, remote, now)
+
+        assertEquals(1, merged.exams.size)
+        assertEquals(20, merged.exams.single().deletedAt)
+
+        val newerLocal = snapshot(exams = listOf(exam(updatedAt = 30, title = "恢复后的考试")))
+        val restored = SyncEngine.merge(newerLocal, remote, now)
+        assertEquals("恢复后的考试", restored.exams.single().title)
+        assertEquals(null, restored.exams.single().deletedAt)
     }
 
     @Test

@@ -94,6 +94,32 @@ class NullClassCodecTest {
     }
 
     @Test
+    fun `考试关联课程并 round-trip 保真`() {
+        val doc = document().copy(
+            exams = listOf(
+                ExamDto(
+                    id = "exam-1",
+                    courseId = "c1",
+                    title = "期末考试",
+                    dateEpochDay = 20800,
+                    startMinuteOfDay = 9 * 60,
+                    endMinuteOfDay = 11 * 60,
+                    location = "A101",
+                    seat = "12",
+                    note = "带计算器",
+                    createdAt = 3,
+                    updatedAt = 4,
+                ),
+            ),
+        )
+
+        val decoded = NullClassCodec.decode(NullClassCodec.encode(doc))
+
+        assertEquals(doc, decoded)
+        assertEquals("c1", decoded.exams.single().courseId)
+    }
+
+    @Test
     fun `旧版本快照没有课表字段 - 照常读入，归属为空`() {
         // 0.8.1 及更早写出的文件：没有 timetables、没有 timetableId（SyncEngine 负责解析归属）
         val legacy = NullClassCodec.encode(document())

@@ -71,6 +71,8 @@ import com.nullclass.core.ui.theme.courseColor
 fun ScheduleScreen(
     onCreateCourse: () -> Unit,
     onEditCourse: (courseId: String) -> Unit,
+    onAddExam: (courseId: String) -> Unit,
+    onEditExam: (examId: String) -> Unit,
     onEditTerm: (termId: String?) -> Unit,
     viewModel: ScheduleViewModel = hiltViewModel(),
 ) {
@@ -235,6 +237,7 @@ fun ScheduleScreen(
                                 weekDays = weekDays,
                                 todayDayOfWeek = if (week == ready.todayWeek) ready.todayDayOfWeek else null,
                                 showTimeInCards = ready.showTimeInCards,
+                                showGridLines = ready.showGridLines,
                                 nowMinuteOfDay = if (week == ready.todayWeek && ready.showNowLine) nowMinute else null,
                                 onBlockClick = { detailBlock = it },
                                 otherWeekLayout = otherWeekLayout,
@@ -248,6 +251,8 @@ fun ScheduleScreen(
                     CourseDetailSheet(
                         placed = placed,
                         courseWithBlocks = courseWithBlocks,
+                        onAddExam = onAddExam,
+                        onEditExam = onEditExam,
                         onEdit = {
                             detailBlock = null
                             onEditCourse(placed.course.id)
@@ -308,6 +313,19 @@ fun ScheduleScreen(
                                 Row(
                                     modifier = Modifier
                                         .fillMaxWidth()
+                                        .clickable { viewModel.setShowGridLines(!ready.showGridLines) },
+                                    horizontalArrangement = Arrangement.SpaceBetween,
+                                    verticalAlignment = Alignment.CenterVertically,
+                                ) {
+                                    Text("显示网格线")
+                                    Checkbox(
+                                        checked = ready.showGridLines,
+                                        onCheckedChange = { viewModel.setShowGridLines(it) },
+                                    )
+                                }
+                                Row(
+                                    modifier = Modifier
+                                        .fillMaxWidth()
                                         .clickable { viewModel.setShowTimeInCards(!ready.showTimeInCards) },
                                     horizontalArrangement = Arrangement.SpaceBetween,
                                     verticalAlignment = Alignment.CenterVertically,
@@ -325,14 +343,7 @@ fun ScheduleScreen(
                                     horizontalArrangement = Arrangement.SpaceBetween,
                                     verticalAlignment = Alignment.CenterVertically,
                                 ) {
-                                    Column(Modifier.weight(1f)) {
-                                        Text("显示非本周课程")
-                                        Text(
-                                            "本周空着的时段，别的周要上的课用灰色标出来",
-                                            style = MaterialTheme.typography.bodySmall,
-                                            color = MaterialTheme.colorScheme.onSurfaceVariant,
-                                        )
-                                    }
+                                    Text("显示非本周课程", modifier = Modifier.weight(1f))
                                     Switch(
                                         checked = ready.showOtherWeek,
                                         onCheckedChange = { viewModel.setShowOtherWeek(it) },

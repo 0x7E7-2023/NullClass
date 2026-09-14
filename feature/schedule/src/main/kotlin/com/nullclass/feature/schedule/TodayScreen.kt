@@ -53,6 +53,8 @@ import com.nullclass.core.ui.theme.courseColor
 @Composable
 fun TodayScreen(
     onEditCourse: (courseId: String) -> Unit,
+    onAddExam: (courseId: String) -> Unit,
+    onEditExam: (examId: String) -> Unit,
     onEditTerm: (termId: String?) -> Unit,
     viewModel: TodayViewModel = hiltViewModel(),
 ) {
@@ -135,6 +137,8 @@ fun TodayScreen(
                     CourseDetailSheet(
                         placed = placed,
                         courseWithBlocks = ready.schedule.firstOrNull { it.course.id == placed.course.id },
+                        onAddExam = onAddExam,
+                        onEditExam = onEditExam,
                         onEdit = {
                             detailBlock = null
                             onEditCourse(placed.course.id)

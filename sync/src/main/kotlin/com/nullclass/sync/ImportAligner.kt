@@ -108,6 +108,11 @@ object ImportAligner {
             }
         }
 
+        // 考试跟随课程 ID：教务/WakeUp 每次会重铸课程 UUID，考试不能因此脱离原课程。
+        val alignedExams = scoped.exams.map { exam ->
+            exam.copy(courseId = courseIdMap[exam.courseId] ?: exam.courseId)
+        }
+
         // 节次表随学期走：termId 必须跟着重映射，否则 mergePeriodTimes 在新 ID 下取不到
         // 对应节次、又被「学期 updatedAt 较新」判给 remote，结果是整表被清空
         val alignedPeriodTimes = scoped.periodTimes.map { period ->
@@ -138,6 +143,14 @@ object ImportAligner {
                 blocks = local.blocks.map {
                     if (it.id in droppedBlockIds) it.copy(deletedAt = now, updatedAt = now) else it
                 },
+                // 课程被教务刷新作废时，挂在这门课上的考试也不能在同步后变成孤儿。
+                exams = local.exams.map {
+                    if (it.courseId in droppedCourseIds && it.deletedAt == null) {
+                        it.copy(deletedAt = now, updatedAt = now)
+                    } else {
+                        it
+                    }
+                },
             )
         }
 
@@ -147,6 +160,7 @@ object ImportAligner {
                 terms = alignedTerms,
                 courses = alignedCourses,
                 blocks = alignedBlocks,
+                exams = alignedExams,
                 periodTimes = alignedPeriodTimes,
             ),
         )

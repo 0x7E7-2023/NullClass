@@ -16,6 +16,9 @@ build/
 */build/
 */*/build/
 
+# 本地 APK 发布/分发产物，不提交
+/dist/
+
 # 日志
 *.log
 

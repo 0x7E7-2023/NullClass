@@ -21,7 +21,7 @@ import javax.inject.Inject
 import javax.inject.Singleton
 
 /**
- * 提醒编排：排算未来 14 天的上课时刻，每条入队一个 OneTimeWorkRequest。
+ * 课程提醒编排：排算未来 14 天的上课时刻，每条入队一个 OneTimeWorkRequest。
  *
  * - 持久化、免权限；Doze 下误差 0~15 分钟（课表场景可接受，文档明示）
  * - uniqueWork 名含 blockId+startAt 保证幂等；先入队、再按名单取消不再需要的
@@ -35,6 +35,7 @@ class ReminderScheduler @Inject constructor(
     private val termRepository: TermRepository,
     private val courseRepository: CourseRepository,
     private val userPrefs: UserPreferencesRepository,
+    private val examReminderScheduler: ExamReminderScheduler,
 ) {
 
     suspend fun reschedule() {
@@ -104,6 +105,9 @@ class ReminderScheduler @Inject constructor(
                     wm.cancelWorkById(info.id)
                 }
             }
+
+        // 考试提醒使用独立提前量和通知渠道，但与课程提醒共用同一套重排触发点。
+        examReminderScheduler.reschedule()
     }
 
     /** 迟发补发：判定过的课直接投「已开始」通知并落键；没赶上的静默跳过。 */

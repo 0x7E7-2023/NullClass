@@ -65,7 +65,7 @@ import java.time.Instant
 import java.time.ZoneId
 import java.time.format.DateTimeFormatter
 
-/** 应用设置：WebDAV 同步、课前提醒、自动同步。 */
+/** 应用设置：WebDAV 同步、课程/考试提醒、自动同步。 */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SettingsScreen(
@@ -76,6 +76,7 @@ fun SettingsScreen(
     val state by viewModel.state.collectAsState()
     val lastSyncAt by viewModel.lastSyncAt.collectAsState()
     val reminderLeadMinutes by viewModel.reminderLeadMinutes.collectAsState()
+    val examReminderLeadMinutes by viewModel.examReminderLeadMinutes.collectAsState()
     val autoSyncInterval by viewModel.autoSyncInterval.collectAsState()
     val widgetFontSize by viewModel.widgetFontSize.collectAsState()
     val showOtherWeekCourses by viewModel.showOtherWeekCourses.collectAsState()
@@ -212,13 +213,23 @@ fun SettingsScreen(
                 selected = reminderLeadMinutes,
                 onSelect = viewModel::setReminderLeadMinutes,
             )
+            Text("考试提醒", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold)
+            Text(
+                "有具体时间时按考试开始时间提醒；未填写时间时，以考试日 08:00 作为提醒基准。",
+                style = MaterialTheme.typography.bodySmall,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+            )
+            ExamReminderLeadSelector(
+                selected = examReminderLeadMinutes,
+                onSelect = viewModel::setExamReminderLeadMinutes,
+            )
             if (!notificationGranted) {
                 Row(
                     verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.spacedBy(8.dp),
                 ) {
                     Text(
-                        "通知权限未授权，收不到提醒",
+                        "通知权限未授权，收不到课程和考试提醒",
                         style = MaterialTheme.typography.bodySmall,
                         color = MaterialTheme.colorScheme.error,
                         modifier = Modifier.weight(1f),
@@ -317,12 +328,6 @@ fun SettingsScreen(
             ) {
                 Column(Modifier.weight(1f)) {
                     Text("显示非本周课程")
-                    Text(
-                        "本周空着的时段，别的周要上的课用灰色标出来。" +
-                            "与课表右上角「显示设置」里的是同一个开关，两边同步。",
-                        style = MaterialTheme.typography.bodySmall,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant,
-                    )
                 }
                 Switch(
                     checked = showOtherWeekCourses,
@@ -372,6 +377,8 @@ private fun BatteryReliabilityStatus(context: Context) {
 
 private val ReminderOptions = listOf(0, 5, 15, 30)
 
+private val ExamReminderOptions = listOf(0, 30, 2 * 60, 24 * 60)
+
 @Composable
 private fun ReminderLeadSelector(selected: Int, onSelect: (Int) -> Unit) {
     SingleChoiceSegmentedButtonRow(modifier = Modifier.fillMaxWidth()) {
@@ -385,6 +392,28 @@ private fun ReminderLeadSelector(selected: Int, onSelect: (Int) -> Unit) {
             }
         }
     }
+}
+
+@Composable
+private fun ExamReminderLeadSelector(selected: Int, onSelect: (Int) -> Unit) {
+    SingleChoiceSegmentedButtonRow(modifier = Modifier.fillMaxWidth()) {
+        ExamReminderOptions.forEachIndexed { index, minutes ->
+            SegmentedButton(
+                selected = selected == minutes,
+                onClick = { onSelect(minutes) },
+                shape = SegmentedButtonDefaults.itemShape(index, ExamReminderOptions.size),
+            ) {
+                Text(examReminderLabel(minutes), fontSize = 13.sp)
+            }
+        }
+    }
+}
+
+private fun examReminderLabel(minutes: Int): String = when {
+    minutes == 0 -> "关闭"
+    minutes % (24 * 60) == 0 -> "${minutes / (24 * 60)}天"
+    minutes % 60 == 0 -> "${minutes / 60}小时"
+    else -> "${minutes}分钟"
 }
 
 @Composable

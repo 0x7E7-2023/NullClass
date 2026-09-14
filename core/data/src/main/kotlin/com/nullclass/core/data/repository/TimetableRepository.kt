@@ -3,6 +3,7 @@ package com.nullclass.core.data.repository
 import androidx.room.withTransaction
 import com.nullclass.core.data.db.NullClassDatabase
 import com.nullclass.core.data.db.dao.PeriodTimeDao
+import com.nullclass.core.data.db.dao.ExamDao
 import com.nullclass.core.data.db.dao.TermDao
 import com.nullclass.core.data.db.dao.TimetableDao
 import com.nullclass.core.data.db.entity.TimetableEntity
@@ -71,6 +72,7 @@ class TimetableRepositoryImpl @Inject constructor(
     private val timetableDao: TimetableDao,
     private val termDao: TermDao,
     private val periodTimeDao: PeriodTimeDao,
+    private val examDao: ExamDao,
     private val userPreferences: UserPreferencesRepository,
 ) : TimetableRepository {
 
@@ -151,6 +153,7 @@ class TimetableRepositoryImpl @Inject constructor(
             termDao.tombstoneTermsOfTimetable(id, now)
             termDao.tombstoneCoursesOfTimetable(id, now)
             termDao.tombstoneBlocksOfTimetable(id, now)
+            examDao.tombstoneOfTimetable(id, now)
             if (activeId == id) {
                 timetableDao.getEarliestLive()?.let { next ->
                     userPreferences.setActiveTimetableId(next.id)

@@ -20,6 +20,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.drawBehind
+import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.font.FontWeight
@@ -71,6 +73,7 @@ internal fun WeekGrid(
     weekDays: List<Int>,
     todayDayOfWeek: Int?,
     showTimeInCards: Boolean,
+    showGridLines: Boolean,
     nowMinuteOfDay: Int?,
     onBlockClick: (PlacedBlock) -> Unit,
     otherWeekLayout: Map<Int, List<PlacedBlock>> = emptyMap(),
@@ -78,6 +81,7 @@ internal fun WeekGrid(
 ) {
     val totalPeriods = periodTimes.size.coerceAtLeast(1)
     val hairline = with(LocalDensity.current) { 1.toDp() }
+    val gridColor = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.45f)
     // 当前时间线：仅本周页；今天那一列没显示（关掉了周末又逢周末）就不画；时刻须在节次表跨度内
     val nowLineY = todayDayOfWeek?.let { today ->
         if (today in weekDays) {
@@ -93,7 +97,36 @@ internal fun WeekGrid(
                 .fillMaxWidth()
                 // 纵向滚动链路 maxHeight = 无穷，fillMaxHeight 会失效、列高塌成课块堆高度；
                 // 显式钉为「节数 × 行高」，今日高亮条与空白格点击区才能铺满整张网格
-                .height(PeriodCellHeight * totalPeriods),
+                .height(PeriodCellHeight * totalPeriods)
+                // 网格线画在课块下面，只让空白单元格显出分隔，不破坏课块自身的填充与描边。
+                .drawBehind {
+                if (showGridLines && weekDays.isNotEmpty()) {
+                    val rowHeightPx = PeriodCellHeight.toPx()
+                    val periodColumnWidthPx = periodColumnWidth(showTimeInCards).toPx()
+                    val dayWidthPx =
+                        ((size.width - periodColumnWidthPx) / weekDays.size).coerceAtLeast(0f)
+                    val strokeWidthPx = hairline.toPx()
+
+                    for (column in 0..weekDays.size) {
+                        val x = periodColumnWidthPx + dayWidthPx * column
+                        drawLine(
+                            color = gridColor,
+                            start = Offset(x, 0f),
+                            end = Offset(x, rowHeightPx * totalPeriods),
+                            strokeWidth = strokeWidthPx,
+                        )
+                    }
+                    for (row in 0..totalPeriods) {
+                        val y = rowHeightPx * row
+                        drawLine(
+                            color = gridColor,
+                            start = Offset(periodColumnWidthPx, y),
+                            end = Offset(size.width, y),
+                            strokeWidth = strokeWidthPx,
+                        )
+                    }
+                }
+            },
         ) {
             PeriodColumn(periodTimes, showTimeInCards)
             for (day in weekDays) {

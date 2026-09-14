@@ -9,15 +9,26 @@ import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FilledTonalButton
 import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.nullclass.core.model.CourseWithBlocks
+import com.nullclass.core.model.ExamFormat
+import com.nullclass.core.model.ExamWithCourse
 import com.nullclass.core.model.PlacedBlock
 import com.nullclass.core.model.ScheduleFormat
 import com.nullclass.core.ui.theme.courseColor
@@ -29,10 +40,18 @@ internal fun CourseDetailSheet(
     placed: PlacedBlock,
     courseWithBlocks: CourseWithBlocks?,
     onEdit: () -> Unit,
+    onAddExam: (courseId: String) -> Unit,
+    onEditExam: (examId: String) -> Unit,
     onDelete: () -> Unit,
     onDismiss: () -> Unit,
+    viewModel: CourseDetailViewModel = androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel(),
 ) {
     var confirmDelete = androidx.compose.runtime.remember { androidx.compose.runtime.mutableStateOf(false) }
+    val exams by viewModel.exams.collectAsState()
+
+    LaunchedEffect(placed.course.id) {
+        viewModel.selectCourse(placed.course.id)
+    }
 
     ModalBottomSheet(onDismissRequest = onDismiss) {
         Column(
@@ -82,6 +101,30 @@ internal fun CourseDetailSheet(
                 )
             }
 
+            HorizontalDivider(modifier = Modifier.padding(vertical = 16.dp))
+
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.SpaceBetween,
+            ) {
+                Text("考试安排", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold)
+                IconButton(onClick = { onAddExam(course.id) }) {
+                    Icon(Icons.Default.Add, contentDescription = "添加考试")
+                }
+            }
+            if (exams.isEmpty()) {
+                Text(
+                    "尚未设置考试",
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    modifier = Modifier.padding(top = 6.dp),
+                )
+            } else {
+                exams.forEach { item ->
+                    ExamSummaryRow(item = item, onClick = { onEditExam(item.exam.id) })
+                }
+            }
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -116,5 +159,43 @@ internal fun CourseDetailSheet(
                 TextButton(onClick = { confirmDelete.value = false }) { Text("取消") }
             },
         )
+    }
+}
+
+@Composable
+private fun ExamSummaryRow(item: ExamWithCourse, onClick: () -> Unit) {
+    Surface(
+        onClick = onClick,
+        shape = MaterialTheme.shapes.small,
+        color = MaterialTheme.colorScheme.surfaceContainerLow,
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(top = 8.dp),
+    ) {
+        Column(modifier = Modifier.padding(horizontal = 12.dp, vertical = 10.dp)) {
+            Row(
+                horizontalArrangement = Arrangement.spacedBy(8.dp),
+                verticalAlignment = Alignment.CenterVertically,
+            ) {
+                Text(item.exam.title, style = MaterialTheme.typography.bodyMedium, fontWeight = FontWeight.SemiBold)
+                Text(
+                    ExamFormat.dateLabel(item.exam.dateEpochDay),
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                )
+            }
+            buildList {
+                ExamFormat.timeRange(item.exam)?.let { add(it) }
+                item.exam.location?.takeIf { it.isNotBlank() }?.let { add(it) }
+                item.exam.seat?.takeIf { it.isNotBlank() }?.let { add("座位 $it") }
+            }.takeIf { it.isNotEmpty() }?.let { details ->
+                Text(
+                    details.joinToString(" · "),
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    modifier = Modifier.padding(top = 3.dp),
+                )
+            }
+        }
     }
 }

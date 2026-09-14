@@ -3,16 +3,19 @@ package com.nullclass.sync
 import androidx.room.withTransaction
 import com.nullclass.core.data.db.NullClassDatabase
 import com.nullclass.core.data.db.dao.CourseDao
+import com.nullclass.core.data.db.dao.ExamDao
 import com.nullclass.core.data.db.dao.PeriodTimeDao
 import com.nullclass.core.data.db.dao.TermDao
 import com.nullclass.core.data.db.dao.TimetableDao
 import com.nullclass.core.data.db.entity.CourseEntity
+import com.nullclass.core.data.db.entity.ExamEntity
 import com.nullclass.core.data.db.entity.PeriodTimeEntity
 import com.nullclass.core.data.db.entity.ScheduleBlockEntity
 import com.nullclass.core.data.db.entity.TermEntity
 import com.nullclass.core.data.db.entity.TimetableEntity
 import com.nullclass.importer.BlockDto
 import com.nullclass.importer.CourseDto
+import com.nullclass.importer.ExamDto
 import com.nullclass.importer.PeriodTimeDto
 import com.nullclass.importer.ScheduleDocument
 import com.nullclass.importer.TermDto
@@ -31,6 +34,7 @@ class SnapshotCodec @Inject constructor(
     private val termDao: TermDao,
     private val timetableDao: TimetableDao,
     private val courseDao: CourseDao,
+    private val examDao: ExamDao,
     private val periodTimeDao: PeriodTimeDao,
     private val settings: SyncSettingsRepository,
 ) {
@@ -45,6 +49,7 @@ class SnapshotCodec @Inject constructor(
             courses = courseDao.getAllCourses().map { it.toDto() },
             blocks = courseDao.getAllBlocks().map { it.toDto() },
             periodTimes = periodTimeDao.getAll().map { it.toDto() },
+            exams = examDao.getAll().map { it.toDto() },
         )
 
     /** 合并结果写回本地库（Upsert 全量；节次表整体替换；UI 的 Flow 自动刷新）。 */
@@ -54,6 +59,7 @@ class SnapshotCodec @Inject constructor(
             termDao.upsertAll(document.terms.map { it.toEntity() })
             courseDao.upsertAllCourses(document.courses.map { it.toEntity() })
             courseDao.upsertAllBlocks(document.blocks.map { it.toEntity() })
+            examDao.upsertAll(document.exams.map { it.toEntity() })
             // 节次表随学期整体取新：必须先清空，否则被删节次残留本地
             periodTimeDao.deleteAll()
             periodTimeDao.upsertAll(document.periodTimes.map { it.toEntity() })
@@ -65,7 +71,7 @@ class SnapshotCodec @Inject constructor(
         countAdoptedRecords(local, merged)
 }
 
-/** 采纳数（纯函数，可单测）：合并结果里本地没有或更旧的记录数，课表/学期/课程/课块四类合计。 */
+/** 采纳数（纯函数，可单测）：合并结果里本地没有或更旧的记录数，含考试记录。 */
 internal fun countAdoptedRecords(local: ScheduleDocument, merged: ScheduleDocument): Int {
     fun <T> count(localList: List<T>, mergedList: List<T>, id: (T) -> String, updatedAt: (T) -> Long): Int {
         val localMap = localList.associateBy(id)
@@ -77,7 +83,8 @@ internal fun countAdoptedRecords(local: ScheduleDocument, merged: ScheduleDocume
     return count(local.timetables, merged.timetables, { it.id }, { it.updatedAt }) +
         count(local.terms, merged.terms, { it.id }, { it.updatedAt }) +
         count(local.courses, merged.courses, { it.id }, { it.updatedAt }) +
-        count(local.blocks, merged.blocks, { it.id }, { it.updatedAt })
+        count(local.blocks, merged.blocks, { it.id }, { it.updatedAt }) +
+        count(local.exams, merged.exams, { it.id }, { it.updatedAt })
 }
 
 // ---- Entity ↔ DTO 映射 ----
@@ -127,6 +134,36 @@ internal fun BlockDto.toEntity() = ScheduleBlockEntity(
 internal fun PeriodTimeEntity.toDto() = PeriodTimeDto(
     termId = termId, periodIndex = periodIndex, startMinuteOfDay = startMinuteOfDay,
     endMinuteOfDay = endMinuteOfDay, session = session, updatedAt = updatedAt,
+)
+
+internal fun ExamEntity.toDto() = ExamDto(
+    id = id,
+    courseId = courseId,
+    title = title,
+    dateEpochDay = dateEpochDay,
+    startMinuteOfDay = startMinuteOfDay,
+    endMinuteOfDay = endMinuteOfDay,
+    location = location,
+    seat = seat,
+    note = note,
+    createdAt = createdAt,
+    updatedAt = updatedAt,
+    deletedAt = deletedAt,
+)
+
+internal fun ExamDto.toEntity() = ExamEntity(
+    id = id,
+    courseId = courseId,
+    title = title,
+    dateEpochDay = dateEpochDay,
+    startMinuteOfDay = startMinuteOfDay,
+    endMinuteOfDay = endMinuteOfDay,
+    location = location,
+    seat = seat,
+    note = note,
+    createdAt = createdAt,
+    updatedAt = updatedAt,
+    deletedAt = deletedAt,
 )
 
 internal fun PeriodTimeDto.toEntity() = PeriodTimeEntity(

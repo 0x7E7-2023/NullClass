@@ -47,6 +47,8 @@ import com.nullclass.feature.edit.TermEditScreen
 import com.nullclass.feature.edit.TermListScreen
 import com.nullclass.feature.edit.TimetableCreateScreen
 import com.nullclass.feature.edit.TimetableListScreen
+import com.nullclass.feature.exam.ExamEditScreen
+import com.nullclass.feature.exam.ExamScreen
 import com.nullclass.feature.schedule.ScheduleScreen
 import com.nullclass.feature.schedule.TodayScreen
 import com.nullclass.feature.settings.AboutScreen
@@ -59,6 +61,7 @@ import com.nullclass.feature.settings.transfer.TransferScreen
 object Routes {
     const val TODAY = "today"
     const val SCHEDULE = "schedule"
+    const val EXAMS = "exams"
     const val PROFILE = "profile"
     const val COURSE_EDIT = "course_edit?courseId={courseId}"
     const val TERM_EDIT = "term_edit?termId={termId}"
@@ -68,13 +71,17 @@ object Routes {
     const val SETTINGS = "settings"
     const val ABOUT = "about"
     const val TRANSFER = "transfer"
+    const val EXAM_EDIT = "exam_edit?examId={examId}&courseId={courseId}"
 
     fun courseEdit(courseId: String? = null): String = "course_edit?courseId=${courseId ?: ""}"
 
     fun termEdit(termId: String? = null): String = "term_edit?termId=${termId ?: ""}"
+
+    fun examEdit(examId: String? = null, courseId: String? = null): String =
+        "exam_edit?examId=${examId ?: ""}&courseId=${courseId ?: ""}"
 }
 
-/** 底部 Tab：今日（左）/ 课表（中，start destination）/ 我的（右）。 */
+/** 底部 Tab：今日 / 课表（start destination）/ 考试 / 我的。 */
 private data class TopTab(
     val route: String,
     val label: String,
@@ -84,6 +91,7 @@ private data class TopTab(
 private val TopTabs = listOf(
     TopTab(Routes.TODAY, "今日", Icons.Filled.DateRange),
     TopTab(Routes.SCHEDULE, "课表", Icons.Filled.Home),
+    TopTab(Routes.EXAMS, "考试", Icons.Filled.DateRange),
     TopTab(Routes.PROFILE, "我的", Icons.Filled.Person),
 )
 
@@ -168,7 +176,7 @@ fun AppNavHost() {
 
     val backStackEntry by navController.currentBackStackEntryAsState()
     val currentRoute = backStackEntry?.destination?.route
-    // 底栏只在三个顶层页显示；详情/子页推入后隐藏，返回键自然恢复
+    // 底栏只在四个顶层页显示；详情/子页推入后隐藏，返回键自然恢复
     val showTabBar = currentRoute in TopTabs.map { it.route }
 
     // —— 预测返回尾部竞态兜底（必须组合在下面的 Scaffold/NavHost 之前）——
@@ -251,6 +259,8 @@ fun AppNavHost() {
                     onEditCourse = { courseId ->
                         navController.navigate(Routes.courseEdit(courseId = courseId))
                     },
+                    onAddExam = { courseId -> navController.navigate(Routes.examEdit(courseId = courseId)) },
+                    onEditExam = { examId -> navController.navigate(Routes.examEdit(examId = examId)) },
                     onEditTerm = { termId -> navController.navigate(Routes.termEdit(termId)) },
                 )
             }
@@ -260,6 +270,15 @@ fun AppNavHost() {
                     onEditCourse = { courseId ->
                         navController.navigate(Routes.courseEdit(courseId = courseId))
                     },
+                    onAddExam = { courseId -> navController.navigate(Routes.examEdit(courseId = courseId)) },
+                    onEditExam = { examId -> navController.navigate(Routes.examEdit(examId = examId)) },
+                    onEditTerm = { termId -> navController.navigate(Routes.termEdit(termId)) },
+                )
+            }
+            screen(Routes.EXAMS) {
+                ExamScreen(
+                    onAddExam = { navController.navigate(Routes.examEdit()) },
+                    onEditExam = { examId -> navController.navigate(Routes.examEdit(examId = examId)) },
                     onEditTerm = { termId -> navController.navigate(Routes.termEdit(termId)) },
                 )
             }
@@ -313,6 +332,15 @@ fun AppNavHost() {
                     termId = entry.arguments?.getString("termId")?.takeIf { it.isNotBlank() },
                     onBack = ::back,
                 )
+            }
+            screen(
+                route = Routes.EXAM_EDIT,
+                arguments = listOf(
+                    navArgument("examId") { type = NavType.StringType; defaultValue = "" },
+                    navArgument("courseId") { type = NavType.StringType; defaultValue = "" },
+                ),
+            ) {
+                ExamEditScreen(onBack = ::back)
             }
             screen(Routes.SETTINGS) {
                 SettingsScreen(

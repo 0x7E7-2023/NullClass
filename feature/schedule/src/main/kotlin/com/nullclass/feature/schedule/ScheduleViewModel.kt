@@ -57,6 +57,8 @@ sealed interface ScheduleUiState {
         val showTimeInCards: Boolean,
         /** 周视图是否画当前时间线。 */
         val showNowLine: Boolean,
+        /** 周视图是否显示节次与星期列的网格线。 */
+        val showGridLines: Boolean,
         /** 是否把非本周的课画成灰块。 */
         val showOtherWeek: Boolean,
         /**
@@ -68,11 +70,12 @@ sealed interface ScheduleUiState {
     ) : ScheduleUiState
 }
 
-/** 周视图的四个显示开关。合成一个流，免得 combine 超过 5 个参数要去走 Array 重载。 */
+/** 周视图的五个显示开关。合成一个流，免得 combine 超过 5 个参数要去走 Array 重载。 */
 private data class DisplayPrefs(
     val showWeekend: Boolean,
     val showTimeInCards: Boolean,
     val showNowLine: Boolean,
+    val showGridLines: Boolean,
     val showOtherWeek: Boolean,
 )
 
@@ -110,9 +113,10 @@ class ScheduleViewModel @Inject constructor(
         userPreferencesRepository.showWeekend,
         userPreferencesRepository.showTimeInCards,
         userPreferencesRepository.showNowLine,
+        userPreferencesRepository.showGridLines,
         userPreferencesRepository.showOtherWeekCourses,
-    ) { showWeekend, showTimeInCards, showNowLine, showOtherWeek ->
-        DisplayPrefs(showWeekend, showTimeInCards, showNowLine, showOtherWeek)
+    ) { showWeekend, showTimeInCards, showNowLine, showGridLines, showOtherWeek ->
+        DisplayPrefs(showWeekend, showTimeInCards, showNowLine, showGridLines, showOtherWeek)
     }
 
     val uiState: StateFlow<ScheduleUiState> =
@@ -147,6 +151,7 @@ class ScheduleViewModel @Inject constructor(
                             showWeekend = prefs.showWeekend,
                             showTimeInCards = prefs.showTimeInCards,
                             showNowLine = prefs.showNowLine,
+                            showGridLines = prefs.showGridLines,
                             showOtherWeek = prefs.showOtherWeek,
                             timetableName = timetableName,
                         )
@@ -178,6 +183,11 @@ class ScheduleViewModel @Inject constructor(
     /** 切换当前时间线显示。 */
     fun setShowNowLine(value: Boolean) {
         viewModelScope.launch { userPreferencesRepository.setShowNowLine(value) }
+    }
+
+    /** 切换课表网格线显示。 */
+    fun setShowGridLines(value: Boolean) {
+        viewModelScope.launch { userPreferencesRepository.setShowGridLines(value) }
     }
 
     /** 切换非本周课程灰块显示。 */

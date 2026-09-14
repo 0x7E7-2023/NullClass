@@ -12,7 +12,8 @@ An open-source class schedule app for Android universities. Local-first: no acco
 - 📅 周视图课表（滑动切周、当前周高亮、单双周/连堂支持）
 - 🗂️ 多课表管理（一张应用装多张课表，课程与节次时间各自独立；新装先建课表，随时切换）
 - 🎓 上课中
-  - 🗂️ 今日课表：底部三 Tab（今日 / 课表 / 我的），按上午/下午/晚上分组；正在上的课置顶实时卡片（进度条 + 还剩 X 分钟倒计时）
+  - 🗂️ 今日课表：底部四 Tab（今日 / 课表 / 考试 / 我的），按上午/下午/晚上分组；正在上的课置顶实时卡片（进度条 + 还剩 X 分钟倒计时）
+  - 📝 考试安排：考试挂在对应课程下，支持按日期查看、手动新增/编辑/删除及考试地点、座位和备注
   - 🧩 桌面小组件：Jetpack Glance（今日课程 / 下节课），上课中状态带分钟级倒计时，随课节边界自动刷新
 - 🔔 课前提醒（提前 5/15/30 分钟可配，WorkManager 低功耗调度）
 - 📤 课表导入导出（`.nullclass` 文件 + 二维码扫码分享）
@@ -80,6 +81,7 @@ jw-adapters/<school-key>/
 :core:data         Room 数据库 + Repository + DataStore
 :core:ui           主题与通用 Compose 组件
 :feature:schedule  课表主界面（周视图 + 今日页）
+:feature:exam      考试安排（课程下的考试与独立考试 Tab）
 :feature:edit      课程/学期编辑
 :feature:settings  设置与「我的」页、导入导出界面、教务导入 WebView 宿主
 :widget            Glance 桌面小组件

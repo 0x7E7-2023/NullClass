@@ -42,3 +42,31 @@ val MIGRATION_2_3 = object : Migration(2, 3) {
         )
     }
 }
+
+/**
+ * v3 → v4：加入考试表。
+ *
+ * 考试通过 courseId 绑定课程，课程的 termId 仍是考试的学期归属来源；不重复存 termId，
+ * 避免课程被复制/迁移后出现「考试挂着旧学期」的两份事实。
+ */
+val MIGRATION_3_4 = object : Migration(3, 4) {
+
+    override fun migrate(db: SupportSQLiteDatabase) {
+        db.execSQL(
+            "CREATE TABLE IF NOT EXISTS `exams` (" +
+                "`id` TEXT NOT NULL, `courseId` TEXT NOT NULL, `title` TEXT NOT NULL, " +
+                "`dateEpochDay` INTEGER NOT NULL, `startMinuteOfDay` INTEGER, " +
+                "`endMinuteOfDay` INTEGER, `location` TEXT, `seat` TEXT, `note` TEXT, " +
+                "`createdAt` INTEGER NOT NULL, `updatedAt` INTEGER NOT NULL, `deletedAt` INTEGER, " +
+                "PRIMARY KEY(`id`), " +
+                "FOREIGN KEY(`courseId`) REFERENCES `courses`(`id`) " +
+                "ON UPDATE NO ACTION ON DELETE CASCADE)",
+        )
+        db.execSQL("CREATE INDEX IF NOT EXISTS `index_exams_courseId` ON `exams` (`courseId`)")
+        db.execSQL("CREATE INDEX IF NOT EXISTS `index_exams_deletedAt` ON `exams` (`deletedAt`)")
+        db.execSQL(
+            "CREATE INDEX IF NOT EXISTS `index_exams_courseId_dateEpochDay_deletedAt` " +
+                "ON `exams` (`courseId`, `dateEpochDay`, `deletedAt`)",
+        )
+    }
+}
