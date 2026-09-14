@@ -90,13 +90,19 @@ class ScheduleViewModel @Inject constructor(
 
     private val today: LocalDate = LocalDate.now()
 
-    /** null = 跟随今天自动定位；用户翻页/选周后写入具体值。 */
-    private val userSelectedWeek = MutableStateFlow<Int?>(null)
+    /**
+     * 用户翻到的周次**连同当时的周次编号**。null = 跟随今天自动定位。
+     *
+     * 存的是哪个学期、哪一周：换学期之后（教务导入新学期）上学期翻到的第几周就没有意义了，
+     * 读的时候按编号一比对即作废（见 [weekIn]），不需要额外的协程去"记得清空"。
+     * 由界面写回——它本来就拿着当前学期。
+     */
+    private val selectedWeek = MutableStateFlow<SelectedWeek?>(null)
 
     init {
         // 切换课表后重置翻到的周次：页码式记忆跨课表没有意义（新课表可能根本没有那一周）
         viewModelScope.launch {
-            timetableRepository.observeActive().drop(1).collect { userSelectedWeek.value = null }
+            timetableRepository.observeActive().drop(1).collect { selectedWeek.value = null }
         }
     }
 
@@ -120,7 +126,7 @@ class ScheduleViewModel @Inject constructor(
     }
 
     val uiState: StateFlow<ScheduleUiState> =
-        combine(termRepository.observeCurrent(), userSelectedWeek, timetableLabel) { term, selected, timetableName ->
+        combine(termRepository.observeCurrent(), selectedWeek, timetableLabel) { term, selected, timetableName ->
             Triple(term, selected, timetableName)
         }
             .flatMapLatest { (term, selected, timetableName) ->
@@ -129,7 +135,12 @@ class ScheduleViewModel @Inject constructor(
                 } else {
                     // 今天不在学期内 → todayWeek 为 null：翻页默认落到第 1 周，但不谎称「本周」
                     val todayWeek = term.weekOf(today.toEpochDay())
-                    val week = selected ?: todayWeek ?: 1
+                    // 翻到的周次是哪个学期的、现在还作不作数，都在这里定（见 [weekIn]）
+                    val week = resolveVisibleWeek(
+                        selected = selected.weekIn(WeekNumbering.of(term)),
+                        todayWeek = todayWeek,
+                        totalWeeks = term.totalWeeks,
+                    )
                     combine(
                         courseRepository.observeSchedule(term.id),
                         termRepository.observePeriodTimes(term.id),
@@ -160,14 +171,20 @@ class ScheduleViewModel @Inject constructor(
             }
             .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), ScheduleUiState.Loading)
 
-    /** 翻页或周次选择器触发。 */
-    fun selectWeek(week: Int) {
-        userSelectedWeek.value = week
+    /**
+     * 翻页或周次选择器触发。[numbering] 是**翻页器所在那一屏**的周次编号（界面手里就有），
+     * 记下来才能判断这次选择在换学期之后还算不算数（见 [weekIn]）。
+     *
+     * 不在这里读一遍当前学期来补全：读到的可能是还没换过去的旧值，那正好把刚作废的选择
+     * 又按旧编号收下——这个选择就永远跟着用户走了。
+     */
+    internal fun selectWeek(week: Int, numbering: WeekNumbering) {
+        selectedWeek.value = SelectedWeek(numbering, week)
     }
 
     /** 回到本周（恢复自动跟随）。 */
     fun backToCurrentWeek() {
-        userSelectedWeek.value = null
+        selectedWeek.value = null
     }
 
     /** 切换周视图周末列显示。 */

@@ -169,16 +169,29 @@ fun ScheduleScreen(
             is ScheduleUiState.Ready -> {
                 val ready = s
                 val nowMinute = rememberNowMinute()
+                // 这一屏画的是哪个学期的周次（翻页器写回时连带记下，见 viewModel.selectWeek）
+                val numbering = WeekNumbering.of(ready.term)
                 val pagerState = rememberPagerState(
                     initialPage = (ready.selectedWeek - 1).coerceIn(0, ready.term.totalWeeks - 1),
                     pageCount = { ready.term.totalWeeks },
                 )
 
                 // 翻页落定 → VM。用 settledPage 而非 currentPage：动画途中扫过的中间页
-                // 不回写 VM，否则 selectedWeek 抖动会重启下方翻页效果、把动画拦腰取消
-                LaunchedEffect(pagerState) {
+                // 不回写 VM，否则 selectedWeek 抖动会重启下方翻页效果、把动画拦腰取消。
+                //
+                // 首帧那次**不能写回**：翻页器的页码是 rememberSaveable 的，切走再切回这个 Tab
+                // 会从保存态恢复当初那一页（initialPage 被忽略），照单全收就等于把「换课表 /
+                // 换学期后重置翻到的周次」当场撤销——回到课表页仍停在上一个学期的周次上。
+                // 跳过它之后：用户真翻页会来第二次，照常写回；重置成跟随今天时 VM 给的是
+                // 另一个周次，下面那个 LaunchedEffect 会把翻页器滚过去，滚完的落定也照常写回。
+                LaunchedEffect(pagerState, numbering) {
+                    var firstSettleSkipped = false
                     snapshotFlow { pagerState.settledPage }.collect { page ->
-                        viewModel.selectWeek(page + 1)
+                        if (!firstSettleSkipped) {
+                            firstSettleSkipped = true
+                            return@collect
+                        }
+                        viewModel.selectWeek(page + 1, numbering)
                     }
                 }
                 // 周次选择器/回本周 → 翻页
@@ -271,7 +284,7 @@ fun ScheduleScreen(
                         currentWeek = ready.todayWeek,
                         selectedWeek = ready.selectedWeek,
                         onSelect = {
-                            viewModel.selectWeek(it)
+                            viewModel.selectWeek(it, numbering)
                             showWeekPicker = false
                         },
                         onDismiss = { showWeekPicker = false },
