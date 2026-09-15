@@ -57,7 +57,7 @@
 - Manifest 加 `SCHEDULE_EXACT_ALARM`（`USE_EXACT_ALARM` 受 Play 政策限制不用；targetSdk 36 下 `SCHEDULE_EXACT_ALARM` 默认拒绝，正好匹配"可选 + 用户主动授权"）。
 - DataStore key `exact_reminder`（Boolean，默认 false）。
 - `ExactAlarmScheduler`：`canUseExact()` = 开关开 且 `alarmManager.canScheduleExactAlarms()`；开启时对 `ReminderPlanner` 产出的每条提醒调 `setExactAndAllowWhileIdle(RTC_WAKEUP, ...)`，`AlarmReceiver`（BroadcastReceiver + Hilt EntryPoint）收到后直接调 `ReminderNotifier.post()` 并沿用 sent-keys 去重。
-- `ReminderScheduler.reschedule()` 分支：exact 可用走闹钟（同时 cancel 全部 WorkManager unique work），否则回 WorkManager（cancel 闹钟）。开关切换/授权变化（ON_RESUME 检测）触发重排。
+- `ReminderScheduler.reschedule()` 分支：exact 可用走闹钟（同时 cancel 全部 WorkManager unique work），否则回 WorkManager（cancel 闹钟）。开关切换由 ReminderController 观察 exactReminder 偏好触发；授权变化由 `SCHEDULE_EXACT_ALARM_PERMISSION_STATE_CHANGED` 系统广播（SystemEventReceiver）触发。
 - `SystemEventReceiver` 与 `DailyMaintenanceWorker` 现有重排入口不变，自动覆盖两条路径。
 
 ### E. 勿扰模式（app + 权限引导）

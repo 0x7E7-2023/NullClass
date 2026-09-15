@@ -3,19 +3,24 @@
 [![CI](https://github.com/0x7E7-2023/NullClass/actions/workflows/ci.yml/badge.svg)](../../actions/workflows/ci.yml)
 [![License: GPL-3.0](https://img.shields.io/badge/License-GPL--3.0-blue.svg)](LICENSE)
 
-开源的 Android 大学课表应用。**本地优先**：所有数据仅存储在设备上，无账号、无云端、无追踪。
+开源的 Android 大学课表应用。**本地优先**：课表数据仅存储在设备上，无账号、无云端、无追踪
+（联网仅限你主动配置的 WebDAV 同步、教务导入，以及节假日公开数据拉取，均不经任何空课服务器）。
 
-An open-source class schedule app for Android universities. Local-first: no accounts, no cloud, no tracking.
+An open-source class schedule app for Android universities. Local-first: no accounts, no cloud, no tracking
+(networking is limited to user-configured WebDAV sync, JW import, and public holiday data fetching).
 
 ## 功能 / Features
 
-- 📅 周视图课表（滑动切周、当前周高亮、单双周/连堂支持）
+- 📅 周视图课表（滑动切周、当前周高亮、默认开启的纵横分割线、单双周/连堂支持）
 - 🗂️ 多课表管理（一张应用装多张课表，课程与节次时间各自独立；新装先建课表，随时切换）
 - 🎓 上课中
   - 🗂️ 今日课表：底部四 Tab（今日 / 课表 / 考试 / 我的），按上午/下午/晚上分组；正在上的课置顶实时卡片（进度条 + 还剩 X 分钟倒计时）
   - 📝 考试安排：考试挂在对应课程下，支持按日期查看、手动新增/编辑/删除及考试地点、座位和备注
   - 🧩 桌面小组件：Jetpack Glance（今日课程 / 下节课），上课中状态带分钟级倒计时，随课节边界自动刷新
-- 🔔 课前提醒（提前 5/15/30 分钟可配，WorkManager 低功耗调度）
+- 🔔 提醒（「通知与提醒」页集中管理）：课前提醒提前量可配；可选精确闹钟（到点准时，默认关）；
+  授权后可勿扰下响铃；权限状态一站式引导（通知/自启动/电池/精确闹钟/勿扰）
+- 📅 节假日与跳过日期：法定节假日在线同步（timor.tech → Nager.Date 多源自动降级，
+  仅拉公开假日数据、不含任何个人信息），跳过日的课前提醒自动静音；也可手动添加跳过日期
 - 📤 课表导入导出（`.nullclass` 文件 + 二维码扫码分享）
 - 📥 WakeUp 课表一键迁移（`.wakeup_schedule`，连堂/单双周/节次时间/颜色全保留）
 - 🏫 教务系统导入（WebView 手工登录 + 社区适配器包；课表是图片的学校也能识别）
@@ -32,7 +37,7 @@ An open-source class schedule app for Android universities. Local-first: no acco
 | 架构 | 单 Activity + Compose Navigation，MVVM，多模块 |
 | 依赖注入 | Hilt (KSP) |
 | 存储 | Room + DataStore |
-| 后台任务 | WorkManager |
+| 后台任务 | WorkManager（提醒可选走精确闹钟） |
 | 最低版本 | Android 8.0 (API 26) |
 
 ## 下载 / Download
@@ -92,7 +97,7 @@ jw-adapters/<school-key>/
 
 ## 构建 / Build
 
-需要 JDK 17+ 与 Android SDK（compileSdk 36）。
+需要 JDK 17+ 与 Android SDK（compileSdk 37）。
 
 ```bash
 ./gradlew :app:assembleDebug
