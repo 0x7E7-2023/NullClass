@@ -102,9 +102,9 @@ class UserPreferencesRepository @Inject constructor(
         context.userPrefs.edit { it[Keys.SHOW_NOW_LINE] = value }
     }
 
-    /** 周视图是否显示每个节次与星期列的网格线。默认关闭。 */
+    /** 周视图是否显示每个节次与星期列的网格线。默认显示。 */
     val showGridLines: Flow<Boolean> =
-        context.userPrefs.data.map { it[Keys.SHOW_GRID_LINES] ?: false }
+        context.userPrefs.data.map { it[Keys.SHOW_GRID_LINES] ?: true }
 
     suspend fun setShowGridLines(value: Boolean) {
         context.userPrefs.edit { it[Keys.SHOW_GRID_LINES] = value }

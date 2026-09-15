@@ -81,7 +81,8 @@ internal fun WeekGrid(
 ) {
     val totalPeriods = periodTimes.size.coerceAtLeast(1)
     val hairline = with(LocalDensity.current) { 1.toDp() }
-    val gridColor = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.45f)
+    // 略淡于上午/下午/晚的分隔线（全不透明 + 1dp），这里是七成透明度 + hairline
+    val gridColor = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.7f)
     // 当前时间线：仅本周页；今天那一列没显示（关掉了周末又逢周末）就不画；时刻须在节次表跨度内
     val nowLineY = todayDayOfWeek?.let { today ->
         if (today in weekDays) {
