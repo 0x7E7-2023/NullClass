@@ -31,11 +31,15 @@ jobs:
       - name: Set up Gradle
         uses: gradle/actions/setup-gradle@v4
 
-      # 从 runner 本地的 env 文件加载签名配置（不经过 GitHub Secrets）
+      # 从 runner 本地的 env 文件加载签名配置（不经过 GitHub Secrets）。
+      # GitHub 只自动遮蔽注册在 Secrets 里的值——服务器本地来源的密码必须先
+      # add-mask，否则会以明文出现在 workflow 日志里（公开仓库=泄露签名库密码）
       - name: Load signing config (server-local)
         run: |
           set -e
           . /opt/keystore/signing.env
+          echo "::add-mask::$KEYSTORE_PASSWORD"
+          echo "::add-mask::$KEY_PASSWORD"
           echo "KEYSTORE_PATH=$KEYSTORE_FILE" >> "$GITHUB_ENV"
           echo "KEYSTORE_PASSWORD=$KEYSTORE_PASSWORD" >> "$GITHUB_ENV"
           echo "KEY_ALIAS=$KEY_ALIAS" >> "$GITHUB_ENV"
