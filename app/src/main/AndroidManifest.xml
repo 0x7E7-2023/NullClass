@@ -5,6 +5,12 @@
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
     <!-- 开机对账（SystemEventReceiver）：normal 权限，安装即授予，无任何用户操作 -->
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
+    <!-- 节假日在线同步：okhttp 拉取 timor.tech / Nager.Date -->
+    <uses-permission android:name="android.permission.INTERNET" />
+    <!-- 可选精确提醒：用户在「通知与提醒」页主动开启并授权后生效 -->
+    <uses-permission android:name="android.permission.SCHEDULE_EXACT_ALARM" />
+    <!-- 勿扰模式下响铃：可选，授权后才能把提醒渠道设为绕过勿扰 -->
+    <uses-permission android:name="android.permission.ACCESS_NOTIFICATION_POLICY" />
 
     <!-- 厂商自启动页跳转（BackgroundReliability）需要包可见性：Android 11+ 不声明
          <queries> 时 PackageManager 解析别家 Activity 一律 NameNotFoundException，
@@ -54,7 +60,9 @@
         </provider>
 
         <!-- 系统事件对账：开机/应用更新/改时间/换时区 → 刷小组件 + 重排提醒。
-             全部是 protected broadcast，exported=false 只收系统的。 -->
+             全部是 protected broadcast，exported=false 只收系统的。
+             SCHEDULE_EXACT_ALARM_PERMISSION_STATE_CHANGED：精确闹钟授权被授予/收回
+             （B1 修复——授权后若不重排，提醒会一直留在 WorkManager 非精确路径）。 -->
         <receiver
             android:name=".notification.SystemEventReceiver"
             android:exported="false">
@@ -63,8 +71,14 @@
                 <action android:name="android.intent.action.MY_PACKAGE_REPLACED" />
                 <action android:name="android.intent.action.TIME_SET" />
                 <action android:name="android.intent.action.TIMEZONE_CHANGED" />
+                <action android:name="android.app.action.SCHEDULE_EXACT_ALARM_PERMISSION_STATE_CHANGED" />
             </intent-filter>
         </receiver>
+
+        <!-- 精确闹钟到点投递（ExactAlarmScheduler 排的课表提醒） -->
+        <receiver
+            android:name=".notification.AlarmReceiver"
+            android:exported="false" />
 
         <activity
             android:name=".MainActivity"

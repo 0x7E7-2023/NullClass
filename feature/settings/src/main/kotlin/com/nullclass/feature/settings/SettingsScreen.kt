@@ -1,15 +1,8 @@
 package com.nullclass.feature.settings
 
-import android.Manifest
 import android.appwidget.AppWidgetManager
 import android.content.ComponentName
 import android.content.Context
-import android.content.pm.PackageManager
-import android.os.Build
-import android.os.PowerManager
-import androidx.activity.compose.rememberLauncherForActivityResult
-import androidx.activity.result.ActivityResultLauncher
-import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -39,12 +32,9 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -52,11 +42,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.core.content.ContextCompat
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
-import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.LifecycleEventObserver
-import androidx.lifecycle.LifecycleOwner
 import com.nullclass.core.model.WidgetFontSize
 import com.nullclass.sync.AutoSyncInterval
 import com.nullclass.widget.NextClassWidgetReceiver
@@ -65,7 +51,7 @@ import java.time.Instant
 import java.time.ZoneId
 import java.time.format.DateTimeFormatter
 
-/** 应用设置：WebDAV 同步、课程/考试提醒、自动同步。 */
+/** 应用设置：WebDAV 同步、自动同步、桌面小组件、课表显示。提醒相关在「通知与提醒」页。 */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SettingsScreen(
@@ -75,19 +61,11 @@ fun SettingsScreen(
 ) {
     val state by viewModel.state.collectAsState()
     val lastSyncAt by viewModel.lastSyncAt.collectAsState()
-    val reminderLeadMinutes by viewModel.reminderLeadMinutes.collectAsState()
-    val examReminderLeadMinutes by viewModel.examReminderLeadMinutes.collectAsState()
     val autoSyncInterval by viewModel.autoSyncInterval.collectAsState()
     val widgetFontSize by viewModel.widgetFontSize.collectAsState()
     val showOtherWeekCourses by viewModel.showOtherWeekCourses.collectAsState()
 
     val context = LocalContext.current
-    var notificationGranted by remember {
-        mutableStateOf(isNotificationGranted(context))
-    }
-    val permissionLauncher = rememberLauncherForActivityResult(
-        ActivityResultContracts.RequestPermission(),
-    ) { granted -> notificationGranted = granted }
 
     Scaffold(
         topBar = {
@@ -202,75 +180,6 @@ fun SettingsScreen(
 
             HorizontalDivider(modifier = Modifier.padding(vertical = 8.dp))
 
-            // ---- 课前提醒 ----
-            Text("课前提醒", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold)
-            Text(
-                "每节课开始前发系统通知。提醒非精确（省电策略下可能有几分钟误差）。",
-                style = MaterialTheme.typography.bodySmall,
-                color = MaterialTheme.colorScheme.onSurfaceVariant,
-            )
-            ReminderLeadSelector(
-                selected = reminderLeadMinutes,
-                onSelect = viewModel::setReminderLeadMinutes,
-            )
-            Text("考试提醒", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold)
-            Text(
-                "有具体时间时按考试开始时间提醒；未填写时间时，以考试日 08:00 作为提醒基准。",
-                style = MaterialTheme.typography.bodySmall,
-                color = MaterialTheme.colorScheme.onSurfaceVariant,
-            )
-            ExamReminderLeadSelector(
-                selected = examReminderLeadMinutes,
-                onSelect = viewModel::setExamReminderLeadMinutes,
-            )
-            if (!notificationGranted) {
-                Row(
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.spacedBy(8.dp),
-                ) {
-                    Text(
-                        "通知权限未授权，收不到课程和考试提醒",
-                        style = MaterialTheme.typography.bodySmall,
-                        color = MaterialTheme.colorScheme.error,
-                        modifier = Modifier.weight(1f),
-                    )
-                    TextButton(onClick = { requestNotificationPermission(context, permissionLauncher) }) {
-                        Text("去授权")
-                    }
-                }
-            }
-
-            HorizontalDivider(modifier = Modifier.padding(vertical = 8.dp))
-
-            // ---- 后台可靠性 ----
-            Text("后台可靠性", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold)
-            Text(
-                "系统的省电策略（Doze / 厂商后台管控）可能推迟提醒与小组件刷新。" +
-                    "建议把空课排除在电池优化之外；小米/华为/vivo 等厂商还需单独允许自启动。",
-                style = MaterialTheme.typography.bodySmall,
-                color = MaterialTheme.colorScheme.onSurfaceVariant,
-            )
-            BatteryReliabilityStatus(context)
-            val autostartPage = remember { BackgroundReliability.resolvedAutostartActivity(context) }
-            if (autostartPage != null) {
-                Row(
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.spacedBy(8.dp),
-                ) {
-                    Text(
-                        "厂商自启动：请在系统里允许空课自启动",
-                        style = MaterialTheme.typography.bodySmall,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant,
-                        modifier = Modifier.weight(1f),
-                    )
-                    TextButton(onClick = { BackgroundReliability.startAutostartSettings(context) }) {
-                        Text("去设置")
-                    }
-                }
-            }
-
-            HorizontalDivider(modifier = Modifier.padding(vertical = 8.dp))
-
             // ---- 自动同步 ----
             Text("自动同步", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold)
             Text(
@@ -338,84 +247,6 @@ fun SettingsScreen(
     }
 }
 
-/** 电池优化豁免状态行；从系统设置页返回时（ON_RESUME）重新读取。 */
-@Composable
-private fun BatteryReliabilityStatus(context: Context) {
-    val powerManager = remember { context.getSystemService(PowerManager::class.java) }
-    var batteryIgnored by remember {
-        mutableStateOf(powerManager?.isIgnoringBatteryOptimizations(context.packageName) == true)
-    }
-    DisposableEffect(context) {
-        val observer = LifecycleEventObserver { _, event ->
-            if (event == Lifecycle.Event.ON_RESUME) {
-                batteryIgnored = powerManager?.isIgnoringBatteryOptimizations(context.packageName) == true
-            }
-        }
-        val lifecycle = (context as? LifecycleOwner)?.lifecycle
-        lifecycle?.addObserver(observer)
-        onDispose { lifecycle?.removeObserver(observer) }
-    }
-    Row(
-        verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.spacedBy(8.dp),
-    ) {
-        Text(
-            if (batteryIgnored) "电池优化：已豁免 ✓" else "电池优化：未豁免，后台刷新可能被推迟",
-            style = MaterialTheme.typography.bodySmall,
-            color = if (batteryIgnored) {
-                MaterialTheme.colorScheme.primary
-            } else {
-                MaterialTheme.colorScheme.error
-            },
-            modifier = Modifier.weight(1f),
-        )
-        TextButton(onClick = { BackgroundReliability.startBatteryOptimizationSettings(context) }) {
-            Text("去设置")
-        }
-    }
-}
-
-private val ReminderOptions = listOf(0, 5, 15, 30)
-
-private val ExamReminderOptions = listOf(0, 30, 2 * 60, 24 * 60)
-
-@Composable
-private fun ReminderLeadSelector(selected: Int, onSelect: (Int) -> Unit) {
-    SingleChoiceSegmentedButtonRow(modifier = Modifier.fillMaxWidth()) {
-        ReminderOptions.forEachIndexed { index, minutes ->
-            SegmentedButton(
-                selected = selected == minutes,
-                onClick = { onSelect(minutes) },
-                shape = SegmentedButtonDefaults.itemShape(index, ReminderOptions.size),
-            ) {
-                Text(if (minutes == 0) "关闭" else "${minutes}分钟", fontSize = 13.sp)
-            }
-        }
-    }
-}
-
-@Composable
-private fun ExamReminderLeadSelector(selected: Int, onSelect: (Int) -> Unit) {
-    SingleChoiceSegmentedButtonRow(modifier = Modifier.fillMaxWidth()) {
-        ExamReminderOptions.forEachIndexed { index, minutes ->
-            SegmentedButton(
-                selected = selected == minutes,
-                onClick = { onSelect(minutes) },
-                shape = SegmentedButtonDefaults.itemShape(index, ExamReminderOptions.size),
-            ) {
-                Text(examReminderLabel(minutes), fontSize = 13.sp)
-            }
-        }
-    }
-}
-
-private fun examReminderLabel(minutes: Int): String = when {
-    minutes == 0 -> "关闭"
-    minutes % (24 * 60) == 0 -> "${minutes / (24 * 60)}天"
-    minutes % 60 == 0 -> "${minutes / 60}小时"
-    else -> "${minutes}分钟"
-}
-
 @Composable
 private fun WidgetFontSizeSelector(
     selected: WidgetFontSize,
@@ -456,22 +287,4 @@ private fun requestPinWidget(context: Context, provider: Class<*>) {
     val manager = context.getSystemService(AppWidgetManager::class.java) ?: return
     // 成功回调 PendingIntent 在部分桌面（MIUI 等）不会被调用，不依赖它做任何事
     manager.requestPinAppWidget(ComponentName(context, provider), null, null)
-}
-
-private fun isNotificationGranted(context: Context): Boolean =    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-        ContextCompat.checkSelfPermission(
-            context,
-            Manifest.permission.POST_NOTIFICATIONS,
-        ) == PackageManager.PERMISSION_GRANTED
-    } else {
-        true
-    }
-
-private fun requestNotificationPermission(
-    context: Context,
-    launcher: ActivityResultLauncher<String>,
-) {
-    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-        launcher.launch(Manifest.permission.POST_NOTIFICATIONS)
-    }
 }

@@ -3,8 +3,11 @@ package com.nullclass.feature.schedule
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.nullclass.core.data.repository.CourseRepository
+import com.nullclass.core.data.repository.HolidayRepository
 import com.nullclass.core.data.repository.TermRepository
 import com.nullclass.core.model.CourseWithBlocks
+import com.nullclass.core.model.SkipDate
+import com.nullclass.core.model.SkipDateType
 import com.nullclass.core.model.Term
 import com.nullclass.core.model.TodaySnapshot
 import com.nullclass.core.model.assembleTodaySnapshot
@@ -45,6 +48,7 @@ sealed interface TodayUiState {
 class TodayViewModel @Inject constructor(
     private val termRepository: TermRepository,
     private val courseRepository: CourseRepository,
+    holidayRepository: HolidayRepository,
 ) : ViewModel() {
 
     /** 每分钟一拍：进程过夜存活时驱动按新日期重组快照（跨天不换日期的修复）。 */
@@ -74,6 +78,21 @@ class TodayViewModel @Inject constructor(
             }
         }
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), TodayUiState.Loading)
+
+    /**
+     * 今天的跳过日期（节假日/手动），补班日不算——用于顶部「今日休」提示条。
+     * 课表内容照常显示（部分学校调课），只有课前提醒真正被跳过。
+     * dayTicker 参与：进程过夜存活时跨午夜也能换到新的一天（与 uiState 同一拍）。
+     */
+    val todaySkipDate: StateFlow<SkipDate?> = combine(
+        holidayRepository.skipDates,
+        dayTicker,
+    ) { dates, _ ->
+        dates.firstOrNull {
+            it.epochDay == LocalDate.now().toEpochDay() && it.type != SkipDateType.WORKDAY
+        }
+    }
+        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), null)
 
     fun deleteCourse(courseId: String) {
         viewModelScope.launch { courseRepository.deleteCourse(courseId) }

@@ -15,6 +15,7 @@ import androidx.compose.material.icons.automirrored.filled.List
 import androidx.compose.material.icons.filled.DateRange
 import androidx.compose.material.icons.filled.Info
 import androidx.compose.material.icons.filled.List
+import androidx.compose.material.icons.filled.Notifications
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material.icons.filled.Share
 import androidx.compose.material3.Icon
@@ -42,6 +43,7 @@ fun ProfileScreen(
     onOpenTimetableList: () -> Unit,
     onOpenTermList: () -> Unit,
     onOpenTransfer: () -> Unit,
+    onOpenNotificationSettings: () -> Unit,
     onOpenSettings: () -> Unit,
     onOpenAbout: () -> Unit,
     viewModel: ProfileViewModel = hiltViewModel(),
@@ -127,9 +129,15 @@ fun ProfileScreen(
                     onClick = onOpenTransfer,
                 )
                 EntryRow(
+                    icon = Icons.Default.Notifications,
+                    title = "通知与提醒",
+                    subtitle = "权限引导、提前提醒、节假日与跳过日期",
+                    onClick = onOpenNotificationSettings,
+                )
+                EntryRow(
                     icon = Icons.Default.Settings,
                     title = "应用设置",
-                    subtitle = "WebDAV 同步、课程/考试提醒、桌面小组件",
+                    subtitle = "WebDAV 同步、自动同步、桌面小组件",
                     onClick = onOpenSettings,
                 )
                 EntryRow(

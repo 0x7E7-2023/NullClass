@@ -5,9 +5,11 @@ import androidx.room.Room
 import com.nullclass.core.data.db.NullClassDatabase
 import com.nullclass.core.data.db.MIGRATION_2_3
 import com.nullclass.core.data.db.MIGRATION_3_4
+import com.nullclass.core.data.db.MIGRATION_4_5
 import com.nullclass.core.data.db.dao.CourseDao
 import com.nullclass.core.data.db.dao.ExamDao
 import com.nullclass.core.data.db.dao.PeriodTimeDao
+import com.nullclass.core.data.db.dao.SkipDateDao
 import com.nullclass.core.data.db.dao.SyncStateDao
 import com.nullclass.core.data.db.dao.TermDao
 import com.nullclass.core.data.db.dao.TimetableDao
@@ -43,6 +45,7 @@ internal object DataModule {
             // （v1→v2 的破坏性迁移只服务过没有存量的开发期，随 v3 一并移除）
             .addMigrations(MIGRATION_2_3)
             .addMigrations(MIGRATION_3_4)
+            .addMigrations(MIGRATION_4_5)
             .build()
 
     @Provides
@@ -62,6 +65,9 @@ internal object DataModule {
 
     @Provides
     fun provideSyncStateDao(db: NullClassDatabase): SyncStateDao = db.syncStateDao()
+
+    @Provides
+    fun provideSkipDateDao(db: NullClassDatabase): SkipDateDao = db.skipDateDao()
 }
 
 @Module

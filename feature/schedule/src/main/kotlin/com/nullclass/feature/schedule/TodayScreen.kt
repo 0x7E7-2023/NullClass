@@ -59,6 +59,7 @@ fun TodayScreen(
     viewModel: TodayViewModel = hiltViewModel(),
 ) {
     val state by viewModel.uiState.collectAsState()
+    val todaySkipDate by viewModel.todaySkipDate.collectAsState()
     var detailBlock by remember { mutableStateOf<PlacedBlock?>(null) }
 
     Scaffold(containerColor = MaterialTheme.colorScheme.background) { padding ->
@@ -98,6 +99,30 @@ fun TodayScreen(
                         .padding(horizontal = 16.dp),
                 ) {
                     TodayHeader(snapshot = ready.snapshot, nowMinute = nowMinute)
+
+                    todaySkipDate?.let { skip ->
+                        Surface(
+                            shape = MaterialTheme.shapes.medium,
+                            color = MaterialTheme.colorScheme.secondaryContainer,
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(top = 8.dp),
+                        ) {
+                            Column(Modifier.padding(horizontal = 16.dp, vertical = 10.dp)) {
+                                Text(
+                                    "今天不上课 · ${skip.label ?: "手动跳过"}",
+                                    style = MaterialTheme.typography.titleSmall,
+                                    fontWeight = FontWeight.Bold,
+                                    color = MaterialTheme.colorScheme.onSecondaryContainer,
+                                )
+                                Text(
+                                    "课前提醒已跳过；课程如有调课仍按课表显示",
+                                    style = MaterialTheme.typography.bodySmall,
+                                    color = MaterialTheme.colorScheme.onSecondaryContainer.copy(alpha = 0.75f),
+                                )
+                            }
+                        }
+                    }
 
                     ready.snapshot.inProgress(nowMinute)?.let { ongoing ->
                         InClassCard(

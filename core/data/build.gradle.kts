@@ -33,6 +33,9 @@ dependencies {
 
     implementation(libs.datastore.preferences)
 
+    // 节假日在线同步（HolidayRepository 的多源 HTTP 拉取）
+    implementation(libs.okhttp)
+
     implementation(libs.hilt.android)
     ksp(libs.hilt.compiler)
 

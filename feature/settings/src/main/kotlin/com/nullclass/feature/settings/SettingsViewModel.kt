@@ -47,18 +47,6 @@ class SettingsViewModel @Inject constructor(
     val lastSyncAt: StateFlow<Long?> = syncSettings.lastSyncAtFlow
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), null)
 
-    /** 课程提醒提前量（0 = 关闭）。 */
-    val reminderLeadMinutes: StateFlow<Int> = userPreferences.reminderLeadMinutes
-        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), UserPreferencesRepository.DEFAULT_LEAD_MINUTES)
-
-    /** 考试提醒提前量（0 = 关闭）。 */
-    val examReminderLeadMinutes: StateFlow<Int> = userPreferences.examReminderLeadMinutes
-        .stateIn(
-            viewModelScope,
-            SharingStarted.WhileSubscribed(5_000),
-            UserPreferencesRepository.DEFAULT_EXAM_REMINDER_LEAD_MINUTES,
-        )
-
     /** 自动同步周期。 */
     val autoSyncInterval: StateFlow<AutoSyncInterval> = syncSettings.autoSyncInterval
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), AutoSyncInterval.OFF)
@@ -70,14 +58,6 @@ class SettingsViewModel @Inject constructor(
     /** 周视图是否在空着的时段显示非本周的课。与课表「显示设置」里的开关是同一个偏好。 */
     val showOtherWeekCourses: StateFlow<Boolean> = userPreferences.showOtherWeekCourses
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), false)
-
-    fun setReminderLeadMinutes(value: Int) {
-        viewModelScope.launch { userPreferences.setReminderLeadMinutes(value) }
-    }
-
-    fun setExamReminderLeadMinutes(value: Int) {
-        viewModelScope.launch { userPreferences.setExamReminderLeadMinutes(value) }
-    }
 
     fun setShowOtherWeekCourses(value: Boolean) {
         viewModelScope.launch { userPreferences.setShowOtherWeekCourses(value) }

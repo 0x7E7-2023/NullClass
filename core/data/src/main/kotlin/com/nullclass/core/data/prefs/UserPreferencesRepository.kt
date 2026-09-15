@@ -4,6 +4,7 @@ import android.content.Context
 import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.intPreferencesKey
+import androidx.datastore.preferences.core.longPreferencesKey
 import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.datastore.preferences.core.stringSetPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
@@ -34,6 +35,11 @@ class UserPreferencesRepository @Inject constructor(
         val SHOW_OTHER_WEEK_COURSES = booleanPreferencesKey("show_other_week_courses")
         val WIDGET_FONT_SIZE = stringPreferencesKey("widget_font_size")
         val SENT_REMINDER_KEYS = stringSetPreferencesKey("sent_reminder_keys")
+        val EXACT_REMINDER = booleanPreferencesKey("exact_reminder")
+        val REMINDER_BYPASS_DND = booleanPreferencesKey("reminder_bypass_dnd")
+        val HOLIDAY_SYNC_ENABLED = booleanPreferencesKey("holiday_sync_enabled")
+        val HOLIDAY_LAST_SYNC_MS = longPreferencesKey("holiday_last_sync_ms")
+        val SCHEDULED_ALARM_KEYS = stringSetPreferencesKey("scheduled_alarm_keys")
     }
 
     /**
@@ -144,6 +150,52 @@ class UserPreferencesRepository @Inject constructor(
             }
             prefs[Keys.SENT_REMINDER_KEYS] = (keep + keys).toSet()
         }
+    }
+
+    /**
+     * 精确闹钟提醒：开启且系统授权后，课程提醒改走 AlarmManager 精确闹钟；
+     * 未授权/关闭时维持 WorkManager 方案。默认关闭。
+     */
+    val exactReminder: Flow<Boolean> =
+        context.userPrefs.data.map { it[Keys.EXACT_REMINDER] ?: false }
+
+    suspend fun setExactReminder(value: Boolean) {
+        context.userPrefs.edit { it[Keys.EXACT_REMINDER] = value }
+    }
+
+    /** 提醒是否在勿扰模式下响铃（需已授予勿扰访问权限）。默认关闭。 */
+    val reminderBypassDnd: Flow<Boolean> =
+        context.userPrefs.data.map { it[Keys.REMINDER_BYPASS_DND] ?: false }
+
+    suspend fun setReminderBypassDnd(value: Boolean) {
+        context.userPrefs.edit { it[Keys.REMINDER_BYPASS_DND] = value }
+    }
+
+    /** 是否自动在线同步节假日信息。默认开启。 */
+    val holidaySyncEnabled: Flow<Boolean> =
+        context.userPrefs.data.map { it[Keys.HOLIDAY_SYNC_ENABLED] ?: true }
+
+    suspend fun setHolidaySyncEnabled(value: Boolean) {
+        context.userPrefs.edit { it[Keys.HOLIDAY_SYNC_ENABLED] = value }
+    }
+
+    /** 上次节假日同步成功的时刻（epoch ms）；0 = 从未同步。 */
+    val holidayLastSyncMs: Flow<Long> =
+        context.userPrefs.data.map { it[Keys.HOLIDAY_LAST_SYNC_MS] ?: 0L }
+
+    suspend fun setHolidayLastSyncMs(value: Long) {
+        context.userPrefs.edit { it[Keys.HOLIDAY_LAST_SYNC_MS] = value }
+    }
+
+    /**
+     * 当前已排的精确闹钟键集合（blockId:startAt，与提醒 tag 同构）。
+     * AlarmManager 无法枚举已排闹钟，取消阶段靠这份名单重建 PendingIntent。
+     */
+    val scheduledAlarmKeys: Flow<Set<String>> =
+        context.userPrefs.data.map { it[Keys.SCHEDULED_ALARM_KEYS] ?: emptySet() }
+
+    suspend fun setScheduledAlarmKeys(keys: Set<String>) {
+        context.userPrefs.edit { it[Keys.SCHEDULED_ALARM_KEYS] = keys }
     }
 
     companion object {

@@ -70,3 +70,19 @@ val MIGRATION_3_4 = object : Migration(3, 4) {
         )
     }
 }
+
+/**
+ * v4 → v5：加入跳过日期表（手动添加 + 节假日同步共写，纯本地、不同步）。
+ * 纯新增表，无存量数据迁移。
+ */
+val MIGRATION_4_5 = object : Migration(4, 5) {
+
+    override fun migrate(db: SupportSQLiteDatabase) {
+        db.execSQL(
+            "CREATE TABLE IF NOT EXISTS `skip_dates` (" +
+                "`epochDay` INTEGER NOT NULL, `type` TEXT NOT NULL, `label` TEXT, " +
+                "`updatedAt` INTEGER NOT NULL, PRIMARY KEY(`epochDay`))",
+        )
+        db.execSQL("CREATE INDEX IF NOT EXISTS `index_skip_dates_type` ON `skip_dates` (`type`)")
+    }
+}

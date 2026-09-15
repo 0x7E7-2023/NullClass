@@ -1,30 +1,34 @@
 package com.nullclass.app.notification
 
+import android.content.Context
+import com.nullclass.core.data.prefs.UserPreferencesRepository
 import com.nullclass.core.data.repository.CourseRepository
 import com.nullclass.core.data.repository.ExamRepository
+import com.nullclass.core.data.repository.HolidayRepository
 import com.nullclass.core.data.repository.TermRepository
-import com.nullclass.core.data.prefs.UserPreferencesRepository
+import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flowOf
-import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 import javax.inject.Singleton
-import kotlin.coroutines.CoroutineContext
-import kotlinx.coroutines.Dispatchers
 
 /**
- * 提醒控制器：Application 常驻，观察课表/考试/学期/偏好变化 → 防抖 → 全量重排。
+ * 提醒控制器：Application 常驻，观察课表/考试/学期/偏好/跳过日期变化 → 防抖 → 全量重排。
+ * 另观察「勿扰下响铃」偏好，变化时同步通知渠道的 bypassDnd。
  */
 @Singleton
 class ReminderController @Inject constructor(
+    @ApplicationContext private val context: Context,
     private val scheduler: ReminderScheduler,
     private val termRepository: TermRepository,
     private val courseRepository: CourseRepository,
     private val examRepository: ExamRepository,
+    private val holidayRepository: HolidayRepository,
     private val userPrefs: UserPreferencesRepository,
 ) {
 
@@ -34,15 +38,19 @@ class ReminderController @Inject constructor(
                 termRepository.observeCurrent(),
                 userPrefs.reminderLeadMinutes,
                 userPrefs.examReminderLeadMinutes,
-            ) { term, classLead, examLead -> Triple(term, classLead, examLead) }
-                .flatMapLatest { (term, _, _) ->
+                // 精确提醒开关切换要重排（两条路径互切时先清对方再排自己）
+                userPrefs.exactReminder,
+            ) { term, _, _, _ -> term }
+                .flatMapLatest { term ->
                     if (term == null) {
                         flowOf(Unit)
                     } else {
                         combine(
                             courseRepository.observeSchedule(term.id),
                             examRepository.observeForTerm(term.id),
-                        ) { _, _ -> Unit }
+                            // 跳过日期变化（手动增删 / 节假日同步落库）触发重排
+                            holidayRepository.skipDates,
+                        ) { _, _, _ -> Unit }
                     }
                 }
                 // 编辑保存连发多条通知，防抖合并
@@ -57,6 +65,13 @@ class ReminderController @Inject constructor(
                         android.util.Log.w("ReminderController", "reschedule failed", e)
                     }
                 }
+        }
+
+        // 勿扰下响铃：偏好落定/变化即更新渠道（启动时也会跑一次，恢复已保存的选择）
+        scope.launch {
+            userPrefs.reminderBypassDnd.collect { enabled ->
+                NotificationChannels.applyBypassDnd(context, enabled)
+            }
         }
     }
 }

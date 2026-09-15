@@ -52,6 +52,7 @@ import com.nullclass.feature.exam.ExamScreen
 import com.nullclass.feature.schedule.ScheduleScreen
 import com.nullclass.feature.schedule.TodayScreen
 import com.nullclass.feature.settings.AboutScreen
+import com.nullclass.feature.settings.NotificationSettingsScreen
 import com.nullclass.feature.settings.ProfileScreen
 import com.nullclass.feature.settings.SettingsScreen
 import com.nullclass.feature.settings.transfer.PendingImport
@@ -69,6 +70,7 @@ object Routes {
     const val TIMETABLE_LIST = "timetable_list"
     const val TIMETABLE_CREATE = "timetable_create"
     const val SETTINGS = "settings"
+    const val NOTIFICATION_SETTINGS = "notification_settings"
     const val ABOUT = "about"
     const val TRANSFER = "transfer"
     const val EXAM_EDIT = "exam_edit?examId={examId}&courseId={courseId}"
@@ -288,6 +290,9 @@ fun AppNavHost() {
                     onOpenTimetableList = { navController.navigate(Routes.TIMETABLE_LIST) },
                     onOpenTermList = { navController.navigate(Routes.TERM_LIST) },
                     onOpenTransfer = { navController.navigate(Routes.TRANSFER) },
+                    onOpenNotificationSettings = {
+                        navController.navigate(Routes.NOTIFICATION_SETTINGS)
+                    },
                     onOpenSettings = { navController.navigate(Routes.SETTINGS) },
                     onOpenAbout = { navController.navigate(Routes.ABOUT) },
                 )
@@ -347,6 +352,9 @@ fun AppNavHost() {
                     onBack = ::back,
                     onOpenTransfer = { navController.navigate(Routes.TRANSFER) },
                 )
+            }
+            screen(Routes.NOTIFICATION_SETTINGS) {
+                NotificationSettingsScreen(onBack = ::back)
             }
             screen(Routes.ABOUT) {
                 AboutScreen(onBack = ::back)
