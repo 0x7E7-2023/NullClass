@@ -234,6 +234,10 @@ private fun DayColumn(
                     .height(PeriodCellHeight * placed.block.periodCount)
                     .padding(1.5.dp)
                     .clip(RoundedCornerShape(8.dp))
+                    // 先铺一层不透明底再叠课程色：容器只有 15%~18% 不透明度，直接画的话
+                    // 下层网格线会从块里透出来（跨节课块被中间那条行线一劈两半，看着像网格
+                    // 压在课块上面）。底色取 Scaffold 的 background，叠加结果与原来同色。
+                    .background(MaterialTheme.colorScheme.background)
                     .background(color.container)
                     .border(hairline, color.border, RoundedCornerShape(8.dp))
                     .clickable { onBlockClick(placed) },
@@ -310,6 +314,8 @@ private fun OtherWeekBlock(placed: PlacedBlock, onBlockClick: (PlacedBlock) -> U
             .height(PeriodCellHeight * placed.block.periodCount)
             .padding(1.5.dp)
             .clip(RoundedCornerShape(8.dp))
+            // 同真课块：灰块更透（6%~8%），不垫不透明底的话网格线透得更明显
+            .background(MaterialTheme.colorScheme.background)
             .background(color.container)
             .border(hairline, color.border, RoundedCornerShape(8.dp))
             .clickable { onBlockClick(placed) },
