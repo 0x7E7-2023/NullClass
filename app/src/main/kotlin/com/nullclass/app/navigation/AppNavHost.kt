@@ -8,7 +8,11 @@ import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.gestures.awaitEachGesture
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.asPaddingValues
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.navigationBars
 import androidx.compose.foundation.layout.consumeWindowInsets
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
@@ -16,10 +20,8 @@ import androidx.compose.material.icons.filled.DateRange
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material3.Icon
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
-import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -27,7 +29,14 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.layout.onSizeChanged
+import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.unit.dp
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.lifecycle.Lifecycle
@@ -97,6 +106,8 @@ private val TopTabs = listOf(
     TopTab(Routes.PROFILE, "我的", Icons.Filled.Person),
 )
 
+private const val PageFadeDurationMillis = 220
+
 /**
  * 退出转场期间的触摸护罩。
  *
@@ -137,10 +148,23 @@ private fun AnimatedContentScope.ExitingTouchShield(content: @Composable () -> U
 private fun NavGraphBuilder.screen(
     route: String,
     arguments: List<NamedNavArgument> = emptyList(),
+    bottomBar: (@Composable () -> Unit)? = null,
+    bottomBarHeight: () -> Dp = { 0.dp },
     content: @Composable AnimatedContentScope.(NavBackStackEntry) -> Unit,
 ) {
     composable(route, arguments) { entry ->
-        ExitingTouchShield { content(this, entry) }
+        ExitingTouchShield {
+            // 仅顶层页预留底栏高度；子页进出期间旧页面的尺寸始终稳定。
+            Box(Modifier.fillMaxSize()) {
+                val padding = PaddingValues(bottom = bottomBarHeight())
+                Box(Modifier.fillMaxSize().padding(padding).consumeWindowInsets(padding)) {
+                    content(this@composable, entry)
+                }
+                if (bottomBar != null) {
+                    Box(Modifier.align(Alignment.BottomCenter)) { bottomBar() }
+                }
+            }
+        }
     }
 }
 
@@ -180,8 +204,15 @@ fun AppNavHost() {
     val currentRoute = backStackEntry?.destination?.route
     // 底栏只在四个顶层页显示；详情/子页推入后隐藏，返回键自然恢复
     val showTabBar = currentRoute in TopTabs.map { it.route }
+    var bottomBarHeightPx by remember { mutableIntStateOf(0) }
+    val density = LocalDensity.current
+    val defaultBottomBarHeight = 80.dp + WindowInsets.navigationBars.asPaddingValues().calculateBottomPadding()
+    val bottomBarHeight = {
+        if (bottomBarHeightPx == 0) defaultBottomBarHeight
+        else with(density) { bottomBarHeightPx.toDp() }
+    }
 
-    // —— 预测返回尾部竞态兜底（必须组合在下面的 Scaffold/NavHost 之前）——
+    // —— 返回尾部竞态兜底（必须组合在下面的 NavHost 之前）——
     // NavHost 2.10 只在返回栈深度 > 1 时拦截返回手势（源码 NavHost.kt：
     // backHandler.isBackEnabled = currentBackStack.size > 1）。pop 提交的
     // 一瞬间被弹条目就离开了返回栈，但它的退出转场还要再播一段；这个尾部
@@ -207,56 +238,56 @@ fun AppNavHost() {
         return
     }
 
-    Scaffold(
-        containerColor = MaterialTheme.colorScheme.background,
-        // 外层不声明 systemBars：否则 contentPadding 带状态栏高度，内层各页 TopAppBar
-        // 再消费一遍同一 inset → 顶部双倍空隙。底栏高度由 bottomBar 测量垫上
-        // （已含系统导航栏）；再 consumeWindowInsets，避免内层 Scaffold 把
-        // navigationBars 又垫一次——课表网格和底栏之间会多出一横条空白。
-        contentWindowInsets = WindowInsets(0),
-        bottomBar = {
-            if (showTabBar) {
-                NavigationBar {
-                    TopTabs.forEach { tab ->
-                        NavigationBarItem(
-                            selected = currentRoute == tab.route,
-                            onClick = {
-                                if (currentRoute == tab.route) return@NavigationBarItem
-                                // 标准底栏模式：save/restore 保住各 Tab 的 ViewModel、
-                                // 选中周次与滚动位置；回退键从任意 Tab 回到课表再退出
-                                navController.navigate(tab.route) {
-                                    popUpTo(navController.graph.findStartDestination().id) {
-                                        saveState = true
-                                    }
-                                    launchSingleTop = true
-                                    restoreState = true
+    val transitionWithChild = visibleEntries.any { entry ->
+        TopTabs.none { it.route == entry.destination.route }
+    }
+    val selectedRoute = if (showTabBar) currentRoute else
+        visibleEntries.lastOrNull { entry ->
+            TopTabs.any { it.route == entry.destination.route }
+        }?.destination?.route
+    val tabBar: @Composable (Modifier) -> Unit = { modifier ->
+        NavigationBar(modifier.onSizeChanged { bottomBarHeightPx = it.height }) {
+            TopTabs.forEach { tab ->
+                NavigationBarItem(
+                    selected = selectedRoute == tab.route,
+                    onClick = {
+                        if (showTabBar && currentRoute != tab.route) {
+                            navController.navigate(tab.route) {
+                                popUpTo(navController.graph.findStartDestination().id) {
+                                    saveState = true
                                 }
-                            },
-                            icon = { Icon(tab.icon, contentDescription = tab.label) },
-                            label = { Text(tab.label) },
-                        )
-                    }
-                }
+                                launchSingleTop = true
+                                restoreState = true
+                            }
+                        }
+                    },
+                    icon = { Icon(tab.icon, contentDescription = tab.label) },
+                    label = { Text(tab.label) },
+                )
             }
-        },
-    ) { padding ->
+        }
+    }
+    // 子页进出时，底栏进入页面的同一个动画图层（包含遮挡关系），不独立计时。
+    // 同级 Tab 切换时只保留外层底栏，避免随页面淡入淡出；两处共用相同高度占位。
+    val pageBottomBar: @Composable () -> Unit = {
+        if (transitionWithChild) tabBar(Modifier)
+    }
+
+    Box(Modifier.fillMaxSize()) {
         NavHost(
             navController = navController,
             startDestination = Routes.SCHEDULE,
             // 默认转场是 700ms 的 tween 淡入淡出（DefaultNavTransitions），退出
             // 转场尾部拖得越长，上面兜底注释里「返回手势落到系统手里」的竞态
             // 窗口就越宽。220ms 是 Compose 常规动效时长，观感不变、窗口缩到 1/3。
-            // 预测返回手势拖拽时的预览走 predictivePop* 默认值（spring 淡入 +
-            // 缩小），与这里的按钮/三键返回转场互不干扰。
-            enterTransition = { fadeIn(tween(220)) },
-            exitTransition = { fadeOut(tween(220)) },
-            popEnterTransition = { fadeIn(tween(220)) },
-            popExitTransition = { fadeOut(tween(220)) },
-            modifier = Modifier
-                .padding(padding)
-                .consumeWindowInsets(padding),
+            // 子页进出时底栏在顶层页内部，直接共享整页转场。
+            enterTransition = { fadeIn(tween(PageFadeDurationMillis)) },
+            exitTransition = { fadeOut(tween(PageFadeDurationMillis)) },
+            popEnterTransition = { fadeIn(tween(PageFadeDurationMillis)) },
+            popExitTransition = { fadeOut(tween(PageFadeDurationMillis)) },
+            modifier = Modifier.fillMaxSize(),
         ) {
-            screen(Routes.TODAY) {
+            screen(Routes.TODAY, bottomBar = pageBottomBar, bottomBarHeight = bottomBarHeight) {
                 TodayScreen(
                     onEditCourse = { courseId ->
                         navController.navigate(Routes.courseEdit(courseId = courseId))
@@ -266,7 +297,7 @@ fun AppNavHost() {
                     onEditTerm = { termId -> navController.navigate(Routes.termEdit(termId)) },
                 )
             }
-            screen(Routes.SCHEDULE) {
+            screen(Routes.SCHEDULE, bottomBar = pageBottomBar, bottomBarHeight = bottomBarHeight) {
                 ScheduleScreen(
                     onCreateCourse = { navController.navigate(Routes.courseEdit()) },
                     onEditCourse = { courseId ->
@@ -277,14 +308,14 @@ fun AppNavHost() {
                     onEditTerm = { termId -> navController.navigate(Routes.termEdit(termId)) },
                 )
             }
-            screen(Routes.EXAMS) {
+            screen(Routes.EXAMS, bottomBar = pageBottomBar, bottomBarHeight = bottomBarHeight) {
                 ExamScreen(
                     onAddExam = { navController.navigate(Routes.examEdit()) },
                     onEditExam = { examId -> navController.navigate(Routes.examEdit(examId = examId)) },
                     onEditTerm = { termId -> navController.navigate(Routes.termEdit(termId)) },
                 )
             }
-            screen(Routes.PROFILE) {
+            screen(Routes.PROFILE, bottomBar = pageBottomBar, bottomBarHeight = bottomBarHeight) {
                 ProfileScreen(
                     onEditTerm = { termId -> navController.navigate(Routes.termEdit(termId)) },
                     onOpenTimetableList = { navController.navigate(Routes.TIMETABLE_LIST) },
@@ -366,6 +397,10 @@ fun AppNavHost() {
                     onPendingImportConsumed = { PendingImport.uri.value = null },
                 )
             }
+        }
+
+        if (showTabBar && !transitionWithChild) {
+            tabBar(Modifier.align(Alignment.BottomCenter))
         }
     }
 }
