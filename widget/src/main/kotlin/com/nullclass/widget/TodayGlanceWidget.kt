@@ -4,12 +4,14 @@ import android.content.Context
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.ui.graphics.Color
+import androidx.compose.runtime.produceState
 import androidx.compose.ui.unit.dp
+import androidx.datastore.preferences.core.Preferences
 import androidx.glance.GlanceId
 import androidx.glance.GlanceModifier
 import androidx.glance.LocalContext
 import androidx.glance.LocalSize
+import androidx.glance.action.actionParametersOf
 import androidx.glance.action.clickable
 import androidx.glance.appwidget.GlanceAppWidget
 import androidx.glance.appwidget.SizeMode
@@ -17,7 +19,7 @@ import androidx.glance.appwidget.action.actionRunCallback
 import androidx.glance.appwidget.cornerRadius
 import androidx.glance.appwidget.provideContent
 import androidx.glance.background
-import androidx.glance.color.ColorProvider
+import androidx.glance.currentState
 import androidx.glance.layout.Alignment
 import androidx.glance.layout.Box
 import androidx.glance.layout.Column
@@ -28,62 +30,54 @@ import androidx.glance.layout.fillMaxWidth
 import androidx.glance.layout.height
 import androidx.glance.layout.padding
 import androidx.glance.layout.width
+import androidx.glance.semantics.contentDescription
+import androidx.glance.semantics.semantics
+import androidx.glance.state.PreferencesGlanceStateDefinition
 import androidx.glance.text.FontWeight
 import androidx.glance.text.Text
 import androidx.glance.text.TextStyle
 import com.nullclass.core.model.ScheduleFormat
 import com.nullclass.core.model.TodaySnapshot
+import com.nullclass.core.model.WidgetAgendaPage
 import com.nullclass.core.model.WidgetFontSize
+import com.nullclass.core.model.WidgetPageLayout
 import com.nullclass.core.model.buildWidgetAgenda
-import com.nullclass.core.model.widgetCourseRowBudget
+import com.nullclass.core.model.paginateWidgetAgenda
+import com.nullclass.core.model.widgetPageLayout
 import com.nullclass.core.ui.theme.courseColor
 import kotlinx.coroutines.flow.first
+import java.time.LocalDate
 import java.time.LocalTime
+import java.time.format.DateTimeFormatter
 import kotlin.math.roundToInt
 
-/**
- * 「今日课程」小组件：标题（周次+星期）+ 未结束的课。
- *
- * 按高度和字号配额截断（[widgetCourseRowBudget]），已上完的丢掉，同课连堂合并。
- * 配额留出的空白里靠左另起一行「还剩 n 节」，不为脚注少排一门课。
- *
- * 刷新双轨：App 活着时由 :app 的 WidgetAutoUpdater 推（Room Flow 触发），
- * 进程死后靠 DailyMaintenanceWorker 每 24h 兜底（跨天必须发生）。
- * 标题行右侧带「更新于 HH:mm」（宽度够时显示）：跨天兜底失灵时用户能一眼
- * 看出数据是几点算的，而不是默默信一个昨天的课表。
- */
+/** 今日课程：自适应容量的纵向列表，按钮分页，不再截断后续课程。 */
 class TodayGlanceWidget : GlanceAppWidget() {
-
     override val sizeMode = SizeMode.Exact
+    override val stateDefinition = PreferencesGlanceStateDefinition
 
     override suspend fun provideGlance(context: Context, id: GlanceId) {
         val entryPoint = widgetEntryPoint(context)
         val snapshot = buildTodaySnapshot(entryPoint.termRepository(), entryPoint.courseRepository())
         val prefs = entryPoint.userPreferences()
-        // updateAll 在 Glance 会话还活着时不会重跑 provideGlance，字号必须在
-        // composition 里 collect，否则改第二档会继续用第一次读到的值。
         val initialFont = prefs.widgetFontSize.first()
         provideContent {
             val fontSize by prefs.widgetFontSize.collectAsState(initialFont)
+            val pageState = currentState<Preferences>()
+            // 翻页可唤醒仍存活的 Glance 会话，此时 provideGlance 不会重跑。
+            val liveSnapshot by produceState(snapshot, pageState) {
+                value = buildTodaySnapshot(entryPoint.termRepository(), entryPoint.courseRepository())
+            }
+            val now = LocalTime.now()
             TodayWidgetContent(
-                snapshot,
-                LocalTime.now().let { it.hour * 60 + it.minute },
+                liveSnapshot,
+                now.hour * 60 + now.minute,
                 fontSize,
-                updatedAtLabel = LocalTime.now().format(TimeFormat),
+                now.format(DateTimeFormatter.ofPattern("HH:mm")),
             )
         }
     }
-
-    private companion object {
-        val TimeFormat = java.time.format.DateTimeFormatter.ofPattern("HH:mm")
-    }
 }
-
-internal val WidgetBackground = ColorProvider(day = Color.White, night = Color(0xFF1A1B21))
-internal val WidgetOnBackground = ColorProvider(day = Color(0xFF1B1C22), night = Color(0xFFE4E4EA))
-internal val WidgetOnBackgroundVariant = ColorProvider(day = Color(0xFF6B6E76), night = Color(0xFF9DA0A8))
-internal val WidgetAccent = ColorProvider(day = Color(0xFF4F46E5), night = Color(0xFFBEC2FF))
-internal val WidgetDivider = ColorProvider(day = Color(0xFFE3E3E8), night = Color(0xFF2E3038))
 
 @Composable
 internal fun TodayWidgetContent(
@@ -92,101 +86,155 @@ internal fun TodayWidgetContent(
     fontSize: WidgetFontSize = WidgetFontSize.STANDARD,
     updatedAtLabel: String? = null,
 ) {
-    Box(
-        modifier = GlanceModifier
-            .fillMaxSize()
-            .background(WidgetBackground)
-            .cornerRadius(16.dp)
-            .padding(12.dp)
-            .clickable(actionRunCallback<OpenAppAction>()),
-    ) {
-        TodayFullContent(snapshot, nowMinuteOfDay, fontSize, updatedAtLabel)
-    }
-}
-
-/** 标题 + 配额内的课。高度常数与 [widgetCourseRowBudget] 对齐。 */
-@Composable
-private fun TodayFullContent(
-    snapshot: TodaySnapshot,
-    nowMinuteOfDay: Int,
-    fontSize: WidgetFontSize,
-    updatedAtLabel: String? = null,
-) {
-    if (snapshot.termName.isEmpty()) {
-        Column(modifier = GlanceModifier.fillMaxSize()) {
-            Text(
-                "空课",
-                style = TextStyle(color = WidgetAccent, fontSize = fontSize.sp(13), fontWeight = FontWeight.Medium),
-            )
-            Spacer(GlanceModifier.height(6.dp))
-            Box(GlanceModifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                Text(
-                    "请先在应用中创建学期",
-                    style = TextStyle(color = WidgetOnBackgroundVariant, fontSize = fontSize.sp(12)),
-                )
-            }
-        }
-        return
-    }
-
-    val heightDp = LocalSize.current.height.value.roundToInt()
-    val fontScale = LocalContext.current.resources.configuration.fontScale
-    val agenda = buildWidgetAgenda(
-        snapshot,
-        nowMinuteOfDay,
-        widgetCourseRowBudget(heightDp, fontSize, fontScale),
+    val layout = widgetPageLayout(
+        LocalSize.current.height.value.roundToInt(),
+        fontSize,
+        LocalContext.current.resources.configuration.fontScale,
     )
-    Column(modifier = GlanceModifier.fillMaxSize()) {
-        // 窄位（3 格宽）放不下时间戳，只有中/大尺寸显示「更新于 HH:mm」
-        val wideEnough = LocalSize.current.width >= 220.dp
-        Row(modifier = GlanceModifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
-            Text(
-                when (snapshot.weekNumber) {
-                    null -> snapshot.termName // 学期还没开始（或已结束），只显学期名
-                    else -> "第${snapshot.weekNumber}周 · ${ScheduleFormat.dayOfWeekLabel(java.time.LocalDate.now().dayOfWeek.value)}"
-                },
-                style = TextStyle(color = WidgetAccent, fontSize = fontSize.sp(13), fontWeight = FontWeight.Medium),
-                modifier = GlanceModifier.defaultWeight(),
+    val upcoming = buildWidgetAgenda(snapshot, nowMinuteOfDay, Int.MAX_VALUE).rows
+    // 日期、课程集合或容量变了就回到第一页；分钟倒计时不会把用户正在看的页翻走。
+    val pageKey = buildString {
+        append(LocalDate.now()).append('|').append(snapshot.termName).append('|').append(layout.rowsPerPage)
+        upcoming.forEach {
+            append('|').append(it.placed.course.id).append(':').append(it.placed.block.id)
+            append(':').append(it.startMinuteOfDay).append('-').append(it.endMinuteOfDay)
+        }
+    }
+    val state = currentState<Preferences>()
+    val requestedPage = if (state[AgendaPageKey] == pageKey) state[AgendaPage] ?: 0 else 0
+    val page = paginateWidgetAgenda(snapshot, nowMinuteOfDay, layout.rowsPerPage, requestedPage)
+    Column(
+        GlanceModifier.fillMaxSize().background(WidgetBackground).cornerRadius(20.dp)
+            .padding(layout.paddingDp.dp),
+    ) {
+        Row(
+            GlanceModifier.fillMaxWidth().height(layout.headerHeightDp.dp),
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
+            if (!layout.inlinePager || page.pageCount == 1) Text(
+                if (layout.inlinePager) "今日" else "今日课程",
+                modifier = GlanceModifier.defaultWeight().clickable(actionRunCallback<OpenAppAction>()),
+                style = TextStyle(color = WidgetOnBackground, fontSize = fontSize.sp(13), fontWeight = FontWeight.Bold),
                 maxLines = 1,
             )
-            if (wideEnough && updatedAtLabel != null) {
-                Spacer(GlanceModifier.width(6.dp))
+            if (layout.inlinePager && page.pageCount > 1) {
+                PageControls(page, pageKey, fontSize, layout, updatedAtLabel, compact = true)
+            } else {
                 Text(
-                    "更新于$updatedAtLabel",
-                    style = TextStyle(color = WidgetOnBackgroundVariant, fontSize = fontSize.sp(10)),
+                    if (layout.inlinePager && updatedAtLabel != null) "更新于 $updatedAtLabel"
+                    else snapshot.weekNumber?.let { "第${it}周 · ${ScheduleFormat.dayOfWeekLabel(LocalDate.now().dayOfWeek.value)}" }
+                        ?: "空课",
+                    style = TextStyle(color = WidgetAccent, fontSize = fontSize.sp(10)),
                     maxLines = 1,
                 )
             }
         }
-        Spacer(GlanceModifier.height(4.dp))
-        Box(GlanceModifier.fillMaxWidth().height(1.dp).background(WidgetDivider)) {}
-        Spacer(GlanceModifier.height(4.dp))
-
-        when {
-            snapshot.blocks.isEmpty() -> Box(
-                GlanceModifier.fillMaxWidth().padding(vertical = 16.dp),
-                contentAlignment = Alignment.Center,
-            ) {
-                Text("今天没有课 🎉", style = TextStyle(color = WidgetOnBackgroundVariant, fontSize = fontSize.sp(12)))
-            }
-            agenda.rows.isEmpty() -> Text(
-                "今天课程已结束 😴",
-                style = TextStyle(color = WidgetOnBackgroundVariant, fontSize = fontSize.sp(11)),
-                modifier = GlanceModifier.padding(top = 4.dp),
-            )
-            else -> {
-                agenda.rows.forEachIndexed { index, entry ->
-                    TodayRow(entry, snapshot, nowMinuteOfDay, fontSize, isNext = index == 0)
-                }
-                if (agenda.hiddenUpcoming > 0) {
-                    Text(
-                        "还剩${agenda.hiddenUpcoming}节",
-                        style = TextStyle(color = WidgetOnBackgroundVariant, fontSize = fontSize.sp(11)),
-                        modifier = GlanceModifier.padding(start = 6.dp, top = 4.dp),
-                    )
+        Spacer(GlanceModifier.height(8.dp))
+        Column(GlanceModifier.fillMaxWidth().defaultWeight()) {
+            when {
+                snapshot.termName.isEmpty() -> WidgetEmptyState("还没有课表", "点此创建学期，安排新的一天", fontSize)
+                snapshot.blocks.isEmpty() -> WidgetEmptyState("今天没有课", "留一点时间，做喜欢的事", fontSize)
+                page.rows.isEmpty() -> WidgetEmptyState("今天的课上完了", "辛苦了，好好休息", fontSize)
+                else -> page.rows.forEachIndexed { index, entry ->
+                    Column {
+                        TodayRow(entry, snapshot, nowMinuteOfDay, fontSize, layout, page.index == 0 && index == 0)
+                    }
                 }
             }
         }
+        if (!layout.inlinePager) {
+            Spacer(GlanceModifier.height(8.dp))
+            Row(
+                GlanceModifier.fillMaxWidth().height(layout.controlsHeightDp.dp),
+                verticalAlignment = Alignment.CenterVertically,
+            ) {
+                if (page.pageCount > 1) {
+                    PageControls(
+                        page, pageKey, fontSize, layout, updatedAtLabel,
+                        compact = LocalSize.current.width < 280.dp * fontSize.scale *
+                            LocalContext.current.resources.configuration.fontScale,
+                    )
+                } else {
+                    Text(
+                        if (page.totalRows > 0) "待上 ${page.totalRows} 门" else "空课 · 今天",
+                        modifier = GlanceModifier.defaultWeight(),
+                        style = TextStyle(color = WidgetOnBackgroundVariant, fontSize = fontSize.sp(10)),
+                        maxLines = 1,
+                    )
+                    updatedAtLabel?.let {
+                        Text("更新于 $it", style = TextStyle(color = WidgetOnBackgroundVariant, fontSize = fontSize.sp(9)), maxLines = 1)
+                    }
+                }
+            }
+        }
+    }
+}
+
+@Composable
+private fun PageControls(
+    page: WidgetAgendaPage,
+    key: String,
+    fontSize: WidgetFontSize,
+    layout: WidgetPageLayout,
+    updatedAtLabel: String?,
+    compact: Boolean,
+) {
+    Row(
+        modifier = GlanceModifier.fillMaxWidth(),
+        verticalAlignment = Alignment.CenterVertically,
+    ) {
+        PageButton(if (compact) "↑" else "↑ 上页", "上一页", page.index - 1, key, page, page.hasPrevious, fontSize, layout)
+        Box(
+            modifier = GlanceModifier.defaultWeight(),
+            contentAlignment = Alignment.Center,
+        ) {
+            Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                Text(
+                    "${page.index + 1}/${page.pageCount}",
+                    style = TextStyle(color = WidgetOnBackgroundVariant, fontSize = fontSize.sp(10)),
+                    modifier = GlanceModifier.semantics { contentDescription = "第${page.index + 1}页，共${page.pageCount}页" },
+                    maxLines = 1,
+                )
+                updatedAtLabel?.let {
+                    Text("更新于 $it", style = TextStyle(color = WidgetOnBackgroundVariant, fontSize = fontSize.sp(9)), maxLines = 1)
+                }
+            }
+        }
+        PageButton(if (compact) "↓" else "↓ 下页", "下一页", page.index + 1, key, page, page.hasNext, fontSize, layout)
+    }
+}
+
+@Composable
+private fun PageButton(
+    text: String,
+    description: String,
+    target: Int,
+    key: String,
+    page: WidgetAgendaPage,
+    enabled: Boolean,
+    fontSize: WidgetFontSize,
+    layout: WidgetPageLayout,
+) {
+    val modifier = GlanceModifier.height(layout.controlsHeightDp.dp)
+        .background(if (enabled) WidgetAccentSurface else WidgetSurface).cornerRadius(10.dp)
+        .padding(horizontal = 10.dp)
+        .semantics { contentDescription = if (enabled) description else "$description，不可用" }
+        // 不移除 clickable：保持 RemoteViews 结构稳定，并显式覆盖复用视图上的旧动作。
+        // 边界按钮也绑定回调，但 enabled=false 时不写状态、不触发重绘。
+        .clickable(actionRunCallback<WidgetPageAction>(
+            actionParametersOf(
+                TargetPage to target,
+                TargetPageKey to key,
+                SourcePage to page.index,
+                PageCount to page.pageCount,
+                PageActionEnabled to enabled,
+            ),
+        ))
+    Box(modifier, contentAlignment = Alignment.Center) {
+        Text(text, style = TextStyle(
+            color = if (enabled) WidgetAccent else WidgetDisabled,
+            fontSize = fontSize.sp(11), fontWeight = FontWeight.Medium,
+        ), maxLines = 1)
     }
 }
 
@@ -196,60 +244,57 @@ private fun TodayRow(
     snapshot: TodaySnapshot,
     nowMinuteOfDay: Int,
     fontSize: WidgetFontSize,
+    layout: WidgetPageLayout,
     isNext: Boolean,
 ) {
-    val isInProgress = snapshot.inProgress(entry, nowMinuteOfDay)
-    val color = courseColor(entry.placed.course.colorIndex)
-    val rowBackground = if (isNext) {
-        ColorProvider(day = color.content.copy(alpha = 0.14f), night = color.content.copy(alpha = 0.24f))
-    } else {
-        ColorProvider(day = Color.Transparent, night = Color.Transparent)
+    val inProgress = snapshot.inProgress(entry, nowMinuteOfDay)
+    val block = entry.placed.block
+    val location = block.location?.takeIf { it.isNotBlank() }
+    val subtitle = when {
+        inProgress -> "上课中 · 剩${snapshot.remainingMinutes(entry, nowMinuteOfDay)}分"
+        isNext -> "下一节 · ${location ?: "第${block.startPeriod}–${block.endPeriod}节"}"
+        else -> location ?: "第${block.startPeriod}–${block.endPeriod}节"
     }
     Row(
-        modifier = GlanceModifier
-            .fillMaxWidth()
-            .background(rowBackground)
-            .cornerRadius(8.dp)
-            .padding(horizontal = 6.dp, vertical = 4.dp),
+        GlanceModifier.fillMaxWidth().height((layout.rowHeightDp - 4).dp)
+            .background(if (isNext || inProgress) WidgetAccentSurface else WidgetSurface)
+            .cornerRadius(12.dp).padding(horizontal = 8.dp, vertical = 4.dp)
+            .clickable(actionRunCallback<OpenAppAction>()),
         verticalAlignment = Alignment.CenterVertically,
     ) {
-        Column(modifier = GlanceModifier.width(fontSize.dp(38))) {
-            Text(
-                entry.startTime,
-                style = TextStyle(
-                    color = if (isNext) WidgetAccent else WidgetOnBackgroundVariant,
-                    fontSize = fontSize.sp(11),
-                    fontWeight = if (isNext) FontWeight.Bold else FontWeight.Normal,
-                ),
-            )
-            // Glance Text 无省略号能力，列宽只放得下 3-4 字符：
-            // 上课中的行用「剩X分」替代下课时间（下课时间可由开始时间+剩余推出）
-            Text(
-                if (isInProgress) "剩${snapshot.remainingMinutes(entry, nowMinuteOfDay)}分" else entry.endTime,
-                style = TextStyle(color = WidgetOnBackgroundVariant, fontSize = fontSize.sp(9)),
-            )
-        }
-        Spacer(GlanceModifier.width(6.dp))
-        Column(modifier = GlanceModifier.defaultWeight()) {
-            Text(
-                entry.placed.course.name,
-                style = TextStyle(
-                    color = WidgetOnBackground,
-                    fontSize = fontSize.sp(12),
-                    fontWeight = if (isNext) FontWeight.Bold else FontWeight.Medium,
-                ),
-                maxLines = 1,
-            )
-            entry.placed.block.location?.takeIf { it.isNotBlank() }?.let {
-                Text(it, style = TextStyle(color = WidgetOnBackgroundVariant, fontSize = fontSize.sp(10)), maxLines = 1)
+        Box(GlanceModifier.width(3.dp).height(if (layout.showDetails) 28.dp else 16.dp)
+            .background(courseColor(entry.placed.course.colorIndex).content).cornerRadius(2.dp)) {}
+        Spacer(GlanceModifier.width(8.dp))
+        Column(GlanceModifier.width(fontSize.dp(44))) {
+            Text(entry.startTime, style = TextStyle(color = WidgetAccent, fontSize = fontSize.sp(11), fontWeight = FontWeight.Bold), maxLines = 1)
+            if (layout.showDetails) {
+                Text(entry.endTime, style = TextStyle(color = WidgetOnBackgroundVariant, fontSize = fontSize.sp(10)), maxLines = 1)
             }
         }
-        if (isNext) {
-            Text(
-                if (isInProgress) "上课中" else "下一节",
-                style = TextStyle(color = WidgetAccent, fontSize = fontSize.sp(10), fontWeight = FontWeight.Medium),
-                maxLines = 1,
-            )
+        Spacer(GlanceModifier.width(6.dp))
+        Column(GlanceModifier.defaultWeight()) {
+            Text(entry.placed.course.name, style = TextStyle(
+                color = WidgetOnBackground, fontSize = fontSize.sp(12), fontWeight = FontWeight.Bold,
+            ), maxLines = 1)
+            if (layout.showDetails) {
+                Text(subtitle, style = TextStyle(color = WidgetOnBackgroundVariant, fontSize = fontSize.sp(10)), maxLines = 1)
+            }
+        }
+    }
+    Spacer(GlanceModifier.height(4.dp))
+}
+
+@Composable
+internal fun WidgetEmptyState(title: String, subtitle: String, fontSize: WidgetFontSize) {
+    Column(
+        GlanceModifier.fillMaxSize().background(WidgetSurface).cornerRadius(12.dp)
+            .padding(8.dp).clickable(actionRunCallback<OpenAppAction>()),
+        verticalAlignment = Alignment.CenterVertically,
+    ) {
+        Text(title, style = TextStyle(color = WidgetOnBackground, fontSize = fontSize.sp(12), fontWeight = FontWeight.Bold), maxLines = 1)
+        if (LocalSize.current.height >= 150.dp) {
+            Spacer(GlanceModifier.height(4.dp))
+            Text(subtitle, style = TextStyle(color = WidgetOnBackgroundVariant, fontSize = fontSize.sp(10)), maxLines = 2)
         }
     }
 }

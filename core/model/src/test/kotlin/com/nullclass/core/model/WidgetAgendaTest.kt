@@ -6,6 +6,70 @@ import kotlin.test.assertTrue
 
 class WidgetAgendaTest {
 
+    @Test
+    fun `分页可遍历所有课程且末页不重复`() {
+        val snap = snapshot(*(1..7).map { i ->
+            entry("b$i", courseId = "c$i", startPeriod = i, startMin = 400 + i * 60, endMin = 450 + i * 60)
+        }.toTypedArray())
+        val pages = (0..2).map { paginateWidgetAgenda(snap, 0, 3, it) }
+        assertEquals(listOf(3, 3, 1), pages.map { it.rows.size })
+        assertEquals((1..7).map { "b$it" }, pages.flatMap { it.rows }.map { it.placed.block.id })
+        assertTrue(!pages.first().hasPrevious)
+        assertTrue(pages.first().hasNext)
+        assertTrue(pages.last().hasPrevious)
+        assertTrue(!pages.last().hasNext)
+        assertTrue(pages.all { it.totalRows == 7 && it.pageCount == 3 })
+    }
+
+    @Test
+    fun `跨下课时刻和调整容量后越界页码被收敛`() {
+        val snap = snapshot(
+            entry("a", startPeriod = 1, startMin = 480, endMin = 525),
+            entry("b", courseId = "c2", startPeriod = 3, startMin = 600, endMin = 645),
+        )
+        assertEquals(1, paginateWidgetAgenda(snap, 0, 1, Int.MAX_VALUE).index)
+        assertEquals(0, paginateWidgetAgenda(snap, 550, 1, 1).index)
+        assertEquals(listOf("b"), paginateWidgetAgenda(snap, 550, 1, 1).rows.map { it.placed.block.id })
+        assertEquals(0, paginateWidgetAgenda(snap, 0, 5, 1).index)
+        assertEquals(0, paginateWidgetAgenda(snap, 0, 1, -5).index)
+    }
+
+    @Test
+    fun `分页前过滤并合并连堂`() {
+        val snap = snapshot(
+            entry("a", startPeriod = 1, startMin = 480, endMin = 525),
+            entry("b", startPeriod = 2, startMin = 535, endMin = 580),
+            entry("c", courseId = "c2", startPeriod = 3, startMin = 600, endMin = 645),
+        )
+        val page = paginateWidgetAgenda(snap, 0, 1, 1)
+        assertEquals(2, page.totalRows)
+        assertEquals(listOf("c"), page.rows.map { it.placed.block.id })
+        val empty = paginateWidgetAgenda(snap, 700, 0, 99)
+        assertTrue(empty.rows.isEmpty())
+        assertEquals(1, empty.pageCount)
+        assertEquals(0, empty.index)
+    }
+
+    @Test
+    fun `分页布局为按钮预留空间且大字号自动减少行数`() {
+        for (height in listOf(110, 180, 240, 320, 600)) {
+            for (font in WidgetFontSize.entries) {
+                val layout = widgetPageLayout(height, font)
+                val used = layout.paddingDp * 2 + layout.headerHeightDp + 8 +
+                    layout.rowHeightDp * layout.rowsPerPage +
+                    if (layout.inlinePager) 0 else layout.controlsHeightDp + 8
+                assertTrue(used <= height, "height=$height font=$font used=$used")
+                assertTrue(layout.rowsPerPage in 1..10)
+            }
+        }
+        assertTrue(widgetPageLayout(110, WidgetFontSize.STANDARD).inlinePager)
+        assertTrue(!widgetPageLayout(240, WidgetFontSize.STANDARD).inlinePager)
+        assertTrue(widgetPageLayout(320, WidgetFontSize.STANDARD).rowsPerPage >
+            widgetPageLayout(320, WidgetFontSize.XLARGE).rowsPerPage)
+        assertTrue(widgetPageLayout(320, WidgetFontSize.STANDARD, 1.5f).rowsPerPage <
+            widgetPageLayout(320, WidgetFontSize.STANDARD).rowsPerPage)
+    }
+
     private fun entry(
         id: String,
         courseId: String = "c1",
