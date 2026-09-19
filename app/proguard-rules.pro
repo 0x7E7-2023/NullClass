@@ -20,7 +20,7 @@
 -dontwarn ai.onnxruntime.**
 
 # zxing：生成二维码走 QRCodeWriter 内部查找表/枚举，R8 全程序优化可能裁掉，
-# release 包点「生成二维码」会直接崩。embedded 扫码侧自带 consumer 规则，生成侧没有。
+# release 包点「生成二维码」会直接崩。扫码已换 quickie（自带 consumer 规则）。
 -keep class com.google.zxing.** { *; }
 -dontwarn com.google.zxing.**
 

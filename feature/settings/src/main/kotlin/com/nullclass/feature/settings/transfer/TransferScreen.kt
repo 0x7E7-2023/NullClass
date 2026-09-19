@@ -1,7 +1,8 @@
 package com.nullclass.feature.settings.transfer
 
+import android.Manifest
 import android.content.Intent
-import android.provider.DocumentsContract
+import android.content.pm.PackageManager
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.Arrangement
@@ -41,10 +42,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.window.Dialog
+import androidx.compose.ui.window.DialogProperties
 import androidx.core.content.FileProvider
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
-import com.journeyapps.barcodescanner.ScanContract
-import com.journeyapps.barcodescanner.ScanOptions
+import androidx.core.content.ContextCompat
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -65,6 +67,7 @@ fun TransferScreen(
     val context = LocalContext.current
     val scope = rememberCoroutineScope()
     var pendingFileName by remember { mutableStateOf<String?>(null) }
+    var scanning by remember { mutableStateOf(false) }
 
     // ---- SAF / 扫码 launchers ----
     val saveFileLauncher = rememberLauncherForActivityResult(
@@ -91,8 +94,10 @@ fun TransferScreen(
         uri?.let { viewModel.importWakeUpFromUri(it, displayName(uri)) }
     }
 
-    val scanLauncher = rememberLauncherForActivityResult(ScanContract()) { result ->
-        result.contents?.let { viewModel.parseQrPayload(it) }
+    val cameraPermission = rememberLauncherForActivityResult(
+        ActivityResultContracts.RequestPermission(),
+    ) { granted ->
+        if (granted) scanning = true else viewModel.onScanFailed("需要相机权限才能扫码")
     }
 
     val jwLauncher = rememberLauncherForActivityResult(
@@ -190,7 +195,7 @@ fun TransferScreen(
                 modifier = Modifier.fillMaxWidth(),
             ) { Text("生成二维码") }
             Text(
-                "只含当前学期的有效课程，当面扫码即可导入；完整备份请用上面的文件。",
+                "只含当前学期的有效课程，扫码后并入对方当前课表并切过去；完整备份请用上面的文件。",
                 style = MaterialTheme.typography.bodySmall,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
             )
@@ -223,14 +228,10 @@ fun TransferScreen(
                 openFileLauncher.launch(arrayOf("application/json", "application/x-nullclass", "*/*"))
             }, modifier = Modifier.fillMaxWidth()) { Text("从 .nullclass 文件导入") }
             OutlinedButton(onClick = {
-                scanLauncher.launch(
-                    ScanOptions().apply {
-                        setDesiredBarcodeFormats(ScanOptions.QR_CODE)
-                        setPrompt("扫描空课课表二维码")
-                        setBeepEnabled(false)
-                        setOrientationLocked(true)
-                    },
-                )
+                when (ContextCompat.checkSelfPermission(context, Manifest.permission.CAMERA)) {
+                    PackageManager.PERMISSION_GRANTED -> scanning = true
+                    else -> cameraPermission.launch(Manifest.permission.CAMERA)
+                }
             }, modifier = Modifier.fillMaxWidth()) { Text("扫码导入") }
 
             HorizontalDivider(modifier = Modifier.padding(vertical = 8.dp))
@@ -282,6 +283,30 @@ fun TransferScreen(
                 style = MaterialTheme.typography.bodySmall,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
                 modifier = Modifier.padding(bottom = 24.dp),
+            )
+        }
+    }
+
+    if (scanning) {
+        Dialog(
+            onDismissRequest = { scanning = false },
+            properties = DialogProperties(
+                dismissOnBackPress = true,
+                dismissOnClickOutside = false,
+                usePlatformDefaultWidth = false,
+                decorFitsSystemWindows = false,
+            ),
+        ) {
+            QrScanScreen(
+                onPayload = { payload ->
+                    scanning = false
+                    viewModel.parseQrPayload(payload)
+                },
+                onCancel = { scanning = false },
+                onError = { message ->
+                    scanning = false
+                    viewModel.onScanFailed(message)
+                },
             )
         }
     }
@@ -345,7 +370,7 @@ private fun ImportPreviewDialog(
                         fontWeight = FontWeight.Bold,
                     )
                 }
-                if (preview.activateTermId != null) {
+                if (preview.activateTermName != null) {
                     Text(
                         "导入后设为当前学期，今日 / 课表 / 小组件立即切到它。",
                         style = MaterialTheme.typography.bodySmall,

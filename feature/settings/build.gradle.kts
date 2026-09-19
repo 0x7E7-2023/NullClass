@@ -41,9 +41,17 @@ dependencies {
     implementation(libs.compose.material.icons)
     debugImplementation(libs.compose.ui.tooling)
 
-    // 二维码：zxing-core 纯 Java 生成位图；embedded 封装扫码相机
+    implementation(libs.androidx.lifecycle.runtime.compose)
+
+    // 二维码：zxing-core 生成；扫码用 CameraX 1080p 分析流 + ML Kit 端侧模型
+    // （quickie 同样套 ML Kit，但把分析分辨率锁死 720p，version 27 的码模块不够像素）
     implementation(libs.zxing.core)
-    implementation(libs.zxing.android.embedded)
+    implementation(libs.camerax.core)
+    implementation(libs.camerax.camera2)
+    implementation(libs.camerax.lifecycle)
+    implementation(libs.camerax.view)
+    implementation(libs.camerax.mlkit)
+    implementation(libs.mlkit.barcode.scanning)
 
     // 适配器库拉取 / 图片课表取图
     implementation(libs.okhttp)

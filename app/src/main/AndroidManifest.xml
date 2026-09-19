@@ -7,6 +7,9 @@
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
     <!-- 节假日在线同步：okhttp 拉取 timor.tech / Nager.Date -->
     <uses-permission android:name="android.permission.INTERNET" />
+    <!-- 扫码导入课表：quickie 扫码页会现场申请；不声明 required 以免没相机的设备装不上 -->
+    <uses-permission android:name="android.permission.CAMERA" />
+    <uses-feature android:name="android.hardware.camera" android:required="false" />
     <!-- 可选精确提醒：用户在「通知与提醒」页主动开启并授权后生效 -->
     <uses-permission android:name="android.permission.SCHEDULE_EXACT_ALARM" />
     <!-- 勿扰模式下响铃：可选，授权后才能把提醒渠道设为绕过勿扰 -->
