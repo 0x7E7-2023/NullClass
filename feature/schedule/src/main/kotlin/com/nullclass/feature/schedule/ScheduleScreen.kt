@@ -6,16 +6,14 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.lazy.grid.GridCells
-import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
-import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.rememberScrollState
@@ -51,6 +49,7 @@ import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -383,23 +382,39 @@ private fun WeekPickerDialog(
     onSelect: (Int) -> Unit,
     onDismiss: () -> Unit,
 ) {
+    // 弹窗高度自适应：格子少时按内容收缩，多时封顶（约屏高一半，余量留给
+    // 标题/按钮/弹窗内边距），超出部分滚动。原先固定 320dp，20 周学期只占
+    // 四行、弹窗下半截全是空白，超长学期又不够放。
+    val maxGridHeight = (LocalConfiguration.current.screenHeightDp * 0.5f).dp
+        .coerceIn(180.dp, 420.dp)
     AlertDialog(
         onDismissRequest = onDismiss,
         title = { Text("选择周次") },
         text = {
-            LazyVerticalGrid(
-                columns = GridCells.Fixed(5),
-                modifier = Modifier.height(320.dp),
-                horizontalArrangement = Arrangement.spacedBy(8.dp),
-                verticalArrangement = Arrangement.spacedBy(8.dp),
+            // verticalScroll + heightIn(max)：内容不满封顶值时按内容收缩，
+            // 溢出时容器停在封顶值、内部滚动——这是「收缩包裹但封顶」的唯一
+            // 可靠写法（LazyVerticalGrid 遇有界主轴会直接填满，做不到收缩）。
+            Column(
+                modifier = Modifier
+                    .heightIn(max = maxGridHeight)
+                    .verticalScroll(rememberScrollState()),
             ) {
-                items((1..totalWeeks).toList()) { week ->
-                    WeekChip(
-                        week = week,
-                        selected = week == selectedWeek,
-                        isCurrent = week == currentWeek,
-                        onClick = { onSelect(week) },
-                    )
+                // 每行格数随弹窗宽度自适应：手机竖屏约 5 个，横屏/平板/折叠屏
+                // 展开态放得下更多就自动多排。格子定宽 48dp——两位数周次加内边距
+                // 足够，也是可点击区域的最小舒适宽度。
+                FlowRow(
+                    horizontalArrangement = Arrangement.spacedBy(8.dp),
+                    verticalArrangement = Arrangement.spacedBy(8.dp),
+                ) {
+                    for (week in 1..totalWeeks) {
+                        WeekChip(
+                            week = week,
+                            selected = week == selectedWeek,
+                            isCurrent = week == currentWeek,
+                            onClick = { onSelect(week) },
+                            modifier = Modifier.width(48.dp),
+                        )
+                    }
                 }
             }
         },
@@ -416,13 +431,14 @@ private fun WeekChip(
     selected: Boolean,
     isCurrent: Boolean,
     onClick: () -> Unit,
+    modifier: Modifier = Modifier,
 ) {
     Surface(
         onClick = onClick,
         shape = MaterialTheme.shapes.small,
         color = if (isCurrent) MaterialTheme.colorScheme.secondaryContainer else Color.Transparent,
         border = if (selected) BorderStroke(1.dp, MaterialTheme.colorScheme.primary) else null,
-        modifier = Modifier.fillMaxWidth(),
+        modifier = modifier,
     ) {
         Box(
             modifier = Modifier.padding(horizontal = 12.dp, vertical = 10.dp),
