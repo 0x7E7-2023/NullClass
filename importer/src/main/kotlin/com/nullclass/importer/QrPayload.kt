@@ -1,11 +1,9 @@
 package com.nullclass.importer
 
-import kotlinx.serialization.Serializable
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 import java.io.ByteArrayInputStream
 import java.io.ByteArrayOutputStream
-import java.nio.ByteBuffer
 import java.util.Base64
 import java.util.UUID
 import java.util.zip.Deflater
@@ -13,22 +11,28 @@ import java.util.zip.GZIPInputStream
 import java.util.zip.GZIPOutputStream
 
 /**
- * 课表二维码负载。
+ * 课表二维码负载：JSON → gzip → base64url，加协议头前缀。
  *
- * 二维码 Version 40 字节模式上限 2953B。全量 dump（所有学期 + 墓碑 + 36 位 UUID
- * 原文反复出现）gzip 后再套 base64 几乎必然超限，生成按钮等于瘫痪。
+ * 二维码 Version 40 字节模式上限 2953B，模块数随负载增长——负载每砍 100B 左右
+ * 就能小一个版本、模块大一圈，越好扫。编码侧已在格式上限附近（字节模式、
+ * 纠错 L、gzip BEST_COMPRESSION；base45 塞字母数字模式反而更差），能砍的只有内容：
  *
- * 现行 [PREFIX]（v2）：先 [sliceForShare] 只留当前学期活记录，再把 UUID 收成索引表
- * （正文里只写 0/1/2…），JSON 省略 null，gzip 原文直接进码（ISO-8859-1 往返，
- * 不再套 base64）。仍超限时抛 [PayloadTooLargeException]，UI 降级为文件分享。
+ * - [sliceForShare] 只留当前学期活记录（不带其他学期与墓碑）；
+ * - **UUID 身份表整个不进码**（[PREFIX_V3]，现行格式）：重铸 ID 的分享包，
+ *   所有 id 在码内只是 0/1/2… 索引，接收端解出时重新生成 UUID。这张表每条 16B
+ *   且不可压，占负载四成——砍掉后典型学期（16 课 × 32 安排）从 version 36
+ *   降到 27、模块大 28%。合并语义与 WakeUp 迁移一致（ImportProvenance.QR_IMPORT，
+ *   同名学期按内容对齐，重扫新版时删除也传播）。
  *
- * [PREFIX_V1] 旧码（无索引表、gzip 后再 base64 的 ScheduleDocument JSON）仍可解码。
+ * 旧码仍可解：[PREFIX_V1]（gzip+base64 的全量文档）、[PREFIX_V2]（gzip 直进码、
+ * 带 UUID 索引表的当前学期包）。
  */
 object QrPayload {
 
     const val PREFIX_V1 = "NULLCLASS1:"
     const val PREFIX_V2 = "NULLCLASS2:"
-    const val PREFIX = PREFIX_V2
+    const val PREFIX_V3 = "NULLCLASS3:"
+    const val PREFIX = PREFIX_V3
 
     /** QR 码可承载的负载上限（Version 40, 字节模式, 纠错 L）。 */
     const val MAX_PAYLOAD_BYTES = 2953
@@ -48,19 +52,21 @@ object QrPayload {
     }
 
     fun encode(document: ScheduleDocument): String {
-        val (ids, interned) = internIds(document)
-        val json = compactJson.encodeToString(QrEnvelope(ids = ids, doc = interned))
+        // 分享包不带身份：deviceId 换成空（接收端盖上 QR_IMPORT 来源章），其余 id 全部
+        // 收成 0/1/2… 索引。表不进码，解码时按索引现铸新 UUID。
+        val interned = internIds(document.copy(deviceId = ""))
+        val json = compactJson.encodeToString(ScheduleDocument.serializer(), interned)
         val gz = gzip(json.toByteArray(Charsets.UTF_8))
-        // 不再包一层 base64：Version 40 上限按「前缀 + 内容」计，base64 会再吞 33%，
-        // 16×2 真实 UUID 课表 gzip 后约 2.3KB，加 base64 就略超 2953。
-        // 内容是任意字节，用 ISO-8859-1 往返；本应用扫码走 zxing 的 ECI，
+        // 不再包一层 base64：Version 40 上限按「前缀 + 内容」计，base64 会再吞 33%。
+        // 内容是任意字节，用 ISO-8859-1 往返；扫码走 zxing 的字节模式，
         // Intent extra 是带长度的 UTF-16，内嵌 NUL 不会被截断。
-        val payload = PREFIX_V2 + String(gz, Charsets.ISO_8859_1)
+        val payload = PREFIX_V3 + String(gz, Charsets.ISO_8859_1)
         if (payload.length > MAX_PAYLOAD_BYTES) throw PayloadTooLargeException(payload.length)
         return payload
     }
 
     fun decode(payload: String): ScheduleDocument = when {
+        payload.startsWith(PREFIX_V3) -> decodeV3(payload.removePrefix(PREFIX_V3))
         payload.startsWith(PREFIX_V2) -> decodeV2(payload.removePrefix(PREFIX_V2))
         payload.startsWith(PREFIX_V1) -> decodeV1(payload.removePrefix(PREFIX_V1))
         else -> throw IllegalArgumentException("不是空课二维码（缺少协议头）")
@@ -68,7 +74,7 @@ object QrPayload {
 
     /** 供 UI 在弹扫码结果前快速判断是否为空课二维码。 */
     fun isNullClassPayload(text: String): Boolean =
-        text.startsWith(PREFIX_V1) || text.startsWith(PREFIX_V2)
+        text.startsWith(PREFIX_V1) || text.startsWith(PREFIX_V2) || text.startsWith(PREFIX_V3)
 
     /**
      * 抽出一份「可扫码分享」的活数据：指定学期 + 所属课表 + 该学期的课程/安排/考试/节次。
@@ -94,53 +100,71 @@ object QrPayload {
         )
     }
 
+    /** v3 解码：按索引现铸 UUID，盖上扫码分享来源章（对齐合并见 ImportProvenance）。 */
+    private fun decodeV3(body: String): ScheduleDocument {
+        val document = decodeGzipJson(body)
+        val fresh = HashMap<Int, String>()
+        fun ext(id: String): String {
+            val idx = id.toIntOrNull() ?: return id
+            return fresh.getOrPut(idx) { UUID.randomUUID().toString() }
+        }
+        return applyIds(document, ::ext).copy(deviceId = ImportProvenance.QR_IMPORT)
+    }
+
+    /** v2 解码：索引表里是 pack 过的 UUID，按表还原。 */
     private fun decodeV2(body: String): ScheduleDocument {
-        val json = try {
-            gunzip(body.toByteArray(Charsets.ISO_8859_1))
-        } catch (e: java.io.IOException) {
-            throw IllegalArgumentException("二维码数据无法解压", e)
-        }.toString(Charsets.UTF_8)
+        val json = decodeGzipBody(body).toString(Charsets.UTF_8)
         val envelope = try {
             compactJson.decodeFromString(QrEnvelope.serializer(), json)
         } catch (e: Exception) {
             throw IllegalArgumentException("二维码内容损坏", e)
         }
         val table = envelope.ids.map { unpackUuid(it) }
-        return applyIds(envelope.doc, table)
+        return applyIds(envelope.doc) { id ->
+            if (id.isEmpty()) id else table.getOrElse(id.toIntOrNull() ?: -1) { unpackUuid(id) }
+        }
     }
 
     private fun decodeV1(body: String): ScheduleDocument {
-        val json = decodeGzipBody(body).toString(Charsets.UTF_8)
-        return NullClassCodec.decode(json)
-    }
-
-    private fun decodeGzipBody(body: String): ByteArray {
         val gz = try {
             Base64.getUrlDecoder().decode(body)
         } catch (e: IllegalArgumentException) {
             throw IllegalArgumentException("二维码内容损坏", e)
         }
-        return try {
+        val json = try {
             gunzip(gz)
+        } catch (e: java.io.IOException) {
+            throw IllegalArgumentException("二维码数据无法解压", e)
+        }.toString(Charsets.UTF_8)
+        return NullClassCodec.decode(json)
+    }
+
+    private fun decodeGzipJson(body: String): ScheduleDocument {
+        val json = decodeGzipBody(body).toString(Charsets.UTF_8)
+        return try {
+            compactJson.decodeFromString(ScheduleDocument.serializer(), json)
+        } catch (e: Exception) {
+            throw IllegalArgumentException("二维码内容损坏", e)
+        }
+    }
+
+    private fun decodeGzipBody(body: String): ByteArray {
+        val raw = body.toByteArray(Charsets.ISO_8859_1)
+        return try {
+            gunzip(raw)
         } catch (e: java.io.IOException) {
             throw IllegalArgumentException("二维码数据无法解压", e)
         }
     }
 
-    /** 把文档里的 id 收成 0/1/2…，表内存 pack 过的 UUID（或非 UUID 原文）。 */
-    private fun internIds(doc: ScheduleDocument): Pair<List<String>, ScheduleDocument> {
-        val list = ArrayList<String>()
+    /** 把文档里的 id 全部收成首次出现顺序的 0/1/2… 索引。 */
+    private fun internIds(doc: ScheduleDocument): ScheduleDocument {
         val index = HashMap<String, String>()
         fun intern(id: String): String {
             if (id.isEmpty()) return id
-            index[id]?.let { return it }
-            val token = list.size.toString()
-            list.add(packUuid(id))
-            index[id] = token
-            return token
+            return index.getOrPut(id) { index.size.toString() }
         }
-        val interned = doc.copy(
-            deviceId = intern(doc.deviceId),
+        return doc.copy(
             timetables = doc.timetables.map { it.copy(id = intern(it.id)) },
             terms = doc.terms.map { it.copy(id = intern(it.id), timetableId = intern(it.timetableId)) },
             courses = doc.courses.map { it.copy(id = intern(it.id), termId = intern(it.termId)) },
@@ -150,16 +174,11 @@ object QrPayload {
             periodTimes = doc.periodTimes.map { it.copy(termId = intern(it.termId)) },
             exams = doc.exams.map { it.copy(id = intern(it.id), courseId = intern(it.courseId)) },
         )
-        return list to interned
     }
 
-    private fun applyIds(doc: ScheduleDocument, table: List<String>): ScheduleDocument {
-        fun ext(id: String): String {
-            if (id.isEmpty()) return id
-            val idx = id.toIntOrNull() ?: return unpackUuid(id)
-            return table.getOrElse(idx) { id }
-        }
-        return doc.copy(
+    /** [ext] 把码内索引还原成真 id（v2 查表，v3 现铸）。 */
+    private fun applyIds(doc: ScheduleDocument, ext: (String) -> String): ScheduleDocument =
+        doc.copy(
             deviceId = ext(doc.deviceId),
             timetables = doc.timetables.map { it.copy(id = ext(it.id)) },
             terms = doc.terms.map { it.copy(id = ext(it.id), timetableId = ext(it.timetableId)) },
@@ -170,21 +189,8 @@ object QrPayload {
             periodTimes = doc.periodTimes.map { it.copy(termId = ext(it.termId)) },
             exams = doc.exams.map { it.copy(id = ext(it.id), courseId = ext(it.courseId)) },
         )
-    }
 
-    /** 标准 UUID → 16 字节的 base64url（22 字符）；其它 id 原样。 */
-    private fun packUuid(id: String): String {
-        val uuid = try {
-            UUID.fromString(id)
-        } catch (_: Exception) {
-            return id
-        }
-        val buf = ByteBuffer.allocate(16)
-        buf.putLong(uuid.mostSignificantBits)
-        buf.putLong(uuid.leastSignificantBits)
-        return Base64.getUrlEncoder().withoutPadding().encodeToString(buf.array())
-    }
-
+    /** 标准 UUID 的 22 字符 base64url 还原；其它 id 原样。v2 解码用。 */
     private fun unpackUuid(id: String): String {
         if (id.length != 22) return id
         val bytes = try {
@@ -193,7 +199,7 @@ object QrPayload {
             return id
         }
         if (bytes.size != 16) return id
-        val buf = ByteBuffer.wrap(bytes)
+        val buf = java.nio.ByteBuffer.wrap(bytes)
         return UUID(buf.long, buf.long).toString()
     }
 
@@ -211,7 +217,8 @@ object QrPayload {
         GZIPInputStream(ByteArrayInputStream(bytes)).use { it.readBytes() }
 }
 
-@Serializable
+/** v2 码的信封：索引表 + 正文。 */
+@kotlinx.serialization.Serializable
 private data class QrEnvelope(
     val ids: List<String>,
     val doc: ScheduleDocument,

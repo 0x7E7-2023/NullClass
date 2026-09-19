@@ -8,22 +8,22 @@ import com.nullclass.importer.ScheduleDocument
  * 导入对齐：把「同名学期」认成同一个学期，避免每次重新导入都复制一份课表。
  *
  * **只对「每次导入都重铸 UUID」的来源**（[ImportProvenance.isFreshIdImport]：教务适配器、
- * WakeUp 迁移）生效。这类来源的记录 ID 每次都变，纯按 ID 做 LWW 会让「一键刷新」
+ * WakeUp 迁移、扫码分享包）生效。这类来源的记录 ID 每次都变，纯按 ID 做 LWW 会让「一键刷新」
  * 变成再追加一份；这里在合并**之前**把新数据对齐到本地已有记录上：
  *
  * - 学期按 `name` 对齐，**只在 ID 不同**（说明是新生成的一份）时复用本地 ID，内容取这次导入
  *   的（纠正过的开学日 / 总周数才写得进去）。名字匹配**限定在 [targetTimetableId] 这张课表内**
- *   ——教务/WakeUp 导入落在当前课表，别的课表里同名学期（不同人的）不该被认成同一个；
+ *   ——教务/WakeUp/扫码导入落在当前课表，别的课表里同名学期（不同人的）不该被认成同一个；
  * - **当前学期标记换成新导入的那个学期**（载荷里开学日最新的一个）：教务导入的语义是「开始
  *   用这份新学期的课表」，所以不论它是不是本地已有的同名学期（「一键刷新」同一学期、纠正
  *   开学日），还是新认领的学期，标记都落到这次导入的学期上；**只对教务适配器**（`jw-*`）
- *   —— WakeUp 迁移在 [TransferViewModel] 里按学期 ID 单独激活，走不到这里；
+ *   —— WakeUp 迁移与扫码分享包在 [TransferViewModel] 里按学期名单独激活，走不到这里；
  * - 课程按 `(name, teacher)` 对齐，复用本地 ID，并保留用户改过的 `note` / `colorIndex`；
  * - 课块按内容（星期、节次、周次、类型、地点）对齐，内容没变就复用 ID；
  * - 对齐到的学期里，本地多出来的课程/课块**作废**（打墓碑）——学校改了时间或教室时，
  *   旧课块不会变成幽灵课；节次表的 `termId` 一并重映射（它随学期整体取新）。
  *
- * 其余来源（`.nullclass` 备份、扫码，deviceId = 导出设备）沿用记录原有 ID，
+ * 其余来源（`.nullclass` 备份，deviceId = 导出设备；以及 v1/v2 旧扫码）沿用记录原有 ID，
  * 原样返回走纯 LWW —— 导入一份旧备份不会把本地较新的记录作废，WebDAV 同步也不经过这里。
  */
 object ImportAligner {
@@ -40,11 +40,11 @@ object ImportAligner {
         /** 教务/WakeUp 导入的目标课表（= 本地当前课表）；null = 本地还没有课表，无从对齐。 */
         targetTimetableId: String? = null,
     ): Aligned {
-        // 只有重铸 ID 的导入才需要（也应该）做替换式对齐；备份/扫码保持纯 LWW
+        // 只有重铸 ID 的导入才需要（也应该）做替换式对齐；备份与 v1/v2 旧扫码保持纯 LWW
         if (!ImportProvenance.isFreshIdImport(incoming.deviceId)) return Aligned(local, incoming)
 
         // 教务导入 = 「开始用这份课表」，它带的那个学期（开学日最新者）合并后必须成为当前学期。
-        // WakeUp 迁移同样重铸 ID，但它是单学期书包、由 UI 层按学期 ID 单独激活，这里不插手。
+        // WakeUp 迁移 / 扫码分享同样重铸 ID，但它们是单学期书包、由 UI 层按学期名单独激活，这里不插手。
         // 先按**改名前**的 id 记下它——同名对齐会把 id 换成本地那份（见下面的 activationId）。
         val activateTermId = if (incoming.deviceId.startsWith(ImportProvenance.JW_PREFIX)) {
             incoming.terms.filter { it.deletedAt == null }.maxByOrNull { it.firstDayEpochDay }?.id

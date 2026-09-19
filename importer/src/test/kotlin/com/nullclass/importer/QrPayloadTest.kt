@@ -140,12 +140,30 @@ class QrPayloadTest {
         )
     }
 
+    /** 抹掉身份字段后的内容视图：v3 解码重铸 UUID，比对内容是否保真。 */
+    private fun contentOf(doc: ScheduleDocument) = doc.copy(
+        deviceId = "",
+        timetables = doc.timetables.map { it.copy(id = "x") },
+        terms = doc.terms.map { it.copy(id = "x", timetableId = "x") },
+        courses = doc.courses.map { it.copy(id = "x", termId = "x") },
+        blocks = doc.blocks.map { it.copy(id = "x", courseId = "x", termId = "x") },
+        periodTimes = doc.periodTimes.map { it.copy(termId = "x") },
+        exams = doc.exams.map { it.copy(id = "x", courseId = "x") },
+    )
+
     @Test
-    fun `round-trip - 小课表编码解码保真`() {
-        val payload = QrPayload.encode(smallDocument())
-        assertTrue(payload.startsWith(QrPayload.PREFIX_V2))
+    fun `v3 解码 - 重铸 ID 且内容保真`() {
+        val original = smallDocument()
+        val payload = QrPayload.encode(original)
+        assertTrue(payload.startsWith(QrPayload.PREFIX_V3))
         val decoded = QrPayload.decode(payload)
-        assertEquals(smallDocument(), decoded)
+        assertEquals(contentOf(original), contentOf(decoded))
+        assertEquals(ImportProvenance.QR_IMPORT, decoded.deviceId, "要盖上扫码分享来源章")
+        // 全部 id 现铸：与原 id 不同、彼此不重、引用不悬空
+        assertTrue(decoded.terms.single().id != "t1" && decoded.terms.single().id.isNotEmpty())
+        val courseIds = decoded.courses.map { it.id }
+        assertTrue(decoded.blocks.all { it.courseId in courseIds })
+        assertEquals(decoded.courses.map { it.id }.distinct().size, decoded.courses.size)
     }
 
     @Test
@@ -162,13 +180,26 @@ class QrPayloadTest {
         }
         assertTrue(QrPayload.isNullClassPayload("NULLCLASS1:x"))
         assertTrue(QrPayload.isNullClassPayload("NULLCLASS2:x"))
+        assertTrue(QrPayload.isNullClassPayload("NULLCLASS3:x"))
         assertTrue(!QrPayload.isNullClassPayload("其他内容"))
     }
 
     @Test
-    fun `损坏的 v2 gzip 数据 - 拒绝`() {
+    fun `损坏的 v3 gzip 数据 - 拒绝`() {
         assertFailsWith<IllegalArgumentException> {
-            QrPayload.decode("NULLCLASS2:" + String(ByteArray(64) { it.toByte() }, Charsets.ISO_8859_1))
+            QrPayload.decode("NULLCLASS3:" + String(ByteArray(64) { it.toByte() }, Charsets.ISO_8859_1))
+        }
+    }
+
+    @Test
+    fun `损坏的 v3 JSON - 拒绝`() {
+        // 合法 gzip 包着一坨不是 JSON 的字节
+        val badJson = ByteArrayOutputStream().use { out ->
+            GZIPOutputStream(out).use { it.write("not json at all".toByteArray()) }
+            out.toByteArray()
+        }
+        assertFailsWith<IllegalArgumentException> {
+            QrPayload.decode("NULLCLASS3:" + String(badJson, Charsets.ISO_8859_1))
         }
     }
 
@@ -182,6 +213,42 @@ class QrPayloadTest {
         }
         val v1 = QrPayload.PREFIX_V1 + Base64.getUrlEncoder().withoutPadding().encodeToString(gz)
         assertEquals(doc, QrPayload.decode(v1))
+    }
+
+    @Test
+    fun `v2 旧码仍可解码`() {
+        // 复刻 v2 信封：ids 索引表（非 UUID 的 id 原样进表）+ 正文里全是指针
+        val interned = ScheduleDocument(
+            deviceId = "0",
+            generatedAt = 42L,
+            timetables = listOf(TimetableDto("1", "我的课表", 1, 1)),
+            terms = listOf(
+                TermDto("2", "2026-2027-1", 20671, 20, true, 1, 1, timetableId = "1"),
+            ),
+            courses = listOf(
+                CourseDto("3", "2", "高数", teacher = "张三", colorIndex = 0, createdAt = 1, updatedAt = 1),
+            ),
+            blocks = listOf(
+                BlockDto("4", "3", "2", 1, 20, "ALL", 1, 1, 2, "A101", 1, 1),
+            ),
+            periodTimes = listOf(
+                PeriodTimeDto("2", 1, 480, 525, 0, 1),
+            ),
+        )
+        val ids = listOf("qr-test", "tt1", "t1", "c1", "b1")
+        val envelope = """{"ids":[""" + ids.joinToString(",") { "\"$it\"" } + """],"doc":""" +
+            kotlinx.serialization.json.Json {
+                prettyPrint = false
+                ignoreUnknownKeys = true
+                encodeDefaults = true
+                explicitNulls = false
+            }.encodeToString(ScheduleDocument.serializer(), interned) + "}"
+        val gz = ByteArrayOutputStream().use { out ->
+            GZIPOutputStream(out).use { it.write(envelope.toByteArray(Charsets.UTF_8)) }
+            out.toByteArray()
+        }
+        val v2 = QrPayload.PREFIX_V2 + String(gz, Charsets.ISO_8859_1)
+        assertEquals(smallDocument(), QrPayload.decode(v2))
     }
 
     @Test
@@ -230,16 +297,17 @@ class QrPayloadTest {
     }
 
     @Test
-    fun `典型学期随机 UUID 切片后能放进二维码`() {
+    fun `典型学期随机 UUID 切片后负载约 1_4KB`() {
         repeat(10) { i ->
             val full = typicalTermDocument(extraTerms = 3, withTombstones = true)
             val sliced = QrPayload.sliceForShare(full, full.terms.first { it.isCurrent }.id)
             val payload = QrPayload.encode(sliced)
+            // 带.UUID 表时实测 2319B / QR version 36；重铸后 ~1379B / version 27
             assertTrue(
-                payload.length <= QrPayload.MAX_PAYLOAD_BYTES,
+                payload.length <= 1450,
                 "典型学期切片后仍超限: ${payload.length} B (iteration $i)",
             )
-            assertEquals(sliced, QrPayload.decode(payload))
+            assertEquals(contentOf(sliced), contentOf(QrPayload.decode(payload)))
         }
     }
 
@@ -261,6 +329,13 @@ class QrPayloadTest {
         val full = typicalTermDocument()
         val sliced = QrPayload.sliceForShare(full, full.terms.single().id)
         val payload = QrPayload.encode(sliced)
+        val qr = com.google.zxing.qrcode.encoder.Encoder.encode(
+            payload,
+            ErrorCorrectionLevel.L,
+            mapOf(EncodeHintType.CHARACTER_SET to "ISO-8859-1"),
+        )
+        // version 27 = 129×129 模块（此前带 UUID 表是 36 = 165×165）
+        assertTrue(qr.version.versionNumber <= 28, "version=${qr.version.versionNumber}")
         val matrix = QRCodeWriter().encode(
             payload,
             BarcodeFormat.QR_CODE,

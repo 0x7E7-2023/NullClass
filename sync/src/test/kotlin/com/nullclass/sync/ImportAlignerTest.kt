@@ -379,6 +379,39 @@ class ImportAlignerTest {
     }
 
     @Test
+    fun `扫码分享包重铸 ID - 同名对齐替换且不自动激活`() {
+        // v3 二维码的 deviceId 是 qr-import：走重铸 ID 的替换式对齐（同学重扫新版本
+        // 课时旧课块作废），但当前学期标记由 UI 层按学期名激活，这里不动
+        val local = doc(
+            terms = listOf(
+                term("t1", isCurrent = true, name = "2025-2026学年1学期"),
+                term("t0", name = "2025-2026学年2学期"),
+            ),
+            courses = listOf(
+                course("c1", "t0", name = "高数"),
+                course("c9", "t0", name = "已下线的选修"),
+            ),
+        )
+        val incoming = doc(
+            deviceId = "qr-import",
+            terms = listOf(term("t2", name = "2025-2026学年2学期", firstDayEpochDay = 20800)),
+            courses = listOf(course("c2", "t2", name = "高数")),
+        )
+
+        val aligned = ImportAligner.align(local, incoming, now, targetTimetableId = "tt")
+
+        // 同名学期对齐：t2 换成本地 t0 的 id，内容取这次导入的
+        assertEquals("t0", aligned.incoming.terms.single().id)
+        assertEquals(20800, aligned.incoming.terms.single().firstDayEpochDay)
+        // 课程按 (名, 师) 对齐复用本地 ID；本地多出的课程作废（重扫新版时删除传播）
+        assertEquals("c1", aligned.incoming.courses.single().id)
+        assertTrue(aligned.local.courses.single { it.id == "c9" }.deletedAt != null)
+        // 激活是 UI 层的事：同学的当前学期（t1）标记不动
+        assertTrue(aligned.local.terms.single { it.id == "t1" }.isCurrent)
+        assertFalse(aligned.incoming.terms.single().isCurrent)
+    }
+
+    @Test
     fun `本地还没有学期时导入教务课表 - 新学期直接成为当前学期`() {
         // 新建的空课表：没有可对齐的同名学期，也不能靠归一化（本地一个学期都没有）
         val local = doc(terms = emptyList())

@@ -7,6 +7,7 @@ import androidx.lifecycle.viewModelScope
 import com.nullclass.core.data.repository.CourseRepository
 import com.nullclass.core.data.repository.ExamRepository
 import com.nullclass.core.data.repository.TermRepository
+import com.nullclass.importer.ImportProvenance
 import com.nullclass.importer.NullClassCodec
 import com.nullclass.importer.QrPayload
 import com.nullclass.importer.ScheduleDocument
@@ -47,7 +48,7 @@ data class ImportPreview(
      */
     val adapterNotes: List<String> = emptyList(),
     /** WakeUp 导入作为新学期，合并后设为当前学期（教务导入的学期由 ImportAligner 在合并里激活）。 */
-    val activateTermId: String? = null,
+    val activateTermName: String? = null,
     /**
      * 与本地库对比的删除预警：导入文档里携带的、会按 LWW 赢过本地的墓碑数
      * （用户之前导出过课表 → 对方拿到 UUID → 恶意/损坏文件可借墓碑删库）。
@@ -191,20 +192,36 @@ class TransferViewModel @Inject constructor(
 
     fun dismissQr() = _state.update { it.copy(qrPayload = null) }
 
+    /** 扫码页取消以外的失败（没权限、相机/识别异常、空内容）。 */
+    fun onScanFailed(message: String) =
+        _state.update { it.copy(message = message, messageIsError = true) }
+
     fun parseQrPayload(payload: String) {
         // 先快速判断（扫码结果可能是任意内容）
         if (!QrPayload.isNullClassPayload(payload)) {
             _state.update { it.copy(message = "不是空课二维码", messageIsError = true) }
             return
         }
-        parseRaw({ QrPayload.decode(payload) }, source = "二维码")
+        // v3 分享包是重铸 ID 的单学期书包（WakeUp 同款合并语义），导入后激活该学期；
+        // v1/v2 旧码是多学期 LWW 导入，保持「不动当前学期」
+        parseRaw(
+            { QrPayload.decode(payload) },
+            source = "二维码",
+            activateTermName = { document ->
+                if (document.deviceId == ImportProvenance.QR_IMPORT) {
+                    document.terms.filter { it.deletedAt == null }.singleOrNull()?.name
+                } else {
+                    null
+                }
+            },
+        )
     }
 
     /**
      * 教务提取回来的文档 → 预览。[adapterNotes] 是适配器要求重点核对的话，原样显示（标明来源）。
      *
      * 「设为当前学期」不在这里决定：合并时 [com.nullclass.sync.ImportAligner] 按来源
-     * （教务 = 开始用新学期，备份/扫码 = 不动）处理。
+     * （教务 = 开始用新学期；备份 / v1 v2 旧扫码 = 不动）处理。
      */
     fun parseExtractedDocument(json: String, source: String, adapterNotes: List<String> = emptyList()) {
         parseRaw({ NullClassCodec.decode(json) }, source = source, adapterNotes = adapterNotes)
@@ -268,7 +285,7 @@ class TransferViewModel @Inject constructor(
                                 ),
                             ),
                             warnings = result.warnings,
-                            activateTermId = result.term.id,
+                            activateTermName = result.term.name,
                         ),
                     )
                 }
@@ -288,10 +305,20 @@ class TransferViewModel @Inject constructor(
                 // 走 SyncManager 同一把互斥锁：防止与后台 SyncWorker 的
                 // dump→merge→apply 交错互相覆盖（尤其 periodTimes 整表替换，B9）
                 val result = syncManager.mergeImport(preview.document)
-                // WakeUp 作为新学期导入 → 设为当前学期方便立即查看
-                // （教务导入的学期由 ImportAligner 在合并里标成当前；备份/扫码不动用户的当前学期）
-                preview.activateTermId?.let { termId ->
-                    result.merged.terms.firstOrNull { it.id == termId }?.let { termRepository.setCurrent(it.id) }
+                // WakeUp / v3 扫码分享作为新学期导入 → 设为当前学期方便立即查看
+                // （教务导入的学期由 ImportAligner 在合并里标成当前；备份导入不动用户的当前学期）
+                // 按名字 + 当前课表找，而不是按 id：重铸 ID 的来源被同名对齐时 id 会换成本地那份
+                preview.activateTermName?.let { name ->
+                    val activeTimetableId = termRepository.getCurrent()?.id?.let { currentId ->
+                        result.merged.terms.firstOrNull { it.id == currentId }?.timetableId
+                    }
+                    result.merged.terms
+                        .filter {
+                            it.deletedAt == null && it.name == name &&
+                                (activeTimetableId == null || it.timetableId == activeTimetableId)
+                        }
+                        .maxByOrNull { it.updatedAt }
+                        ?.let { termRepository.setCurrent(it.id) }
                 }
                 _state.update {
                     val newTimetables = result.newTimetableNames
@@ -319,6 +346,8 @@ class TransferViewModel @Inject constructor(
         parser: () -> ScheduleDocument,
         source: String,
         adapterNotes: List<String> = emptyList(),
+        /** 合并后要设为当前学期的学期名（重铸 ID 的来源按名激活——对齐可能换 id）。 */
+        activateTermName: (ScheduleDocument) -> String? = { null },
     ) {
         try {
             val document = parser()
@@ -352,7 +381,7 @@ class TransferViewModel @Inject constructor(
                             document = document,
                             termSummaries = summaries,
                             adapterNotes = adapterNotes,
-                            activateTermId = null,
+                            activateTermName = activateTermName(document),
                             pendingDeletions = deletions,
                         ),
                     )

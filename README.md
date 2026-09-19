@@ -46,7 +46,7 @@ An open-source class schedule app for Android universities. Local-first: no acco
 
 ## 数据与迁移 / Data & Migration
 
-- 课表可随时导出为 `.nullclass` 文件（全部学期）或二维码（当前学期），发给同学即可导入（合并语义，不覆盖更新的数据）
+- 课表可随时导出为 `.nullclass` 文件（全部学期）或二维码（当前学期，扫码后并入对方当前课表），发给同学即可导入（合并语义，不覆盖更新的数据）
 - 从 WakeUp 课表迁移：WakeUp 内备份出 `.wakeup_schedule` 文件 → 空课「导入/导出 → 从 WakeUp 迁移」
 - 多设备同步：设置里填 WebDAV（推荐坚果云等支持 HTTPS 的服务）
 
