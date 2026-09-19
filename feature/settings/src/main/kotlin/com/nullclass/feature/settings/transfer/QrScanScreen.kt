@@ -2,9 +2,11 @@ package com.nullclass.feature.settings.transfer
 
 import android.graphics.Rect
 import android.util.Size
+import android.os.SystemClock
 import androidx.activity.compose.BackHandler
 import androidx.camera.core.Camera
 import androidx.camera.core.CameraSelector
+import androidx.camera.core.FocusMeteringAction
 import androidx.camera.core.ImageAnalysis
 import androidx.camera.core.ImageProxy
 import androidx.camera.core.Preview
@@ -12,8 +14,14 @@ import androidx.camera.core.resolutionselector.ResolutionSelector
 import androidx.camera.core.resolutionselector.ResolutionStrategy
 import androidx.camera.lifecycle.ProcessCameraProvider
 import androidx.camera.view.PreviewView
+import androidx.compose.foundation.Canvas
+import androidx.compose.foundation.gestures.detectTapGestures
+import androidx.compose.foundation.gestures.detectTransformGestures
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -27,6 +35,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -34,11 +43,17 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.drawscope.Stroke
+import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.geometry.Size as ComposeSize
+import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.core.content.ContextCompat
+import androidx.lifecycle.LifecycleOwner
+import androidx.lifecycle.Observer
 import androidx.lifecycle.compose.LocalLifecycleOwner
 import com.google.mlkit.vision.barcode.BarcodeScanner
 import com.google.mlkit.vision.barcode.BarcodeScannerOptions
@@ -46,6 +61,7 @@ import com.google.mlkit.vision.barcode.BarcodeScanning
 import com.google.mlkit.vision.barcode.common.Barcode
 import com.google.mlkit.vision.common.InputImage
 import java.util.concurrent.Executors
+import java.util.concurrent.TimeUnit
 import java.util.concurrent.atomic.AtomicBoolean
 import kotlin.math.max
 import kotlin.math.min
@@ -60,45 +76,66 @@ import kotlin.math.min
 internal fun QrScanScreen(
     onPayload: (String) -> Unit,
     onCancel: () -> Unit,
+    onPickImage: () -> Unit,
     onError: (String) -> Unit,
 ) {
     val context = LocalContext.current
-    val lifecycleOwner = LocalLifecycleOwner.current
-    val view = LocalView.current
+    // ponytail: Dialog's LocalLifecycleOwner can swap after first frame and restart the
+    // effect mid-open; Activity owner is stable and already RESUMED while the dialog shows.
+    val lifecycleOwner = context as? LifecycleOwner ?: LocalLifecycleOwner.current
+    val hostView = LocalView.current
     var torchOn by remember { mutableStateOf(false) }
     var torchAvailable by remember { mutableStateOf(false) }
     var camera by remember { mutableStateOf<Camera?>(null) }
-    var previewView by remember { mutableStateOf<PreviewView?>(null) }
-    val done = remember { AtomicBoolean(false) }
+    var manualZoom by remember { mutableStateOf(false) }
+    var streaming by remember { mutableStateOf(false) }
+    var status by remember { mutableStateOf("将二维码放入框内，双指缩放、点按对焦") }
+    val currentOnPayload by rememberUpdatedState(onPayload)
+    val currentOnError by rememberUpdatedState(onError)
+    val previewView = remember(context) {
+        PreviewView(context).apply {
+            scaleType = PreviewView.ScaleType.FILL_CENTER
+            // 优先使用 SurfaceView，避免部分设备在弹窗中合成 TextureView 时绿屏。
+            implementationMode = PreviewView.ImplementationMode.PERFORMANCE
+        }
+    }
 
     BackHandler(onBack = onCancel)
 
-    DisposableEffect(Unit) {
-        view.keepScreenOn = true
-        onDispose { view.keepScreenOn = false }
+    DisposableEffect(hostView) {
+        hostView.keepScreenOn = true
+        onDispose { hostView.keepScreenOn = false }
     }
 
     DisposableEffect(previewView, lifecycleOwner) {
-        val view = previewView ?: return@DisposableEffect onDispose { }
+        val observer = Observer<PreviewView.StreamState> { streaming = it == PreviewView.StreamState.STREAMING }
+        previewView.previewStreamState.observe(lifecycleOwner, observer)
+        onDispose { previewView.previewStreamState.removeObserver(observer) }
+    }
+
+    DisposableEffect(previewView, lifecycleOwner) {
+        val done = AtomicBoolean(false)
         val executor = Executors.newSingleThreadExecutor()
         val scanner = BarcodeScanning.getClient(
             BarcodeScannerOptions.Builder()
                 .setBarcodeFormats(Barcode.FORMAT_QR_CODE)
+                .enableAllPotentialBarcodes()
                 .build(),
         )
         val cameraProviderFuture = ProcessCameraProvider.getInstance(context)
         val mainExecutor = ContextCompat.getMainExecutor(context)
+        var lastAutoZoomAt = SystemClock.elapsedRealtime()
 
         cameraProviderFuture.addListener({
             if (done.get()) return@addListener
             val provider = try {
                 cameraProviderFuture.get()
             } catch (e: Exception) {
-                onError("打不开相机：${e.message ?: e.javaClass.simpleName}")
+                currentOnError("打不开相机：${e.message ?: e.javaClass.simpleName}")
                 return@addListener
             }
             val preview = Preview.Builder().build().also {
-                it.surfaceProvider = view.surfaceProvider
+                it.surfaceProvider = previewView.surfaceProvider
             }
             val analysis = ImageAnalysis.Builder()
                 .setBackpressureStrategy(ImageAnalysis.STRATEGY_KEEP_ONLY_LATEST)
@@ -118,24 +155,34 @@ internal fun QrScanScreen(
                 scanner = scanner,
                 onPayload = { payload ->
                     if (done.compareAndSet(false, true)) {
-                        mainExecutor.execute { onPayload(payload) }
+                        mainExecutor.execute { currentOnPayload(payload) }
                     }
                 },
                 onSmallBox = { fill ->
-                    val cam = camera ?: return@DenseQrAnalyzer
-                    val zoom = cam.cameraInfo.zoomState.value ?: return@DenseQrAnalyzer
-                    val target = (zoom.zoomRatio * 0.62f / fill)
-                        .coerceAtMost(zoom.maxZoomRatio)
-                        .coerceAtMost(zoom.zoomRatio * 1.8f)
-                        .coerceAtLeast(1f)
-                    if (target > zoom.zoomRatio * 1.08f) {
-                        cam.cameraControl.setZoomRatio(target)
+                    if (!done.get() && !manualZoom) {
+                        val cam = camera
+                        val zoom = cam?.cameraInfo?.zoomState?.value
+                        val now = SystemClock.elapsedRealtime()
+                        if (cam != null && zoom != null && now - lastAutoZoomAt >= 1200) {
+                            val target = nextAutoZoom(zoom.zoomRatio, zoom.maxZoomRatio, fill)
+                            if (target > zoom.zoomRatio) {
+                                lastAutoZoomAt = now
+                                cam.cameraControl.setZoomRatio(target)
+                                status = "检测到二维码，正在缓慢拉近…"
+                            } else {
+                                status = "保持稳定，正在识别二维码…"
+                            }
+                        }
                     }
+                },
+                onError = { message ->
+                    if (done.compareAndSet(false, true)) mainExecutor.execute { currentOnError(message) }
                 },
             )
             analysis.setAnalyzer(executor, analyzer)
 
             try {
+                if (done.get()) return@addListener
                 provider.unbindAll()
                 val bound = provider.bindToLifecycle(
                     lifecycleOwner,
@@ -143,38 +190,72 @@ internal fun QrScanScreen(
                     preview,
                     analysis,
                 )
+                if (done.get()) {
+                    provider.unbindAll()
+                    return@addListener
+                }
                 camera = bound
                 torchAvailable = bound.cameraInfo.hasFlashUnit()
-                val zoom = bound.cameraInfo.zoomState.value
-                if (zoom != null && zoom.maxZoomRatio >= 1.4f) {
-                    bound.cameraControl.setZoomRatio(min(1.4f, zoom.maxZoomRatio))
-                }
             } catch (e: Exception) {
-                onError("打不开相机：${e.message ?: e.javaClass.simpleName}")
+                currentOnError("打不开相机：${e.message ?: e.javaClass.simpleName}")
             }
         }, mainExecutor)
 
         onDispose {
             done.set(true)
-            executor.shutdown()
-            scanner.close()
             try {
-                cameraProviderFuture.get().unbindAll()
+                if (cameraProviderFuture.isDone) cameraProviderFuture.get().unbindAll()
             } catch (_: Exception) {
             }
+            try {
+                scanner.close()
+            } catch (_: Exception) {
+            }
+            executor.shutdown()
         }
     }
 
     Box(Modifier.fillMaxSize().background(Color.Black)) {
         AndroidView(
-            factory = { ctx ->
-                PreviewView(ctx).apply {
-                    scaleType = PreviewView.ScaleType.FILL_CENTER
-                    implementationMode = PreviewView.ImplementationMode.COMPATIBLE
-                }.also { previewView = it }
-            },
+            factory = { previewView },
             modifier = Modifier.fillMaxSize(),
         )
+        Canvas(
+            Modifier.fillMaxSize().pointerInput(camera) {
+                var requestedZoom = camera?.cameraInfo?.zoomState?.value?.zoomRatio ?: 1f
+                detectTransformGestures { _, _, zoomChange, _ ->
+                    if (zoomChange != 1f) {
+                        val cam = camera ?: return@detectTransformGestures
+                        val zoom = cam.cameraInfo.zoomState.value ?: return@detectTransformGestures
+                        if (!manualZoom) requestedZoom = zoom.zoomRatio
+                        manualZoom = true
+                        requestedZoom = (requestedZoom * zoomChange).coerceIn(1f, zoom.maxZoomRatio)
+                        cam.cameraControl.setZoomRatio(requestedZoom)
+                        status = "将二维码放入框内，双指缩放、点按对焦"
+                    }
+                }
+            }.pointerInput(camera) {
+                detectTapGestures { point ->
+                    val cam = camera ?: return@detectTapGestures
+                    val meteringPoint = previewView.meteringPointFactory.createPoint(point.x, point.y)
+                    cam.cameraControl.startFocusAndMetering(
+                        FocusMeteringAction.Builder(meteringPoint)
+                            .setAutoCancelDuration(3, TimeUnit.SECONDS)
+                            .build(),
+                    )
+                }
+            },
+        ) {
+            val side = min(size.width * 0.78f, size.height * 0.42f)
+            val left = (size.width - side) / 2f
+            val top = (size.height - side) / 2f
+            val shade = Color.Black.copy(alpha = 0.5f)
+            drawRect(shade, size = ComposeSize(size.width, top))
+            drawRect(shade, Offset(0f, top + side), ComposeSize(size.width, size.height - top - side))
+            drawRect(shade, Offset(0f, top), ComposeSize(left, side))
+            drawRect(shade, Offset(left + side, top), ComposeSize(left, side))
+            drawRect(Color.White, Offset(left, top), ComposeSize(side, side), style = Stroke(2.dp.toPx()))
+        }
         IconButton(
             onClick = onCancel,
             modifier = Modifier
@@ -199,15 +280,19 @@ internal fun QrScanScreen(
                 Text(if (torchOn) "关闭闪光灯" else "闪光灯", color = Color.White)
             }
         }
-        Text(
-            "把二维码尽量填满画面；太小会自动拉近",
-            color = Color.White,
-            style = MaterialTheme.typography.bodyMedium,
-            modifier = Modifier
-                .align(Alignment.BottomCenter)
-                .fillMaxWidth()
-                .padding(24.dp),
-        )
+        Column(
+            modifier = Modifier.align(Alignment.BottomCenter).fillMaxWidth()
+                .navigationBarsPadding().padding(horizontal = 24.dp, vertical = 16.dp),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.spacedBy(8.dp),
+        ) {
+            Text(
+                if (streaming) status else "正在启动相机…",
+                color = Color.White,
+                style = MaterialTheme.typography.bodyMedium,
+            )
+            TextButton(onClick = onPickImage) { Text("从相册选择二维码", color = Color.White) }
+        }
     }
 }
 
@@ -218,6 +303,7 @@ private class DenseQrAnalyzer(
     private val scanner: BarcodeScanner,
     private val onPayload: (String) -> Unit,
     private val onSmallBox: (fill: Float) -> Unit,
+    private val onError: (String) -> Unit,
 ) : ImageAnalysis.Analyzer {
 
     private val busy = AtomicBoolean(false)
@@ -230,10 +316,20 @@ private class DenseQrAnalyzer(
         }
         val width = imageProxy.width
         val height = imageProxy.height
-        val image = InputImage.fromMediaImage(media, imageProxy.imageInfo.rotationDegrees)
-        scanner.process(image)
+        val task = try {
+            val image = InputImage.fromMediaImage(media, imageProxy.imageInfo.rotationDegrees)
+            scanner.process(image)
+        } catch (e: Exception) {
+            busy.set(false)
+            imageProxy.close()
+            onError("识别失败：${e.message ?: "请重新打开扫码器"}")
+            return
+        }
+        task
             .addOnSuccessListener { barcodes ->
-                val qr = barcodes.firstOrNull { it.format == Barcode.FORMAT_QR_CODE } ?: return@addOnSuccessListener
+                val qrCodes = barcodes.filter { it.format == Barcode.FORMAT_QR_CODE }
+                val qr = qrCodes.firstOrNull { !payloadFrom(it).isNullOrEmpty() }
+                    ?: barcodes.firstOrNull() ?: return@addOnSuccessListener
                 val payload = payloadFrom(qr)
                 if (!payload.isNullOrEmpty()) {
                     onPayload(payload)
@@ -245,16 +341,11 @@ private class DenseQrAnalyzer(
                 val fill = boxSide / minSide
                 if (fill in 0.04f..0.5f) onSmallBox(fill)
             }
+            .addOnFailureListener { onError("识别失败：${it.message ?: "请重新打开扫码器"}") }
             .addOnCompleteListener {
                 busy.set(false)
                 imageProxy.close()
             }
     }
-}
-
-private fun payloadFrom(barcode: Barcode): String? {
-    val bytes = barcode.rawBytes
-    if (bytes != null && bytes.isNotEmpty()) return String(bytes, Charsets.ISO_8859_1)
-    return barcode.rawValue
 }
 
