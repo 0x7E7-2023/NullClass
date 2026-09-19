@@ -1,0 +1,24 @@
+{
+  "_note": "合成 fixture：按上游 ZUA/zua.js 实际读取的字段形状编造，不是真实抓取（见 docs/jw-adapter-testing.md §3）。课名、教师、教室、日期均为虚构，无真实个人信息。courseHtml 与树维 EAMS 课表响应同构（new TaskActivity(...) + index = 星期*unitCount+节次 + var teachers=[{name:...}]）。本用例覆盖：unitCount 从 HTML 读到（5）、作息从课表表头读到（10 节，其中第 1 节的 08:05-08:50 与第 5 节的 14:35-15:20 与适配器内置表不同，用来钉住「表头优先」）、学期日历给出开学日与总周数（19 周，第 1 周从 2026-09-07 周一开始）、同一门课跨两天、连续节次并成一段、单周（步长 2 → ODD）、教师字面量与 actTeacherName.join(\",\") 两种写法、完全重复的 TaskActivity 去重。",
+  "today": "2026-09-16",
+  "semester": {
+    "id": "1",
+    "name": "2026-2027学年第一学期",
+    "schoolYear": "2026-2027",
+    "term": "1"
+  },
+  "semesters": [
+    {
+      "id": "1",
+      "name": "2026-2027学年第一学期",
+      "schoolYear": "2026-2027"
+    }
+  ],
+  "currentSemesterId": "1",
+  "firstDayOfWeek": 1,
+  "taskActivityCount": 5,
+  "extractWarnings": [],
+  "tableHtml": "<table id=\"manualArrangeCourseTable\"><thead><tr><th id=\"0_0\">节次</th><th id=\"0_1\">第1节<br>(08:05-08:50)</th><th id=\"0_2\">第2节<br>(08:55-09:40)</th><th id=\"0_3\">第3节<br>(10:00-10:45)</th><th id=\"0_4\">第4节<br>(10:55-11:40)</th><th id=\"0_5\">第5节<br>(14:35-15:20)</th><th id=\"0_6\">第6节<br>(15:25-16:10)</th><th id=\"0_7\">第7节<br>(16:30-17:15)</th><th id=\"0_8\">第8节<br>(17:25-18:10)</th><th id=\"0_9\">第9节<br>(19:30-20:15)</th><th id=\"0_10\">第10节<br>(20:25-21:10)</th></tr></thead></table>",
+  "courseHtml": "<script type=\"text/javascript\">\nvar unitCount = 5;\nvar teachers = [{id: 101, name: \"王建国\", code: \"T101\"}];\nactivity = new TaskActivity(\"101\",\"王建国\",\"MATH1001\",\"高等数学A(一)\",\"1601\",\"教1-101\",\"0111111111111111100000000000000\");\nindex = 0*unitCount+0;\nindex = 0*unitCount+1;\nactivity = new TaskActivity(\"101\",\"王建国\",\"MATH1001\",\"高等数学A(一)\",\"1601\",\"教1-101\",\"0111111111111111100000000000000\");\nindex = 2*unitCount+2;\nindex = 2*unitCount+3;\nvar teachers = [{id: 102, name: \"李慧敏\", code: \"T102\"}];\nactivity = new TaskActivity(\"102\",\"李慧敏\",\"ENG2001\",\"大学英语(一)\",\"1602\",\"外语楼B-208\",\"0101010101010101000000000000000\");\nindex = 1*unitCount+2;\nvar teachers = [{id: 103, name: \"赵振华\", code: \"T103\"}, {id: 104, name: \"陈晓\", code: \"T104\"}];\nactivity = new TaskActivity(\"103\",actTeacherName.join(\",\"),\"PHY3001\",\"大学物理\",\"1603\",\"实验楼C-305\",\"0111100000000000000000000000000\");\nindex = 3*unitCount+0;\nindex = 3*unitCount+1;\nindex = 3*unitCount+2;\nactivity = new TaskActivity(\"103\",actTeacherName.join(\",\"),\"PHY3001\",\"大学物理\",\"1603\",\"实验楼C-305\",\"0111100000000000000000000000000\");\nindex = 3*unitCount+0;\nindex = 3*unitCount+1;\nindex = 3*unitCount+2;\n</script>\n<table id=\"manualArrangeCourseTable\"><thead><tr><th id=\"0_0\">节次</th></tr></thead></table>",
+  "calendarHtml": "<div class=\"calendar-info\">开始 / 结束日期：2026-09-07 ~ 2027-01-15 (19)</div>"
+}

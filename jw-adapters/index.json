@@ -218,6 +218,78 @@
       "name": "东北大学",
       "version": "1.0.0",
       "path": "neu"
+    },
+    {
+      "key": "hpu",
+      "name": "河南理工大学",
+      "version": "1.0.0",
+      "path": "hpu"
+    },
+    {
+      "key": "uestc",
+      "name": "电子科技大学",
+      "version": "1.0.0",
+      "path": "uestc"
+    },
+    {
+      "key": "zua",
+      "name": "郑州航空工业管理学院",
+      "version": "1.0.0",
+      "path": "zua"
+    },
+    {
+      "key": "zzvcae",
+      "name": "郑州汽车工程职业学院",
+      "version": "1.0.0",
+      "path": "zzvcae"
+    },
+    {
+      "key": "dlmu",
+      "name": "大连海事大学",
+      "version": "1.0.0",
+      "path": "dlmu"
+    },
+    {
+      "key": "neuq",
+      "name": "东北大学秦皇岛分校",
+      "version": "1.0.0",
+      "path": "neuq"
+    },
+    {
+      "key": "haust",
+      "name": "河南科技大学",
+      "version": "1.0.0",
+      "path": "haust"
+    },
+    {
+      "key": "hfnu",
+      "name": "合肥师范学院",
+      "version": "1.0.0",
+      "path": "hfnu"
+    },
+    {
+      "key": "xatu",
+      "name": "西安工业大学",
+      "version": "1.0.0",
+      "path": "xatu"
+    },
+    {
+      "key": "tjau",
+      "name": "天津农学院",
+      "version": "1.0.0",
+      "path": "tjau"
+    },
+    {
+      "key": "hunnu",
+      "name": "湖南师范大学",
+      "version": "1.0.0",
+      "path": "hunnu"
+    },
+    {
+      "key": "cuit",
+      "name": "成都信息工程大学",
+      "version": "1.0.0",
+      "path": "cuit"
     }
   ]
 }

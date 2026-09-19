@@ -1,0 +1,386 @@
+{
+  "url": "https://jw.haust.edu.cn/eams/courseTableForStd.action",
+  "title": "学生课表",
+  "today": "2025-09-22",
+  "source": "current",
+  "semesters": [
+    {
+      "schoolYear": "2025-2026",
+      "name": "1",
+      "startDate": "2025-09-01",
+      "endDate": "2026-01-18"
+    }
+  ],
+  "days": [
+    {
+      "row": 0,
+      "col": 1,
+      "text": "星期一"
+    },
+    {
+      "row": 0,
+      "col": 2,
+      "text": "星期二"
+    },
+    {
+      "row": 0,
+      "col": 3,
+      "text": "星期三"
+    },
+    {
+      "row": 0,
+      "col": 4,
+      "text": "星期四"
+    },
+    {
+      "row": 0,
+      "col": 5,
+      "text": "星期五"
+    },
+    {
+      "row": 0,
+      "col": 6,
+      "text": "星期六"
+    },
+    {
+      "row": 0,
+      "col": 7,
+      "text": "星期日"
+    }
+  ],
+  "periods": [
+    {
+      "index": 1,
+      "start": "08:00",
+      "end": "08:45",
+      "row": 1,
+      "col": 0
+    },
+    {
+      "index": 2,
+      "start": "08:50",
+      "end": "09:35",
+      "row": 2,
+      "col": 0
+    },
+    {
+      "index": 3,
+      "start": "10:00",
+      "end": "10:45",
+      "row": 3,
+      "col": 0
+    },
+    {
+      "index": 4,
+      "start": "10:50",
+      "end": "11:35",
+      "row": 4,
+      "col": 0
+    },
+    {
+      "index": 5,
+      "start": "14:00",
+      "end": "14:45",
+      "row": 5,
+      "col": 0
+    },
+    {
+      "index": 6,
+      "start": "14:50",
+      "end": "15:35",
+      "row": 6,
+      "col": 0
+    },
+    {
+      "index": 7,
+      "start": "16:00",
+      "end": "16:45",
+      "row": 7,
+      "col": 0
+    },
+    {
+      "index": 8,
+      "start": "16:50",
+      "end": "17:35",
+      "row": 8,
+      "col": 0
+    },
+    {
+      "index": 9,
+      "start": "19:00",
+      "end": "19:45",
+      "row": 9,
+      "col": 0
+    },
+    {
+      "index": 10,
+      "start": "19:50",
+      "end": "20:35",
+      "row": 10,
+      "col": 0
+    },
+    {
+      "index": 11,
+      "start": "20:40",
+      "end": "21:25",
+      "row": 11,
+      "col": 0
+    },
+    {
+      "index": 12,
+      "start": "21:30",
+      "end": "22:15",
+      "row": 12,
+      "col": 0
+    }
+  ],
+  "cells": [
+    {
+      "row": 0,
+      "col": 0,
+      "span": 1,
+      "id": "",
+      "className": "title",
+      "text": "节次",
+      "title": ""
+    },
+    {
+      "row": 0,
+      "col": 1,
+      "span": 1,
+      "id": "",
+      "className": "title",
+      "text": "星期一",
+      "title": ""
+    },
+    {
+      "row": 0,
+      "col": 2,
+      "span": 1,
+      "id": "",
+      "className": "title",
+      "text": "星期二",
+      "title": ""
+    },
+    {
+      "row": 0,
+      "col": 3,
+      "span": 1,
+      "id": "",
+      "className": "title",
+      "text": "星期三",
+      "title": ""
+    },
+    {
+      "row": 0,
+      "col": 4,
+      "span": 1,
+      "id": "",
+      "className": "title",
+      "text": "星期四",
+      "title": ""
+    },
+    {
+      "row": 0,
+      "col": 5,
+      "span": 1,
+      "id": "",
+      "className": "title",
+      "text": "星期五",
+      "title": ""
+    },
+    {
+      "row": 0,
+      "col": 6,
+      "span": 1,
+      "id": "",
+      "className": "title",
+      "text": "星期六",
+      "title": ""
+    },
+    {
+      "row": 0,
+      "col": 7,
+      "span": 1,
+      "id": "",
+      "className": "title",
+      "text": "星期日",
+      "title": ""
+    },
+    {
+      "row": 1,
+      "col": 0,
+      "span": 1,
+      "id": "",
+      "className": "section",
+      "text": "第1节08:00-08:45",
+      "title": ""
+    },
+    {
+      "row": 1,
+      "col": 1,
+      "span": 2,
+      "id": "TD0_1",
+      "className": "infoTitle",
+      "text": "高等数学A(一)张伟1-16周教1-101",
+      "title": "高等数学A(一)(202520261.11202001.002)(张伟)(1-16周,1-2节,教1-101)"
+    },
+    {
+      "row": 2,
+      "col": 0,
+      "span": 1,
+      "id": "",
+      "className": "section",
+      "text": "第2节08:50-09:35",
+      "title": ""
+    },
+    {
+      "row": 3,
+      "col": 0,
+      "span": 1,
+      "id": "",
+      "className": "section",
+      "text": "第3节10:00-10:45",
+      "title": ""
+    },
+    {
+      "row": 3,
+      "col": 3,
+      "span": 1,
+      "id": "TD20_3",
+      "className": "infoTitle",
+      "text": "大学英语李娜单3-17文科楼B202",
+      "title": "大学英语(202520261.11202002.001)(李娜)(单3-17,3节,文科楼B202)"
+    },
+    {
+      "row": 4,
+      "col": 0,
+      "span": 1,
+      "id": "",
+      "className": "section",
+      "text": "第4节10:50-11:35",
+      "title": ""
+    },
+    {
+      "row": 5,
+      "col": 0,
+      "span": 1,
+      "id": "",
+      "className": "section",
+      "text": "第5节14:00-14:45",
+      "title": ""
+    },
+    {
+      "row": 5,
+      "col": 5,
+      "span": 2,
+      "id": "TD36_5",
+      "className": "infoTitle",
+      "text": "线性代数王强双2-8数智楼205",
+      "title": "线性代数(202520261.11202003.001)(王强)(双2-8,5-6节,数智楼205)"
+    },
+    {
+      "row": 6,
+      "col": 0,
+      "span": 1,
+      "id": "",
+      "className": "section",
+      "text": "第6节14:50-15:35",
+      "title": ""
+    },
+    {
+      "row": 7,
+      "col": 0,
+      "span": 1,
+      "id": "",
+      "className": "section",
+      "text": "第7节16:00-16:45",
+      "title": ""
+    },
+    {
+      "row": 7,
+      "col": 6,
+      "span": 1,
+      "id": "TD54_6",
+      "className": "infoTitle",
+      "text": "大学物理（一）赵敏1-16周双教2-305",
+      "title": "大学物理（一）(202520261.11202005.001)(赵敏)(1-16周 双,7节,教2-305)"
+    },
+    {
+      "row": 8,
+      "col": 0,
+      "span": 1,
+      "id": "",
+      "className": "section",
+      "text": "第8节16:50-17:35",
+      "title": ""
+    },
+    {
+      "row": 9,
+      "col": 0,
+      "span": 1,
+      "id": "",
+      "className": "section",
+      "text": "第9节19:00-19:45",
+      "title": ""
+    },
+    {
+      "row": 9,
+      "col": 1,
+      "span": 2,
+      "id": "TD72_1",
+      "className": "infoTitle",
+      "text": "程序设计基础陈晨1-3,5-9周机房A303",
+      "title": "程序设计基础(202520261.11202004.001)(陈晨)(1-3,5-9周,9-10节,机房A303)"
+    },
+    {
+      "row": 10,
+      "col": 0,
+      "span": 1,
+      "id": "",
+      "className": "section",
+      "text": "第10节19:50-20:35",
+      "title": ""
+    },
+    {
+      "row": 11,
+      "col": 0,
+      "span": 1,
+      "id": "",
+      "className": "section",
+      "text": "第11节20:40-21:25",
+      "title": ""
+    },
+    {
+      "row": 11,
+      "col": 2,
+      "span": 1,
+      "id": "TD90_2",
+      "className": "infoTitle",
+      "text": "计算机组成原理周涛1-3 5-9周教2-108",
+      "title": "计算机组成原理(202520261.11202008.001)(周涛)(1-3 5-9周,11节,教2-108)"
+    },
+    {
+      "row": 11,
+      "col": 4,
+      "span": 2,
+      "id": "TD90_4",
+      "className": "infoTitle",
+      "text": "毕业设计郑华1-40周工科楼401",
+      "title": "毕业设计(202520261.11202009.001)(郑华)(1-40周,11-12节,工科楼401)"
+    },
+    {
+      "row": 12,
+      "col": 0,
+      "span": 1,
+      "id": "",
+      "className": "section",
+      "text": "第12节21:30-22:15",
+      "title": ""
+    }
+  ],
+  "semesterGroups": [],
+  "semesterSample": "",
+  "semesterError": null,
+  "frames": 0
+}

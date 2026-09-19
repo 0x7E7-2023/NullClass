@@ -1,0 +1,15 @@
+{
+  "_note": "⚠️ 合成 fixture：不是真实抓取。天津农学院（tjau）的教务账号我们一个都没有，这份数据是按上游 TJAU/tjau.js（快照 e62554a4034386b893bcd6813c7b2b64f8c730a3，MIT）实际读取的字段形状编出来的：semester 是 dataQuery.action（dataType=semesterCalendar）里选中学期的形状（extract.js 交出来的对象），semesterCalendar 是那个接口的响应原文（JS 对象字面量，不是 JSON；含 id / name / schoolYear / startDate / endDate），courseTable 是 courseTableForStd!courseTable.action 的响应形状 —— var unitCount = N; 加若干个 var teachers = [...] 块，每块里 var actTeachers = [...]、一条 new TaskActivity(...)（args[1] 教师常写成 teachers.join(\",\") 这种表达式、args[3] 课名、args[5] 教室、args[6] 50 位周次位图）与若干条 index = 星期*unitCount+节次;。课程、教师、教室都是虚构的，不含任何学号姓名等真实身份信息。它只保证「同样的输入永远得到同样的输出」，不保证解析在真实页面上是对的；谁拿到真实 dump，替换这份数据并重跑门是最高优先级的贡献（测试方案 §3）。 本件：边界 —— ①课表响应里读不到 unitCount ②同一块里两种定位写法混用 ③args[1] 是 teachers.join(\",\") 表达式且块里没有 actTeachers（教师必须留空，不能把表达式当名字）④教室带括号 ⑤只有裸数字定位的课在 unitCount 读不到时导不进来（必须出声）。",
+  "today": "2026-09-17",
+  "semester": {
+    "id": "445",
+    "rawName": "1",
+    "schoolYear": "2025-2026",
+    "startDate": "2025-09-01",
+    "endDate": "2026-01-11",
+    "source": "current"
+  },
+  "unitCountPage": null,
+  "semesterCalendar": "{semesters:{\"1\":[{id:445,name:\"1\",schoolYear:\"2025-2026\",startDate:\"2025-09-01\",endDate:\"2026-01-11\"}],\"2\":[]},semesterId:445}",
+  "courseTable": "<html><body>\n<!-- 这一份**故意没有** var unitCount = N;（读不出来），且混了已算好的裸数字定位 -->\n<script type=\"text/javascript\">\nvar teachers = [{id:\"B1\",name:\"马强\"}];\n// 没有 actTeachers：教师只能来自 args[1]，而它是表达式 → 必须留空，不能把表达式当名字\nactivity = new TaskActivity(\"\", teachers.join(\",\"), \"\", \"数据库原理\", \"\", \"综合楼B101(东)\", \"11111111111111000000000000000000000000000000000000\");\nindex = 3*unitCount+2;\nindex = 62;\n</script>\n<script type=\"text/javascript\">\nvar teachers = [{id:\"B2\",name:\"许娟\"}];\nvar actTeachers = [{id:\"B2\",name:\"许娟\"}];\nactivity = new TaskActivity(\"\", \"许娟\", \"\", \"计算机网络\", \"\", \"教4-202\", \"11111111000000000000000000000000000000000000000000\");\nindex = 0*unitCount+4;\nindex = 62;\n</script>\n<script type=\"text/javascript\">\nvar teachers = [{id:\"B3\",name:\"郑凯\"}];\nvar actTeachers = [{id:\"B3\",name:\"郑凯\"}];\n// 只有已算好的裸数字：unitCount 读不到就没法换算成星期与节次 → 这门课导不进来\nactivity = new TaskActivity(\"\", teachers.join(\",\"), \"\", \"操作系统\", \"\", \"教5-301\", \"11111111000000000000000000000000000000000000000000\");\nindex = 62;\n</script>\n</body></html>"
+}

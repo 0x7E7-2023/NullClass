@@ -1,0 +1,24 @@
+{
+  "_note": "合成 fixture（虚构数据，无个人信息）。index 写法用例（unitCount 从 HTML 读到 14）：第一条用带变量的 index = 5*unitCount+2 → 第 6 天第 3 节；第二条用**已经算好的裸数字** index = 62 → 第 5 天第 7 节（上游 zua.js 的正则只认带 *unitCount 的写法，这条会整节课丢掉 —— 移植件两种都认）；第三条用把 unitCount 写死的 index = 2*14+1 → 第 3 天第 2 节。只有第二条是裸数字，所以「裸数字不再被认」这个改动只让这条用例里的数据结构课变红。",
+  "today": "2026-09-16",
+  "semester": {
+    "id": "4",
+    "name": "2026-2027学年第一学期",
+    "schoolYear": "2026-2027",
+    "term": "1"
+  },
+  "semesters": [
+    {
+      "id": "4",
+      "name": "2026-2027学年第一学期",
+      "schoolYear": "2026-2027"
+    }
+  ],
+  "currentSemesterId": "4",
+  "firstDayOfWeek": 1,
+  "taskActivityCount": 3,
+  "extractWarnings": [],
+  "tableHtml": "<table id=\"manualArrangeCourseTable\"><thead><tr><th id=\"0_0\">节次</th></tr></thead></table>",
+  "courseHtml": "<script type=\"text/javascript\">\nvar unitCount = 14;\nvar teachers = [{id: 401, name: \"钱伟\"}];\nactivity = new TaskActivity(\"401\",\"钱伟\",\"CS1001\",\"程序设计基础\",\"2001\",\"计算中心A-101\",\"0111111111111111100000000000000\");\nindex = 5*unitCount+2;\nactivity = new TaskActivity(\"402\",\"钱伟\",\"CS1002\",\"数据结构\",\"2002\",\"计算中心A-102\",\"0111111110000000000000000000000\");\nindex = 62;\nactivity = new TaskActivity(\"403\",\"钱伟\",\"CS1003\",\"离散数学\",\"2003\",\"计算中心A-103\",\"0101010101010101000000000000000\");\nindex = 2*14+1;\n</script>\n<table id=\"manualArrangeCourseTable\"><thead><tr><th id=\"0_0\">节次</th></tr></thead></table>",
+  "calendarHtml": ""
+}

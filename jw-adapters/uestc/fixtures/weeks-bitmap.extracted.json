@@ -1,0 +1,11 @@
+{
+  "_note": "合成 fixture：本校没有可用的测试账号，课表 HTML 是按上游 UESTC/uestc.js 与同族适配器（HPU / NEUQ / ZUA / CUIT）实际解析的形态编造的 —— 内嵌的 TaskActivity(...) 调用 + index = 天*unitCount+节次，不是真实抓取（见 docs/jw-adapter-testing.md §3）。课程名、教师、教室、日期均为虚构，无真实个人信息；学号（ids）按 AUDIT.md §1 的承诺**没有**进 fixture。 位图基准对照用例：一条「第 0 位为 1」（同时也是唯一置位 → 周次为空要跳过）、一条「第 1 位为 1」、一条 53 位整学期、一条中间断档、一条 54 位；**没有校历**（开学日按最近的周一推算、总周数用内置 20 周、学期名从学期列表原文取）。",
+  "today": "2026-09-14",
+  "url": "https://eams.uestc.edu.cn/eams/courseTableForStd.action",
+  "tagId": "semesterBar20826294511Semester",
+  "semesterId": "523",
+  "semesterLabel": null,
+  "semesterRaw": "var semester = {semesterId:523,semesters:{2026:[{id:523,schoolYear:\"2026-2027\",name:\"1\"},{id:543,schoolYear:\"2026-2027\",name:\"2\"}],2025:[{id:483,schoolYear:\"2025-2026\",name:\"1\"}]}};",
+  "calendarHtml": null,
+  "courseHtml": "<HTML><HEAD><TITLE>学生课表</TITLE></HEAD><BODY>\n<table id=\"manualArrangeCourseTable\"></table>\n<script type=\"text/javascript\">\nvar table0 = new Timetable();\nvar unitCount = 12;\nactivity = new TaskActivity(\"\",\"张一\",\"\",\"周次从第1周起\",\"\",\"品学楼A101\",\"01000000000000000000000000000000000000000000000000000\");\nindex = 0*unitCount+0;\nactivity = new TaskActivity(\"\",\"张二\",\"\",\"位图第0位为1\",\"\",\"品学楼A102\",\"11110000000000000000000000000000000000000000000000000\");\nindex = 1*unitCount+0;\nactivity = new TaskActivity(\"\",\"张三\",\"\",\"整学期\",\"\",\"品学楼A103\",\"01111111111111111000000000000000000000000000000000000\");\nindex = 2*unitCount+0;\nactivity = new TaskActivity(\"\",\"张四\",\"\",\"中间断档\",\"\",\"品学楼A104\",\"01110001110000000000000000000000000000000000000000000\");\nindex = 3*unitCount+0;\nactivity = new TaskActivity(\"\",\"张五\",\"\",\"只有第0位\",\"\",\"品学楼A105\",\"10000000000000000000000000000000000000000000000000000\");\nindex = 4*unitCount+0;\nactivity = new TaskActivity(\"\",\"张六\",\"\",\"54位位图\",\"\",\"品学楼A106\",\"001010101000000000000000000000000000000000000000000000\");\nindex = 4*unitCount+1;\ntable0.marshalTable(mainTable);\n</script>\n</BODY></HTML>"
+}

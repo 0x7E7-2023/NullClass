@@ -1,0 +1,15 @@
+{
+  "_note": "合成数据，不是真实抓取：形状照上游 HUNNU/hunnu.js 实际解析的课表页 HTML 编，参数位与同平台 UESTC/uestc.js 的注释一致（TaskActivity 第 1 个参数是教师、第 3 个是课名、第 5 个是教室、第 6 个是周次位图）。课程数据内嵌在脚本里：var actTeachers = [{...}] 之后紧跟 activity = new TaskActivity(...)，参数按逗号切（引号内的逗号不算），尾部用 index = 星期 * unitCount + 节次 赋值，块之间用 table0.marshalTable(...) 分隔。课程名/教师/教室均为虚构。这一份专测**重复渲染**：第一条排课在第一个块与最后一个块里各画了一遍，期望结果里只能出现一次。拿到真实 dump 请替换这一对 fixture。",
+  "html": "<html><head><title>学生课表</title></head><body><div class=\"eams-toolbar\">2026-2027学年 第一学期</div><script type=\"text/javascript\">\nvar unitCount = 13;\nvar actTeachers = [{id: 0, name: \"张三\", lab: false}];\nvar activity = new TaskActivity(\"\",\"张三\",\"\",\"高等数学A(一)(数学类)\",\"\",\"教1-101\",\"10000111111111111111000000000000\");\nactivity.id = 101;\nindex = 0*unitCount+0;\ntable0.marshalTable(activity, 101);\n\nvar actTeachers = [{id: 0, name: \"李四\", lab: false}];\nvar activity = new TaskActivity(\"\",\"李四\",\"\",\"大学英语(一)(公共)\",\"\",\"教2-203\",\"10000111111111111111000000000000\");\nactivity.id = 102;\nindex = 2*unitCount+4;\ntable0.marshalTable(activity, 102);\n\nvar actTeachers = [{id: 0, name: \"王五\", lab: false}];\nvar activity = new TaskActivity(\"\",\"王五\",\"\",\"程序设计基础(专业)\",\"\",\"机房A303\",\"10000000010000000010000000010000\");\nactivity.id = 103;\nindex = 4*unitCount+5;\nindex = 4*unitCount+6;\ntable0.marshalTable(activity, 103);\n\nvar actTeachers = [{id: 0, name: \"张三\", lab: false}];\nvar activity = new TaskActivity(\"\",\"张三\",\"\",\"高等数学A(一)(数学类)\",\"\",\"教1-101\",\"10000111111111111111000000000000\");\nactivity.id = 101;\nindex = 0*unitCount+0;\ntable0.marshalTable(activity, 101);\n</script></body></html>",
+  "source": "iframe",
+  "clicked": false,
+  "frameFound": true,
+  "url": "https://jwglnew.hunnu.edu.cn/eams/homeExt.action",
+  "title": "学生课表",
+  "today": "2026-09-16",
+  "unitCount": null,
+  "currentWeek": 3,
+  "semesterLabels": [
+    "2026-2027学年 第一学期"
+  ]
+}

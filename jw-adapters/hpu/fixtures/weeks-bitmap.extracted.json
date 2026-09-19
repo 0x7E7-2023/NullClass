@@ -1,0 +1,17 @@
+{
+  "_note": "合成 fixture：位图基准对照用例（本批最大的坑，见 docs/impl/2026-09-16-port-adapters-batch4.md）。同族 12 个上游脚本对同一个周次位图有五种读法，本批统一为「位图下标 i 就是第 i 周，下标 0 是占位符」。六门课逐条钉住这条口径：(1) 位图 11000… = 只上第 1 周（不是第 0 周）；(2) 10010… = 只上第 3 周；(3) 00111… = 第 2-4 周；(4) 偶数位 = 第 2-30 周双周；(5) 只有第 0 位为 1 = 没有周次 → 整块跳过 + 一条 warnings（总周数由 (4) 抬到 30）；(6) bitmap[31] = 第 31 周，超出载荷上限 30 → 丢弃 + 一条 warnings。把 parse.js 的位图基准改坏（让 i<1 也产出周次）时，(1)(3)(4)(5) 会一起变红。",
+  "entryUrl": "https://zhjw.hpu.edu.cn/eams/courseTableForStd.action?sf_request_type=ajax",
+  "pageUrl": "https://zhjw.hpu.edu.cn/eams/courseTableForStd.action",
+  "today": "2026-09-13",
+  "detect": {
+    "ids": "202321060108",
+    "tagId": "semesterBar20826294511Semester",
+    "currentSemesterId": null
+  },
+  "semesterPick": {
+    "id": "501",
+    "source": "response"
+  },
+  "semesterRaw": "{semesters:{\"2026-2027\":[{id:501,schoolYear:\"2026-2027\",name:\"1\",startDate:\"2026-09-07\",endDate:\"2027-01-17\"}]},semesterId:501}",
+  "courseHtml": "<html><head><title>学生课表</title></head><body><table id=\"manualArrangeCourseTable\"><tbody><tr><td>第一节 (08:00-08:45)</td><td>第二节 (08:55-09:40)</td><td>第三节 (10:00-10:45)</td><td>第四节 (10:55-11:40)</td><td>第五节 (14:00-14:45)</td><td>第六节 (14:55-15:40)</td><td>第七节 (16:00-16:45)</td><td>第八节 (16:55-17:40)</td><td>第九节 (18:30-19:15)</td><td>第十节 (19:25-20:10)</td><td>第十一节 (20:20-21:05)</td></tr></tbody></table>\n<script>\n/* 位图基准对照：位图下标 i 就是第 i 周，下标 0 是占位符 */\nvar unitCount = 11;\nactivity = new TaskActivity(\"0\",\"钱进\",\"\",\"周次基准一\",\"\",\"教2-201\",\"1100000000000000000000000000000000000000000000000000\");\nindex = 0*unitCount+0;\nactivity = new TaskActivity(\"0\",\"钱进\",\"\",\"周次基准二\",\"\",\"教2-201\",\"1001000000000000000000000000000000000000000000000000\");\nindex = 0*unitCount+1;\nactivity = new TaskActivity(\"0\",\"钱进\",\"\",\"周次基准三\",\"\",\"教2-201\",\"0011100000000000000000000000000000000000000000000000\");\nindex = 2*unitCount+2;\nactivity = new TaskActivity(\"0\",\"钱进\",\"\",\"周次基准四\",\"\",\"教2-201\",\"1010101010101010101010101010101100000000000000000000\");\nindex = 4*unitCount+4;\nactivity = new TaskActivity(\"0\",\"钱进\",\"\",\"周次基准五\",\"\",\"教2-201\",\"1000000000000000000000000000000000000000000000000000\");\nindex = 6*unitCount+6;\nactivity = new TaskActivity(\"0\",\"钱进\",\"\",\"周次基准六\",\"\",\"教2-201\",\"0000000010000000000000000000000000000000000000000000\");\nindex = 6*unitCount+8;\ntable0.marshalTable();\n</script></body></html>"
+}

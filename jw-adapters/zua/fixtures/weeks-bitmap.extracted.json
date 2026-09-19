@@ -1,0 +1,24 @@
+{
+  "_note": "合成 fixture（虚构数据，无个人信息）。位图基准对照用例：第一条课「形势与政策」的位图第 0 位是 1（占位符），第 1-4 位是 1 —— 必须得到第 1-4 周，且第 0 位不产出「第 0 周」、只写一条 warnings；第二条课「体育(一)」只有第 1、2 位是 1 —— 必须得到第 1-2 周（钉住「下标 i 就是第 i 周」，位图基准差一位这里就红）；第三条课「艺术鉴赏」只有第 5 位是 1 —— 必须得到第 5 周（落单一周 → ALL）；第四条课「音乐鉴赏」出现在任何教师声明之前，教师解析不到 → teacher 必须是 null，不能写「未知教师」这类占位符。另外：课表表头里没有节次时间 → 作息回落适配器内置的 10 节表；没有学期日历 → 开学日按最近的周一推算（today 2026-09-16 是周三，firstDayOfWeek 1 → 2026-09-14）。",
+  "today": "2026-09-16",
+  "semester": {
+    "id": "2",
+    "name": "2026-2027学年第一学期",
+    "schoolYear": "2026-2027",
+    "term": "1"
+  },
+  "semesters": [
+    {
+      "id": "2",
+      "name": "2026-2027学年第一学期",
+      "schoolYear": "2026-2027"
+    }
+  ],
+  "currentSemesterId": "2",
+  "firstDayOfWeek": 1,
+  "taskActivityCount": 4,
+  "extractWarnings": [],
+  "tableHtml": "<table id=\"manualArrangeCourseTable\"><thead><tr><th id=\"0_0\">节次</th></tr></thead></table>",
+  "courseHtml": "<script type=\"text/javascript\">\nvar unitCount = 5;\nactivity = new TaskActivity(\"204\",actTeacherName.join(\",\"),\"MUS1001\",\"音乐鉴赏\",\"1804\",\"教2-401\",\"0001000000000000000000000000000\");\nindex = 3*unitCount+0;\nvar teachers = [{id: 201, name: \"孙立\"}];\nactivity = new TaskActivity(\"201\",\"孙立\",\"POL1001\",\"形势与政策\",\"1801\",\"教2-201\",\"1111100000000000000000000000000\");\nindex = 0*unitCount+0;\nactivity = new TaskActivity(\"202\",\"周敏\",\"PE1001\",\"体育(一)\",\"1802\",\"体育馆\",\"0110000000000000000000000000000\");\nindex = 1*unitCount+1;\nactivity = new TaskActivity(\"203\",\"吴涛\",\"ART1001\",\"艺术鉴赏\",\"1803\",\"教2-305\",\"0000010000000000000000000000000\");\nindex = 4*unitCount+3;\n</script>\n<table id=\"manualArrangeCourseTable\"><thead><tr><th id=\"0_0\">节次</th></tr></thead></table>",
+  "calendarHtml": ""
+}

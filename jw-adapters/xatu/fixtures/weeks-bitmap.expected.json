@@ -1,0 +1,133 @@
+{
+  "specVersion": 1,
+  "kind": "schedule",
+  "ocrAssisted": false,
+  "warnings": [
+    "教务没有给出可用的学期列表，学期名、开学日与总周数都只能推算，请逐项核对",
+    "教务没有给出学期名，已按导入日期推成「西安工业大学 2026-2027学年第一学期」，请到学期管理里核对",
+    "开学日期无法从教务获取，已按「没有学期信息，按 2026 年 9 月 1 日所在周的周一推算」推算为 2026-08-31，请在学期管理里核对",
+    "作息时间来自适配器内置的西安工业大学作息表（非教务系统读取），请对照教务处公布的作息核对",
+    "周次位图里第 0 位是 1：按同族约定（位图下标即周次、下标 0 是占位符）已忽略，未产出「第 0 周」，请在导入预览里核对周次",
+    "有 1 个周次超出 1-30 周，已丢弃，请核对课表",
+    "只导入了教务当前选中的这个学期（西安工业大学 2026-2027学年第一学期），需要其它学期请在教务系统里切到那个学期再提取一次"
+  ],
+  "terms": [
+    {
+      "name": "西安工业大学 2026-2027学年第一学期",
+      "firstDay": "2026-08-31",
+      "totalWeeks": 16,
+      "periodTimes": [
+        {
+          "periodIndex": 1,
+          "start": "08:20",
+          "end": "09:05"
+        },
+        {
+          "periodIndex": 2,
+          "start": "09:15",
+          "end": "10:00"
+        },
+        {
+          "periodIndex": 3,
+          "start": "10:20",
+          "end": "11:05"
+        },
+        {
+          "periodIndex": 4,
+          "start": "11:15",
+          "end": "12:00"
+        },
+        {
+          "periodIndex": 5,
+          "start": "14:00",
+          "end": "14:45"
+        },
+        {
+          "periodIndex": 6,
+          "start": "14:55",
+          "end": "15:40"
+        },
+        {
+          "periodIndex": 7,
+          "start": "16:00",
+          "end": "16:45"
+        },
+        {
+          "periodIndex": 8,
+          "start": "16:55",
+          "end": "17:40"
+        },
+        {
+          "periodIndex": 9,
+          "start": "18:10",
+          "end": "18:55"
+        },
+        {
+          "periodIndex": 10,
+          "start": "19:05",
+          "end": "19:50"
+        },
+        {
+          "periodIndex": 11,
+          "start": "20:00",
+          "end": "20:45"
+        },
+        {
+          "periodIndex": 12,
+          "start": "20:55",
+          "end": "21:40"
+        }
+      ],
+      "courses": [
+        {
+          "name": "线性代数",
+          "teacher": "钱伟",
+          "note": null,
+          "blocks": [
+            {
+              "dayOfWeek": 1,
+              "startPeriod": 1,
+              "endPeriod": 2,
+              "startWeek": 1,
+              "endWeek": 1,
+              "weekType": "ALL",
+              "location": "教2-305"
+            }
+          ]
+        },
+        {
+          "name": "理论力学",
+          "teacher": "吴静",
+          "note": null,
+          "blocks": [
+            {
+              "dayOfWeek": 2,
+              "startPeriod": 3,
+              "endPeriod": 3,
+              "startWeek": 12,
+              "endWeek": 12,
+              "weekType": "ALL",
+              "location": "教2-401"
+            }
+          ]
+        },
+        {
+          "name": "大学化学",
+          "teacher": "郑凯",
+          "note": null,
+          "blocks": [
+            {
+              "dayOfWeek": 3,
+              "startPeriod": 4,
+              "endPeriod": 4,
+              "startWeek": 1,
+              "endWeek": 16,
+              "weekType": "ALL",
+              "location": "化学楼A-102"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

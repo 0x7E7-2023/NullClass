@@ -1,0 +1,30 @@
+{
+  "_note": "合成 fixture：参数形状按上游 HFNU/hfnu.js 读的 TaskActivity 编造，不是真实抓取。本用例钉住**课名与教室的清理口径**：① 上游用 args[3].split(\"(\")[0] 把课名在第一个左括号处截断（「高等数学A(一)」会变成「高等数学A」、丢掉「(一)」），本适配器保留完整课名；② 教室「教学楼A(新)」按上游的 replace(/\\(.*?\\)/g,\"\") 剥掉括号说明 →「教学楼A」，而整个就是括号的「(待定)」剥完为空、保留原样；③ args[3] 是字面 null 时上游会把它写成课名「未知课程」并当成一门课导进去，本适配器按「读不出参数」跳过并计数进 warnings。",
+  "today": "2026-09-14",
+  "semester": {
+    "id": "403",
+    "schoolYear": "2026-2027",
+    "termName": "1",
+    "startDate": "2026-09-07 00:00:00",
+    "endDate": "2027-01-24 23:59:59",
+    "pickedBy": "semesterId",
+    "count": 6
+  },
+  "page": {
+    "url": "https://jw.hfnu.edu.cn/eams/courseTableForStd.action",
+    "tokens": {
+      "jinxiu": true,
+      "binhu": false
+    },
+    "radios": [],
+    "sectionTimes": []
+  },
+  "bootstrap": {
+    "tokens": {
+      "jinxiu": true,
+      "binhu": false
+    },
+    "sectionTimes": []
+  },
+  "courseHtml": "<script type=\"text/javascript\">\n//<![CDATA[\nvar unitCount = 11;\n\nvar teachers = [{id:100,name:\"陈立群\"}];\nvar actTeachers = [{id:100,name:\"陈立群\"}];\nactivity = new TaskActivity(\"7001\",\"陈立群\",\"\",\"高等数学A(一)\",\"\",\"教学楼A(新)\",\"01111111111111111000000000000000000000000000000000\");\nindex = 0*unitCount+0;\n\nvar teachers = [{id:100,name:\"王芳\"}];\nvar actTeachers = [{id:100,name:\"王芳\"}];\nactivity = new TaskActivity(\"7002\",\"王芳\",\"\",\"(专升本)计算机基础\",\"\",\"(待定)\",\"01111111100000000000000000000000000000000000000000\");\nindex = 1*unitCount+2;\n\nvar teachers = [{id:100,name:\"张伟\"}];\nvar actTeachers = [{id:100,name:\"张伟\"}];\nactivity = new TaskActivity(\"7003\",\"张伟\",\"\",null,\"\",\"教学楼A-101\",\"01111111111111111000000000000000000000000000000000\");\nindex = 2*unitCount+5;\n//]]>\n</script>"
+}

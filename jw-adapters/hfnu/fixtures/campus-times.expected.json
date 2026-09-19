@@ -1,0 +1,41 @@
+{
+  "specVersion": 1,
+  "kind": "schedule",
+  "ocrAssisted": false,
+  "warnings": [
+    "只导入了教务系统当前选中的学期（2026-2027学年第一学期）；要导入别的学期，请在教务页面里切到那个学期再点「提取课表」",
+    "作息时间用的是滨湖校区的 11 节作息表（依据：课表表头的节次时间（共 3 节，与滨湖校区作息对上 3 节））；这张表是适配器内置的、没有向教务核对过，如与学校实际作息不符请在学期管理里改",
+    "开学日期取自教务的学期日历（第 1 周从 2026-09-07 开始，教务学期日历的学期起始日 2026-09-07 所在周的周一），请在学期管理里核对",
+    "学期总周数用的是教务学期日历（2026-09-07 到 2027-01-24，共 20 周），如与实际不符可在学期管理里改"
+  ],
+  "terms": [
+    {
+      "name": "2026-2027学年第一学期",
+      "firstDay": "2026-09-07",
+      "totalWeeks": 20,
+      "periodTimes": [
+        { "periodIndex": 1, "start": "08:20", "end": "09:05" },
+        { "periodIndex": 2, "start": "09:10", "end": "09:55" },
+        { "periodIndex": 3, "start": "10:05", "end": "10:50" },
+        { "periodIndex": 4, "start": "10:55", "end": "11:40" },
+        { "periodIndex": 5, "start": "13:40", "end": "14:25" },
+        { "periodIndex": 6, "start": "14:30", "end": "15:15" },
+        { "periodIndex": 7, "start": "15:25", "end": "16:10" },
+        { "periodIndex": 8, "start": "16:15", "end": "17:00" },
+        { "periodIndex": 9, "start": "18:30", "end": "19:15" },
+        { "periodIndex": 10, "start": "19:20", "end": "20:05" },
+        { "periodIndex": 11, "start": "20:10", "end": "20:55" }
+      ],
+      "courses": [
+        {
+          "name": "大学物理(一)",
+          "teacher": "陈立群",
+          "note": null,
+          "blocks": [
+            { "dayOfWeek": 1, "startPeriod": 3, "endPeriod": 3, "startWeek": 1, "endWeek": 16, "weekType": "ALL", "location": "实验楼C-208" }
+          ]
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,120 @@
+{
+  "specVersion": 1,
+  "kind": "schedule",
+  "ocrAssisted": false,
+  "warnings": [
+    "只导入了教务系统当前选中的学期（2026-2027学年第一学期）；要导入别的学期，请在教务页面里切到那个学期再点「提取课表」",
+    "开学日期无法从教务获取（学期日历接口没有给出可用的开始/结束日期），已按最近的周一推算（2026-09-14），请在学期管理里核对成学校实际开学日",
+    "学期总周数教务没有给出，已按 20 周计（课表里最大的周次是 16 周），如校历不同请在学期管理里调整",
+    "课表表头里没有读到节次时间，作息时间用的是适配器内置的郑州航空工业管理学院 10 节作息表（第 1 节 08:00-08:45），没有向教务核对过，如与学校实际作息不符请在节次设置里调整"
+  ],
+  "terms": [
+    {
+      "name": "2026-2027学年第一学期",
+      "firstDay": "2026-09-14",
+      "totalWeeks": 20,
+      "periodTimes": [
+        {
+          "periodIndex": 1,
+          "start": "08:00",
+          "end": "08:45"
+        },
+        {
+          "periodIndex": 2,
+          "start": "08:55",
+          "end": "09:40"
+        },
+        {
+          "periodIndex": 3,
+          "start": "10:00",
+          "end": "10:45"
+        },
+        {
+          "periodIndex": 4,
+          "start": "10:55",
+          "end": "11:40"
+        },
+        {
+          "periodIndex": 5,
+          "start": "14:30",
+          "end": "15:15"
+        },
+        {
+          "periodIndex": 6,
+          "start": "15:25",
+          "end": "16:10"
+        },
+        {
+          "periodIndex": 7,
+          "start": "16:30",
+          "end": "17:15"
+        },
+        {
+          "periodIndex": 8,
+          "start": "17:25",
+          "end": "18:10"
+        },
+        {
+          "periodIndex": 9,
+          "start": "19:30",
+          "end": "20:15"
+        },
+        {
+          "periodIndex": 10,
+          "start": "20:25",
+          "end": "21:10"
+        }
+      ],
+      "courses": [
+        {
+          "name": "离散数学",
+          "teacher": "钱伟",
+          "note": null,
+          "blocks": [
+            {
+              "dayOfWeek": 3,
+              "startPeriod": 2,
+              "endPeriod": 2,
+              "startWeek": 1,
+              "endWeek": 15,
+              "weekType": "ODD",
+              "location": "计算中心A-103"
+            }
+          ]
+        },
+        {
+          "name": "数据结构",
+          "teacher": "钱伟",
+          "note": null,
+          "blocks": [
+            {
+              "dayOfWeek": 5,
+              "startPeriod": 7,
+              "endPeriod": 7,
+              "startWeek": 1,
+              "endWeek": 8,
+              "weekType": "ALL",
+              "location": "计算中心A-102"
+            }
+          ]
+        },
+        {
+          "name": "程序设计基础",
+          "teacher": "钱伟",
+          "note": null,
+          "blocks": [
+            {
+              "dayOfWeek": 6,
+              "startPeriod": 3,
+              "endPeriod": 3,
+              "startWeek": 1,
+              "endWeek": 16,
+              "weekType": "ALL",
+              "location": "计算中心A-101"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

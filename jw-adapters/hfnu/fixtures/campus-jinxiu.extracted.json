@@ -1,0 +1,41 @@
+{
+  "_note": "合成 fixture：页面线索按上游 HFNU/hfnu.js 会读到的形状编造，不是真实抓取。本用例钉住**校区作息选择的第一条线索**：页面上有一个已勾选的校区按钮（value 里带「锦绣」），课表表头没给时间（没法靠时间判），因此 periodTimes 必须是锦绣校区的 11 节（第 1 节 08:00-08:45）。",
+  "today": "2026-09-14",
+  "semester": {
+    "id": "403",
+    "schoolYear": "2026-2027",
+    "termName": "1",
+    "startDate": "2026-09-07 00:00:00",
+    "endDate": "2027-01-24 23:59:59",
+    "pickedBy": "semesterId",
+    "count": 6
+  },
+  "page": {
+    "url": "https://jw.hfnu.edu.cn/eams/courseTableForStd.action",
+    "tokens": {
+      "jinxiu": false,
+      "binhu": false
+    },
+    "radios": [
+      {
+        "value": "锦绣校区",
+        "label": "锦绣校区",
+        "checked": true
+      },
+      {
+        "value": "滨湖校区",
+        "label": "滨湖校区",
+        "checked": false
+      }
+    ],
+    "sectionTimes": []
+  },
+  "bootstrap": {
+    "tokens": {
+      "jinxiu": false,
+      "binhu": false
+    },
+    "sectionTimes": []
+  },
+  "courseHtml": "<script type=\"text/javascript\">\n//<![CDATA[\nvar unitCount = 11;\n\nvar teachers = [{id:100,name:\"陈立群\"}];\nvar actTeachers = [{id:100,name:\"陈立群\"}];\nactivity = new TaskActivity(\"3002\",\"陈立群\",\"\",\"线性代数\",\"\",\"综合楼101\",\"01111111111111111000000000000000000000000000000000\");\nindex = 1*unitCount+1;\n//]]>\n</script>"
+}

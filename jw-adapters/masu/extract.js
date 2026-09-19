@@ -1,13 +1,21 @@
 (function () {
-    // 马鞍山学院教务系统（强智 eams 平台，jwxt.masu.edu.cn/eams）适配器 —— 第一步：取数。
+    // 马鞍山学院教务系统（树维 EAMS 平台，jwxt.masu.edu.cn/eams）适配器 —— 第一步：取数。
     //
     // 移植自 shiguang_warehouse 的 MASU/masu.js
     //   https://github.com/XingHeYuZhuan/shiguang_warehouse  （MIT，作者 Haooz）
     // 上游把这个脚本标成「青果/URP 金刚教务」，但学校教务处公布的地点是
     //   http://jwxt.masu.edu.cn:8080/eams/login.action
-    // 路径 /eams/ 与上游解析的 #manualArrangeCourseTable + 行内「第N节」标签，是强智 eams
+    // 路径 /eams/ 与上游解析的 #manualArrangeCourseTable + 行内「第N节」标签，是**树维 EAMS**
     // 的典型结构（同一批上游适配器里的 HPU / HIIT 也是这套结构）。这条只影响说明文字，
     // 不影响取数：课表是一张真正的 <table>，不是 canvas / 图片，所以不需要走 OCR。
+    //
+    // ⚠️ 厂商名订正（2026-09-16，批次四）：本文件此前写「强智 eams」，是错的。那套
+    // 综合教学管理系统是**上海树维信息科技有限公司（SupWisdom，新开普子公司）**的产品，
+    // 不是湖南强智科技的产品。实测证据：https://www.cduestc.cn/eams/loginExt.action 、
+    // http://211.83.88.108:8004/eams/loginExt.action 、http://jxgltea.hfut.edu.cn:8780/eams5-teacher/login
+    // 的页脚均署名「上海树维信息科技有限公司」；而强智的登录页署名「湖南强智科技发展有限公司」、
+    // 路径是 /jsxsd/，与 /eams/ 不是一套。上游同族的 8 个脚本（HPU / NEUQ / ZUA / XAUAT /
+    // TJAU / HFNU / ZZVCAE / CUIT）也全都自称「树维」。只改说明文字，算法一行未动。
     //
     // 移植改动：
     //   ① 上游把「读 DOM + 解析课程 + 算周次」揉在一个自执行脚本里；这里切成两段 ——

@@ -1,0 +1,40 @@
+{
+  "specVersion": 1,
+  "key": "haust",
+  "name": "河南科技大学",
+  "version": "1.0.0",
+  "author": "上游 Haooz（MIT）；移植 0x7E-2023",
+  "homepage": "https://github.com/XingHeYuZhuan/shiguang_warehouse",
+  "loginUrl": "https://vpn.haust.edu.cn",
+  "minAppVersionCode": 11,
+  "extract": "extract.js",
+  "parse": "parse.js",
+  "allowHosts": [],
+  "fixtures": [
+    {
+      "name": "基本课表（12 节表头；1-16周 / 单3-17 / 双2-8 / 逗号混排 1-3,5-9周；title 为空时读格子文字；教师栏为空；连堂 rowSpan 2）",
+      "extracted": "fixtures/basic.extracted.json",
+      "expected": "fixtures/basic.expected.json"
+    },
+    {
+      "name": "周次文本四种写法 + 空格分隔的单双标记与多段（1-16周 / 单3-17 / 双2-8 / 1-3,5-9周 / 1-16周 双 / 1-3 5-9周）+ 超过 30 周上限的截断",
+      "extracted": "fixtures/weeks-text.extracted.json",
+      "expected": "fixtures/weeks-text.expected.json"
+    },
+    {
+      "name": "边界：没有星期表头（退回单元格 id 的 TD<行>_<星期>）、没有节次时间表头（periodTimes 为空）、格式对不上的格子、单双同写的脏周次、定位不到星期/节次的格子 —— 全部进 warnings，不静默丢",
+      "extracted": "fixtures/edge-cases.extracted.json",
+      "expected": "fixtures/edge-cases.expected.json"
+    },
+    {
+      "name": "学期挑选与开学日回退：列表里三个学期（今天落在 2026-09-16，最近开始的是 09-09）→ 取当前学期；起止日期落在周三 → 开学日回退到那一周的周一 2026-09-07；表头的脏时间（起止颠倒、24:30）跳过并告警；空格分隔的单双标记与多段周次；格子自带「(第5-6节 15:00-16:35)」时以格子为准",
+      "extracted": "fixtures/term-pick.extracted.json",
+      "expected": "fixtures/term-pick.expected.json"
+    },
+    {
+      "name": "学期挑选的兜底分支：今天 2026-08-20 不落在任何一个学期的起止日期里 → 取「最近一个已经开始的学期」（2025-2026 学年第 2 学期），开学日用它的 2026-02-23",
+      "extracted": "fixtures/semester-fallback.extracted.json",
+      "expected": "fixtures/semester-fallback.expected.json"
+    }
+  ]
+}

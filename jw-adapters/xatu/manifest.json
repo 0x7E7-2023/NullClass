@@ -1,0 +1,41 @@
+{
+  "specVersion": 1,
+  "key": "xatu",
+  "name": "西安工业大学",
+  "version": "1.0.0",
+  "author": "上游 晨熯（MIT）；移植 0x7E-2023",
+  "homepage": "https://github.com/XingHeYuZhuan/shiguang_warehouse",
+  "loginUrl": "http://jwgl2018.xatu.edu.cn",
+  "scheduleUrlHint": "http://jwgl2018.xatu.edu.cn/eams/courseTableForStd.action",
+  "minAppVersionCode": 11,
+  "extract": "extract.js",
+  "parse": "parse.js",
+  "allowHosts": [],
+  "fixtures": [
+    {
+      "name": "合成用例：基本课表（连堂两节由 merge 拼成 1-2 节、位图 1-16 周、单双周、同一 var teachers 块里的奇偶两段活动都读到、教室带括号原样保留、教师写成 teachers.join 表达式、教务学期日历给出开学日与总周数）",
+      "extracted": "fixtures/basic.extracted.json",
+      "expected": "fixtures/basic.expected.json"
+    },
+    {
+      "name": "合成用例：周次位图基准（第 0 位为 1 → 不产出第 0 周并进 warnings；第 1 位为 1 → 第 1 周；第 31 位及以后越界丢弃并进 warnings；位图全 0 的活动没有周次也要出声）+ 教务不给学期日历时的开学日推算与总周数回落",
+      "extracted": "fixtures/weeks-bitmap.extracted.json",
+      "expected": "fixtures/weeks-bitmap.expected.json"
+    },
+    {
+      "name": "合成用例：课程名里的括号（高等数学A(一) / 大学英语(双语) / 体育(3) 原样保留，数据结构(2024.01) 的尾部课程代码去掉）—— 上游的 split('(')[0] 会把前者整段砍掉，本件按保真处理，这条用例把两侧都钉死",
+      "extracted": "fixtures/course-name.extracted.json",
+      "expected": "fixtures/course-name.expected.json"
+    },
+    {
+      "name": "合成用例：边界（页面读不到 unitCount → 缺省 14 并进 warnings；index 写成已算好的裸数字 62；index 用的是字面乘数 2*14+3；args[1] 是 teachers.join 表达式 → 取教师数组里的两个名字；教师与教室都拿不到 → 留空；第 13 节超出内置 12 节作息表 → 顺推补时间并进 warnings；index 算出星期 10 → 丢弃并计数）",
+      "extracted": "fixtures/fallbacks.extracted.json",
+      "expected": "fixtures/fallbacks.expected.json"
+    },
+    {
+      "name": "合成用例：第二学期 + 教务学期日历第 1 周从周三 2026-02-25 开始 → 开学日必须回退到那一周的周一 2026-02-23（手册 §4.3）；学期名用教务的学年学期拼成「2025-2026学年第二学期」",
+      "extracted": "fixtures/second-term.extracted.json",
+      "expected": "fixtures/second-term.expected.json"
+    }
+  ]
+}

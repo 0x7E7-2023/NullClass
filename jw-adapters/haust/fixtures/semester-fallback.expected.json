@@ -1,0 +1,56 @@
+{
+  "specVersion": 1,
+  "kind": "schedule",
+  "ocrAssisted": false,
+  "warnings": [
+    "开学日期取自教务给的学期起止日期（2026-02-23 至 2026-07-10），第 1 周按 2026-02-23（周一）计，请在学期管理里核对",
+    "学期总周数教务没有提供，已按 20 周计（课表里最大的周次是 12 周），如校历不同请在学期管理里调整"
+  ],
+  "terms": [
+    {
+      "name": "2025-2026学年第2学期",
+      "firstDay": "2026-02-23",
+      "totalWeeks": 20,
+      "periodTimes": [
+        {
+          "periodIndex": 1,
+          "start": "08:00",
+          "end": "08:45"
+        },
+        {
+          "periodIndex": 2,
+          "start": "08:50",
+          "end": "09:35"
+        },
+        {
+          "periodIndex": 3,
+          "start": "10:00",
+          "end": "10:45"
+        },
+        {
+          "periodIndex": 4,
+          "start": "10:50",
+          "end": "11:35"
+        }
+      ],
+      "courses": [
+        {
+          "name": "数据结构",
+          "teacher": "贺敏",
+          "note": null,
+          "blocks": [
+            {
+              "dayOfWeek": 2,
+              "startPeriod": 2,
+              "endPeriod": 2,
+              "startWeek": 1,
+              "endWeek": 12,
+              "weekType": "ALL",
+              "location": "教1-305"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

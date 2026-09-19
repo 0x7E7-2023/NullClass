@@ -1,0 +1,101 @@
+{
+  "specVersion": 1,
+  "kind": "schedule",
+  "ocrAssisted": false,
+  "warnings": [
+    "课表表头里有 2 条节次时间不合法（不是 HH:mm 或起止颠倒），已跳过，这几节会没有上下课时间",
+    "课表表头里有 2 节只写了「第N节」没有上下课时间，这几节会没有时间",
+    "开学日期取自教务给的学期起止日期（2026-09-09 至 2026-12-30），第 1 周按 2026-09-07（周一）计，请在学期管理里核对",
+    "学期总周数教务没有提供，已按 20 周计（课表里最大的周次是 14 周），如校历不同请在学期管理里调整"
+  ],
+  "terms": [
+    {
+      "name": "2025-2026学年第2学期",
+      "firstDay": "2026-09-07",
+      "totalWeeks": 20,
+      "periodTimes": [
+        {
+          "periodIndex": 3,
+          "start": "10:00",
+          "end": "10:45"
+        },
+        {
+          "periodIndex": 5,
+          "start": "15:00",
+          "end": "16:35"
+        },
+        {
+          "periodIndex": 6,
+          "start": "15:00",
+          "end": "16:35"
+        }
+      ],
+      "courses": [
+        {
+          "name": "工程制图",
+          "teacher": "马强",
+          "note": null,
+          "blocks": [
+            {
+              "dayOfWeek": 1,
+              "startPeriod": 1,
+              "endPeriod": 2,
+              "startWeek": 1,
+              "endWeek": 8,
+              "weekType": "ALL",
+              "location": "教1-201"
+            }
+          ]
+        },
+        {
+          "name": "概率论与数理统计",
+          "teacher": "许静",
+          "note": null,
+          "blocks": [
+            {
+              "dayOfWeek": 3,
+              "startPeriod": 3,
+              "endPeriod": 3,
+              "startWeek": 1,
+              "endWeek": 14,
+              "weekType": "ALL",
+              "location": "教2-303"
+            }
+          ]
+        },
+        {
+          "name": "大学化学",
+          "teacher": "蒋琳",
+          "note": null,
+          "blocks": [
+            {
+              "dayOfWeek": 5,
+              "startPeriod": 5,
+              "endPeriod": 5,
+              "startWeek": 1,
+              "endWeek": 6,
+              "weekType": "ALL",
+              "location": "化学楼101"
+            }
+          ]
+        },
+        {
+          "name": "大学物理实验",
+          "teacher": "钱伟",
+          "note": null,
+          "blocks": [
+            {
+              "dayOfWeek": 1,
+              "startPeriod": 6,
+              "endPeriod": 6,
+              "startWeek": 1,
+              "endWeek": 8,
+              "weekType": "ALL",
+              "location": "实验楼2-1"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

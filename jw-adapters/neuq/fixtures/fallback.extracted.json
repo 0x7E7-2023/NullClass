@@ -1,0 +1,17 @@
+{
+  "_note": "合成 fixture（**不是真实抓取**，见 docs/jw-adapter-testing.md §3）：按上游 NEUQ/neuq.js 实际读到的三段原始数据的形状编造 —— 探测页 HTML（bg.form.addInput(form,\"ids\",…) 与 semesterBar…Semester 的 value）、semesterCalendar 解出来的学期字段、课表 HTML 里的 TaskActivity 脚本块。课名、教师、教室、学号、学期 id 全是虚构的，无真实个人信息。这份文件只保证「同样的输入永远得到同样的输出」，不保证在真实教务页面上解析正确；谁拿到真实 dump，替换它并重跑门是最高优先级的贡献。对应 expected.json 里每条期望值是怎么推出来的，逐条写在 ../AUDIT.md 的「fixture 与期望值的推导」一节。",
+  "source": "relative",
+  "today": "2026-09-16",
+  "entryHtml": "<html><body>\n<form id=\"courseTableForm\" action=\"/eams/courseTableForStd!courseTable.action\" method=\"post\">\n<script type=\"text/javascript\">\nbg.form.addInput(form,\"ids\",\"2023110101\");\n</script>\n<input type=\"hidden\" id=\"semesterBar123456789Semester\" name=\"semester.id\" value=\"131\"/>\n<select name=\"semester.id\">\n<option value=\"129\">2025-2026学年第二学期</option>\n<option value=\"131\" selected=\"selected\">2026-2027学年第一学期</option>\n</select>\n<script type=\"text/javascript\">var semesterIndex = 1;</script>\n</form></body></html>",
+  "semesters": [
+    {
+      "id": "131",
+      "schoolYear": "2026-2027",
+      "term": "1",
+      "startDate": "",
+      "endDate": ""
+    }
+  ],
+  "currentSemesterId": "131",
+  "courseHtml": "<html><head><script type=\"text/javascript\">\n// 合成数据：教师与课程名都写在脚本变量里（上游两条回看逻辑要覆盖的形态）\ntable0.marshalTable(\"skeleton\",\"1,2,3\");\nvar teachers = [{id:100,name:\"林慕青\"}];\nvar actTeachers = [{id:100,name:\"林慕青\"}];\n\nvar courseName = \"高等数学A\";\nactivity = new TaskActivity(\"8901\",actTeachers.join(\",\"),\"\",courseName+\"(一)\",\"\",\"教1-101\",\"011111111110000000000010000000\",\"3\",\"\");\nindex = 0*unitCount+0;\ntable0.marshalTable();\n\nactivity = new TaskActivity(\"8902\",\"赵启明\",\"\",\"大学物理(一)(1)\",\"\",\"\",\"00010101000000000000\",\"3\",\"\");\nindex = 1*unitCount+8;\ntable0.marshalTable();\n\nactivity = new TaskActivity(\"8903\",\"孙毓秀\",\"\",\"概率论与数理统计\",\"\",\"理学楼C102\",\"00100010000000000000\",\"3\",\"\");\nindex = 2*unitCount+0;\ntable0.marshalTable();\n\nactivity = new TaskActivity(\"8904\");\nindex = 3*unitCount+0;\ntable0.marshalTable();\n\nactivity = new TaskActivity(\"8905\",\"周敏\",\"\",\"思想道德与法治\",\"\",\"教学楼A401\",\"0x1a0a0a0a\",\"3\",\"\");\nindex = 7*unitCount+0;\ntable0.marshalTable();\n\nactivity = new TaskActivity(\"8906\",actTeachers,\"\",\"大学计算机基础\",\"\",\"机房D201\",\"00001110000000000000\",\"3\",\"\");\nindex = 3*unitCount+0;\ntable0.marshalTable();\n\n</script></body></html>"
+}

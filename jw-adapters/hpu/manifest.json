@@ -1,0 +1,31 @@
+{
+  "specVersion": 1,
+  "key": "hpu",
+  "name": "河南理工大学",
+  "version": "1.0.0",
+  "author": "上游 ca1q1an（MIT）；移植 0x7E-2023",
+  "homepage": "https://github.com/XingHeYuZhuan/shiguang_warehouse",
+  "loginUrl": "https://zhjw.hpu.edu.cn/eams/login.action",
+  "scheduleUrlHint": "https://zhjw.hpu.edu.cn/eams/courseTableForStd.action",
+  "minAppVersionCode": 11,
+  "extract": "extract.js",
+  "parse": "parse.js",
+  "allowHosts": [],
+  "fixtures": [
+    {
+      "name": "合成用例：基本课表（三连接口链 + TaskActivity；教师走 teachers.join 表达式、同一门课两天各有一次、单周课、空教师留空；开学日与总周数取自学期起止日期；作息取自课表表头；当前学期 id 不在列表里 → 回落 id 最大的那条）",
+      "extracted": "fixtures/basic.extracted.json",
+      "expected": "fixtures/basic.expected.json"
+    },
+    {
+      "name": "合成用例：周次位图基准对照（下标 0 为 1 只产出第 1 周、下标 1 为 1、2-4 周、偶数位双周、只有第 0 位为 1 → 整块跳过并出声、下标 31 超出 30 周 → 丢弃并出声）",
+      "extracted": "fixtures/weeks-bitmap.extracted.json",
+      "expected": "fixtures/weeks-bitmap.expected.json"
+    },
+    {
+      "name": "合成用例：边界（课表页没有 var unitCount → 按 11 节推算并出声；index 写成已算好的裸数字；位图第 0 位为 1；表头作息读不齐 → 回落空课内置节次表；学期起止日期是毫秒时间戳且缺结束日期 → 开学日回退到周一、总周数回落 20）",
+      "extracted": "fixtures/edge-cases.extracted.json",
+      "expected": "fixtures/edge-cases.expected.json"
+    }
+  ]
+}

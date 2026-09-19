@@ -1,0 +1,36 @@
+{
+  "specVersion": 1,
+  "key": "tjau",
+  "name": "天津农学院",
+  "version": "1.0.0",
+  "author": "上游 星河欲转（MIT）；移植 0x7E-2023",
+  "homepage": "https://github.com/XingHeYuZhuan/shiguang_warehouse",
+  "loginUrl": "http://jwxt.tjau.edu.cn/eams/homeExt.action",
+  "scheduleUrlHint": "http://jwxt.tjau.edu.cn/eams/courseTableForStd.action",
+  "minAppVersionCode": 11,
+  "extract": "extract.js",
+  "parse": "parse.js",
+  "allowHosts": [],
+  "fixtures": [
+    {
+      "name": "合成用例：基本路径（当前学期 + 教务给出学期起止日期 + 位图第 0 位是 0 + 课程名括号保留 + 单双周与连堂合并）",
+      "extracted": "fixtures/basic.extracted.json",
+      "expected": "fixtures/basic.expected.json"
+    },
+    {
+      "name": "合成用例：周次位图基准对照（一条第 0 位为 1、一条只有第 1 位为 1；另加 0 位为 1 但只上第 2-16 周、以及只有 0 位为 1 的「无可导入周次」）",
+      "extracted": "fixtures/weeks-bitmap.extracted.json",
+      "expected": "fixtures/weeks-bitmap.expected.json"
+    },
+    {
+      "name": "合成用例：课程名括号的处理（高等数学A(一) / 形势与政策（四）保留，大学物理(2) 摘序号，C语言程序设计(2)上机 不摘）",
+      "extracted": "fixtures/course-name.extracted.json",
+      "expected": "fixtures/course-name.expected.json"
+    },
+    {
+      "name": "合成用例：边界（读不到 unitCount + 裸数字定位无法换算 + teachers.join(\",\") 表达式教师留空 + 教室带括号 + 同块两种定位写法）",
+      "extracted": "fixtures/edge-units.extracted.json",
+      "expected": "fixtures/edge-units.expected.json"
+    }
+  ]
+}

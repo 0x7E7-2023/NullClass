@@ -1,0 +1,61 @@
+{
+  "specVersion": 1,
+  "key": "hfnu",
+  "name": "合肥师范学院",
+  "version": "1.0.0",
+  "author": "上游 星河欲转（MIT）；移植 0x7E-2023",
+  "homepage": "https://github.com/XingHeYuZhuan/shiguang_warehouse",
+  "loginUrl": "https://jw.hfnu.edu.cn/eams/loginExt.action",
+  "scheduleUrlHint": "https://jw.hfnu.edu.cn/eams/courseTableForStd.action",
+  "minAppVersionCode": 11,
+  "extract": "extract.js",
+  "parse": "parse.js",
+  "allowHosts": [],
+  "fixtures": [
+    {
+      "name": "合成用例：基本取数（三条同源请求 → 课表 HTML；连堂并块、args[1] 是 join 表达式时教师取姓名块、args[1] 是字面量、args[5] 为 null 时教室留空、姓名块为空时教师留空、学期日历给开学日与 20 周、校区靠正文里的「锦绣校区」判定 → 锦绣 11 节作息）",
+      "extracted": "fixtures/basic.extracted.json",
+      "expected": "fixtures/basic.expected.json"
+    },
+    {
+      "name": "合成用例：周次位图口径（**第 0 位是 1 的课程 → 第 0 周不产出**、第 1 位是 1 → 第 1 周、奇数周位图 → 第 1-15 周单周、第 31-35 周超出上限被丢、全 0 位图整条跳过且进 warnings、已算好的裸数字 index = 21 按 unitCount 反推）+ 教务不给学期起止日期 → 开学日与总周数都推算并进 warnings",
+      "extracted": "fixtures/weeks-bitmap.extracted.json",
+      "expected": "fixtures/weeks-bitmap.expected.json"
+    },
+    {
+      "name": "合成用例：校区作息之一 —— 靠课表表头的「第N节(08:20-09:05)」时间判出**滨湖校区**，periodTimes 必须是滨湖那套 11 节",
+      "extracted": "fixtures/campus-times.extracted.json",
+      "expected": "fixtures/campus-times.expected.json"
+    },
+    {
+      "name": "合成用例：校区作息之二 —— 靠页面上已勾选的校区按钮判出**锦绣校区**（表头没给时间，没法靠时间判），periodTimes 必须是锦绣那套 11 节",
+      "extracted": "fixtures/campus-jinxiu.extracted.json",
+      "expected": "fixtures/campus-jinxiu.expected.json"
+    },
+    {
+      "name": "合成用例：**判不出校区**（没有勾选的校区按钮、正文里两个校区名都出现、表头时间与两套都对不上、教室也没写校区）→ 不静默选一套，用锦绣那张并在 warnings 里说明为什么判不出来",
+      "extracted": "fixtures/campus-unknown.extracted.json",
+      "expected": "fixtures/campus-unknown.expected.json"
+    },
+    {
+      "name": "合成用例：课表页里读不到 unitCount → 按上游缺省的 14 反推（同一条 index = 1*unitCount+3 在 14 下是星期二第 4 节，在 11 下会是第 3 节），并写一条 warnings",
+      "extracted": "fixtures/unitcount-missing.extracted.json",
+      "expected": "fixtures/unitcount-missing.expected.json"
+    },
+    {
+      "name": "合成用例：边界四连 —— index 的乘子写成常量 12 而页面 unitCount=11（按页面的反推并 warn）、index = 999 反推越界（跳过并计数）、一个姓名块带两条 TaskActivity、join 表达式但这一块没有姓名块（教师留空而不是「未知教师」）",
+      "extracted": "fixtures/edge-cases.extracted.json",
+      "expected": "fixtures/edge-cases.expected.json"
+    },
+    {
+      "name": "合成用例：教务给的学期起始日是 2026-09-09（周三）→ firstDay 必须回退到那一周的周一 2026-09-07（手册 §4.3），而不是直接用周三",
+      "extracted": "fixtures/firstday-not-monday.extracted.json",
+      "expected": "fixtures/firstday-not-monday.expected.json"
+    },
+    {
+      "name": "合成用例：课名与教室的清理 —— 课名「高等数学A(一)」完整保留（上游会在第一个左括号处截断成「高等数学A」）、教室「教学楼A(新)」剥成「教学楼A」、整个是括号的「(待定)」保留原样、args[3] 是字面 null 时跳过并计数进 warnings（上游会当成「未知课程」导进去）",
+      "extracted": "fixtures/names-args.extracted.json",
+      "expected": "fixtures/names-args.expected.json"
+    }
+  ]
+}

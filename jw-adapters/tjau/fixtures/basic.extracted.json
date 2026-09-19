@@ -1,0 +1,15 @@
+{
+  "_note": "⚠️ 合成 fixture：不是真实抓取。天津农学院（tjau）的教务账号我们一个都没有，这份数据是按上游 TJAU/tjau.js（快照 e62554a4034386b893bcd6813c7b2b64f8c730a3，MIT）实际读取的字段形状编出来的：semester 是 dataQuery.action（dataType=semesterCalendar）里选中学期的形状（extract.js 交出来的对象），semesterCalendar 是那个接口的响应原文（JS 对象字面量，不是 JSON；含 id / name / schoolYear / startDate / endDate），courseTable 是 courseTableForStd!courseTable.action 的响应形状 —— var unitCount = N; 加若干个 var teachers = [...] 块，每块里 var actTeachers = [...]、一条 new TaskActivity(...)（args[1] 教师常写成 teachers.join(\",\") 这种表达式、args[3] 课名、args[5] 教室、args[6] 50 位周次位图）与若干条 index = 星期*unitCount+节次;。课程、教师、教室都是虚构的，不含任何学号姓名等真实身份信息。它只保证「同样的输入永远得到同样的输出」，不保证解析在真实页面上是对的；谁拿到真实 dump，替换这份数据并重跑门是最高优先级的贡献（测试方案 §3）。 本件：基本路径（当前学期、教务给出学期起止日期、位图第 0 位是 0、课程名括号保留、单双周与连堂合并）。",
+  "today": "2026-09-17",
+  "semester": {
+    "id": "454",
+    "rawName": "1",
+    "schoolYear": "2026-2027",
+    "startDate": "2026-08-31",
+    "endDate": "2027-01-10",
+    "source": "current"
+  },
+  "unitCountPage": 14,
+  "semesterCalendar": "{semesters:{\"1\":[{id:445,name:\"1\",schoolYear:\"2025-2026\",startDate:\"2025-09-01\",endDate:\"2026-01-11\"},{id:454,name:\"1\",schoolYear:\"2026-2027\",startDate:\"2026-08-31\",endDate:\"2027-01-10\"}],\"2\":[{id:446,name:\"2\",schoolYear:\"2025-2026\",startDate:\"2026-02-23\",endDate:\"2026-07-05\"}]},semesterId:454}",
+  "courseTable": "<html><head><title>学生课表</title></head><body>\n<form name=\"courseTableForm\" action=\"/eams/courseTableForStd!courseTable.action\">\n<input type=\"hidden\" name=\"ids\" value=\"20260001\"/>\n</form>\n<script type=\"text/javascript\">var unitCount = 14;</script>\n<table id=\"manualArrangeCourseTable\"><tr><td class=\"infoTitle\">2026-2027学年第一学期</td></tr></table>\n<script type=\"text/javascript\">\nvar teachers = [{id:\"T1\",name:\"王慧\",age:33}];\nvar actTeachers = [{id:\"T1\",name:\"王慧\",age:33}];\nactivity = new TaskActivity(\"\", teachers.join(\",\"), \"\", \"高等数学A(一)\", \"\", \"教1-101\", \"11111111111111110000000000000000000000000000000000\");\nindex = 0*unitCount+0;\nindex = 0*unitCount+1;\n</script>\n<script type=\"text/javascript\">\nvar teachers = [{id:\"T2\",name:\"李强\",age:41}];\nvar actTeachers = [{id:\"T2\",name:\"李强\",age:41}];\nactivity = new TaskActivity(\"\", teachers.join(\",\"), \"\", \"大学英语(一)\", \"\", \"文理楼B203\", \"11111111111111100000000000000000000000000000000000\");\nindex = 0*unitCount+2;\nindex = 0*unitCount+3;\nindex = 2*unitCount+2;\nindex = 2*unitCount+3;\n</script>\n<script type=\"text/javascript\">\nvar teachers = [{id:\"T3\",name:\"赵敏\",age:29}];\nvar actTeachers = [{id:\"T3\",name:\"赵敏\",age:29}];\nactivity = new TaskActivity(\"\", teachers.join(\",\"), \"\", \"程序设计基础\", \"\", \"信息楼A305\", \"11001100110011000000000000000000000000000000000000\");\nindex = 4*unitCount+8;\nindex = 4*unitCount+9;\n</script>\n</body></html>"
+}

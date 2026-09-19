@@ -1,0 +1,42 @@
+{
+  "specVersion": 1,
+  "kind": "schedule",
+  "ocrAssisted": false,
+  "warnings": [
+    "只导入了教务系统当前选中的学期（2026-2027学年第一学期）；要导入别的学期，请在教务页面里切到那个学期再点「提取课表」",
+    "作息时间用的是锦绣校区的 11 节作息表（依据：当前页面正文里只出现了这一个校区名）；这张表是适配器内置的、没有向教务核对过，如与学校实际作息不符请在学期管理里改",
+    "开学日期取自教务的学期日历（第 1 周从 2026-09-07 开始，教务学期日历的学期起始日 2026-09-07 所在周的周一），请在学期管理里核对",
+    "学期总周数用的是教务学期日历（2026-09-07 到 2027-01-24，共 20 周），如与实际不符可在学期管理里改",
+    "课表页面里没有读到 unitCount（每天几节），已按缺省 14 节反推每门课的星期与节次（这是上游脚本写死的缺省值），请核对节次是否正确"
+  ],
+  "terms": [
+    {
+      "name": "2026-2027学年第一学期",
+      "firstDay": "2026-09-07",
+      "totalWeeks": 20,
+      "periodTimes": [
+        { "periodIndex": 1, "start": "08:00", "end": "08:45" },
+        { "periodIndex": 2, "start": "08:55", "end": "09:40" },
+        { "periodIndex": 3, "start": "09:55", "end": "10:40" },
+        { "periodIndex": 4, "start": "10:50", "end": "11:35" },
+        { "periodIndex": 5, "start": "14:10", "end": "14:55" },
+        { "periodIndex": 6, "start": "15:05", "end": "15:50" },
+        { "periodIndex": 7, "start": "16:05", "end": "16:50" },
+        { "periodIndex": 8, "start": "17:00", "end": "17:45" },
+        { "periodIndex": 9, "start": "19:00", "end": "19:45" },
+        { "periodIndex": 10, "start": "19:50", "end": "20:35" },
+        { "periodIndex": 11, "start": "20:40", "end": "21:25" }
+      ],
+      "courses": [
+        {
+          "name": "画法几何",
+          "teacher": "陈立群",
+          "note": null,
+          "blocks": [
+            { "dayOfWeek": 2, "startPeriod": 4, "endPeriod": 4, "startWeek": 1, "endWeek": 16, "weekType": "ALL", "location": "综合楼202" }
+          ]
+        }
+      ]
+    }
+  ]
+}

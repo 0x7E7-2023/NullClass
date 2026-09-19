@@ -1,0 +1,112 @@
+{
+  "specVersion": 1,
+  "kind": "schedule",
+  "ocrAssisted": false,
+  "warnings": [
+    "周次位图第 0 位为 1，与同族约定的占位符（第 0 位固定为 0）不符，已按忽略处理、不产生「第 0 周」，请在导入预览里核对周次",
+    "节次时间用的是适配器内置的湖南师范大学作息表（13 节），如与教务处公布的作息不一致请在节次设置里调整",
+    "开学日期教务没有提供，已按页面上显示的「第 3 周」反推为 2026-08-31，请在学期管理里核对",
+    "学期名教务没有提供，已按导入日期推算为「湖南师范大学 2026-2027学年第一学期」，如与实际不符可在学期管理里改名",
+    "学期总周数教务没有提供，已按 20 周计（课表里最大的周次是 9 周），如校历不同请在学期管理里调整"
+  ],
+  "terms": [
+    {
+      "name": "湖南师范大学 2026-2027学年第一学期",
+      "firstDay": "2026-08-31",
+      "totalWeeks": 20,
+      "periodTimes": [
+        { "periodIndex": 1, "start": "08:00", "end": "08:45" },
+        { "periodIndex": 2, "start": "08:55", "end": "09:40" },
+        { "periodIndex": 3, "start": "10:00", "end": "10:45" },
+        { "periodIndex": 4, "start": "10:55", "end": "11:40" },
+        { "periodIndex": 5, "start": "12:45", "end": "13:30" },
+        { "periodIndex": 6, "start": "13:30", "end": "14:15" },
+        { "periodIndex": 7, "start": "14:30", "end": "15:15" }
+      ],
+      "courses": [
+        {
+          "name": "大学物理",
+          "teacher": "周涛",
+          "note": null,
+          "blocks": [
+            {
+              "dayOfWeek": 2,
+              "startPeriod": 3,
+              "endPeriod": 3,
+              "startWeek": 3,
+              "endWeek": 5,
+              "weekType": "ODD",
+              "location": "理学楼305"
+            },
+            {
+              "dayOfWeek": 2,
+              "startPeriod": 3,
+              "endPeriod": 3,
+              "startWeek": 6,
+              "endWeek": 8,
+              "weekType": "EVEN",
+              "location": "理学楼305"
+            },
+            {
+              "dayOfWeek": 2,
+              "startPeriod": 3,
+              "endPeriod": 3,
+              "startWeek": 9,
+              "endWeek": 9,
+              "weekType": "ALL",
+              "location": "理学楼305"
+            }
+          ]
+        },
+        {
+          "name": "数据结构",
+          "teacher": "陈静",
+          "note": null,
+          "blocks": [
+            {
+              "dayOfWeek": 4,
+              "startPeriod": 1,
+              "endPeriod": 1,
+              "startWeek": 1,
+              "endWeek": 1,
+              "weekType": "ALL",
+              "location": "机房B201"
+            }
+          ]
+        },
+        {
+          "name": "线性代数",
+          "teacher": "刘伟",
+          "note": null,
+          "blocks": [
+            {
+              "dayOfWeek": 1,
+              "startPeriod": 7,
+              "endPeriod": 7,
+              "startWeek": 1,
+              "endWeek": 9,
+              "weekType": "ODD",
+              "location": "教3-401"
+            }
+          ]
+        },
+        {
+          "name": "有机化学",
+          "teacher": "赵敏",
+          "note": null,
+          "blocks": [
+            {
+              "dayOfWeek": 6,
+              "startPeriod": 4,
+              "endPeriod": 4,
+              "startWeek": 2,
+              "endWeek": 8,
+              "weekType": "EVEN",
+              "location": "化学楼102"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

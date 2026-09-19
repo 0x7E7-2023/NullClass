@@ -1,0 +1,56 @@
+{
+  "specVersion": 1,
+  "key": "uestc",
+  "name": "电子科技大学",
+  "version": "1.0.0",
+  "author": "上游 CorunLing（MIT）；移植 0x7E-2023",
+  "homepage": "https://github.com/XingHeYuZhuan/shiguang_warehouse",
+  "loginUrl": "https://eams.uestc.edu.cn/eams/loginExt.action",
+  "scheduleUrlHint": "https://eams.uestc.edu.cn/eams/courseTableForStd.action",
+  "minAppVersionCode": 11,
+  "extract": "extract.js",
+  "parse": "parse.js",
+  "allowHosts": [],
+  "fixtures": [
+    {
+      "name": "合成用例：基本课表（同一门课两节连上合并成 1-2 节、周次不相交的两节不合并、中文周次「双2-8」、教师是 join 表达式要剥开、教室标「停课」要跳过、课程名末尾的课程代码要去掉、位图 1-16 与 1-4、教务学期日历 2026-09-07 起 20 周、内置 12 节作息表）",
+      "extracted": "fixtures/basic.extracted.json",
+      "expected": "fixtures/basic.expected.json"
+    },
+    {
+      "name": "合成用例：周次位图基准对照（第 0 位为 1 要忽略并出声、只有第 1 位置位、53 位整学期、中间断档、只有第 0 位置位要整条丢掉、54 位位图）+ 没有学期日历（开学日与总周数都推算）",
+      "extracted": "fixtures/weeks-bitmap.extracted.json",
+      "expected": "fixtures/weeks-bitmap.expected.json"
+    },
+    {
+      "name": "合成用例：中文周次那条路（uestc 独有）—— 连1-16 / 单3-17 / 双2-8 / 1-3,5-9周 / 单周1-9 / 3、5、7周 六种写法",
+      "extracted": "fixtures/weeks-chinese.extracted.json",
+      "expected": "fixtures/weeks-chinese.expected.json"
+    },
+    {
+      "name": "合成用例：边界一（unitCount 读不到按 12 并出声、index 写成已算好的线性下标、教师是数组字面量、教师剥不开要留空并出声、课程名用变量拼、周次到第 32 周要截到 30、节次/星期越界、没有 index 的记录、参数不足 7 个、中文描述认不出）",
+      "extracted": "fixtures/edge-bitmap-variants.extracted.json",
+      "expected": "fixtures/edge-bitmap-variants.expected.json"
+    },
+    {
+      "name": "合成用例：边界二（学期日历取不到、学期列表也取不到 → 学期名与开学日都推算；取数当天是周四，开学日要回退到那一周的周一；空教师与空教室；教室标「停课」；中文单周；全零位图）",
+      "extracted": "fixtures/edge-fallback.extracted.json",
+      "expected": "fixtures/edge-fallback.expected.json"
+    },
+    {
+      "name": "合成用例：边界三（课程名与教室写成了剥不开的脚本表达式 → 课程名剥不开的整条跳过、教室剥不开的课还在但教室留空，两种情况都要出声）",
+      "extracted": "fixtures/edge-expression-args.extracted.json",
+      "expected": "fixtures/edge-expression-args.expected.json"
+    },
+    {
+      "name": "合成用例：边界四（学期日历解得出日期但结束早于开始 → 这份日历必须判为不可信，开学日与总周数都退到推算并出声）",
+      "extracted": "fixtures/edge-calendar-invalid.extracted.json",
+      "expected": "fixtures/edge-calendar-invalid.expected.json"
+    },
+    {
+      "name": "合成用例：边界五（学期日历第 1 周从 2026-09-09 周三开始 → firstDay 必须回退到那一周的周一 2026-09-07；总周数取日历的 19 周）",
+      "extracted": "fixtures/edge-calendar-nonmonday.extracted.json",
+      "expected": "fixtures/edge-calendar-nonmonday.expected.json"
+    }
+  ]
+}

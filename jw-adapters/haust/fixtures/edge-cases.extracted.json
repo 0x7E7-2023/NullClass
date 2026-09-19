@@ -1,0 +1,71 @@
+{
+  "url": "https://jw.haust.edu.cn/eams/courseTableForStd.action?iframe=true",
+  "title": "学生课表",
+  "today": "2025-09-24",
+  "source": "iframe",
+  "semesters": [],
+  "days": [],
+  "periods": [],
+  "cells": [
+    {
+      "row": 1,
+      "col": 2,
+      "span": 1,
+      "id": "TD3_2",
+      "className": "infoTitle",
+      "text": "离散数学孙磊1-14周教4-201",
+      "title": "离散数学(202520261.11202007.001)(孙磊)(1-14周,1-2节,教4-201)"
+    },
+    {
+      "row": 3,
+      "col": 5,
+      "span": 1,
+      "id": "",
+      "className": "infoTitle",
+      "text": "大学体育",
+      "title": "大学体育(202520261.11202009.001)"
+    },
+    {
+      "row": 5,
+      "col": 5,
+      "span": 1,
+      "id": "TD10_5",
+      "className": "infoTitle",
+      "text": "马克思主义基本原理吴静1-16周单双教6-201",
+      "title": "马克思主义基本原理(202520261.11202010.001)(吴静)(1-16周 单双,5节,教6-201)"
+    },
+    {
+      "row": 7,
+      "col": 4,
+      "span": 1,
+      "id": "",
+      "className": "infoTitle",
+      "text": "大学物理实验钱伟1-8周实验楼2-1",
+      "title": "大学物理实验(202520261.11202011.001)(钱伟)(1-8周,7节,实验楼2-1)"
+    },
+    {
+      "row": 9,
+      "col": 3,
+      "span": 1,
+      "id": "",
+      "className": "",
+      "text": "备注",
+      "title": ""
+    },
+    {
+      "row": 11,
+      "col": 3,
+      "span": 1,
+      "id": "TD11_3",
+      "className": "infoTitle",
+      "text": "军事理论冯军1-10周教5-101",
+      "title": "军事理论(202520261.11202012.001)(冯军)(1-10周,教5-101)"
+    }
+  ],
+  "semesterGroups": [
+    "y2026"
+  ],
+  "semesterError": "学期接口返回 HTTP 500",
+  "semesterSample": "<html><body>500 Internal Server Error</body></html>",
+  "frames": 0
+}

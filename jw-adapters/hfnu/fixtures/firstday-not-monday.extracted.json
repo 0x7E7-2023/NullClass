@@ -1,0 +1,30 @@
+{
+  "_note": "合成 fixture：学期日历按上游 HFNU/hfnu.js 读的 dataQuery.action 响应形状编造，不是真实抓取。本用例钉住**手册 §4.3 的开学日口径**：教务给的学期起始日是 2026-09-09（周三），firstDay 必须回退到那一周的周一 2026-09-07，而不是直接用 2026-09-09（差两天会让整学期的课错位）。学期起止 2026-09-09 到 2027-01-26 跨 139 天 → 20 周。",
+  "today": "2026-09-14",
+  "semester": {
+    "id": "403",
+    "schoolYear": "2026-2027",
+    "termName": "1",
+    "startDate": "2026-09-09 00:00:00",
+    "endDate": "2027-01-26 23:59:59",
+    "pickedBy": "semesterId",
+    "count": 6
+  },
+  "page": {
+    "url": "https://jw.hfnu.edu.cn/eams/courseTableForStd.action",
+    "tokens": {
+      "jinxiu": true,
+      "binhu": false
+    },
+    "radios": [],
+    "sectionTimes": []
+  },
+  "bootstrap": {
+    "tokens": {
+      "jinxiu": true,
+      "binhu": false
+    },
+    "sectionTimes": []
+  },
+  "courseHtml": "<script type=\"text/javascript\">\n//<![CDATA[\nvar unitCount = 11;\n\nvar teachers = [{id:100,name:\"陈立群\"}];\nvar actTeachers = [{id:100,name:\"陈立群\"}];\nactivity = new TaskActivity(\"6001\",\"陈立群\",\"\",\"大学物理(一)\",\"\",\"实验楼C-208\",\"01111111111111111000000000000000000000000000000000\");\nindex = 0*unitCount+4;\n//]]>\n</script>"
+}

@@ -1,0 +1,34 @@
+{
+  "_note": "合成 fixture（不是真实抓取）：按上游 ZZVCAE/zzvcae.js 实际读取的形状（TaskActivity 参数位、周次位图、index = 星期*unitCount+节次、th id=\"0_节次\" 的作息表头）编造，课程 / 教师 / 教室均为虚构，无真实个人信息（学号也留在 extract 里请求用、不进 fixture）。只保证「同样的输入永远得到同样的输出」，不保证解析在真实页面上是对的（见 docs/jw-adapter-testing.md §3）。",
+  "_case": "基本课表：学期日期由教务给出（2026-09-07 周一，共 18 周）、unitCount 从页面读到 8、作息时间从表头读到 8 节、连堂 1-4 节合并成一条、隔周单周、同一门课两天各两节（同教室）、位图取到第 50 位（超上限的部分必须被丢掉且一条不落）、计算机应用基础的一条 index 写成已算好的线性下标 18（= 星期 2 * unitCount 8 + 节次 2）",
+  "semesterId": "12",
+  "semester": {
+    "id": "12",
+    "schoolYear": "2026-2027",
+    "term": "1",
+    "startDate": "2026-09-07",
+    "endDate": "2027-01-10"
+  },
+  "semesters": [
+    {
+      "id": "11",
+      "schoolYear": "2025-2026",
+      "term": "2",
+      "startDate": "2026-02-23",
+      "endDate": "2026-07-05"
+    },
+    {
+      "id": "12",
+      "schoolYear": "2026-2027",
+      "term": "1",
+      "startDate": "2026-09-07",
+      "endDate": "2027-01-10"
+    }
+  ],
+  "currentSemesterId": "12",
+  "pageHtml": "<table id=\"manualArrangeCourseTable\"><tr><th id=\"0_1\">第1节 (08:00-08:45)</th><th id=\"0_2\">第2节 (08:55-09:40)</th><th id=\"0_3\">第3节 (10:00-10:45)</th><th id=\"0_4\">第4节 (10:55-11:40)</th><th id=\"0_5\">第5节 (14:30-15:15)</th><th id=\"0_6\">第6节 (15:25-16:10)</th><th id=\"0_7\">第7节 (16:30-17:15)</th><th id=\"0_8\">第8节 (17:25-18:10)</th></tr></table>",
+  "weekHtml": "var unitCount = 8;\nvar teachers = [{\"id\":1,\"name\":\"张伟\",\"lab\":false}];\nvar actTeachers = [{\"id\":1,\"name\":\"张伟\",\"lab\":false}];\nvar table0 = new TaskActivity(1234,argsTeacher,3,\"高等数学(一)\",nil,\"教1-101\",\"011111111111111110000000000000000000000010000000001000000000000000000000000000000\",nil,nil,nil,nil);\nindex =0*unitCount+0;\nactivity = table0;\nindex =0*unitCount+1;\nactivity = table0;\nindex =0*unitCount+2;\nactivity = table0;\nindex =0*unitCount+3;\nactivity = table0;\nvar teachers = [{\"id\":10,\"name\":\"李娜\",\"lab\":false}];\nvar actTeachers = [{\"id\":10,\"name\":\"李娜\",\"lab\":false},{\"id\":11,\"name\":\"王强\",\"lab\":false}];\nvar table0 = new TaskActivity(1234,argsTeacher,3,\"大学英语(一)\",nil,\"教2-305\",\"010101010101010100000000000000000000000000000000000000000000000000000000000000000\",nil,nil,nil,nil);\nindex =1*unitCount+0;\nactivity = table0;\nindex =1*unitCount+1;\nactivity = table0;\nindex =1*unitCount+2;\nactivity = table0;\nindex =1*unitCount+3;\nactivity = table0;\nvar teachers = [{\"id\":20,\"name\":\"陈静\",\"lab\":false}];\nvar actTeachers = [{\"id\":20,\"name\":\"陈静\",\"lab\":false}];\nvar table0 = new TaskActivity(1234,argsTeacher,3,\"计算机应用基础\",nil,\"机房3-201\",\"011111111000000000000000000000000000000000000000000000000000000000000000000000000\",nil,nil,nil,nil);\nindex =18;\nactivity = table0;\nindex =2*unitCount+3;\nactivity = table0;\nindex =4*unitCount+2;\nactivity = table0;\nindex =4*unitCount+3;\nactivity = table0;\n",
+  "calendarHtml": null,
+  "lastTimeHtml": "<table id=\"manualArrangeCourseTable\"><tr><th id=\"0_1\">第1节 (08:00-08:45)</th><th id=\"0_2\">第2节 (08:55-09:40)</th><th id=\"0_3\">第3节 (10:00-10:45)</th><th id=\"0_4\">第4节 (10:55-11:40)</th><th id=\"0_5\">第5节 (14:30-15:15)</th><th id=\"0_6\">第6节 (15:25-16:10)</th><th id=\"0_7\">第7节 (16:30-17:15)</th><th id=\"0_8\">第8节 (17:25-18:10)</th></tr></table>",
+  "today": "2026-09-16"
+}

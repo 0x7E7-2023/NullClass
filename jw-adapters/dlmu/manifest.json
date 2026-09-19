@@ -1,0 +1,36 @@
+{
+  "specVersion": 1,
+  "key": "dlmu",
+  "name": "大连海事大学",
+  "version": "1.0.0",
+  "author": "上游 whynusn（MIT）；移植 0x7E-2023",
+  "homepage": "https://github.com/XingHeYuZhuan/shiguang_warehouse",
+  "loginUrl": "http://jw.xpaas.dlmu.edu.cn/eams",
+  "scheduleUrlHint": "http://jw.xpaas.dlmu.edu.cn/eams/courseTableForStd.action",
+  "minAppVersionCode": 11,
+  "extract": "extract.js",
+  "parse": "parse.js",
+  "allowHosts": [],
+  "fixtures": [
+    {
+      "name": "合成用例：自学分课表（连堂合并、同一门课多段周次、单双周、教师为字面量、空教师与空教室、课程名末尾的课程代码、教务给了学期起始日期与周数、页面 var unitCount 与上游常量一致）",
+      "extracted": "fixtures/basic.extracted.json",
+      "expected": "fixtures/basic.expected.json"
+    },
+    {
+      "name": "合成用例：周次位图的第 0 位（占位符）—— 第 0 位为 1 时不许产出「第 0 周」并必须进 warnings；第 1 位为 1 是第 1 周；超过 30 周的位丢弃；位图全 0 的课跳过并计数",
+      "extracted": "fixtures/weeks-bitmap.extracted.json",
+      "expected": "fixtures/weeks-bitmap.expected.json"
+    },
+    {
+      "name": "合成用例：index 表达式的两种写法（index = 5*unitCount+2 与教务已算好的 index = 62）+ 一条无法解析的畸形 index（必须跳过并写 warnings，不许静默排到第 0 格）",
+      "extracted": "fixtures/index-forms.extracted.json",
+      "expected": "fixtures/index-forms.expected.json"
+    },
+    {
+      "name": "合成用例：边界 —— 教师写成 join 表达式（从 var teachers 块取名）、页面 var unitCount = 12 与上游常量 10 不一致、args[2] 用 .join(...) 写法、args[1] 的解析不可用时教师留空、超员参数、引号里带逗号与转义引号、字段顺序颠倒",
+      "extracted": "fixtures/dirty-args.extracted.json",
+      "expected": "fixtures/dirty-args.expected.json"
+    }
+  ]
+}

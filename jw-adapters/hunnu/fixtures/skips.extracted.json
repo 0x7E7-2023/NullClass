@@ -1,0 +1,15 @@
+{
+  "_note": "合成数据，不是真实抓取：形状照上游 HUNNU/hunnu.js 实际解析的课表页 HTML 编。这一份专测四种「不该静默吞掉」的块/排课：① 第一个块的 TaskActivity 只有 6 个参数（写不出周次位图）—— 整块跳过并写 warnings；② 第二个块的周次位图全是 0 —— 跳过并写 warnings；③ 第三个块给了两处 index，其中 index = 1*unitCount+13 算出来是第 14 节，超出适配器内置作息表的 13 节 —— 跳过并写 warnings（不许悄悄改成第 13 节）；④ 同一个块的位图只有第 33 位是 1（第 33 周），超过载荷上限 30 周 —— 截断到 30 周并写 warnings。页面里的 unitCount 是 14（比内置作息表多一节），所以第 14 节确实越界。课程名/教师/教室均为虚构。拿到真实 dump 请替换这一对 fixture。",
+  "html": "<html><head><title>学生课表</title></head><body><script type=\"text/javascript\">\nvar unitCount = 14;\nvar actTeachers = [{id: 0, name: \"孙磊\", lab: false}];\nvar activity = new TaskActivity(\"1100003\",\"孙磊\",\"\",\"大学生就业指导(公共)\",\"\",\"教5-101\");\nactivity.id = 401;\nindex = 2*unitCount+1;\ntable0.marshalTable(activity, 401);\n\nvar actTeachers = [{id: 0, name: \"周涛\", lab: false}];\nvar activity = new TaskActivity(\"1100004\",\"周涛\",\"\",\"大学物理(一)(物理类)\",\"\",\"理学楼305\",\"00000000000000000000000000000000\");\nactivity.id = 402;\nindex = 1*unitCount+3;\ntable0.marshalTable(activity, 402);\n\nvar actTeachers = [{id: 0, name: \"刘伟\", lab: false}];\nvar activity = new TaskActivity(\"1100005\",\"刘伟\",\"\",\"线性代数(数学类)\",\"\",\"教3-401\",\"0000000000000000000000000000000001\");\nactivity.id = 403;\nindex = 1*unitCount+0;\nindex = 1*unitCount+13;\ntable0.marshalTable(activity, 403);\n</script></body></html>",
+  "source": "iframe",
+  "clicked": false,
+  "frameFound": true,
+  "url": "https://jwglnew.hunnu.edu.cn/eams/courseTableForStd.action",
+  "title": "学生课表",
+  "today": "2026-09-16",
+  "unitCount": null,
+  "currentWeek": 3,
+  "semesterLabels": [
+    "2026-2027学年 第二学期"
+  ]
+}

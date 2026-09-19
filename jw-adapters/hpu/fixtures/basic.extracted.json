@@ -1,0 +1,17 @@
+{
+  "_note": "合成 fixture：按上游 HPU/hpu.js 实际读取的形状（courseTableForStd.action 里 ids/tagId 的写法、dataQuery.action 的 semesterCalendar 响应、courseTableForStd!courseTable.action 返回的课表 HTML）编造，不是真实抓取 —— 维护者手上没有该校账号（见 docs/jw-adapter-testing.md §3）。姓名、学号（202321060108 是编的）、课程、教室均为虚构，无真实个人信息。本校实测事实（上游正文）：unitCount=11、args[1] 教师可能是 xxx.join(\",\") 表达式、index = 星期*unitCount+节次 与 index = 已算好的数 两种写法并存。本用例钉住：① 教师走 teachers.join 表达式（要往前剥数组，别把它当教师名）；② 同一门课两天的课不能错并；③ 位图下标 i 就是第 i 周（1-9 / 7-8 / 1-15 单周 / 1-4）；④ 开学日与总周数取自教务的学期起止日期；⑤ 作息取自课表表头。注意 semesterId=403 在学期列表里不存在（教务常见：当前学期已从列表里撤下），所以还要钉住「回落 id 最大的那条（402）」这条分支。",
+  "entryUrl": "https://zhjw.hpu.edu.cn/eams/courseTableForStd.action?sf_request_type=ajax",
+  "pageUrl": "https://zhjw.hpu.edu.cn/eams/courseTableForStd.action",
+  "today": "2026-09-13",
+  "detect": {
+    "ids": "202321060108",
+    "tagId": "semesterBar20826294511Semester",
+    "currentSemesterId": "403"
+  },
+  "semesterPick": {
+    "id": "403",
+    "source": "response"
+  },
+  "semesterRaw": "{semesters:{\"2026-2027\":[{id:401,schoolYear:\"2026-2027\",name:\"1\",startDate:\"2026-09-07\",endDate:\"2027-01-17\"},{id:402,schoolYear:\"2026-2027\",name:\"2\",startDate:\"2027-02-22\",endDate:\"2027-07-04\"}],\"2025-2026\":[{id:389,schoolYear:\"2025-2026\",name:\"2\",startDate:\"2026-02-23\",endDate:\"2026-07-05\"}]},semesterId:403}",
+  "courseHtml": "<html><head><title>学生课表</title></head><body><table id=\"manualArrangeCourseTable\"><tbody><tr><td>第1节 (08:00-08:45)</td><td>第2节 (08:55-09:40)</td><td>第3节 (10:00-10:45)</td><td>第4节 (10:55-11:40)</td><td>第5节 (14:00-14:45)</td><td>第6节 (14:55-15:40)</td><td>第7节 (16:00-16:45)</td><td>第8节 (16:55-17:40)</td><td>第9节 (18:30-19:15)</td><td>第10节 (19:25-20:10)</td><td>第11节 (20:20-21:05)</td></tr></tbody></table>\n<script>\n/* 教务课表页里内嵌的脚本，形状与上游 HPU/hpu.js 解析的一致 */\nvar unitCount = 11;\nvar teachers = [{id:\"1\",name:\"张伟\"},{id:\"2\",name:\"李娜\"}];\nvar teachers = [{id:\"3\",name:\"王强\"}];\nactivity = new TaskActivity(\"0\",teachers.join(\",\"),\"\",\"高等数学A(一)\",\"\",\"教1-101\",\"0111111111000000000000000000000000000000000000000000\");\nindex = 0*unitCount+0;\nindex = 1*unitCount+0;\nactivity = new TaskActivity(\"0\",\"赵敏\",\"\",\"大学英语\",\"\",\"外语楼B203\",\"0000000110000000000000000000000000000000000000000000\");\nindex = 2*unitCount+2;\nindex = 2*unitCount+3;\nactivity = new TaskActivity(\"0\",\"孙磊\",\"\",\"大学物理\",\"\",\"实验楼C105\",\"0101010101010101000000000000000000000000000000000000\");\nindex = 4*unitCount+4;\nindex = 4*unitCount+5;\nactivity = new TaskActivity(\"0\",,,\"体育(1)\",\"\",\"体育馆\",\"0111100000000000000000000000000000000000000000000000\");\nindex = 6*unitCount+7;\ntable0.marshalTable();\n</script></body></html>"
+}

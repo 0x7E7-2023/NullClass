@@ -1,0 +1,9 @@
+{
+  "_note": "合成 fixture：边界与兜底。课名、教师、教室均为虚构，不是真实抓取。\n① 页面里**没有** var unitCount 这一行 → 缺省 14 并写一条 warnings（上游静默用 14，不吭声）。\n② 「操作系统」的两个 index：一个是已算好的裸数字 62（= 4*14+6 → 星期五第 7 节）、\n   一个是带字面乘数的 2*14+3（星期三第 4 节）—— 两种写法都要认，且不许用 eval。\n③ 「大学语文」的 index 算出星期 13 → 越界丢弃并计数（12*unitCount+12）。\n④ 「软件工程」的 index 算出第 13 节 → 超出内置 12 节作息表 → 按每节 45 分钟顺推补上\n   第 13 节的时间并写一条 warnings。\n⑤ 「大学语文」的教师与教室都拿不到 → 留空（null）；「操作系统」的 args[1] 是表达式。\n⑥ semesterRaw 是合法 JSON（另一份用例里是裸 JS 对象字面量）—— 两种形态都要能读字段。\n   它的学期起止日期只有 12 周，比课表里最晚的第 16 周短 → 总周数必须抬到 16 并出声，\n   否则第 13-16 周的 block 会超出 totalWeeks、整包被 JwPayloadCodec 拒掉。\n⑦ 「大学语文」的位图里混了 2 个非 0/1 的字符（x、o）→ 跳过并计数出声。",
+  "url": "http://jwgl2018.xatu.edu.cn/eams/courseTableForStd.action",
+  "today": "2026-09-20",
+  "tagId": "semesterBar20826294511Semester",
+  "currentSemesterId": "20261",
+  "semesterRaw": "{\"semesters\":{\"2026-2027\":[{\"id\":20261,\"schoolYear\":\"2026-2027\",\"name\":\"1\",\"startDate\":\"2026-09-07\",\"endDate\":\"2026-11-29\"}]},\"semesterId\":20261}",
+  "courseTableHtml": "<script type=\"text/javascript\">\nvar teachers = [{id:\"t1\",name:\"马超\",color:\"#000000\"}];\nactivity = new TaskActivity(\"1\",teachers.join(\",\"),\"\",\"操作系统\",\"\",\"计算机楼B-202\",\"011111111111111110000\");\nindex = 62;\nindex = 2*14+3;\n\n</script>\n<script type=\"text/javascript\">\nvar teachers = [{id:\"t1\",name:\"\",color:\"#000000\"}];\nactivity = new TaskActivity(\"2\",,\"\",\"大学语文\",\"\",\"\",\"0x111111111111111o0000\");\nindex = 12*unitCount+12;\n\n</script>\n<script type=\"text/javascript\">\nvar teachers = [{id:\"t1\",name:\"何丽\",color:\"#000000\"}];\nactivity = new TaskActivity(\"3\",\"何丽\",\"\",\"软件工程\",\"\",\"软件楼C-301\",\"011111111111111110000\");\nindex = 0*unitCount+12;\n\n</script>\n"
+}

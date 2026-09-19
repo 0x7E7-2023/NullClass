@@ -1,12 +1,16 @@
 (function () {
-    // 马鞍山学院教务系统（强智 eams 平台）适配器 —— 第二步：纯转换。
+    // 马鞍山学院教务系统（树维 EAMS 平台）适配器 —— 第二步：纯转换。
     //
     // 移植自 shiguang_warehouse 的 MASU/masu.js
     //   https://github.com/XingHeYuZhuan/shiguang_warehouse  （MIT，作者 Haooz）
     // 上游把这个脚本标成「青果/URP 金刚教务」，但学校教务处公布的地址是 /eams/login.action，
-    // 解析的又是 #manualArrangeCourseTable + 行内「第N节」标签 —— 那是强智 eams 的结构
+    // 解析的又是 #manualArrangeCourseTable + 行内「第N节」标签 —— 那是**树维 EAMS** 的结构
     // （同一批上游适配器里的 HPU / HIIT 也是这套）。课表是一张真正的 <table>，不是 canvas /
     // 图片，所以不需要走 OCR。这条只影响说明文字，不影响本文件的算法。
+    //
+    // ⚠️ 厂商名订正（2026-09-16，批次四）：本文件此前写「强智 eams」，是错的。/eams/ 是
+    // **上海树维信息科技有限公司（SupWisdom，新开普子公司）**的产品，不是湖南强智科技的。
+    // 证据见 extract.js 文件头那一节。只改说明文字，算法一行未动。
     //
     // 移植改动：
     //   ① 上游在页面里一边读 DOM 一边算周次；这里只做转换，输入是 extract.js 交出来的格子清单

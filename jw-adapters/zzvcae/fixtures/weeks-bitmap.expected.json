@@ -1,0 +1,121 @@
+{
+  "specVersion": 1,
+  "kind": "schedule",
+  "ocrAssisted": false,
+  "warnings": [
+    "开学日期取自教务系统的学期日期：2026-09-09 所在周的第 1 天是 2026-09-07，已按它作为第 1 周的开始，请在学期管理里核对成学校实际开学日",
+    "学期总周数用的是教务的学期校历（16 周），但课表里有第 30 周的课，已按 30 周导入（否则那几周的课放不下），如与实际不符可在学期管理里改",
+    "教务的课表页里没有读到作息时间（表头里没有 (HH:mm-HH:mm) 形式的节次时间），已用适配器内置的 10 节作息表（第 1 节 08:00-08:45）：这张表是上游脚本按常见高职作息写的占位值，可能与学校实际作息不符，请在学期管理里核对",
+    "有 1 门课的周次位图第 0 位是 1：树维 EAMS 的这个位是占位符，已按「不产生第 0 周」处理，请在导入预览里核对周次",
+    "有 1 个周次超出载荷能表示的 1-30 周（教务给出的周次不寻常），已按上限截断，这些周的课会少"
+  ],
+  "terms": [
+    {
+      "name": "2026-2027学年第一学期",
+      "firstDay": "2026-09-07",
+      "totalWeeks": 30,
+      "periodTimes": [
+        {
+          "periodIndex": 1,
+          "start": "08:00",
+          "end": "08:45"
+        },
+        {
+          "periodIndex": 2,
+          "start": "08:55",
+          "end": "09:40"
+        },
+        {
+          "periodIndex": 3,
+          "start": "10:00",
+          "end": "10:45"
+        },
+        {
+          "periodIndex": 4,
+          "start": "10:55",
+          "end": "11:40"
+        },
+        {
+          "periodIndex": 5,
+          "start": "14:30",
+          "end": "15:15"
+        },
+        {
+          "periodIndex": 6,
+          "start": "15:25",
+          "end": "16:10"
+        },
+        {
+          "periodIndex": 7,
+          "start": "16:30",
+          "end": "17:15"
+        },
+        {
+          "periodIndex": 8,
+          "start": "17:25",
+          "end": "18:10"
+        },
+        {
+          "periodIndex": 9,
+          "start": "19:30",
+          "end": "20:15"
+        },
+        {
+          "periodIndex": 10,
+          "start": "20:25",
+          "end": "21:10"
+        }
+      ],
+      "courses": [
+        {
+          "name": "形势与政策",
+          "teacher": "周涛",
+          "note": null,
+          "blocks": [
+            {
+              "dayOfWeek": 3,
+              "startPeriod": 5,
+              "endPeriod": 5,
+              "startWeek": 1,
+              "endWeek": 16,
+              "weekType": "ALL",
+              "location": "报告厅"
+            }
+          ]
+        },
+        {
+          "name": "大学物理(一)",
+          "teacher": "孙丽",
+          "note": null,
+          "blocks": [
+            {
+              "dayOfWeek": 4,
+              "startPeriod": 1,
+              "endPeriod": 2,
+              "startWeek": 19,
+              "endWeek": 25,
+              "weekType": "ODD",
+              "location": "教4-108"
+            }
+          ]
+        },
+        {
+          "name": "汽车机械基础",
+          "teacher": "黄磊",
+          "note": null,
+          "blocks": [
+            {
+              "dayOfWeek": 6,
+              "startPeriod": 1,
+              "endPeriod": 1,
+              "startWeek": 30,
+              "endWeek": 30,
+              "weekType": "ALL",
+              "location": "教5-201"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

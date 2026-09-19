@@ -1,0 +1,30 @@
+{
+  "_note": "合成 fixture：课表 HTML 按上游 HFNU/hfnu.js 读取的形状编造（但把 var unitCount 那一行去掉了），不是真实抓取。本用例钉住 **unitCount 读不到时的缺省 14**（上游写死的值）：同一条 index = 1*unitCount+3 在 unitCount=14 下是星期二第 4 节，在 unitCount=11 下会变成星期二第 3 节 —— 期望值取前者，等于钉住「真的按 14 反推了」，并要求同时进 warnings。",
+  "today": "2026-09-14",
+  "semester": {
+    "id": "403",
+    "schoolYear": "2026-2027",
+    "termName": "1",
+    "startDate": "2026-09-07 00:00:00",
+    "endDate": "2027-01-24 23:59:59",
+    "pickedBy": "semesterId",
+    "count": 6
+  },
+  "page": {
+    "url": "https://jw.hfnu.edu.cn/eams/courseTableForStd.action",
+    "tokens": {
+      "jinxiu": true,
+      "binhu": false
+    },
+    "radios": [],
+    "sectionTimes": []
+  },
+  "bootstrap": {
+    "tokens": {
+      "jinxiu": true,
+      "binhu": false
+    },
+    "sectionTimes": []
+  },
+  "courseHtml": "<script type=\"text/javascript\">\n//<![CDATA[\n/* 这一份里没有 var unitCount */\n\nvar teachers = [{id:100,name:\"陈立群\"}];\nvar actTeachers = [{id:100,name:\"陈立群\"}];\nactivity = new TaskActivity(\"4001\",\"陈立群\",\"\",\"画法几何\",\"\",\"综合楼202\",\"01111111111111111000000000000000000000000000000000\");\nindex = 1*unitCount+3;\n//]]>\n</script>"
+}

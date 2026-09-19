@@ -1,0 +1,121 @@
+{
+  "specVersion": 1,
+  "kind": "schedule",
+  "ocrAssisted": false,
+  "warnings": [
+    "周次位图第 0 位为 1，与同族约定的占位符（第 0 位固定为 0）不符，已按忽略处理、不产生「第 0 周」，请在导入预览里核对周次",
+    "节次时间用的是适配器内置的湖南师范大学作息表（13 节），如与教务处公布的作息不一致请在节次设置里调整",
+    "开学日期教务没有提供，已按页面上显示的「第 3 周」反推为 2026-08-31，请在学期管理里核对"
+  ],
+  "terms": [
+    {
+      "name": "2026-2027学年 第一学期",
+      "firstDay": "2026-08-31",
+      "totalWeeks": 27,
+      "periodTimes": [
+        { "periodIndex": 1, "start": "08:00", "end": "08:45" },
+        { "periodIndex": 2, "start": "08:55", "end": "09:40" },
+        { "periodIndex": 3, "start": "10:00", "end": "10:45" },
+        { "periodIndex": 4, "start": "10:55", "end": "11:40" },
+        { "periodIndex": 5, "start": "12:45", "end": "13:30" },
+        { "periodIndex": 6, "start": "13:30", "end": "14:15" },
+        { "periodIndex": 7, "start": "14:30", "end": "15:15" }
+      ],
+      "courses": [
+        {
+          "name": "高等数学A",
+          "teacher": "张三",
+          "note": null,
+          "blocks": [
+            {
+              "dayOfWeek": 1,
+              "startPeriod": 1,
+              "endPeriod": 1,
+              "startWeek": 5,
+              "endWeek": 19,
+              "weekType": "ALL",
+              "location": "教1-101"
+            }
+          ]
+        },
+        {
+          "name": "大学英语",
+          "teacher": "李四",
+          "note": null,
+          "blocks": [
+            {
+              "dayOfWeek": 3,
+              "startPeriod": 5,
+              "endPeriod": 5,
+              "startWeek": 5,
+              "endWeek": 19,
+              "weekType": "ALL",
+              "location": "教2-203"
+            }
+          ]
+        },
+        {
+          "name": "程序设计基础",
+          "teacher": "王五",
+          "note": null,
+          "blocks": [
+            {
+              "dayOfWeek": 5,
+              "startPeriod": 6,
+              "endPeriod": 6,
+              "startWeek": 9,
+              "endWeek": 9,
+              "weekType": "ALL",
+              "location": "机房A303"
+            },
+            {
+              "dayOfWeek": 5,
+              "startPeriod": 6,
+              "endPeriod": 6,
+              "startWeek": 18,
+              "endWeek": 18,
+              "weekType": "ALL",
+              "location": "机房A303"
+            },
+            {
+              "dayOfWeek": 5,
+              "startPeriod": 6,
+              "endPeriod": 6,
+              "startWeek": 27,
+              "endWeek": 27,
+              "weekType": "ALL",
+              "location": "机房A303"
+            },
+            {
+              "dayOfWeek": 5,
+              "startPeriod": 7,
+              "endPeriod": 7,
+              "startWeek": 9,
+              "endWeek": 9,
+              "weekType": "ALL",
+              "location": "机房A303"
+            },
+            {
+              "dayOfWeek": 5,
+              "startPeriod": 7,
+              "endPeriod": 7,
+              "startWeek": 18,
+              "endWeek": 18,
+              "weekType": "ALL",
+              "location": "机房A303"
+            },
+            {
+              "dayOfWeek": 5,
+              "startPeriod": 7,
+              "endPeriod": 7,
+              "startWeek": 27,
+              "endWeek": 27,
+              "weekType": "ALL",
+              "location": "机房A303"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

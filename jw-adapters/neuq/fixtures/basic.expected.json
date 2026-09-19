@@ -1,0 +1,164 @@
+{
+  "specVersion": 1,
+  "kind": "schedule",
+  "ocrAssisted": false,
+  "warnings": [
+    "开学日期取自教务的学期起止日期：第 1 周从 2026-09-07 开始，请在学期管理里核对",
+    "只导入了教务系统当前选中的学期（2026-2027学年第一学期）；要导入别的学期，请在教务页面里切到那个学期再点「提取课表」",
+    "学期总周数用的是教务学期列表的起止日期（约 19 周），如与实际不符可在学期管理里改",
+    "作息时间用的是适配器内置的东北大学秦皇岛分校 12 节作息表（第 1 节 08:00-08:45），不是从教务读的，真机上请对照教务处公布的作息核对",
+    "有 1 条排课的周次位图第 0 位为 1，与「第 0 位是占位符」的约定不符，已忽略这一位（不会产生第 0 周），请在导入预览里核对周次",
+    "本适配器不写入教师与教室的占位文案：解析不出来就留空（空着比写「未知教师」好，后者会被课表当成真姓名显示）"
+  ],
+  "terms": [
+    {
+      "name": "2026-2027学年第一学期",
+      "firstDay": "2026-09-07",
+      "totalWeeks": 19,
+      "periodTimes": [
+        {
+          "periodIndex": 1,
+          "start": "08:00",
+          "end": "08:45"
+        },
+        {
+          "periodIndex": 2,
+          "start": "08:50",
+          "end": "09:35"
+        },
+        {
+          "periodIndex": 3,
+          "start": "10:05",
+          "end": "10:50"
+        },
+        {
+          "periodIndex": 4,
+          "start": "10:55",
+          "end": "11:40"
+        },
+        {
+          "periodIndex": 5,
+          "start": "14:00",
+          "end": "14:45"
+        },
+        {
+          "periodIndex": 6,
+          "start": "14:50",
+          "end": "15:35"
+        },
+        {
+          "periodIndex": 7,
+          "start": "16:05",
+          "end": "16:50"
+        },
+        {
+          "periodIndex": 8,
+          "start": "16:55",
+          "end": "17:40"
+        },
+        {
+          "periodIndex": 9,
+          "start": "18:40",
+          "end": "19:25"
+        },
+        {
+          "periodIndex": 10,
+          "start": "19:30",
+          "end": "20:15"
+        },
+        {
+          "periodIndex": 11,
+          "start": "20:25",
+          "end": "21:10"
+        },
+        {
+          "periodIndex": 12,
+          "start": "21:15",
+          "end": "22:00"
+        }
+      ],
+      "courses": [
+        {
+          "name": "体育(三)",
+          "teacher": "郑凯",
+          "note": null,
+          "blocks": [
+            {
+              "dayOfWeek": 5,
+              "startPeriod": 11,
+              "endPeriod": 11,
+              "startWeek": 1,
+              "endWeek": 11,
+              "weekType": "ALL",
+              "location": "东田径场"
+            }
+          ]
+        },
+        {
+          "name": "大学物理(一)",
+          "teacher": "孙毓秀",
+          "note": null,
+          "blocks": [
+            {
+              "dayOfWeek": 4,
+              "startPeriod": 5,
+              "endPeriod": 5,
+              "startWeek": 1,
+              "endWeek": 11,
+              "weekType": "ODD",
+              "location": "理学楼C102"
+            }
+          ]
+        },
+        {
+          "name": "大学英语(三)",
+          "teacher": "赵启明",
+          "note": null,
+          "blocks": [
+            {
+              "dayOfWeek": 3,
+              "startPeriod": 3,
+              "endPeriod": 4,
+              "startWeek": 2,
+              "endWeek": 10,
+              "weekType": "EVEN",
+              "location": "人文楼B205"
+            }
+          ]
+        },
+        {
+          "name": "马克思主义基本原理",
+          "teacher": "周敏,吴桐",
+          "note": null,
+          "blocks": [
+            {
+              "dayOfWeek": 1,
+              "startPeriod": 1,
+              "endPeriod": 2,
+              "startWeek": 1,
+              "endWeek": 11,
+              "weekType": "ALL",
+              "location": "教学楼A401"
+            }
+          ]
+        },
+        {
+          "name": "高等数学A(一)",
+          "teacher": "林慕青",
+          "note": null,
+          "blocks": [
+            {
+              "dayOfWeek": 1,
+              "startPeriod": 1,
+              "endPeriod": 3,
+              "startWeek": 1,
+              "endWeek": 16,
+              "weekType": "ALL",
+              "location": "教1-101"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

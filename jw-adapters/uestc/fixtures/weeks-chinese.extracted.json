@@ -1,0 +1,11 @@
+{
+  "_note": "合成 fixture：本校没有可用的测试账号，课表 HTML 是按上游 UESTC/uestc.js 与同族适配器（HPU / NEUQ / ZUA / CUIT）实际解析的形态编造的 —— 内嵌的 TaskActivity(...) 调用 + index = 天*unitCount+节次，不是真实抓取（见 docs/jw-adapter-testing.md §3）。课程名、教师、教室、日期均为虚构，无真实个人信息；学号（ids）按 AUDIT.md §1 的承诺**没有**进 fixture。 中文周次（args[6] 不是位图时）用例，**这是 uestc 独有的第二条路径**：连1-16 / 单3-17 / 双2-8 / 1-3,5-9周 / 单周1-9 / 3、5、7周 六种写法。上游同一段实现在「单3-17」这类写法上会让单双标记失效（它先无条件匹配连续区间），本适配器按注释声明的语义实现。",
+  "today": "2026-09-14",
+  "url": "https://eams.uestc.edu.cn/eams/courseTableForStd.action",
+  "tagId": "semesterBar20826294511Semester",
+  "semesterId": "523",
+  "semesterLabel": "2026-2027学年第一学期",
+  "semesterRaw": "var semester = {semesterId:523,semesters:{2026:[{id:523,schoolYear:\"2026-2027\",name:\"1\"},{id:543,schoolYear:\"2026-2027\",name:\"2\"}],2025:[{id:483,schoolYear:\"2025-2026\",name:\"1\"}]}};",
+  "calendarHtml": "<table class=\"calendar\"><tr><th>开始/结束日期</th><td>2026-09-07~2027-01-10(20)</td></tr><tr><th>周次</th><td>第1周 ... 第20周</td></tr></table>",
+  "courseHtml": "<HTML><HEAD><TITLE>学生课表</TITLE></HEAD><BODY>\n<table id=\"manualArrangeCourseTable\"></table>\n<script type=\"text/javascript\">\nvar table0 = new Timetable();\nvar unitCount = 12;\nactivity = new TaskActivity(\"\",\"钱一\",\"\",\"中文连堂\",\"\",\"品学楼C101\",\"连1-16\");\nindex = 0*unitCount+0;\nactivity = new TaskActivity(\"\",\"钱二\",\"\",\"中文单周\",\"\",\"品学楼C102\",\"单3-17\");\nindex = 1*unitCount+0;\nactivity = new TaskActivity(\"\",\"钱三\",\"\",\"中文双周\",\"\",\"品学楼C103\",\"双2-8\");\nindex = 2*unitCount+0;\nactivity = new TaskActivity(\"\",\"钱四\",\"\",\"中文分段\",\"\",\"品学楼C104\",\"1-3,5-9周\");\nindex = 3*unitCount+0;\nactivity = new TaskActivity(\"\",\"钱五\",\"\",\"中文单周后缀\",\"\",\"品学楼C105\",\"单周1-9\");\nindex = 4*unitCount+0;\nactivity = new TaskActivity(\"\",\"钱六\",\"\",\"中文列举\",\"\",\"品学楼C106\",\"3、5、7周\");\nindex = 4*unitCount+1;\ntable0.marshalTable(mainTable);\n</script>\n</BODY></HTML>"
+}

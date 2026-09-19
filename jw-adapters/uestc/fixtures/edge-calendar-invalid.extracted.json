@@ -1,0 +1,11 @@
+{
+  "_note": "合成 fixture：本校没有可用的测试账号，课表 HTML 是按上游 UESTC/uestc.js 与同族适配器（HPU / NEUQ / ZUA / CUIT）实际解析的形态编造的 —— 内嵌的 TaskActivity(...) 调用 + index = 天*unitCount+节次，不是真实抓取（见 docs/jw-adapter-testing.md §3）。课程名、教师、教室、日期均为虚构，无真实个人信息；学号（ids）按 AUDIT.md §1 的承诺**没有**进 fixture。 边界用例五：学期日历页面解析得出日期，但结束日期早于开始日期（教务挂了别的学期的日历，或者字段被写反）—— 这份日历必须判为不可信，开学日与总周数都退到推算并出声，不许照着错日期算。",
+  "today": "2026-09-17",
+  "url": "https://eams.uestc.edu.cn/eams/courseTableForStd.action",
+  "tagId": "semesterBar20826294511Semester",
+  "semesterId": "523",
+  "semesterLabel": "2026-2027学年第一学期",
+  "semesterRaw": "var semester = {semesterId:523,semesters:{2026:[{id:523,schoolYear:\"2026-2027\",name:\"1\"},{id:543,schoolYear:\"2026-2027\",name:\"2\"}],2025:[{id:483,schoolYear:\"2025-2026\",name:\"1\"}]}};",
+  "calendarHtml": "<table class=\"calendar\"><tr><th>开始/结束日期</th><td>2027-01-10~2026-09-07(20)</td></tr><tr><th>周次</th><td>第1周 ... 第20周</td></tr></table>",
+  "courseHtml": "<HTML><HEAD><TITLE>学生课表</TITLE></HEAD><BODY>\n<table id=\"manualArrangeCourseTable\"></table>\n<script type=\"text/javascript\">\nvar table0 = new Timetable();\nvar unitCount = 12;\nactivity = new TaskActivity(\"\",\"宋一\",\"\",\"日历不可信\",\"\",\"品学楼G101\",\"01111111111111111000000000000000000000000000000000000\");\nindex = 0*unitCount+0;\ntable0.marshalTable(mainTable);\n</script>\n</BODY></HTML>"
+}

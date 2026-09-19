@@ -1,0 +1,24 @@
+{
+  "_note": "合成 fixture（虚构数据，无个人信息）。开学日回退用例：学期日历给的起始日是 2026-09-09（周三），而这所学校的每周起始日 firstDayOfWeek 是 7（周日）→ 开学日必须回退到那一天所在的周日 2026-09-06，并写一条 warnings 说明回退。直接拿起始日当开学日（写 2026-09-09）、或者把 firstDayOfWeek 当成缺省 1（写 2026-09-07）都会让这条用例红。",
+  "today": "2026-09-16",
+  "semester": {
+    "id": "6",
+    "name": "2026-2027学年第一学期",
+    "schoolYear": "2026-2027",
+    "term": "1"
+  },
+  "semesters": [
+    {
+      "id": "6",
+      "name": "2026-2027学年第一学期",
+      "schoolYear": "2026-2027"
+    }
+  ],
+  "currentSemesterId": "6",
+  "firstDayOfWeek": 7,
+  "taskActivityCount": 1,
+  "extractWarnings": [],
+  "tableHtml": "<table id=\"manualArrangeCourseTable\"><thead><tr><th id=\"0_0\">节次</th></tr></thead></table>",
+  "courseHtml": "<script type=\"text/javascript\">\nvar unitCount = 5;\nvar teachers = [{id: 601, name: \"许晴\"}];\nactivity = new TaskActivity(\"601\",\"许晴\",\"LAW1001\",\"经济法\",\"2201\",\"教5-101\",\"01111111111111111000\");\nindex = 3*unitCount+1;\n</script>\n<table id=\"manualArrangeCourseTable\"><thead><tr><th id=\"0_0\">节次</th></tr></thead></table>",
+  "calendarHtml": "<div class=\"calendar-info\">开始 / 结束日期：2026-09-09 ~ 2027-01-20 (20)</div>"
+}

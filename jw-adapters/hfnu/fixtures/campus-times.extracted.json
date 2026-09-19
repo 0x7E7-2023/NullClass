@@ -1,0 +1,57 @@
+{
+  "_note": "合成 fixture：课表 HTML 与页面线索按上游 HFNU/hfnu.js 会读到的形状编造，不是真实抓取。本用例钉住**校区作息的选择**：页面上没有已勾选的校区按钮、正文里也没有校区名，只有课表表头「第N节(08:20-09:05)」这类时间 —— 它逐字命中滨湖校区那张作息表（第 1 节 08:20-09:05），因此 periodTimes 必须是滨湖校区的 11 节。",
+  "today": "2026-09-14",
+  "semester": {
+    "id": "403",
+    "schoolYear": "2026-2027",
+    "termName": "1",
+    "startDate": "2026-09-07 00:00:00",
+    "endDate": "2027-01-24 23:59:59",
+    "pickedBy": "semesterId",
+    "count": 6
+  },
+  "page": {
+    "url": "https://jw.hfnu.edu.cn/eams/courseTableForStd.action",
+    "tokens": {
+      "jinxiu": false,
+      "binhu": false
+    },
+    "radios": [
+      {
+        "value": "",
+        "label": "校区",
+        "checked": false
+      },
+      {
+        "value": "1",
+        "label": "",
+        "checked": false
+      }
+    ],
+    "sectionTimes": [
+      {
+        "periodIndex": 1,
+        "start": "08:20",
+        "end": "09:05"
+      },
+      {
+        "periodIndex": 2,
+        "start": "09:10",
+        "end": "09:55"
+      },
+      {
+        "periodIndex": 3,
+        "start": "10:05",
+        "end": "10:50"
+      }
+    ]
+  },
+  "bootstrap": {
+    "tokens": {
+      "jinxiu": false,
+      "binhu": false
+    },
+    "sectionTimes": []
+  },
+  "courseHtml": "<script type=\"text/javascript\">\n//<![CDATA[\nvar unitCount = 11;\n\nvar teachers = [{id:100,name:\"陈立群\"}];\nvar actTeachers = [{id:100,name:\"陈立群\"}];\nactivity = new TaskActivity(\"3001\",\"陈立群\",\"\",\"大学物理(一)\",\"\",\"实验楼C-208\",\"01111111111111111000000000000000000000000000000000\");\nindex = 0*unitCount+2;\n//]]>\n</script>"
+}

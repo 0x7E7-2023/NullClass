@@ -1,0 +1,171 @@
+{
+  "specVersion": 1,
+  "kind": "schedule",
+  "ocrAssisted": false,
+  "warnings": [
+    "课表页里没有读到节次数（var unitCount），已按 12 节计算 —— 节次数是猜的，请在导入预览里核对节次",
+    "有 2 个节次落在 1-12 节之外（或星期超出 1-7），已跳过，请核对课表",
+    "有 1 门课标记为「停课」，已跳过（教务用它表示临时停课）",
+    "有 1 条课程记录没有对应的节次（index 赋值），已跳过，请核对课表",
+    "有 1 条课程记录的周次解析结果为空（位图全是 0 或描述认不出），已跳过，请核对课表",
+    "有 1 条课程记录的教师写成了脚本表达式，没能解析出来，教师已留空，请核对",
+    "有 1 条 TaskActivity 的参数个数不足 7，没能解析，已跳过，请反馈",
+    "有课程记录的周次是中文描述（如「连1-16」「单3-17」）而不是位图，已按单/双周与区间解析；上游脚本的同一段代码会丢掉单双标记，请重点核对周次",
+    "作息时间用的是适配器内置的电子科技大学 12 节作息表（第 1 节 08:30-09:15），不是从教务页面读的，如与教务处公布的作息不符请在节次设置里改",
+    "课表里出现了超过 30 周的周次，已按 30 周截断，请核对课表",
+    "开学日期取自教务系统的学期日历（学期从 2026-09-07 开始），第 1 周按每周起始日周一算作 2026-09-07，请在学期管理里核对",
+    "学期总周数按课表里最晚的第 32 周抬高到 30 周（学期日历只给了 20 周），请在学期管理里核对",
+    "只导入了教务系统当前选中的那个学期（2026-2027学年第一学期）；要导入别的学期，请在教务页面里切到那个学期再点「提取课表」"
+  ],
+  "terms": [
+    {
+      "name": "2026-2027学年第一学期",
+      "firstDay": "2026-09-07",
+      "totalWeeks": 30,
+      "periodTimes": [
+        {
+          "periodIndex": 1,
+          "start": "08:30",
+          "end": "09:15"
+        },
+        {
+          "periodIndex": 2,
+          "start": "09:20",
+          "end": "10:05"
+        },
+        {
+          "periodIndex": 3,
+          "start": "10:25",
+          "end": "11:10"
+        },
+        {
+          "periodIndex": 4,
+          "start": "11:15",
+          "end": "12:00"
+        },
+        {
+          "periodIndex": 5,
+          "start": "14:00",
+          "end": "14:45"
+        },
+        {
+          "periodIndex": 6,
+          "start": "14:50",
+          "end": "15:35"
+        },
+        {
+          "periodIndex": 7,
+          "start": "15:55",
+          "end": "16:40"
+        },
+        {
+          "periodIndex": 8,
+          "start": "16:45",
+          "end": "17:30"
+        },
+        {
+          "periodIndex": 9,
+          "start": "19:00",
+          "end": "19:45"
+        },
+        {
+          "periodIndex": 10,
+          "start": "19:50",
+          "end": "20:35"
+        },
+        {
+          "periodIndex": 11,
+          "start": "20:40",
+          "end": "21:25"
+        },
+        {
+          "periodIndex": 12,
+          "start": "21:30",
+          "end": "22:15"
+        }
+      ],
+      "courses": [
+        {
+          "name": "编译原理（实践）",
+          "teacher": "钱七",
+          "note": null,
+          "blocks": [
+            {
+              "dayOfWeek": 1,
+              "startPeriod": 1,
+              "endPeriod": 1,
+              "startWeek": 1,
+              "endWeek": 16,
+              "weekType": "ALL",
+              "location": "品学楼A109"
+            }
+          ]
+        },
+        {
+          "name": "数字电路",
+          "teacher": "周八,吴九",
+          "note": null,
+          "blocks": [
+            {
+              "dayOfWeek": 1,
+              "startPeriod": 2,
+              "endPeriod": 2,
+              "startWeek": 1,
+              "endWeek": 16,
+              "weekType": "ALL",
+              "location": "品学楼A110"
+            }
+          ]
+        },
+        {
+          "name": "线性下标",
+          "teacher": "孙十",
+          "note": null,
+          "blocks": [
+            {
+              "dayOfWeek": 2,
+              "startPeriod": 3,
+              "endPeriod": 3,
+              "startWeek": 1,
+              "endWeek": 16,
+              "weekType": "ALL",
+              "location": "品学楼A111"
+            }
+          ]
+        },
+        {
+          "name": "教师剥不开",
+          "teacher": null,
+          "note": null,
+          "blocks": [
+            {
+              "dayOfWeek": 3,
+              "startPeriod": 1,
+              "endPeriod": 1,
+              "startWeek": 1,
+              "endWeek": 16,
+              "weekType": "ALL",
+              "location": "品学楼A112"
+            }
+          ]
+        },
+        {
+          "name": "周次越界",
+          "teacher": "周十一",
+          "note": null,
+          "blocks": [
+            {
+              "dayOfWeek": 4,
+              "startPeriod": 1,
+              "endPeriod": 1,
+              "startWeek": 28,
+              "endWeek": 30,
+              "weekType": "ALL",
+              "location": "品学楼A113"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

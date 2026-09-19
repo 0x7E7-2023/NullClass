@@ -1,0 +1,9 @@
+{
+  "_note": "合成 fixture：课程名里的括号该保留还是该砍 —— 本件的决定用它钉死。\n课名、教师、教室均为虚构，不是真实抓取。\n① 「高等数学A(一)」：括号里是课程名的一部分 → **原样保留**。\n   上游 XATU/myschool.js 的 .split('(')[0] 会砍成「高等数学A」（丢信息）。\n② 「大学英语(双语)」：中文说明 → 保留。\n③ 「体育(3)」：短数字（「体育三」）→ 保留。\n④ 「数据结构(2024.01)」：尾部是课程代码形态 → 去掉括号，课程名为「数据结构」\n   （同族 CUIT/NEUQ/UESTC 的上游都在这一处去代码）。\n判据写死为「只有明显的课程代码才去掉」，见 parse.js 的 isCourseCode 与 AUDIT.md §7。",
+  "url": "http://jwgl2018.xatu.edu.cn/eams/courseTableForStd.action",
+  "today": "2026-09-20",
+  "tagId": "semesterBar20826294511Semester",
+  "currentSemesterId": "20261",
+  "semesterRaw": "{semesters:{\"2026-2027\":[{id:20261,schoolYear:\"2026-2027\",name:\"1\",startDate:\"2026-09-07\",endDate:\"2027-01-24\"},{id:20262,schoolYear:\"2026-2027\",name:\"2\",startDate:\"2027-02-22\",endDate:\"2027-07-04\"}]},semesterId:20261}",
+  "courseTableHtml": "var unitCount = 14;\n<script type=\"text/javascript\">\nvar teachers = [{id:\"t1\",name:\"陈立群\",color:\"#000000\"}];\nactivity = new TaskActivity(\"1\",\"陈立群\",\"\",\"高等数学A(一)\",\"\",\"教学楼A-301\",\"011111111111111110000\");\nindex = 0*unitCount+0;\n\n</script>\n<script type=\"text/javascript\">\nvar teachers = [{id:\"t1\",name:\"林雅琴\",color:\"#000000\"}];\nactivity = new TaskActivity(\"2\",\"林雅琴\",\"\",\"大学英语(双语)\",\"\",\"外语楼B-205\",\"010101010101010100000\");\nindex = 1*unitCount+1;\n\n</script>\n<script type=\"text/javascript\">\nvar teachers = [{id:\"t1\",name:\"黄涛\",color:\"#000000\"}];\nactivity = new TaskActivity(\"3\",\"黄涛\",\"\",\"体育(3)\",\"\",\"田径场\",\"010101010101010100000\");\nindex = 2*unitCount+2;\n\n</script>\n<script type=\"text/javascript\">\nvar teachers = [{id:\"t1\",name:\"许倩\",color:\"#000000\"}];\nactivity = new TaskActivity(\"4\",\"许倩\",\"\",\"数据结构(2024.01)\",\"\",\"计算机楼B-101\",\"011111111111111110000\");\nindex = 3*unitCount+3;\n\n</script>\n"
+}

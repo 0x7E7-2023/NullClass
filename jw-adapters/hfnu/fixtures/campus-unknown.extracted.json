@@ -1,0 +1,52 @@
+{
+  "_note": "合成 fixture：页面线索按上游 HFNU/hfnu.js 会读到的形状编造，不是真实抓取。本用例钉住**判不出校区**这条路径：页面上没有任何已勾选的校区按钮、正文里两个校区名都出现过（不算线索）、课表表头的时间与两套校区作息都对不上、课程地点里也没有校区名 —— 此时适配器**不静默选一套**，而是用锦绣校区那张并在 warnings 里如实说明判不出来的原因。",
+  "today": "2026-09-14",
+  "semester": {
+    "id": "403",
+    "schoolYear": "2026-2027",
+    "termName": "1",
+    "startDate": "2026-09-07 00:00:00",
+    "endDate": "2027-01-24 23:59:59",
+    "pickedBy": "semesterId",
+    "count": 6
+  },
+  "page": {
+    "url": "https://jw.hfnu.edu.cn/eams/courseTableForStd.action",
+    "tokens": {
+      "jinxiu": true,
+      "binhu": true
+    },
+    "radios": [
+      {
+        "value": "1",
+        "label": "校区一",
+        "checked": false
+      },
+      {
+        "value": "2",
+        "label": "校区二",
+        "checked": false
+      }
+    ],
+    "sectionTimes": [
+      {
+        "periodIndex": 1,
+        "start": "08:10",
+        "end": "08:55"
+      },
+      {
+        "periodIndex": 2,
+        "start": "09:00",
+        "end": "09:45"
+      }
+    ]
+  },
+  "bootstrap": {
+    "tokens": {
+      "jinxiu": true,
+      "binhu": true
+    },
+    "sectionTimes": []
+  },
+  "courseHtml": "<script type=\"text/javascript\">\n//<![CDATA[\nvar unitCount = 11;\n\nvar teachers = [{id:100,name:\"陈立群\"}];\nvar actTeachers = [{id:100,name:\"陈立群\"}];\nactivity = new TaskActivity(\"3003\",\"陈立群\",\"\",\"大学英语(三)\",\"\",\"博学楼B-205\",\"01111111111111111000000000000000000000000000000000\");\nindex = 1*unitCount+4;\n//]]>\n</script>"
+}

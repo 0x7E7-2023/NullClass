@@ -1,0 +1,31 @@
+{
+  "_note": "合成 fixture（同上，非真实抓取）。本用例覆盖四处边界：① 课表页里没有 var unitCount（必须按缺省 12 并进 warnings）；② index 写成算好的裸数字（上游正则只认带 unitCount 的写法，本件补了裸数字分支：12 → 星期二第 1 节）；③ 教师表达式是 join 时必须取 activity 之前最近的一块 teachers（这里是第二块「高鹏,陆晓岚」，不是第一块「秦朗」）；④ args[3] 有值时必须用它当课名、不许用 args[2]（这条 activity 的 args[2] 是「大学物理实验(2700120020.02)」、args[3] 是「中国文化概论(2500120110.05)」，期望课名是后者剥掉编号的「中国文化概论」）；⑤ 同一门课（同教师同教室同周次）的节次不连续时要分成两个 block。",
+  "term": {
+    "id": "20826294511",
+    "name": "2026-2027学年第一学期",
+    "rawName": "1",
+    "schoolYear": "2026-2027",
+    "startDate": "2026-09-07",
+    "endDate": "2027-01-17"
+  },
+  "today": "2026-09-16",
+  "semesters": [
+    {
+      "id": "20826294502",
+      "name": "2025-2026学年第二学期",
+      "schoolYear": "2025-2026",
+      "startDate": "2026-02-23",
+      "endDate": "2026-07-05"
+    },
+    {
+      "id": "20826294511",
+      "name": "2026-2027学年第一学期",
+      "schoolYear": "2026-2027",
+      "startDate": "2026-09-07",
+      "endDate": "2027-01-17"
+    }
+  ],
+  "raw": {
+    "tableHtml": "<html><head><title>学生课表</title></head><body>\ntable0 = new Object();\nvar teachers = [{id:1,name:\"秦朗\",code:\"T1\"}];\nvar actTeachers = [{id:1,name:\"秦朗\",code:\"T1\"}];\n\nvar teachers = [{id:1,name:\"高鹏\",code:\"T1\"},{id:2,name:\"陆晓岚\",code:\"T2\"}];\nvar actTeachers = [{id:1,name:\"高鹏\",code:\"T1\"},{id:2,name:\"陆晓岚\",code:\"T2\"}];\n\nactivity = new TaskActivity(\"2001\",actTeacherName.join(\",\"),\"线性代数\",\"线性代数(2700120010.01)\",\"\",\"教5-302\",\"011111111111111111000000000000000000000000000000000000000000\",\"\",\"\",\"\",\"\",\"\");\nindex = 12;\nindex = 13;\nindex = 15;\n\nactivity = new TaskActivity(\"2002\",\"钱伟,吴敏\",\"大学物理实验(2700120020.02)\",\"中国文化概论(2500120110.05)\",\"\",\"\",\"011111111111111111000000000000000000000000000000000000000000\",\"\",\"\",\"\",\"\",\"\");\nindex = 3*unitCount+4;\n\ntable0.marshalTable();\n</body></html>"
+  }
+}

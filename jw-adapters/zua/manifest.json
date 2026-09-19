@@ -1,0 +1,51 @@
+{
+  "specVersion": 1,
+  "key": "zua",
+  "name": "郑州航空工业管理学院",
+  "version": "1.0.0",
+  "author": "上游 xBefore（MIT）；移植 0x7E-2023",
+  "homepage": "https://github.com/XingHeYuZhuan/shiguang_warehouse",
+  "loginUrl": "http://jwglxt.zua.edu.cn/eams/loginExt.action",
+  "scheduleUrlHint": "http://jwglxt.zua.edu.cn/eams/courseTableForStd.action",
+  "minAppVersionCode": 11,
+  "extract": "extract.js",
+  "parse": "parse.js",
+  "allowHosts": [],
+  "fixtures": [
+    {
+      "name": "合成用例：基本表格（unitCount 从课表页读到 5、作息从课表表头读到 10 节且第 1/5 节与内置表不同、学期日历给出开学日与 19 周、同一门课跨两天、连续节次并成一段、单周、教师字面量与 actTeacherName.join(\",\") 两种写法、完全重复的 TaskActivity 去重）",
+      "extracted": "fixtures/basic.extracted.json",
+      "expected": "fixtures/basic.expected.json"
+    },
+    {
+      "name": "合成用例：周次位图基准对照（第 0 位为 1 → 不产出第 0 周、只写一条 warnings；第 1、2 位为 1 → 第 1-2 周；只有第 5 位为 1 → 第 5 周；某条课之前没有任何教师声明 → teacher 为 null 而不是「未知教师」）",
+      "extracted": "fixtures/weeks-bitmap.extracted.json",
+      "expected": "fixtures/weeks-bitmap.expected.json"
+    },
+    {
+      "name": "合成用例：周次位图超过载荷上限（第 1-54 周 → clamp 到第 1-30 周并 warn；第 20-54 周 → 第 20-30 周，报出的最大周次是 54）",
+      "extracted": "fixtures/weeks-over-limit.extracted.json",
+      "expected": "fixtures/weeks-over-limit.expected.json"
+    },
+    {
+      "name": "合成用例：index 的三种写法（带 unitCount 变量、已算好的裸数字 62、把 unitCount 写死的 2*14+1 —— 裸数字那条上游会整节课丢掉）",
+      "extracted": "fixtures/index-forms.extracted.json",
+      "expected": "fixtures/index-forms.expected.json"
+    },
+    {
+      "name": "合成用例：unitCount 读不到（按上游缺省 14 算并写 warnings）+ 课表用到第 11、12 节（按空课内建表补时间）、第 14 节（补不出来只能说明）+ 第 20 周把总周数抬到 20 + 作息表头只到第 10 节",
+      "extracted": "fixtures/units-default.extracted.json",
+      "expected": "fixtures/units-default.expected.json"
+    },
+    {
+      "name": "合成用例：学期日历给的起始日是 2026-09-09（周三）而每周起始日是周日 → 开学日必须回退到 2026-09-06（直接拿起始日、或把每周起始日当周一都会红）",
+      "extracted": "fixtures/first-day-nonmonday.extracted.json",
+      "expected": "fixtures/first-day-nonmonday.expected.json"
+    },
+    {
+      "name": "合成用例：脏活动（周次位图一位都没有、index 落在第 8 天、没有 index 赋值、TaskActivity 参数不足 7 个 → 各计一条并出声）+ TaskActivity 数量对账 9 vs 4 + extract 交来的说明原样进载荷",
+      "extracted": "fixtures/dirty-activities.extracted.json",
+      "expected": "fixtures/dirty-activities.expected.json"
+    }
+  ]
+}

@@ -1,0 +1,24 @@
+{
+  "_note": "合成 fixture（虚构数据，无个人信息）。位图超限用例：两条课的位图都排到第 54 位（树维位图常见 30 位以上），超过载荷上限 30 周。第一条（第 1-54 周）必须得到第 1-30 周（第 31-54 周共 24 个周次 clamp 到第 30 周）、第二条（第 20-54 周）必须得到第 20-30 周（同样 24 个周次被 clamp，报出的最大周次是 54）。没有学期日历 → 开学日按最近的周一推算。",
+  "today": "2026-09-16",
+  "semester": {
+    "id": "3",
+    "name": "2026-2027学年第一学期",
+    "schoolYear": "2026-2027",
+    "term": "1"
+  },
+  "semesters": [
+    {
+      "id": "3",
+      "name": "2026-2027学年第一学期",
+      "schoolYear": "2026-2027"
+    }
+  ],
+  "currentSemesterId": "3",
+  "firstDayOfWeek": 1,
+  "taskActivityCount": 2,
+  "extractWarnings": [],
+  "tableHtml": "<table id=\"manualArrangeCourseTable\"><thead><tr><th id=\"0_0\">节次</th></tr></thead></table>",
+  "courseHtml": "<script type=\"text/javascript\">\nvar unitCount = 5;\nvar teachers = [{id: 301, name: \"郑海\"}];\nactivity = new TaskActivity(\"301\",\"郑海\",\"BIO1001\",\"生物化学\",\"1901\",\"教3-101\",\"0111111111111111111111111111111111111111111111111111111\");\nindex = 0*unitCount+0;\nactivity = new TaskActivity(\"302\",\"郑海\",\"BIO1002\",\"生物化学实验\",\"1902\",\"实验楼D-102\",\"0000000000000000000011111111111111111111111111111111111\");\nindex = 3*unitCount+4;\n</script>\n<table id=\"manualArrangeCourseTable\"><thead><tr><th id=\"0_0\">节次</th></tr></thead></table>",
+  "calendarHtml": ""
+}

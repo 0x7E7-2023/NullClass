@@ -1,0 +1,36 @@
+{
+  "specVersion": 1,
+  "key": "neuq",
+  "name": "东北大学秦皇岛分校",
+  "version": "1.0.0",
+  "author": "上游 aryunm（MIT）；移植 0x7E-2023",
+  "homepage": "https://github.com/XingHeYuZhuan/shiguang_warehouse",
+  "loginUrl": "https://jwxt.neuq.edu.cn",
+  "scheduleUrlHint": "https://jwxt.neuq.edu.cn/eams/courseTableForStd.action",
+  "minAppVersionCode": 11,
+  "extract": "extract.js",
+  "parse": "parse.js",
+  "allowHosts": [],
+  "fixtures": [
+    {
+      "name": "合成用例：教师写在活动参数里（args[1] 字面量、单双周、隔周、第 0 位为 1 的位图）+ 学期起止日期推出开学日与总周数 + 连堂由两个活动块合并",
+      "extracted": "fixtures/basic.extracted.json",
+      "expected": "fixtures/basic.expected.json"
+    },
+    {
+      "name": "合成用例：周次位图基准与边界（第 0 位为 1 不产出第 0 周 / 第 1 位为 1 / 位图超过 30 周被丢弃 / 位图里没有 1）+ 学期 33 周被载荷上限截断到 30",
+      "extracted": "fixtures/weeks-bitmap.extracted.json",
+      "expected": "fixtures/weeks-bitmap.expected.json"
+    },
+    {
+      "name": "合成用例：降级与脏数据（教务学期列表不带起止日期 → 开学日与总周数都推算 / unitCount 读不到 / 教师与课名写成脚本变量 / 认不出的 activity / 位图带非 01 字符 / 空教室 / 位图到第 22 周）",
+      "extracted": "fixtures/fallback.extracted.json",
+      "expected": "fixtures/fallback.expected.json"
+    },
+    {
+      "name": "合成用例：教师与教室解析不出来时一律留空（不许写「未知教师」）+ index 预先算好的数字（62）按 unitCount 反解 + 连堂合并",
+      "extracted": "fixtures/null-teacher.extracted.json",
+      "expected": "fixtures/null-teacher.expected.json"
+    }
+  ]
+}

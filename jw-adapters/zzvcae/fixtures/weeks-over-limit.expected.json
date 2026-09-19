@@ -1,0 +1,106 @@
+{
+  "specVersion": 1,
+  "kind": "schedule",
+  "ocrAssisted": false,
+  "warnings": [
+    "开学日期取自教务系统的学期日期：2026-09-07 所在周的第 1 天是 2026-09-07，已按它作为第 1 周的开始，请在学期管理里核对成学校实际开学日",
+    "学期总周数用的是教务的学期校历（40 周），超过了空课能表示的 30 周，已按 30 周导入，如与实际不符可在学期管理里改",
+    "教务的课表页里没有读到作息时间（表头里没有 (HH:mm-HH:mm) 形式的节次时间），已用适配器内置的 10 节作息表（第 1 节 08:00-08:45）：这张表是上游脚本按常见高职作息写的占位值，可能与学校实际作息不符，请在学期管理里核对",
+    "有 5 个周次超出载荷能表示的 1-30 周（教务给出的周次不寻常），已按上限截断，这些周的课会少",
+    "有 1 个课程数据块的周次位图里有既不是 0 也不是 1 的字符，这些块的周次不可信，已整块跳过，请核对",
+    "课表里共有 5 个课程数据块，其中 2 个没能放进课表（周次位图里没有任何周（1 个）、周次只落在超出上限的周（1 个）），这些课会少，请核对"
+  ],
+  "terms": [
+    {
+      "name": "2026-2027学年第一学期",
+      "firstDay": "2026-09-07",
+      "totalWeeks": 30,
+      "periodTimes": [
+        {
+          "periodIndex": 1,
+          "start": "08:00",
+          "end": "08:45"
+        },
+        {
+          "periodIndex": 2,
+          "start": "08:55",
+          "end": "09:40"
+        },
+        {
+          "periodIndex": 3,
+          "start": "10:00",
+          "end": "10:45"
+        },
+        {
+          "periodIndex": 4,
+          "start": "10:55",
+          "end": "11:40"
+        },
+        {
+          "periodIndex": 5,
+          "start": "14:30",
+          "end": "15:15"
+        },
+        {
+          "periodIndex": 6,
+          "start": "15:25",
+          "end": "16:10"
+        },
+        {
+          "periodIndex": 7,
+          "start": "16:30",
+          "end": "17:15"
+        },
+        {
+          "periodIndex": 8,
+          "start": "17:25",
+          "end": "18:10"
+        },
+        {
+          "periodIndex": 9,
+          "start": "19:30",
+          "end": "20:15"
+        },
+        {
+          "periodIndex": 10,
+          "start": "20:25",
+          "end": "21:10"
+        }
+      ],
+      "courses": [
+        {
+          "name": "体育(一)",
+          "teacher": "吴敏",
+          "note": null,
+          "blocks": [
+            {
+              "dayOfWeek": 2,
+              "startPeriod": 3,
+              "endPeriod": 4,
+              "startWeek": 1,
+              "endWeek": 16,
+              "weekType": "ALL",
+              "location": "田径场"
+            }
+          ]
+        },
+        {
+          "name": "创新创业实践",
+          "teacher": "何静",
+          "note": null,
+          "blocks": [
+            {
+              "dayOfWeek": 4,
+              "startPeriod": 3,
+              "endPeriod": 3,
+              "startWeek": 5,
+              "endWeek": 5,
+              "weekType": "ALL",
+              "location": "创客空间"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

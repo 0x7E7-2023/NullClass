@@ -1,0 +1,9 @@
+{
+  "_note": "合成 fixture：第二学期 + 教务的学期起始日不是周一。课名、教师、教室均为虚构，不是真实抓取。\n① 当前学期 id 20252（2025-2026 第 2 学期），startDate 2026-02-25（星期三）、endDate 2026-07-05：\n   第 1 周必须回退到那一周的周一 2026-02-23（手册 §4.3），并写一条 warnings 说明回退了。\n② 总周数由起止日期算出 = 19 周（课表里最晚只到第 16 周，所以 19 只可能来自教务的学期列表）。\n③ 学期名用教务的学年与第几学期拼成「2025-2026学年第二学期」（别用适配器名当学期名）。\n④ 同一门课同一天的两段 index（0*unitCount+2 与 2*unitCount+2）落在两天 → 两条 block，\n   都在 1-16 周。",
+  "url": "http://jwgl2018.xatu.edu.cn/eams/courseTableForStd.action",
+  "today": "2026-03-02",
+  "tagId": "semesterBar20826294511Semester",
+  "currentSemesterId": "20252",
+  "semesterRaw": "{semesters:{\"2025-2026\":[{id:20251,schoolYear:\"2025-2026\",name:\"1\",startDate:\"2025-09-08\",endDate:\"2026-01-25\"},{id:20252,schoolYear:\"2025-2026\",name:\"2\",startDate:\"2026-02-25\",endDate:\"2026-07-05\"}]},semesterId:20252}",
+  "courseTableHtml": "var unitCount = 14;\n<script type=\"text/javascript\">\nvar teachers = [{id:\"t1\",name:\"田甜\",color:\"#000000\"}];\nactivity = new TaskActivity(\"1\",\"田甜\",\"\",\"中国近现代史纲要\",\"\",\"文科楼D-101\",\"011111111111111110000\");\nindex = 0*unitCount+2;\nindex = 2*unitCount+2;\n\n</script>\n<script type=\"text/javascript\">\nvar teachers = [{id:\"t1\",name:\"石磊\",color:\"#000000\"}];\nactivity = new TaskActivity(\"2\",\"石磊\",\"\",\"概率论与数理统计\",\"\",\"教学楼A-205\",\"011111111111111110000\");\nindex = 1*unitCount+0;\n\n</script>\n"
+}

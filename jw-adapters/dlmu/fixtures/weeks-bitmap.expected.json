@@ -1,0 +1,180 @@
+{
+  "specVersion": 1,
+  "kind": "schedule",
+  "ocrAssisted": false,
+  "warnings": [
+    "只导入了教务系统当前选中的学期（2025-2026 第2学期）；要导入别的学期，请在教务页面里切到那个学期再点「提取课表」",
+    "教务系统没有给出可用的学期起始日期，第 1 周按「教务没有给出学期起始日期，第二学期按 2 月 20 日所在的那一周推算」推算为 2026-02-16，请在学期管理里核对成学校实际开学日",
+    "学期总周数用的是适配器内置的 20 周（教务没有给出学期周数，这个数字取自上游同族脚本的缺省值），但课表里有第 30 周的课，已按 30 周导入（否则那几周的课放不下），如与实际不符可在学期管理里改",
+    "作息时间用的是适配器内置的大连海事大学 10 节作息表（第 1 节 08:00-08:45），出自上游脚本、没有向教务核对过，如与学校实际作息不符请在学期管理里改",
+    "周次位图的第 0 位为 1，与同族约定的「第 0 位是占位符」不符，已按忽略处理（否则会产出不存在的「第 0 周」），请在导入预览里核对周次",
+    "有 3 个周次位超过 30 周，已丢弃（教务给出的周次位图不正常）",
+    "有 1 段课表的周次位图里没有任何有效周次，这些课已被跳过：教务数据不完整时会出现，如发现少课请反馈"
+  ],
+  "terms": [
+    {
+      "name": "2025-2026 第2学期",
+      "firstDay": "2026-02-16",
+      "totalWeeks": 30,
+      "periodTimes": [
+        {
+          "periodIndex": 1,
+          "start": "08:00",
+          "end": "08:45"
+        },
+        {
+          "periodIndex": 2,
+          "start": "08:50",
+          "end": "09:35"
+        },
+        {
+          "periodIndex": 3,
+          "start": "10:00",
+          "end": "10:45"
+        },
+        {
+          "periodIndex": 4,
+          "start": "10:50",
+          "end": "11:35"
+        },
+        {
+          "periodIndex": 5,
+          "start": "13:30",
+          "end": "14:15"
+        },
+        {
+          "periodIndex": 6,
+          "start": "14:20",
+          "end": "15:05"
+        },
+        {
+          "periodIndex": 7,
+          "start": "15:30",
+          "end": "16:15"
+        },
+        {
+          "periodIndex": 8,
+          "start": "16:20",
+          "end": "17:05"
+        },
+        {
+          "periodIndex": 9,
+          "start": "18:00",
+          "end": "18:45"
+        },
+        {
+          "periodIndex": 10,
+          "start": "18:50",
+          "end": "19:35"
+        }
+      ],
+      "courses": [
+        {
+          "name": "位图基准课",
+          "teacher": "甲老师",
+          "note": null,
+          "blocks": [
+            {
+              "dayOfWeek": 1,
+              "startPeriod": 1,
+              "endPeriod": 1,
+              "startWeek": 1,
+              "endWeek": 2,
+              "weekType": "ALL",
+              "location": "教一"
+            }
+          ]
+        },
+        {
+          "name": "隔周课",
+          "teacher": "丙老师",
+          "note": null,
+          "blocks": [
+            {
+              "dayOfWeek": 2,
+              "startPeriod": 2,
+              "endPeriod": 2,
+              "startWeek": 1,
+              "endWeek": 7,
+              "weekType": "ODD",
+              "location": "教三"
+            }
+          ]
+        },
+        {
+          "name": "双周课",
+          "teacher": "丁老师",
+          "note": null,
+          "blocks": [
+            {
+              "dayOfWeek": 3,
+              "startPeriod": 3,
+              "endPeriod": 3,
+              "startWeek": 4,
+              "endWeek": 10,
+              "weekType": "EVEN",
+              "location": "教四"
+            }
+          ]
+        },
+        {
+          "name": "连堂单周课",
+          "teacher": "戊老师",
+          "note": null,
+          "blocks": [
+            {
+              "dayOfWeek": 5,
+              "startPeriod": 1,
+              "endPeriod": 2,
+              "startWeek": 1,
+              "endWeek": 3,
+              "weekType": "ODD",
+              "location": "教五"
+            }
+          ]
+        },
+        {
+          "name": "超限课",
+          "teacher": "己老师",
+          "note": null,
+          "blocks": [
+            {
+              "dayOfWeek": 6,
+              "startPeriod": 6,
+              "endPeriod": 6,
+              "startWeek": 1,
+              "endWeek": 1,
+              "weekType": "ALL",
+              "location": "教六"
+            },
+            {
+              "dayOfWeek": 6,
+              "startPeriod": 6,
+              "endPeriod": 6,
+              "startWeek": 30,
+              "endWeek": 30,
+              "weekType": "ALL",
+              "location": "教六"
+            }
+          ]
+        },
+        {
+          "name": "混合课",
+          "teacher": "庚老师",
+          "note": null,
+          "blocks": [
+            {
+              "dayOfWeek": 7,
+              "startPeriod": 9,
+              "endPeriod": 9,
+              "startWeek": 2,
+              "endWeek": 6,
+              "weekType": "EVEN",
+              "location": "教七"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,13 @@
+{
+  "_note": "合成数据，不是真实抓取：形状照上游 HUNNU/hunnu.js 实际解析的课表页 HTML 编。这一份专测四件边界：① 尾部写成 index = 62（已经算好的裸数字，尾巴上同时有 activity.id = 301 这种干扰项）—— 必须按课表页里的 unitCount（13 节）反推成星期五第 11 节，并写一条 warnings；② actTeachers 里的教师名带转义的双引号（陈\"引号\"老师）—— 必须正确还原，不能被当成字符串结束；③ 第二个块的教师数组里没有 name 字段 —— teacher 必须留空（null），不能写「未知教师」；④ 整页没有 table0.marshalTable —— 块边界只能靠下一个 var actTeachers 和文末判定，最后的块不能丢。另外这一份里页面上的 unitCount（14）与课表页里的（13）故意不一致，用来测「以课表页为准 + 写 warnings」。课程名/教师/教室均为虚构。拿到真实 dump 请替换这一对 fixture。",
+  "html": "<html><head><title>学生课表</title></head><body><script type=\"text/javascript\">\nvar unitCount = 13;\nvar actTeachers = [{id: 0, name: \"陈\\\"引号\\\"老师\", lab: false}];\nvar activity = new TaskActivity(\"1100001\",\"陈\\\"引号\\\"老师\",\"\",\"大学物理实验(二)(物理类)\",\"\",\"实验楼401\",\"10000000000000100000000000000000\");\nactivity.id = 301;\nindex = 62;\nvar actTeachers = [{id: 1, lab: true}];\nvar activity = new TaskActivity(\"1100002\",\"\",\"\",\"声乐基础(艺术类)\",\"\",\"音乐楼203\",\"01000000000000000000000000000000\");\nactivity.id = 302;\nindex = 3*unitCount+2;\n</script></body></html>",
+  "source": "iframe",
+  "clicked": false,
+  "frameFound": true,
+  "url": "https://jwglnew.hunnu.edu.cn/eams/courseTableForStd.action",
+  "title": "学生课表",
+  "today": "2026-09-16",
+  "unitCount": 14,
+  "currentWeek": 3,
+  "semesterLabels": []
+}

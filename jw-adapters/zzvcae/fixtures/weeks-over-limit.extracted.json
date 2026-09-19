@@ -1,0 +1,27 @@
+{
+  "_note": "合成 fixture（不是真实抓取）：按上游 ZZVCAE/zzvcae.js 实际读取的形状（TaskActivity 参数位、周次位图、index = 星期*unitCount+节次、th id=\"0_节次\" 的作息表头）编造，课程 / 教师 / 教室均为虚构，无真实个人信息（学号也留在 extract 里请求用、不进 fixture）。只保证「同样的输入永远得到同样的输出」，不保证解析在真实页面上是对的（见 docs/jw-adapter-testing.md §3）。",
+  "_case": "周次越界、异常位图与总周数上限：① 一门课的周次全在第 31-34 周（全部超上限 → 该块整块进不了课表并计数）② 一门课周次横跨上限（第 5 周与第 70 周 → 第 5 周保留、第 70 周截断）③ 位图全是 0（老师还没排周次）④ 位图里出现 x 这类非 0/1 字符（该块不可信，整块跳过）⑤ 教务的学期校历给 40 周（超过载荷上限 30 → 夹到 30 并说明）",
+  "semesterId": "12",
+  "semester": {
+    "id": "12",
+    "schoolYear": "2026-2027",
+    "term": "1",
+    "startDate": "2026-09-07",
+    "endDate": "2027-01-10"
+  },
+  "semesters": [
+    {
+      "id": "12",
+      "schoolYear": "2026-2027",
+      "term": "1",
+      "startDate": "2026-09-07",
+      "endDate": "2027-01-10"
+    }
+  ],
+  "currentSemesterId": "12",
+  "pageHtml": null,
+  "weekHtml": "var unitCount = 12;\nvar teachers = [{\"id\":1,\"name\":\"吴敏\",\"lab\":false}];\nvar actTeachers = [{\"id\":1,\"name\":\"吴敏\",\"lab\":false}];\nvar table0 = new TaskActivity(1234,argsTeacher,3,\"体育(一)\",nil,\"田径场\",\"011111111111111110000000000000000000000000000000000000000000000000000000000000000\",nil,nil,nil,nil);\nindex =1*unitCount+2;\nactivity = table0;\nindex =1*unitCount+3;\nactivity = table0;\nvar teachers = [{\"id\":10,\"name\":\"郑凯\",\"lab\":false}];\nvar actTeachers = [{\"id\":10,\"name\":\"郑凯\",\"lab\":false}];\nvar table1 = new TaskActivity(1234,argsTeacher,3,\"顶岗实习\",nil,\"校外\",\"000000000000000000000000000000011110000000000000000000000000000000000000000000000\",nil,nil,nil,nil);\nindex =2*unitCount+0;\nactivity = table1;\nvar teachers = [{\"id\":20,\"name\":\"何静\",\"lab\":false}];\nvar actTeachers = [{\"id\":20,\"name\":\"何静\",\"lab\":false}];\nvar table2 = new TaskActivity(1234,argsTeacher,3,\"创新创业实践\",nil,\"创客空间\",\"000001000000000000000000000000000000000000000000000000000000000000000010000000000\",nil,nil,nil,nil);\nindex =3*unitCount+2;\nactivity = table2;\nvar teachers = [{\"id\":30,\"name\":\"马涛\",\"lab\":false}];\nvar actTeachers = [{\"id\":30,\"name\":\"马涛\",\"lab\":false}];\nvar table3 = new TaskActivity(1234,argsTeacher,3,\"军事理论\",nil,\"教1-101\",\"000000000000000000000000000000000000000000000000000000000000000000000000000000000\",nil,nil,nil,nil);\nindex =0*unitCount+0;\nactivity = table3;\nvar teachers = [{\"id\":40,\"name\":\"许静\",\"lab\":false}];\nvar actTeachers = [{\"id\":40,\"name\":\"许静\",\"lab\":false}];\nvar table4 = new TaskActivity(1234,argsTeacher,3,\"心理健康教育\",nil,\"教2-202\",\"0000100x000000000000\",nil,nil,nil,nil);\nindex =4*unitCount+1;\nactivity = table4;\n",
+  "calendarHtml": "开始 / 结束日期：2026-09-07 ~ 2027-06-13 (40 周)",
+  "lastTimeHtml": null,
+  "today": "2026-09-16"
+}

@@ -1,0 +1,59 @@
+{
+  "specVersion": 1,
+  "kind": "schedule",
+  "ocrAssisted": false,
+  "warnings": [
+    "只导入了教务系统的一个学期（2026-2027学年第一学期，按教务学期日历标出的当前学期自动选中）；要导入别的学期，请在教务页面里切到那个学期再点「提取课表」",
+    "开学日期取自教务给的学期起始日期（2026-08-31）所在周的周一：2026-08-31，请在学期管理里核对成学校实际开学日",
+    "学期总周数用的是教务给出的学期起止日期（19 周），如与实际不符可在学期管理里改",
+    "作息时间用的是适配器内置的天津农学院 11 节作息表（第 1 节 08:30-09:15，来自上游脚本的内置表，不是从教务读的），如与学校实际作息不符请在学期管理里改",
+    "有 3 个活动的周次位图第 0 位是 1（同族约定里这一位是占位符，不是第 0 周），已按忽略处理，请在导入预览里核对这些课的周次",
+    "有 1 个活动的周次位图是空的或一个 1 都没有，这些课没有可导入的周次，已跳过"
+  ],
+  "terms": [
+    {
+      "name": "2026-2027学年第一学期",
+      "firstDay": "2026-08-31",
+      "totalWeeks": 19,
+      "periodTimes": [
+        { "periodIndex": 1, "start": "08:30", "end": "09:15" },
+        { "periodIndex": 2, "start": "09:20", "end": "10:05" },
+        { "periodIndex": 3, "start": "10:25", "end": "11:10" },
+        { "periodIndex": 4, "start": "11:15", "end": "12:00" },
+        { "periodIndex": 5, "start": "14:00", "end": "14:45" },
+        { "periodIndex": 6, "start": "14:50", "end": "15:35" },
+        { "periodIndex": 7, "start": "15:55", "end": "16:40" },
+        { "periodIndex": 8, "start": "16:45", "end": "17:30" },
+        { "periodIndex": 9, "start": "18:30", "end": "19:15" },
+        { "periodIndex": 10, "start": "19:20", "end": "20:05" },
+        { "periodIndex": 11, "start": "20:10", "end": "20:55" }
+      ],
+      "courses": [
+        {
+          "name": "军事理论",
+          "teacher": "孙磊",
+          "note": null,
+          "blocks": [
+            { "dayOfWeek": 3, "startPeriod": 5, "endPeriod": 6, "startWeek": 1, "endWeek": 1, "weekType": "ALL", "location": "教3-105" }
+          ]
+        },
+        {
+          "name": "大学物理",
+          "teacher": "吴斌",
+          "note": null,
+          "blocks": [
+            { "dayOfWeek": 4, "startPeriod": 7, "endPeriod": 7, "startWeek": 2, "endWeek": 16, "weekType": "ALL", "location": "综合楼C401" }
+          ]
+        },
+        {
+          "name": "线性代数",
+          "teacher": "周敏",
+          "note": null,
+          "blocks": [
+            { "dayOfWeek": 2, "startPeriod": 1, "endPeriod": 2, "startWeek": 1, "endWeek": 16, "weekType": "ALL", "location": "教2-201" }
+          ]
+        }
+      ]
+    }
+  ]
+}

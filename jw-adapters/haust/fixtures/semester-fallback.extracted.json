@@ -1,0 +1,216 @@
+{
+  "url": "https://jw.haust.edu.cn/eams/courseTableForStd.action",
+  "title": "学生课表",
+  "today": "2026-08-20",
+  "source": "current",
+  "frames": 0,
+  "semesters": [
+    {
+      "schoolYear": "2024-2025",
+      "name": "1",
+      "startDate": "2024-09-02",
+      "endDate": "2025-01-17"
+    },
+    {
+      "schoolYear": "2025-2026",
+      "name": "2",
+      "startDate": "2026-02-23",
+      "endDate": "2026-07-10"
+    },
+    {
+      "schoolYear": "2026-2027",
+      "name": "1",
+      "startDate": "2026-09-07",
+      "endDate": "2027-01-15"
+    }
+  ],
+  "semesterGroups": [],
+  "semesterError": null,
+  "semesterSample": "",
+  "days": [
+    {
+      "row": 0,
+      "col": 1,
+      "text": "星期一"
+    },
+    {
+      "row": 0,
+      "col": 2,
+      "text": "星期二"
+    },
+    {
+      "row": 0,
+      "col": 3,
+      "text": "星期三"
+    },
+    {
+      "row": 0,
+      "col": 4,
+      "text": "星期四"
+    },
+    {
+      "row": 0,
+      "col": 5,
+      "text": "星期五"
+    },
+    {
+      "row": 0,
+      "col": 6,
+      "text": "星期六"
+    },
+    {
+      "row": 0,
+      "col": 7,
+      "text": "星期日"
+    }
+  ],
+  "periods": [
+    {
+      "index": 1,
+      "start": "08:00",
+      "end": "08:45",
+      "row": 1,
+      "col": 0
+    },
+    {
+      "index": 2,
+      "start": "08:50",
+      "end": "09:35",
+      "row": 2,
+      "col": 0
+    },
+    {
+      "index": 3,
+      "start": "10:00",
+      "end": "10:45",
+      "row": 3,
+      "col": 0
+    },
+    {
+      "index": 4,
+      "start": "10:50",
+      "end": "11:35",
+      "row": 4,
+      "col": 0
+    }
+  ],
+  "cells": [
+    {
+      "row": 0,
+      "col": 0,
+      "span": 1,
+      "id": "",
+      "className": "title",
+      "text": "节次",
+      "title": ""
+    },
+    {
+      "row": 0,
+      "col": 1,
+      "span": 1,
+      "id": "",
+      "className": "title",
+      "text": "星期一",
+      "title": ""
+    },
+    {
+      "row": 0,
+      "col": 2,
+      "span": 1,
+      "id": "",
+      "className": "title",
+      "text": "星期二",
+      "title": ""
+    },
+    {
+      "row": 0,
+      "col": 3,
+      "span": 1,
+      "id": "",
+      "className": "title",
+      "text": "星期三",
+      "title": ""
+    },
+    {
+      "row": 0,
+      "col": 4,
+      "span": 1,
+      "id": "",
+      "className": "title",
+      "text": "星期四",
+      "title": ""
+    },
+    {
+      "row": 0,
+      "col": 5,
+      "span": 1,
+      "id": "",
+      "className": "title",
+      "text": "星期五",
+      "title": ""
+    },
+    {
+      "row": 0,
+      "col": 6,
+      "span": 1,
+      "id": "",
+      "className": "title",
+      "text": "星期六",
+      "title": ""
+    },
+    {
+      "row": 0,
+      "col": 7,
+      "span": 1,
+      "id": "",
+      "className": "title",
+      "text": "星期日",
+      "title": ""
+    },
+    {
+      "row": 1,
+      "col": 0,
+      "span": 1,
+      "id": "",
+      "className": "section",
+      "text": "第1节08:00-08:45",
+      "title": ""
+    },
+    {
+      "row": 2,
+      "col": 0,
+      "span": 1,
+      "id": "",
+      "className": "section",
+      "text": "第2节08:50-09:35",
+      "title": ""
+    },
+    {
+      "row": 3,
+      "col": 0,
+      "span": 1,
+      "id": "",
+      "className": "section",
+      "text": "第3节10:00-10:45",
+      "title": ""
+    },
+    {
+      "row": 4,
+      "col": 0,
+      "span": 1,
+      "id": "",
+      "className": "section",
+      "text": "第4节10:50-11:35",
+      "title": ""
+    },
+    {
+      "row": 2,
+      "col": 2,
+      "span": 1,
+      "id": "TD7_2",
+      "className": "infoTitle",
+      "text": "数据结构贺敏1-12周教1-305",
+      "title": "数据结构(202520261.11204001.001)(贺敏)(1-12周,2节,教1-305)"
+    }
+  ]
+}

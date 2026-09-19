@@ -1,0 +1,16 @@
+{
+  "_note": "合成 fixture：按上游 DLMU/dlmu_01.js 实际读取的形状编造，**不是真实抓取**（见 docs/jw-adapter-testing.md §3）。上游从 courseTableForStd!courseTable.action 的响应里抓 var teachers=[...] 与 activity = new TaskActivity(...)，用 index = 星期*unitCount+节次 定位；本件改成纯正则解析、不执行表达式。课名/教师/教室/日期均为虚构，无真实个人信息。覆盖：连堂合并（周一第 1-2 节 + 第 3-4 节 → 1-4 节）、完全重复的 activity 去重、同一门课的分段周次（1-16 周 + 13-16 周）、单周（1-15 奇数位）、单周段（3-15 奇数位）、教师写成 actTeachers.join(',')（从紧邻其前的 var teachers 块取名）、位图全 0（整段跳过并计数）、位图第 0 位为 1（占位符，不产出第 0 周）、周次到第 30 周（把总周数从教务给的 20 抬到 30）、课程名末尾的课程代码 (5034001234.50)、空教室。教务给了学期起始日期 2026-09-09（周三）与学期周数 20。",
+  "today": "2026-09-16",
+  "term": {
+    "id": "223",
+    "kind": "1",
+    "schoolYear": "2026-2027",
+    "label": "2026-2027 第1学期",
+    "name": "2026-2027 第1学期",
+    "startDate": "2026-09-09",
+    "weekCount": 20
+  },
+  "unitCountPage": 10,
+  "ids": "2220260001",
+  "tableHtml": "<html><head><title>学生课表</title><script type='text/javascript'> var unitCount = 10; </script></head><body><div id='manualArrangeCourseTable'></div><script type='text/javascript'> var teachers = [{id:'T1001', name:'陈立群'}]; var actTeachers = [{id:'T1001', name:'陈立群'}]; activity = new TaskActivity('1','陈立群','MATH1001(5.0)','高等数学A(一)','','教学楼A-301','01111111111111111000000000000000000000000000000000000'); index = 0*unitCount+0; index = 0*unitCount+1; activity = new TaskActivity('1','陈立群','MATH1001(5.0)','高等数学A(一)','','教学楼A-301','01111111111111111000000000000000000000000000000000000'); index = 0*unitCount+0; index = 0*unitCount+1; var teachers = [{id:'T1001', name:'陈立群'}]; var actTeachers = [{id:'T1001', name:'陈立群'}]; activity = new TaskActivity('2',actTeachers.join(','),'MATH1001(5.0)','高等数学A(一)','','教学楼A-301','00000000000001111000000000000000000000000000000000000'); index = 0*unitCount+2; index = 0*unitCount+3; activity = new TaskActivity('3','林雅琴','ENGL1003(2.0)','大学英语(三)','','教学楼B-205','01010101010101010000000000000000000000000000000000000'); index = 2*unitCount+2; index = 2*unitCount+3; activity = new TaskActivity('4','王志远','PHYS1001(3.0)','大学物理(一)','','实验楼C-208','00010101010101010000000000000000000000000000000000000'); index = 3*unitCount+4; activity = new TaskActivity('5','赵斌','CS1001(4.0)','程序设计基础','','计算机楼B-101','00000000000001111000000000000000000000000000000000000'); index = 5*unitCount+2; index = 5*unitCount+3; activity = new TaskActivity('6','周敏','CS1002(4.0)','数据结构','','计算机楼B-102','00000000000001111000000000000000000000000000000000000'); index = 5*unitCount+3; activity = new TaskActivity('11','钱伟','GEO1001(2.0)','地质学基础','','教学楼H-101','01111111111111111000000000000000000000000000000000000'); index = 5*unitCount+0; index = 5*unitCount+2; activity = new TaskActivity('7','孙浩','POL1001(1.0)','形势与政策','','','10000000000000001111111111111110000000000000000000000'); index = 4*unitCount+8; activity = new TaskActivity('8','李娜','PE1003(1.0)','体育(三)','','田径场','00000000000000000001111111111110000000000000000000000'); index = 6*unitCount+7; activity = new TaskActivity('9','王强','GRAD1001(8.0)','毕业设计(5034001234.50)','','教学楼G-501','01111111111111111000000000000000000000000000000000000'); index = 6*unitCount+3; activity = new TaskActivity('10','郑凯','MIL1001(2.0)','军事理论','','教学楼A-401','00000000000000000000000000000000000000000000000000000'); index = 6*unitCount+8; </script></body></html>"
+}

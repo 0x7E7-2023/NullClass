@@ -1,0 +1,9 @@
+{
+  "_note": "合成 fixture：位图基准的对照用例（本批检查表第 1 条要求「一条第 0 位为 1、一条第 1 位为 1」）。\n课名、教师、教室均为虚构，不是真实抓取。\n① 「线性代数」的位图 110000000000000000000 → 第 0 位是 1：按同族统一口径（位图下标即周次、\n   下标 0 是占位符）不产出「第 0 周」，只产出第 1 周，并写一条 warnings。\n   上游 XATU/myschool.js 的 for (j=0; j<len; j++) if (bitmap[j]==='1') weeks.push(j)\n   在这一条上会产出「第 0 周」—— 载荷校验会拒掉整包，这正是本件要改的地方。\n② 「理论力学」的位图第 12 位是 1 → 第 12 周（下标即周次）。\n③ 「大学化学」的位图第 1-16 位是 1、第 31 位也是 1 → 1-16 周 + 第 31 位超出 1-30 被丢弃\n   并写一条 warnings。\n④ semesterRaw 是空串：教务没给学期列表 → 学期名、开学日、总周数全部推算并逐条进 warnings，\n   总周数取课表里最晚的第 16 周。",
+  "url": "http://jwgl2018.xatu.edu.cn/eams/courseTableForStd.action",
+  "today": "2026-09-20",
+  "tagId": "semesterBar20826294511Semester",
+  "currentSemesterId": "",
+  "semesterRaw": "",
+  "courseTableHtml": "var unitCount = 14;\n<script type=\"text/javascript\">\nvar teachers = [{id:\"t1\",name:\"钱伟\",color:\"#000000\"}];\nactivity = new TaskActivity(\"1\",\"钱伟\",\"\",\"线性代数\",\"\",\"教2-305\",\"110000000000000000000\");\nindex = 0*unitCount+0;\nindex = 0*unitCount+1;\n\n</script>\n<script type=\"text/javascript\">\nvar teachers = [{id:\"t1\",name:\"吴静\",color:\"#000000\"}];\nactivity = new TaskActivity(\"2\",\"吴静\",\"\",\"理论力学\",\"\",\"教2-401\",\"000000000000100000000\");\nindex = 1*unitCount+2;\n\n</script>\n<script type=\"text/javascript\">\nvar teachers = [{id:\"t1\",name:\"郑凯\",color:\"#000000\"}];\nactivity = new TaskActivity(\"3\",\"郑凯\",\"\",\"大学化学\",\"\",\"化学楼A-102\",\"011111111111111110000000000000010\");\nindex = 2*unitCount+3;\n\n</script>\n"
+}

@@ -1,0 +1,31 @@
+{
+  "_note": "合成 fixture（同上，非真实抓取）。本用例把「位图基准」钉死，用的是「编码基」位图（第 0 位是占位符，1 落在奇数下标上；与上游 cuit 注释里「5-7-1…」那种奇数开头一致）：三条课程的位图分别是 ① 只有第 0 位是 1（占位符 → 必须不产出周次，课程被跳过并进 warnings）② 第 1、3..15 位是 1（→ 奇数周 1..15）③ 第 2、4..58 位是 1（→ 第 2..58 周，超 30 的一律截断并进 warnings）。若把基准改成上游的 i + 1，②的周次会整体后移一位（第 2..16 周）；若去掉 i >= 1，①会产出「第 0 周」而不是进 warnings —— 两种改坏都会让本用例变红。",
+  "term": {
+    "id": "20826294511",
+    "name": "2026-2027学年第一学期",
+    "rawName": "1",
+    "schoolYear": "2026-2027",
+    "startDate": "2026-09-07",
+    "endDate": "2027-01-17"
+  },
+  "today": "2026-09-16",
+  "semesters": [
+    {
+      "id": "20826294502",
+      "name": "2025-2026学年第二学期",
+      "schoolYear": "2025-2026",
+      "startDate": "2026-02-23",
+      "endDate": "2026-07-05"
+    },
+    {
+      "id": "20826294511",
+      "name": "2026-2027学年第一学期",
+      "schoolYear": "2026-2027",
+      "startDate": "2026-09-07",
+      "endDate": "2027-01-17"
+    }
+  ],
+  "raw": {
+    "tableHtml": "var unitCount = 12;\n<html><head><title>学生课表</title></head><body>\ntable0 = new Object();\nvar teachers = [{id:1,name:\"孙倩\",code:\"T1\"}];\nvar actTeachers = [{id:1,name:\"孙倩\",code:\"T1\"}];\n\nactivity = new TaskActivity(\"1010\",actTeacherName.join(\",\"),\"计算机网络\",\"计算机网络(2600120030.01)\",\"\",\"实验楼C401\",\"1\",\"\",\"\",\"\",\"\",\"\");\nindex = 0*unitCount+0;\n\nvar teachers = [{id:1,name:\"何冬梅\",code:\"T1\"}];\nvar actTeachers = [{id:1,name:\"何冬梅\",code:\"T1\"}];\n\nactivity = new TaskActivity(\"1011\",actTeacherName.join(\",\"),\"操作系统\",\"操作系统(2600120040.02)\",\"\",\"教2-208\",\"010101010101010100000000000000000000000000000000000000000000\",\"\",\"\",\"\",\"\",\"\");\nindex = 1*unitCount+2;\n\nvar teachers = [{id:1,name:\"罗建平\",code:\"T1\"}];\nvar actTeachers = [{id:1,name:\"罗建平\",code:\"T1\"}];\n\nactivity = new TaskActivity(\"1012\",actTeacherName.join(\",\"),\"编译原理\",\"编译原理(2600120050.03)\",\"\",\"教3-105\",\"001010101010101010101010101010101010101010101010101010101010\",\"\",\"\",\"\",\"\",\"\");\nindex = 3*unitCount+5;\n\ntable0.marshalTable();\n</body></html>"
+  }
+}

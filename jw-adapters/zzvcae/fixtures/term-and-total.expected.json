@@ -1,0 +1,54 @@
+{
+  "specVersion": 1,
+  "kind": "schedule",
+  "ocrAssisted": false,
+  "warnings": [
+    "教务系统没有给出学期名（学期列表里没有这个学期的条目），学期名按「2026-2027 学年 + 课表里的最晚周次（第 26 周）」猜成了「2026-2027学年（第 1 学期）」，请在学期管理里核对",
+    "开学日期取自教务系统的学期日期：2026-09-07 所在周的第 1 天是 2026-09-07，已按它作为第 1 周的开始，请在学期管理里核对成学校实际开学日",
+    "学期总周数用的是教务给出的学期起止日期（2026-09-07 到 2027-01-10），共 18 周，但课表里有第 26 周的课，已按 26 周导入（否则那几周的课放不下），如与实际不符可在学期管理里改"
+  ],
+  "terms": [
+    {
+      "name": "2026-2027学年（第 1 学期）",
+      "firstDay": "2026-09-07",
+      "totalWeeks": 26,
+      "periodTimes": [
+        { "periodIndex": 1, "start": "08:00", "end": "08:45" },
+        { "periodIndex": 2, "start": "08:55", "end": "09:40" },
+        { "periodIndex": 3, "start": "10:00", "end": "10:45" },
+        { "periodIndex": 4, "start": "10:55", "end": "11:40" },
+        { "periodIndex": 5, "start": "14:30", "end": "15:15" },
+        { "periodIndex": 6, "start": "15:25", "end": "16:10" },
+        { "periodIndex": 7, "start": "16:30", "end": "17:15" },
+        { "periodIndex": 8, "start": "17:25", "end": "18:10" }
+      ],
+      "courses": [
+        {
+          "name": "高等数学(一)",
+          "teacher": "张伟",
+          "note": null,
+          "blocks": [
+            { "dayOfWeek": 1, "startPeriod": 1, "endPeriod": 4, "startWeek": 1, "endWeek": 26, "weekType": "ALL", "location": "教1-101" }
+          ]
+        },
+        {
+          "name": "大学英语(一)",
+          "teacher": "李娜,王强",
+          "note": null,
+          "blocks": [
+            { "dayOfWeek": 2, "startPeriod": 1, "endPeriod": 4, "startWeek": 1, "endWeek": 15, "weekType": "ODD", "location": "教2-305" }
+          ]
+        },
+        {
+          "name": "计算机应用基础",
+          "teacher": "陈静",
+          "note": null,
+          "blocks": [
+            { "dayOfWeek": 3, "startPeriod": 3, "endPeriod": 4, "startWeek": 1, "endWeek": 8, "weekType": "ALL", "location": "机房3-201" },
+            { "dayOfWeek": 5, "startPeriod": 3, "endPeriod": 4, "startWeek": 1, "endWeek": 8, "weekType": "ALL", "location": "机房3-201" }
+          ]
+        }
+      ]
+    }
+  ]
+}

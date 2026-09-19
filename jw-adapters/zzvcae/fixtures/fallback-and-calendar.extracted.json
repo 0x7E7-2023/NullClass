@@ -1,0 +1,27 @@
+{
+  "_note": "合成 fixture（不是真实抓取）：按上游 ZZVCAE/zzvcae.js 实际读取的形状（TaskActivity 参数位、周次位图、index = 星期*unitCount+节次、th id=\"0_节次\" 的作息表头）编造，课程 / 教师 / 教室均为虚构，无真实个人信息（学号也留在 extract 里请求用、不进 fixture）。只保证「同样的输入永远得到同样的输出」，不保证解析在真实页面上是对的（见 docs/jw-adapter-testing.md §3）。",
+  "_case": "两条回退路径一起验：① 课表页表头没有节次时间、unitCount 也读不到 → 作息回落内置 10 节表、节次数用缺省 14、总周数回落内置 20 周，三条都要进 warnings；② 学期没有起止日期、calendar-info 也没有 → 开学日按最近的周一推算（今天 2026-09-17 是周四 → 2026-09-14）",
+  "semesterId": "12",
+  "semester": {
+    "id": "12",
+    "schoolYear": "2026-2027",
+    "term": "1",
+    "startDate": null,
+    "endDate": null
+  },
+  "semesters": [
+    {
+      "id": "12",
+      "schoolYear": "2026-2027",
+      "term": "1",
+      "startDate": null,
+      "endDate": null
+    }
+  ],
+  "currentSemesterId": "12",
+  "pageHtml": "<table><tr><th>第1节</th><th>第2节</th></tr></table>",
+  "weekHtml": "var teachers = [{\"id\":1,\"name\":\"刘洋\",\"lab\":false}];\nvar actTeachers = [{\"id\":1,\"name\":\"刘洋\",\"lab\":false}];\nvar table0 = new TaskActivity(1234,argsTeacher,3,\"汽车发动机构造与维修\",nil,\"实训楼B102\",\"011111111111111111100000000000000000000000000000000000000000000000000000000000000\",nil,nil,nil,nil);\nindex =4*unitCount+0;\nactivity = table0;\n",
+  "calendarHtml": null,
+  "lastTimeHtml": null,
+  "today": "2026-09-17"
+}

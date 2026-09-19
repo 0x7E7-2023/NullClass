@@ -1,0 +1,46 @@
+{
+  "specVersion": 1,
+  "key": "zzvcae",
+  "name": "郑州汽车工程职业学院",
+  "version": "1.0.0",
+  "author": "上游 Gr11nJ（MIT）；移植 0x7E-2023",
+  "homepage": "https://github.com/XingHeYuZhuan/shiguang_warehouse",
+  "loginUrl": "https://cas.zzvcae.edu.cn/cas/login",
+  "scheduleUrlHint": "https://jw.zzvcae.edu.cn/eams/courseTableForStd.action",
+  "minAppVersionCode": 11,
+  "extract": "extract.js",
+  "parse": "parse.js",
+  "allowHosts": ["jw.zzvcae.edu.cn"],
+  "fixtures": [
+    {
+      "name": "合成用例：基本课表（学期日期由教务给出、unitCount 与作息从课表页读到、连堂 1-4 节合并成一条、隔周单周、同一门课两天各两节/两个教室互不覆盖）",
+      "extracted": "fixtures/basic.extracted.json",
+      "expected": "fixtures/basic.expected.json"
+    },
+    {
+      "name": "合成用例：周次位图（第 0 位为 1 不许产生「第 0 周」、第 1 位为 1 从第 1 周起算、第 30 周是上限内的最晚周、第 31 周必须截断、开学日按周三回退到周一）",
+      "extracted": "fixtures/weeks-bitmap.extracted.json",
+      "expected": "fixtures/weeks-bitmap.expected.json"
+    },
+    {
+      "name": "合成用例：周次越界（只有第 31-34 周的块整块进不了课表、横跨上限的 5-70 周截断、位图全是 0、位图里出现非 0/1 字符 —— 四条路径都要进 warnings）",
+      "extracted": "fixtures/weeks-over-limit.extracted.json",
+      "expected": "fixtures/weeks-over-limit.expected.json"
+    },
+    {
+      "name": "合成用例：回退路径（unitCount 读不到用缺省 14、作息回落内置 10 节表、总周数回落内置 20 周、开学日按最近的周一推算 —— 四条都要进 warnings）",
+      "extracted": "fixtures/fallback-and-calendar.extracted.json",
+      "expected": "fixtures/fallback-and-calendar.expected.json"
+    },
+    {
+      "name": "合成用例：学期名与总周数都不是直接抄教务的（学期列表里没有这个学期 → 学期名按最晚周次猜并说明；课表里有第 26 周的课 → 总周数从 18 抬到 26 并说明）",
+      "extracted": "fixtures/term-and-total.extracted.json",
+      "expected": "fixtures/term-and-total.expected.json"
+    },
+    {
+      "name": "合成用例：教务连学年学期都没给（学期对象为 null、列表为空、calendar-info 也空 → 学期名回落到带校名的兜底名，不许拿适配器 key 当学期名；开学日与总周数都走回退并逐条说明）",
+      "extracted": "fixtures/no-semester.extracted.json",
+      "expected": "fixtures/no-semester.expected.json"
+    }
+  ]
+}

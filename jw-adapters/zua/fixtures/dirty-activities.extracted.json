@@ -1,0 +1,26 @@
+{
+  "_note": "合成 fixture（虚构数据，无个人信息）。脏活动用例：一条周次位图一位都没有（整条丢掉并出声）、一条 index 落在第 8 天（超范围，丢掉并出声）、一条没有 index 赋值（丢掉并出声）、一条 TaskActivity 参数不足 7 个（丢掉并出声）、一条正常的课；另外 taskActivityCount 报 9 个而正文里只有 5 个（对账出声），extractWarnings 里预置一条「学期日历没取到」的说明（证明 extract 交出来的说明会原样进载荷）。这条用例不覆盖「多条课程数据不全」的 warning：正文里只有一条正常的课，所以 skipped 计数就是全部可报的内容。",
+  "today": "2026-09-16",
+  "semester": {
+    "id": "7",
+    "name": "2026-2027学年第一学期",
+    "schoolYear": "2026-2027",
+    "term": "1"
+  },
+  "semesters": [
+    {
+      "id": "7",
+      "name": "2026-2027学年第一学期",
+      "schoolYear": "2026-2027"
+    }
+  ],
+  "currentSemesterId": "7",
+  "firstDayOfWeek": 1,
+  "taskActivityCount": 9,
+  "extractWarnings": [
+    "学期日历接口（calendar-info）没有取到数据，开学日与总周数只能推算"
+  ],
+  "tableHtml": "<table id=\"manualArrangeCourseTable\"><thead><tr><th id=\"0_0\">节次</th></tr></thead></table>",
+  "courseHtml": "<script type=\"text/javascript\">\nvar unitCount = 5;\nvar teachers = [{id: 701, name: \"潘云\"}];\nactivity = new TaskActivity(\"701\",\"潘云\",\"HIS1001\",\"中国近现代史纲要\",\"2301\",\"教6-101\",\"0011111111000000000000000000000\");\nindex = 4*unitCount+0;\nactivity = new TaskActivity(\"702\",\"潘云\",\"HIS1002\",\"世界史\",\"2302\",\"教6-102\",\"0000000000000000000000000000000\");\nindex = 4*unitCount+1;\nactivity = new TaskActivity(\"703\",\"潘云\",\"HIS1003\",\"考古学\",\"2303\",\"教6-103\",\"0011110000000000000000000000000\");\nindex = 7*unitCount+1;\nactivity = new TaskActivity(\"704\",\"潘云\",\"HIS1004\",\"博物馆学\");\n</script>\n<table id=\"manualArrangeCourseTable\"><thead><tr><th id=\"0_0\">节次</th></tr></thead></table>",
+  "calendarHtml": ""
+}

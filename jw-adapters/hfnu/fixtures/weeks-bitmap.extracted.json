@@ -1,0 +1,30 @@
+{
+  "_note": "合成 fixture：按上游 HFNU/hfnu.js 读到的课表 HTML 形状编造，不是真实抓取。本用例专门钉住**周次位图的第 0 位口径**（本批最大的坑）：一条课程的位图第 0 位是 1（第 0 位是占位符、不是「第 0 周」，本适配器按同族统一口径忽略它并进 warnings），一条从第 1 位开始（第 1 位 = 第 1 周）；另含奇数周位图、超出 1-30 周上限的第 31..35 周、全 0 的空位图、以及已算好的裸数字 index。教务没有给学期起止日期，所以开学日与总周数都走推算并进 warnings。",
+  "today": "2026-09-14",
+  "semester": {
+    "id": "405",
+    "schoolYear": "2026-2027",
+    "termName": "1",
+    "startDate": "",
+    "endDate": "",
+    "pickedBy": "today",
+    "count": 6
+  },
+  "page": {
+    "url": "https://jw.hfnu.edu.cn/eams/courseTableForStd.action",
+    "tokens": {
+      "jinxiu": false,
+      "binhu": true
+    },
+    "radios": [],
+    "sectionTimes": []
+  },
+  "bootstrap": {
+    "tokens": {
+      "jinxiu": false,
+      "binhu": false
+    },
+    "sectionTimes": []
+  },
+  "courseHtml": "<script type=\"text/javascript\">\n//<![CDATA[\nvar unitCount = 11;\n\nvar teachers = [{id:100,name:\"陈立群\"}];\nvar actTeachers = [{id:100,name:\"陈立群\"}];\nactivity = new TaskActivity(\"2001\",actTeachers.map(function(t){return t.name;}).join(\",\"),\"\",\"线性代数\",\"\",\"综合楼101\",\"01010101010101010000000000000000000000000000000000\");\nindex = 1*unitCount+0;\n\nvar teachers = [{id:100,name:\"王芳\"}];\nvar actTeachers = [{id:100,name:\"王芳\"}];\nactivity = new TaskActivity(\"2002\",\"王芳\",\"\",\"数据结构\",\"\",\"信息楼C-201\",\"11111111111111111000000000000000000000000000000000\");\nindex = 3*unitCount+6;\n\nvar teachers = [{id:100,name:\"李娜\"}];\nvar actTeachers = [{id:100,name:\"李娜\"}];\nactivity = new TaskActivity(\"2003\",\"李娜\",\"\",\"工程制图\",\"\",\"工程训练中心\",\"01111111111111111000000000000001111100000000000000\");\nindex = 5*unitCount+2;\n\nvar teachers = [{id:100,name:\"张伟\"}];\nvar actTeachers = [{id:100,name:\"张伟\"}];\nactivity = new TaskActivity(\"2004\",\"张伟\",\"\",\"现代汉语\",\"\",\"文科楼201\",\"00000000000000000000000000000000000000000000000000\");\nindex = 2*unitCount+1;\n\nvar teachers = [{id:100,name:\"刘洋\"}];\nvar actTeachers = [{id:100,name:\"刘洋\"}];\nactivity = new TaskActivity(\"2005\",\"刘洋\",\"\",\"体育(一)\",\"\",\"体育馆\",\"01111111100000000000000000000000000000000000000000\");\nindex = 21;\n//]]>\n</script>"
+}

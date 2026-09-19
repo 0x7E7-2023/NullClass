@@ -1,0 +1,13 @@
+{
+  "_note": "合成数据，不是真实抓取：形状照上游 HUNNU/hunnu.js 实际解析的课表页 HTML 编，参数位与同平台 UESTC/uestc.js 的注释一致（TaskActivity 第 1 个参数是教师、第 3 个是课名、第 5 个是教室、第 6 个是周次位图）。这一份专测**周次位图的基准**（本批统一口径：下标 i 就是第 i 周，下标 0 是占位符）：① 门课位图第 0 位是 1（必须不产生「第 0 周」、并且要进 warnings）；② 门课只有第 1 位是 1（必须得到第 1 周）；③ 单周；④ 双周。另外这一份里 title 和 semesterLabels 都不含学期名，用来测「学期名按导入日期推算」的兜底。课程名/教师/教室均为虚构。拿到真实 dump 请替换这一对 fixture。",
+  "html": "<html><head><title>学生课表</title></head><body><script type=\"text/javascript\">\nvar unitCount = 13;\nvar actTeachers = [{id: 0, name: \"周涛\", lab: false}, {id: 1, name: \"李娜\", lab: true}];\nvar activity = new TaskActivity(\"1100001\",\"周涛\",\"\",\"大学物理(二)(物理类)\",\"\",\"理学楼305\",\"10010110110000000000000000000000\");\nactivity.id = 201;\nindex = 1*unitCount+2;\ntable0.marshalTable(activity, 201);\n\nvar actTeachers = [{id: 0, name: \"陈静\", lab: true}];\nvar activity = new TaskActivity(\"1100002\",\"陈静\",\"\",\"数据结构(实验)(计算机类)\",\"\",\"机房B201\",\"01000000000000000000000000000000\");\nactivity.id = 202;\nindex = 3*unitCount+0;\ntable0.marshalTable(activity, 202);\n\nvar actTeachers = [{id: 0, name: \"刘伟\", lab: false}];\nvar activity = new TaskActivity(\"1100003\",\"刘伟\",\"\",\"线性代数(数学类)\",\"\",\"教3-401\",\"01010101010000000000000000000000\");\nactivity.id = 203;\nindex = 0*unitCount+6;\ntable0.marshalTable(activity, 203);\n\nvar actTeachers = [{id: 0, name: \"赵敏\", lab: false}];\nvar activity = new TaskActivity(\"1100004\",\"赵敏\",\"\",\"有机化学(化学类)\",\"\",\"化学楼102\",\"00101010100000000000000000000000\");\nactivity.id = 204;\nindex = 5*unitCount+3;\ntable0.marshalTable(activity, 204);\n</script></body></html>",
+  "source": "iframe",
+  "clicked": false,
+  "frameFound": true,
+  "url": "https://jwglnew.hunnu.edu.cn/eams/homeExt.action",
+  "title": "学生课表",
+  "today": "2026-09-16",
+  "unitCount": null,
+  "currentWeek": 3,
+  "semesterLabels": []
+}

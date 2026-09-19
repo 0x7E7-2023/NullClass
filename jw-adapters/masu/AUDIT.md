@@ -24,7 +24,7 @@ grep -oE "https?://[A-Za-z0-9.:-]+" jw-adapters/masu/*.js
   读 `<img>` 的地址**值**，不赋值、不发起请求，而且只在「页面上找不到课表表格」时才可能被用到）。
 - `grep -oE "https?://[A-Za-z0-9.:-]+"` 只命中三处，**全部在注释里**，没有任何一处被请求：
   `extract.js` 的文件头出处链接（上游仓库）、文件头里说明平台用的
-  `http://jwxt.masu.edu.cn:8080`（学校教务处公布的登录地址，只用于说明这是强智 eams
+  `http://jwxt.masu.edu.cn:8080`（学校教务处公布的登录地址，只用于说明这是树维 EAMS
   而不是上游标注的青果），以及 `parse.js` 文件头里的同一个出处链接。
   `fixtures/basic.extracted.json` 里的课表页地址是回归用例的输入数据，不是脚本发出的请求。
 

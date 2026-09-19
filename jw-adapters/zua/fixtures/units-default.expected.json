@@ -1,0 +1,142 @@
+{
+  "specVersion": 1,
+  "kind": "schedule",
+  "ocrAssisted": false,
+  "warnings": [
+    "只导入了教务系统当前选中的学期（2026-2027学年第一学期）；要导入别的学期，请在教务页面里切到那个学期再点「提取课表」",
+    "开学日期无法从教务获取（学期日历接口没有给出可用的开始/结束日期），已按最近的周一推算（2026-09-14），请在学期管理里核对成学校实际开学日",
+    "学期总周数教务没有给出，已按 20 周计（课表里最大的周次是 20 周），如校历不同请在学期管理里调整",
+    "作息时间取自课表表头的节次时间（共 12 节，第 1 节 08:05-08:50），如与学校实际作息不符请在节次设置里调整",
+    "课表里用到第 14 节，而作息表只到第 10 节：第 11-12 节按空课内建节次表补了时间，请核对",
+    "课表里用到第 14 节及之后，作息表里没有它们的上下课时间，课表里这几节不会显示时间",
+    "课表页面里没有读到 unitCount（一天排几节），已按上游脚本的缺省值 14 计算星期与节次，请核对课表"
+  ],
+  "terms": [
+    {
+      "name": "2026-2027学年第一学期",
+      "firstDay": "2026-09-14",
+      "totalWeeks": 20,
+      "periodTimes": [
+        {
+          "periodIndex": 1,
+          "start": "08:05",
+          "end": "08:50"
+        },
+        {
+          "periodIndex": 2,
+          "start": "08:55",
+          "end": "09:40"
+        },
+        {
+          "periodIndex": 3,
+          "start": "10:00",
+          "end": "10:45"
+        },
+        {
+          "periodIndex": 4,
+          "start": "10:55",
+          "end": "11:40"
+        },
+        {
+          "periodIndex": 5,
+          "start": "14:35",
+          "end": "15:20"
+        },
+        {
+          "periodIndex": 6,
+          "start": "15:25",
+          "end": "16:10"
+        },
+        {
+          "periodIndex": 7,
+          "start": "16:30",
+          "end": "17:15"
+        },
+        {
+          "periodIndex": 8,
+          "start": "17:25",
+          "end": "18:10"
+        },
+        {
+          "periodIndex": 9,
+          "start": "19:30",
+          "end": "20:15"
+        },
+        {
+          "periodIndex": 10,
+          "start": "20:25",
+          "end": "21:10"
+        },
+        {
+          "periodIndex": 11,
+          "start": "20:20",
+          "end": "21:05"
+        },
+        {
+          "periodIndex": 12,
+          "start": "21:15",
+          "end": "22:00"
+        }
+      ],
+      "courses": [
+        {
+          "name": "无机化学",
+          "teacher": "冯磊",
+          "note": null,
+          "blocks": [
+            {
+              "dayOfWeek": 1,
+              "startPeriod": 1,
+              "endPeriod": 2,
+              "startWeek": 5,
+              "endWeek": 5,
+              "weekType": "ALL",
+              "location": "教4-101"
+            },
+            {
+              "dayOfWeek": 1,
+              "startPeriod": 1,
+              "endPeriod": 2,
+              "startWeek": 20,
+              "endWeek": 20,
+              "weekType": "ALL",
+              "location": "教4-101"
+            }
+          ]
+        },
+        {
+          "name": "分析化学",
+          "teacher": "冯磊",
+          "note": null,
+          "blocks": [
+            {
+              "dayOfWeek": 2,
+              "startPeriod": 14,
+              "endPeriod": 14,
+              "startWeek": 2,
+              "endWeek": 2,
+              "weekType": "ALL",
+              "location": "教4-202"
+            }
+          ]
+        },
+        {
+          "name": "无机化学实验",
+          "teacher": "冯磊",
+          "note": null,
+          "blocks": [
+            {
+              "dayOfWeek": 3,
+              "startPeriod": 11,
+              "endPeriod": 12,
+              "startWeek": 3,
+              "endWeek": 12,
+              "weekType": "ALL",
+              "location": "实验楼E-201"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

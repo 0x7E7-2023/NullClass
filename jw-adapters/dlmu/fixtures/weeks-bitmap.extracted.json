@@ -1,0 +1,16 @@
+{
+  "_note": "合成 fixture：按上游 DLMU/dlmu_01.js 实际读取的形状编造，**不是真实抓取**。本用例专打周次位图的下标基准（本批统一口径：下标 i 就是第 i 周，下标 0 是占位符）。（1）「位图基准课」第 0 位与第 1 位同时为 1 —— 正确结果是只产出第 1、2 周，上游 dlmu 原文没有跳过 0 位、会多出一个不存在的第 0 周；（2）「占位课」只有第 0 位为 1 —— 没有有效周次，整段跳过并计数；（3）「隔周课」1,3,5,7 → 第 1-7 周单周；（4）「双周课」4,6,8,10 → 第 4-10 周双周；（5）「连堂单周课」连着的两个 index 合并成 1-2 节；（6）「超限课」含第 31/33/50 位（超过 30 周上限，丢弃并计数），第 30 位保留并把总周数抬到 30；（7）「混合课」第 0 位又是 1。教务没有给学期起始日期与周数（都走推算分支）。",
+  "today": "2026-03-02",
+  "term": {
+    "id": "224",
+    "kind": "2",
+    "schoolYear": "2025-2026",
+    "label": "2025-2026 第2学期",
+    "name": "2025-2026 第2学期",
+    "startDate": null,
+    "weekCount": null
+  },
+  "unitCountPage": 10,
+  "ids": "2220250002",
+  "tableHtml": "<html><head><title>学生课表</title><script type='text/javascript'> var unitCount = 10; </script></head><body><div id='manualArrangeCourseTable'></div><script type='text/javascript'> activity = new TaskActivity('1','甲老师','A1','位图基准课','','教一','11100000000000000000000000000000000000000000000000000'); index = 0*unitCount+0; activity = new TaskActivity('2','乙老师','A2','占位课','','教二','10000000000000000000000000000000000000000000000000000'); index = 0*unitCount+1; activity = new TaskActivity('3','丙老师','A3','隔周课','','教三','01010101000000000000000000000000000000000000000000000'); index = 1*unitCount+1; activity = new TaskActivity('4','丁老师','A4','双周课','','教四','00001010101000000000000000000000000000000000000000000'); index = 2*unitCount+2; activity = new TaskActivity('5','戊老师','A5','连堂单周课','','教五','01010000000000000000000000000000000000000000000000000'); index = 4*unitCount+0; index = 4*unitCount+1; activity = new TaskActivity('6','己老师','A6','超限课','','教六','01000000000000000000000000000011010000000000000000100'); index = 5*unitCount+5; activity = new TaskActivity('7','庚老师','A7','混合课','','教七','10101010000000000000000000000000000000000000000000000'); index = 6*unitCount+8; </script></body></html>"
+}

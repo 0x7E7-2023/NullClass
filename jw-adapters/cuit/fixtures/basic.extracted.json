@@ -1,0 +1,31 @@
+{
+  "_note": "合成 fixture：按上游 CUIT/cuit_bk_old.js 读取的课表页形状（courseTableForStd!courseTable.action 返回的 HTML 里内嵌 TaskActivity 脚本块）编造，不是真实抓取（见 docs/jw-adapter-testing.md §3）。课程名、教师、教室、日期均为虚构，无真实个人信息。本用例覆盖：教师表达式是 actTeacherName.join(\",\")（必须按 activity 之前最近的一块 teachers 解析）与教师是字面量两种；args[3] 是课程名（末尾带 (10位数字.2位数字) 的教学班编号要剥掉）；args[2] 是课程全称（与课名不同，用来验「优先取 args[3]」）；教室为空要留空；同一门课的连堂节次并成一段；单周/双周/每周三种周次切段。「高等数学A(一)」的位图第 0 位是 1（占位符），用来钉住「第 0 位不产出周次」。「中国文化概论」的 args[2]/args[3] 都带着 10 位编号，边界用例 edge-bare-index 用同一对值反证取值优先级。",
+  "term": {
+    "id": "20826294511",
+    "name": "2026-2027学年第一学期",
+    "rawName": "1",
+    "schoolYear": "2026-2027",
+    "startDate": "2026-09-07",
+    "endDate": "2027-01-17"
+  },
+  "today": "2026-09-16",
+  "semesters": [
+    {
+      "id": "20826294502",
+      "name": "2025-2026学年第二学期",
+      "schoolYear": "2025-2026",
+      "startDate": "2026-02-23",
+      "endDate": "2026-07-05"
+    },
+    {
+      "id": "20826294511",
+      "name": "2026-2027学年第一学期",
+      "schoolYear": "2026-2027",
+      "startDate": "2026-09-07",
+      "endDate": "2027-01-17"
+    }
+  ],
+  "raw": {
+    "tableHtml": "var unitCount = 12;\n<html><head><title>学生课表</title></head><body>\ntable0 = new Object();\nvar teachers = [{id:1,name:\"陈立群\",code:\"T1\"}];\nvar actTeachers = [{id:1,name:\"陈立群\",code:\"T1\"}];\n\nactivity = new TaskActivity(\"1001\",actTeacherName.join(\",\"),\"高等数学A(一)\",\"高等数学A(一)(2500120070.01)\",\"\",\"教1-101\",\"111111111111111100000000000000000000000000000000000000000000\",\"\",\"\",\"\",\"\",\"\");\nindex = 0*unitCount+0;\nindex = 0*unitCount+1;\n\nvar teachers = [{id:1,name:\"李慧敏\",code:\"T1\"},{id:2,name:\"王海涛\",code:\"T2\"}];\nvar actTeachers = [{id:1,name:\"李慧敏\",code:\"T1\"},{id:2,name:\"王海涛\",code:\"T2\"}];\n\nactivity = new TaskActivity(\"1002\",actTeacherName.join(\",\"),\"大学英语（读写译）\",\"大学英语（读写译）(2500120080.02)\",\"\",\"外语楼B203\",\"001010101010101010000000000000000000000000000000000000000000\",\"\",\"\",\"\",\"\",\"\");\nindex = 2*unitCount+4;\nindex = 2*unitCount+5;\n\nactivity = new TaskActivity(\"1003\",\"赵启明,周文静\",\"数据结构与算法(卓越工程师班)\",\"数据结构与算法\",\"\",\"信息楼A305\",\"001010101010101010000000000000000000000000000000000000000000\",\"\",\"\",\"\",\"\",\"\");\nindex = 4*unitCount+3;\nindex = 4*unitCount+4;\n\nactivity = new TaskActivity(\"1004\",actTeacherName.join(\",\"),\"形势与政策(2500120090.03)\",\"\",\"\",\"\",\"001010101010101010000000000000000000000000000000000000000000\",\"\",\"\",\"\",\"\",\"\");\nindex = 0*unitCount+2;\nindex = 0*unitCount+3;\n\nactivity = new TaskActivity(\"1006\",actTeacherName.join(\",\"),\"中国文化概论(2500120110.05)\",\"\",\"\",\"\",\"010101010101010100000000000000000000000000000000000000000000\",\"\",\"\",\"\",\"\",\"\");\nindex = 0*unitCount+0;\nindex = 0*unitCount+1;\nindex = 0*unitCount+2;\n\nactivity = new TaskActivity(\"1005\",actTeacherName.join(\",\"),\"体育（一）\",\"体育（一）(2500120100.04)\",\"\",\"\",\"010101010101010100000000000000000000000000000000000000000000\",\"\",\"\",\"\",\"\",\"\");\nindex = 6*unitCount+6;\nindex = 6*unitCount+7;\nindex = 6*unitCount+8;\n\ntable0.marshalTable();\n</body></html>"
+  }
+}

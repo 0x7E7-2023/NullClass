@@ -1,0 +1,137 @@
+{
+  "specVersion": 1,
+  "kind": "schedule",
+  "ocrAssisted": false,
+  "warnings": [
+    "只导入了教务系统当前选中的学期（2026-2027 第1学期）；要导入别的学期，请在教务页面里切到那个学期再点「提取课表」",
+    "开学日期取自教务系统给出的学期起始日期：第 1 周从 2026-09-07 开始，请在学期管理里核对",
+    "学期总周数用的是教务给出的学期周数（18 周），如与实际不符可在学期管理里改",
+    "作息时间用的是适配器内置的大连海事大学 10 节作息表（第 1 节 08:00-08:45），出自上游脚本、没有向教务核对过，如与学校实际作息不符请在学期管理里改",
+    "有 3 条排课的 index 表达式认不出来（例如「3*unitCount-2」），这些排课已被跳过 —— 本适配器不执行课表页里的表达式，只按正则解析 index = <数字> 与 index = <数字>*unitCount+<数字>（也接受 unitCount 已被替换成数字的写法），请反馈"
+  ],
+  "terms": [
+    {
+      "name": "2026-2027 第1学期",
+      "firstDay": "2026-09-07",
+      "totalWeeks": 18,
+      "periodTimes": [
+        {
+          "periodIndex": 1,
+          "start": "08:00",
+          "end": "08:45"
+        },
+        {
+          "periodIndex": 2,
+          "start": "08:50",
+          "end": "09:35"
+        },
+        {
+          "periodIndex": 3,
+          "start": "10:00",
+          "end": "10:45"
+        },
+        {
+          "periodIndex": 4,
+          "start": "10:50",
+          "end": "11:35"
+        },
+        {
+          "periodIndex": 5,
+          "start": "13:30",
+          "end": "14:15"
+        },
+        {
+          "periodIndex": 6,
+          "start": "14:20",
+          "end": "15:05"
+        },
+        {
+          "periodIndex": 7,
+          "start": "15:30",
+          "end": "16:15"
+        },
+        {
+          "periodIndex": 8,
+          "start": "16:20",
+          "end": "17:05"
+        },
+        {
+          "periodIndex": 9,
+          "start": "18:00",
+          "end": "18:45"
+        },
+        {
+          "periodIndex": 10,
+          "start": "18:50",
+          "end": "19:35"
+        }
+      ],
+      "courses": [
+        {
+          "name": "线性下标课",
+          "teacher": "甲老师",
+          "note": null,
+          "blocks": [
+            {
+              "dayOfWeek": 6,
+              "startPeriod": 3,
+              "endPeriod": 3,
+              "startWeek": 1,
+              "endWeek": 16,
+              "weekType": "ALL",
+              "location": "教一"
+            }
+          ]
+        },
+        {
+          "name": "已算好下标课",
+          "teacher": "乙老师",
+          "note": null,
+          "blocks": [
+            {
+              "dayOfWeek": 7,
+              "startPeriod": 3,
+              "endPeriod": 3,
+              "startWeek": 1,
+              "endWeek": 5,
+              "weekType": "ODD",
+              "location": "教二"
+            }
+          ]
+        },
+        {
+          "name": "字面节次数下标课",
+          "teacher": "丙老师",
+          "note": null,
+          "blocks": [
+            {
+              "dayOfWeek": 4,
+              "startPeriod": 3,
+              "endPeriod": 3,
+              "startWeek": 1,
+              "endWeek": 16,
+              "weekType": "ALL",
+              "location": "教三"
+            }
+          ]
+        },
+        {
+          "name": "正常课",
+          "teacher": "戊老师",
+          "note": null,
+          "blocks": [
+            {
+              "dayOfWeek": 5,
+              "startPeriod": 8,
+              "endPeriod": 8,
+              "startWeek": 1,
+              "endWeek": 16,
+              "weekType": "ALL",
+              "location": "教七"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

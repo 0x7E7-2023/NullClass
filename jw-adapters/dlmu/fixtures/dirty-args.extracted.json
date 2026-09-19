@@ -1,0 +1,16 @@
+{
+  "_note": "合成 fixture：按上游 DLMU/dlmu_01.js 实际读取的形状编造，**不是真实抓取**。本用例专打 TaskActivity 参数的边界，并且**故意用双引号**写页面里的字面量（同族其它件是双引号写法），验证两种引号都认。（1）「网络课」的教师是 actTeachers.join(',') 表达式，而它前面没有任何 var teachers 块 → 教师留空并计数（不许写「未知」）；（2）「操作系统」的教师同样是表达式，前面紧邻着一个 var teachers 块 → 取块里的 name「陈立群」；（3）页面的 var unitCount = 12，**与上游脚本内置常量 10 不一致** → 以页面值为准并写 warnings（本用例的 index 都按 12 算：0*12+3=3 → 周一第 4 节）；（4）「编译原理,上」的课程名里带逗号（在引号内，不能被当参数分隔符）；（5）「离散数学」的教室名里带逗号与空格；（6）「数理方程」的教室由几个字面量用 + 拼起来（\"x\" + \"y\" + \"z\" → xyz）；（7）「越界课」index = 7*12+5 = 89 → 第 8 天，越界 → 跳过并计数；（8）「可编程逻辑」的参数比 7 个多（第 6 个是裸 null → 教室留空）；（9）「通识课」的 args[2] 是拼接表达式（上游先跑 replaceAll 去掉 .join(...) 会把它切坏，本件按引号切参数所以不受影响）。",
+  "today": "2026-09-16",
+  "term": {
+    "id": "226",
+    "kind": "1",
+    "schoolYear": "2026-2027",
+    "label": "2026-2027 第1学期",
+    "name": "2026-2027 第1学期",
+    "startDate": null,
+    "weekCount": null
+  },
+  "unitCountPage": 12,
+  "ids": "2220260004",
+  "tableHtml": "<html><head><title>学生课表</title><script type='text/javascript'> var unitCount = 12; </script></head><body><div id='manualArrangeCourseTable'></div><script type='text/javascript'> activity = new TaskActivity(\"1\",actTeachers.join(\",\"),\"B1\",\"网络课\",\"\",\"线上\",\"01111111100000000000000000000000000000000000000000000\"); index = 3*unitCount+1; var teachers = [{id:\"T1\", name:\"陈立群\"}]; var actTeachers = [{id:\"T1\", name:\"陈立群\"}]; activity = new TaskActivity(\"2\",actTeachers.join(\",\"),\"B2\",\"操作系统\",\"\",\"教学楼A-101\",\"01111111111111111000000000000000000000000000000000000\"); index = 0*unitCount+3; var teachers = [{id:\"T2\", name:\"林雅琴\"}] ; activity = new TaskActivity(\"3\",\"林雅琴\",\"B3\",\"编译原理,上\",\"\",\"教学楼B-202\",\"00101010101010101000000000000000000000000000000000000\"); index = 1*unitCount+0; activity = new TaskActivity(\"4\",\"王强\",\"B4\",\"离散数学\",\"\",\"教学楼C-301, 东侧\",\"01111111111111111000000000000000000000000000000000000\"); index = 2*unitCount+5; activity = new TaskActivity(\"5\",\"刘敏\",\"B5\",\"数理方程\",\"\",\"x\" + \"y\" + \"z\",\"01111111111111111000000000000000000000000000000000000\"); index = 4*unitCount+2; activity = new TaskActivity(\"6\",\"孙浩\",\"B6\",\"越界课\",\"\",\"教学楼D-401\",\"01111111111111111000000000000000000000000000000000000\"); index = 7*unitCount+5; activity = new TaskActivity(\"7\",\"周敏\",\"B7\",\"可编程逻辑\",\"\",null,\"教学楼E-101\",\"01111111111111111000000000000000000000000000000000000\"); index = 5*unitCount+4; activity = new TaskActivity(\"8\",\"郑凯\",\"B8\" + \"(1.0)\",\"通识课\",\"\",\"教学楼F-201\",\"01111111111111111000000000000000000000000000000000000\"); index = 6*unitCount+11; </script></body></html>"
+}

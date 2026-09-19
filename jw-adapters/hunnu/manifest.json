@@ -1,0 +1,36 @@
+{
+  "specVersion": 1,
+  "key": "hunnu",
+  "name": "湖南师范大学",
+  "version": "1.0.0",
+  "author": "上游 EarOfWheat（MIT）；移植 0x7E-2023",
+  "homepage": "https://github.com/XingHeYuZhuan/shiguang_warehouse",
+  "loginUrl": "https://jwglnew.hunnu.edu.cn/eams/courseTableForStd.action",
+  "scheduleUrlHint": "https://jwglnew.hunnu.edu.cn/eams/courseTableForStd.action",
+  "minAppVersionCode": 11,
+  "extract": "extract.js",
+  "parse": "parse.js",
+  "allowHosts": [],
+  "fixtures": [
+    {
+      "name": "基本课表（TaskActivity + index 乘法写法、重复渲染去重）",
+      "extracted": "fixtures/basic.extracted.json",
+      "expected": "fixtures/basic.expected.json"
+    },
+    {
+      "name": "周次位图基准（第 0 位为 1 / 只有第 1 位为 1 / 单周 / 双周）",
+      "extracted": "fixtures/weeks-bitmap.extracted.json",
+      "expected": "fixtures/weeks-bitmap.expected.json"
+    },
+    {
+      "name": "边界：已算好的裸数字 index、教师名带转义引号、教师数组缺 name、无 marshalTable",
+      "extracted": "fixtures/computed-index.extracted.json",
+      "expected": "fixtures/computed-index.expected.json"
+    },
+    {
+      "name": "边界：参数不足 / 空位图 / 节次超出内置作息表 / 周次超过 30 周截断",
+      "extracted": "fixtures/skips.extracted.json",
+      "expected": "fixtures/skips.expected.json"
+    }
+  ]
+}

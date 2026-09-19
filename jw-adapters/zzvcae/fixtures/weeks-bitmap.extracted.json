@@ -1,0 +1,27 @@
+{
+  "_note": "合成 fixture（不是真实抓取）：按上游 ZZVCAE/zzvcae.js 实际读取的形状（TaskActivity 参数位、周次位图、index = 星期*unitCount+节次、th id=\"0_节次\" 的作息表头）编造，课程 / 教师 / 教室均为虚构，无真实个人信息（学号也留在 extract 里请求用、不进 fixture）。只保证「同样的输入永远得到同样的输出」，不保证解析在真实页面上是对的（见 docs/jw-adapter-testing.md §3）。",
+  "_case": "周次位图口径 + 校历取到：① 第 0 位为 1（占位符，不许产生「第 0 周」，要写 warnings）且第 1 位为 1（段从第 1 周开始）② 隔周（19/21/23/25 → 19-25 单周）③ 第 30 周是上限内的最晚周、同一张位图里的第 60 周必须被截断（总周数因此从校历的 16 周抬到 30 周 = 本周期的周次上限）④ 开学日按 2026-09-09（周三）所在周的周一回退",
+  "semesterId": "12",
+  "semester": {
+    "id": "12",
+    "schoolYear": "2026-2027",
+    "term": "1",
+    "startDate": "2026-09-09",
+    "endDate": "2027-01-10"
+  },
+  "semesters": [
+    {
+      "id": "12",
+      "schoolYear": "2026-2027",
+      "term": "1",
+      "startDate": "2026-09-09",
+      "endDate": "2027-01-10"
+    }
+  ],
+  "currentSemesterId": "12",
+  "pageHtml": null,
+  "weekHtml": "var unitCount = 6;\nvar teachers = [{\"id\":1,\"name\":\"周涛\",\"lab\":false}];\nvar actTeachers = [{\"id\":1,\"name\":\"周涛\",\"lab\":false}];\nvar table0 = new TaskActivity(1234,argsTeacher,3,\"形势与政策\",nil,\"报告厅\",\"111111111111111110000000000000000000000000000000000000000000000000000000000000000\",nil,nil,nil,nil);\nindex =2*unitCount+4;\nactivity = table0;\nvar teachers = [{\"id\":10,\"name\":\"孙丽\",\"lab\":false}];\nvar actTeachers = [{\"id\":10,\"name\":\"孙丽\",\"lab\":false}];\nvar table0 = new TaskActivity(1234,argsTeacher,3,\"大学物理(一)\",nil,\"教4-108\",\"000000000000000000010101010000000000000000000000000000000000000000000000000000000\",nil,nil,nil,nil);\nindex =3*unitCount+0;\nactivity = table0;\nindex =3*unitCount+1;\nactivity = table0;\nvar teachers = [{\"id\":20,\"name\":\"黄磊\",\"lab\":false}];\nvar actTeachers = [{\"id\":20,\"name\":\"黄磊\",\"lab\":false}];\nvar table0 = new TaskActivity(1234,argsTeacher,3,\"汽车机械基础\",nil,\"教5-201\",\"000000000000000000000000000000100000000000000000000000000000100000000000000000000\",nil,nil,nil,nil);\nindex =5*unitCount+0;\nactivity = table0;\n",
+  "calendarHtml": "开始 / 结束日期：2026-09-07 ~ 2026-12-27 (16 周)",
+  "lastTimeHtml": null,
+  "today": "2026-09-16"
+}
