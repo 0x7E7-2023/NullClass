@@ -50,4 +50,6 @@ dependencies {
     testImplementation(libs.kotlin.test)
     // 在 JVM 上跑适配器的 parse.js，对 fixture 做真实回归（不用模拟器）
     testImplementation(libs.rhino)
+    // 验证二维码负载真能被 zxing 编成 Version 40 以内的码（上限数字对得上编码器）
+    testImplementation(libs.zxing.core)
 }

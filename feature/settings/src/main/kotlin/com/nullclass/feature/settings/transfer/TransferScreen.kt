@@ -189,6 +189,11 @@ fun TransferScreen(
                 enabled = !state.busy,
                 modifier = Modifier.fillMaxWidth(),
             ) { Text("生成二维码") }
+            Text(
+                "只含当前学期的有效课程，当面扫码即可导入；完整备份请用上面的文件。",
+                style = MaterialTheme.typography.bodySmall,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+            )
 
             HorizontalDivider(modifier = Modifier.padding(vertical = 8.dp))
 
@@ -283,7 +288,7 @@ fun TransferScreen(
 
     // ---- 二维码弹层 ----
     state.qrPayload?.let { payload ->
-        QrShareDialog(payload = payload, viewModel = viewModel, onDismiss = viewModel::dismissQr)
+        QrShareDialog(payload = payload, onDismiss = viewModel::dismissQr)
     }
 
     // ---- 导入预览 ----

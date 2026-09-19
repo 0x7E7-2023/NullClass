@@ -1,20 +1,29 @@
 package com.nullclass.feature.settings.transfer
 
 import android.content.Intent
+import android.graphics.Bitmap
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.asImageBitmap
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.core.content.FileProvider
@@ -27,12 +36,24 @@ import java.io.File
 @Composable
 internal fun QrShareDialog(
     payload: String,
-    viewModel: TransferViewModel,
     onDismiss: () -> Unit,
 ) {
     val context = LocalContext.current
     val scope = rememberCoroutineScope()
-    val bitmap = remember(payload) { QrBitmap.encode(payload) }
+    var bitmap by remember(payload) { mutableStateOf<Bitmap?>(null) }
+    var encodeError by remember(payload) { mutableStateOf<String?>(null) }
+
+    LaunchedEffect(payload) {
+        try {
+            bitmap = withContext(Dispatchers.Default) { QrBitmap.encode(payload) }
+            encodeError = null
+        } catch (e: kotlinx.coroutines.CancellationException) {
+            throw e
+        } catch (e: Exception) {
+            bitmap = null
+            encodeError = e.message ?: "二维码绘制失败"
+        }
+    }
 
     AlertDialog(
         onDismissRequest = onDismiss,
@@ -40,38 +61,57 @@ internal fun QrShareDialog(
         text = {
             Column(
                 verticalArrangement = Arrangement.spacedBy(8.dp),
-                horizontalAlignment = androidx.compose.ui.Alignment.CenterHorizontally,
+                horizontalAlignment = Alignment.CenterHorizontally,
                 modifier = Modifier.fillMaxWidth(),
             ) {
-                Image(
-                    bitmap = bitmap.asImageBitmap(),
-                    contentDescription = "课表二维码",
-                    modifier = Modifier.fillMaxWidth().padding(4.dp),
-                )
+                val current = bitmap
+                when {
+                    current != null -> Image(
+                        bitmap = current.asImageBitmap(),
+                        contentDescription = "课表二维码",
+                        contentScale = ContentScale.Fit,
+                        // fillMaxWidth + 1:1：高度跟弹窗宽度走，不再用位图像素当 dp
+                        // （1024px 图在 mdpi/LDPlayer 上等于 1024dp，会把对话框撑破）。
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .aspectRatio(1f)
+                            .padding(4.dp),
+                    )
+                    encodeError != null -> Text(
+                        encodeError!!,
+                        color = MaterialTheme.colorScheme.error,
+                        style = MaterialTheme.typography.bodyMedium,
+                    )
+                    else -> CircularProgressIndicator()
+                }
                 Text(
-                    "让另一台设备用空课扫码即可导入整份课表。",
+                    "当前学期，让另一台设备用空课扫码即可导入。",
                     style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                 )
             }
         },
         confirmButton = {
-            TextButton(onClick = {
-                scope.launch {
-                    val file = withContext(Dispatchers.IO) { writeQrPng(context, bitmap) }
-                    val uri = FileProvider.getUriForFile(context, "${context.packageName}.fileprovider", file)
-                    context.startActivity(
-                        Intent.createChooser(
-                            Intent(Intent.ACTION_SEND).apply {
-                                type = "image/png"
-                                putExtra(Intent.EXTRA_STREAM, uri)
-                                addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
-                            },
-                            "分享课表二维码",
-                        ),
-                    )
-                }
-            }) { Text("分享图片") }
+            TextButton(
+                onClick = {
+                    val current = bitmap ?: return@TextButton
+                    scope.launch {
+                        val file = withContext(Dispatchers.IO) { writeQrPng(context, current) }
+                        val uri = FileProvider.getUriForFile(context, "${context.packageName}.fileprovider", file)
+                        context.startActivity(
+                            Intent.createChooser(
+                                Intent(Intent.ACTION_SEND).apply {
+                                    type = "image/png"
+                                    putExtra(Intent.EXTRA_STREAM, uri)
+                                    addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+                                },
+                                "分享课表二维码",
+                            ),
+                        )
+                    }
+                },
+                enabled = bitmap != null,
+            ) { Text("分享图片") }
         },
         dismissButton = {
             TextButton(onClick = onDismiss) { Text("关闭") }
@@ -79,9 +119,9 @@ internal fun QrShareDialog(
     )
 }
 
-private fun writeQrPng(context: android.content.Context, bitmap: android.graphics.Bitmap): File {
+private fun writeQrPng(context: android.content.Context, bitmap: Bitmap): File {
     val dir = File(context.cacheDir, "shared").apply { mkdirs() }
     val file = File(dir, "nullclass-qr.png")
-    file.outputStream().use { bitmap.compress(android.graphics.Bitmap.CompressFormat.PNG, 100, it) }
+    file.outputStream().use { bitmap.compress(Bitmap.CompressFormat.PNG, 100, it) }
     return file
 }

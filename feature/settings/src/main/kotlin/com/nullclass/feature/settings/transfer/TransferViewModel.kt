@@ -170,8 +170,15 @@ class TransferViewModel @Inject constructor(
         viewModelScope.launch {
             _state.update { it.copy(busy = true, message = null, qrPayload = null) }
             try {
-                val payload = QrPayload.encode(codec.dump(deviceId = null))
+                val current = termRepository.getCurrent()
+                    ?: error("当前没有学期，无法生成二维码")
+                val payload = withContext(Dispatchers.Default) {
+                    val sliced = QrPayload.sliceForShare(codec.dump(deviceId = null), current.id)
+                    QrPayload.encode(sliced)
+                }
                 _state.update { it.copy(busy = false, qrPayload = payload) }
+            } catch (e: kotlinx.coroutines.CancellationException) {
+                throw e
             } catch (e: QrPayload.PayloadTooLargeException) {
                 _state.update {
                     it.copy(busy = false, message = "课表过大无法生成二维码，请用文件分享", messageIsError = true)
