@@ -2,7 +2,9 @@ package com.nullclass.core.data.repository
 
 import com.nullclass.core.data.db.dao.SkipDateDao
 import com.nullclass.core.data.db.entity.SkipDateEntity
+import com.nullclass.core.data.holiday.HolidayCnSource
 import com.nullclass.core.data.holiday.HolidaySource
+import com.nullclass.core.data.holiday.HolidayYear
 import com.nullclass.core.data.holiday.NagerHolidaySource
 import com.nullclass.core.data.holiday.TimorHolidaySource
 import com.nullclass.core.data.prefs.UserPreferencesRepository
@@ -22,8 +24,10 @@ import javax.inject.Singleton
 /**
  * 跳过日期（手动 + 节假日同步）的唯一读写入口。
  *
- * 节假日多源按优先级降级：timor.tech（含调休补班）→ Nager.Date（仅节假日）→
- * 保留上次缓存。同步只替换 HOLIDAY/WORKDAY 行，MANUAL 行永不被动。
+ * 节假日多源**逐年**按优先级降级：timor.tech（含调休补班）→ holiday-cn（国务院
+ * 放假安排原文，含调休）→ Nager.Date（仅节假日）→ 保留上次缓存。学期跨年时
+ * 常见「次年安排尚未发布」，此时该年保留旧缓存或用 Nager 法定日兜底，不影响
+ * 已发布年份用最好的数据。同步只替换 HOLIDAY/WORKDAY 行，MANUAL 行永不被动。
  */
 @Singleton
 class HolidayRepository @Inject constructor(
@@ -33,7 +37,7 @@ class HolidayRepository @Inject constructor(
 ) {
 
     sealed interface RefreshResult {
-        /** 成功，[source] 是实际采用的源名。 */
+        /** 成功，[source] 是实际采用的源名（跨年时可含多个，如「timor.tech + Nager.Date」）。 */
         data class Success(val source: String, val holidayCount: Int) : RefreshResult
 
         /** 未到同步间隔或开关关闭，本次跳过。 */
@@ -50,7 +54,7 @@ class HolidayRepository @Inject constructor(
 
     /** 按优先级排序的数据源。 */
     private val sources: List<HolidaySource> =
-        listOf(TimorHolidaySource(client), NagerHolidaySource(client))
+        listOf(TimorHolidaySource(client), HolidayCnSource(client), NagerHolidaySource(client))
 
     /** 全部跳过日期（含补班日），按日期升序。 */
     val skipDates: Flow<List<SkipDate>> =
@@ -65,7 +69,9 @@ class HolidayRepository @Inject constructor(
 
     /**
      * 同步当前学期覆盖年份的节假日。[force]=true 跳过节流与开关检查（手动刷新按钮）。
-     * 某年部分失败则整源放弃降级到下一源；全部源失败保留旧缓存。
+     * 逐年选源：某年依次尝试各源，首个「可用且该年有数据」的生效；该年所有源都
+     * 拿不到数据（如下一年安排未发布且兜底源也挂了）则不动该年旧缓存。
+     * 任何年份都没有可用数据才算整体失败。
      */
     suspend fun refresh(force: Boolean = false): RefreshResult {
         val now = System.currentTimeMillis()
@@ -75,37 +81,49 @@ class HolidayRepository @Inject constructor(
             if (lastSync > 0 && now - lastSync < SYNC_INTERVAL_MS) return RefreshResult.Skipped
         }
 
-        val years = termYears()
+        val years = termYears().distinct()
         var lastError = "无可用数据源"
-        for (source in sources) {
-            val yearResults = years.map { year -> source.fetchYear(year) }
-            if (yearResults.any { it == null }) {
-                lastError = "${source.name} 不可用"
-                continue
-            }
-            val rows = mutableListOf<SkipDateEntity>()
-            yearResults.filterNotNull().forEach { result ->
-                rows += result.holidays.map { it.toEntity(now) }
-                rows += result.workdays.map { it.toEntity(now) }
-            }
-            withContext(Dispatchers.IO) {
-                years.forEach { year ->
-                    val from = LocalDate.of(year, 1, 1).toEpochDay()
-                    val to = LocalDate.of(year, 12, 31).toEpochDay()
-                    skipDateDao.replaceSyncedRange(
-                        rows.filter { it.epochDay in from..to },
-                        from,
-                        to,
-                    )
+        val usedSources = LinkedHashSet<String>()
+        var holidayCount = 0
+        var wroteAny = false
+        withContext(Dispatchers.IO) {
+            years.forEach { year ->
+                var picked: Pair<HolidayYear, String>? = null
+                for (source in sources) {
+                    val result = source.fetchYear(year)
+                    if (result == null) {
+                        lastError = "${source.name} 不可用"
+                        continue
+                    }
+                    // 空结果 = 该年安排未发布（源正常），换下一源，不算源失败
+                    if (result.holidays.isEmpty() && result.workdays.isEmpty()) continue
+                    picked = result to source.name
+                    break
                 }
+                if (picked == null) return@forEach
+                val (result, sourceName) = picked
+                usedSources += sourceName
+                holidayCount += result.holidays.size
+                val from = LocalDate.of(year, 1, 1).toEpochDay()
+                val to = LocalDate.of(year, 12, 31).toEpochDay()
+                // 去重 + 年份范围双重防御：源数据同日多条（脏数据/调休撞日）保第一条；
+                // 跨年假期的越界日（如 2023.json 里元旦含 2022-12-31）必须滤掉——
+                // 它绕过 replaceSyncedRange 的 DELETE 与 getManualDaysInRange 保护，
+                // @Upsert 会把同日 MANUAL 行覆盖丢
+                val rows = (result.holidays + result.workdays)
+                    .distinctBy { it.epochDay }
+                    .filter { it.epochDay in from..to }
+                    .map { it.toEntity(now) }
+                skipDateDao.replaceSyncedRange(rows, from, to)
+                wroteAny = true
             }
-            userPrefs.setHolidayLastSyncMs(now)
-            return RefreshResult.Success(
-                source = source.name,
-                holidayCount = rows.count { it.type == SkipDateType.HOLIDAY.name },
-            )
         }
-        return RefreshResult.Failed("节假日同步失败（$lastError），已保留上次结果")
+        return if (wroteAny) {
+            userPrefs.setHolidayLastSyncMs(now)
+            RefreshResult.Success(source = usedSources.joinToString(" + "), holidayCount = holidayCount)
+        } else {
+            RefreshResult.Failed("节假日同步失败（$lastError），已保留上次结果")
+        }
     }
 
     /** 手动添加跳过日期；同一天已有节假日行时以手动语义覆盖。 */

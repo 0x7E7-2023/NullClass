@@ -154,7 +154,7 @@ fun NotificationSettingsScreen(
             // ---- 节假日与跳过日期 ----
             Text("节假日与跳过日期", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold)
             Text(
-                "在线同步法定节假日（多数据源自动降级：timor.tech → Nager.Date），" +
+                "在线同步法定节假日（逐年多数据源自动降级：timor.tech → holiday-cn → Nager.Date），" +
                     "落在这天的课前提醒自动跳过。也可以手动添加自己的跳过日期。" +
                     "调休补班日仅作提示，不会生成课程。",
                 style = MaterialTheme.typography.bodySmall,
@@ -452,8 +452,11 @@ private fun SkipDateRow(skip: SkipDate, onDelete: () -> Unit) {
         ) {
             Column(Modifier.weight(1f)) {
                 val date = LocalDate.ofEpochDay(skip.epochDay)
+                // 列表会同时含跨年学期的两个年份，日期只写「M月d日」时
+                // 「10月1日 · 国庆节」这类两年都有的条目看起来像重复
+                val yearPrefix = if (date.year != LocalDate.now().year) "${date.year}年" else ""
                 Text(
-                    date.format(DateTimeFormatter.ofPattern("M月d日")) +
+                    yearPrefix + date.format(DateTimeFormatter.ofPattern("M月d日")) +
                         " · ${ScheduleFormat.dayOfWeekLabel(date.dayOfWeek.value)}",
                     style = MaterialTheme.typography.titleSmall,
                 )
