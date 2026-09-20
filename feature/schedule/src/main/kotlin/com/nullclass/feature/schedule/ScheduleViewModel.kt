@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.nullclass.core.data.prefs.UserPreferencesRepository
 import com.nullclass.core.data.repository.CourseRepository
+import com.nullclass.core.data.repository.DayOverrideRepository
 import com.nullclass.core.data.repository.TermRepository
 import com.nullclass.core.data.repository.TimetableRepository
 import com.nullclass.core.model.CourseWithBlocks
@@ -62,6 +63,11 @@ sealed interface ScheduleUiState {
         /** 是否把非本周的课画成灰块。 */
         val showOtherWeek: Boolean,
         /**
+         * 串课表：date → source date（见 [com.nullclass.core.model.DayOverrides]）。
+         * 翻页器给别的周现算布局时也要它，所以整张表随状态一起发出去。
+         */
+        val dayOverrides: Map<Long, Long> = emptyMap(),
+        /**
          * 当前课表名。**只有课表多于一张时才非 null**（顶栏第二行前缀「我的课表 · 第 3 周」）：
          * 单课表用户看到的界面一个字都不变。今天在这张课表里第几周，与课表名无关，
          * 所以它不影响周次计算，只影响标题文案。
@@ -85,6 +91,7 @@ class ScheduleViewModel @Inject constructor(
     private val termRepository: TermRepository,
     private val courseRepository: CourseRepository,
     private val userPreferencesRepository: UserPreferencesRepository,
+    private val dayOverrideRepository: DayOverrideRepository,
     timetableRepository: TimetableRepository,
 ) : ViewModel() {
 
@@ -145,16 +152,17 @@ class ScheduleViewModel @Inject constructor(
                         courseRepository.observeSchedule(term.id),
                         termRepository.observePeriodTimes(term.id),
                         displayPrefs,
-                    ) { schedule, periodTimes, prefs ->
+                        dayOverrideRepository.index,
+                    ) { schedule, periodTimes, prefs, overrides ->
                         ScheduleUiState.Ready(
                             term = term,
                             todayWeek = todayWeek,
                             selectedWeek = week,
                             periodTimes = periodTimes,
                             schedule = schedule,
-                            layout = WeekLayout.layoutForWeek(schedule, week),
+                            layout = WeekLayout.layoutForWeek(schedule, week, term, overrides),
                             otherWeekLayout = if (prefs.showOtherWeek) {
-                                WeekLayout.otherWeekLayout(schedule, week)
+                                WeekLayout.otherWeekLayout(schedule, week, term, overrides)
                             } else {
                                 emptyMap()
                             },
@@ -164,6 +172,7 @@ class ScheduleViewModel @Inject constructor(
                             showNowLine = prefs.showNowLine,
                             showGridLines = prefs.showGridLines,
                             showOtherWeek = prefs.showOtherWeek,
+                            dayOverrides = overrides,
                             timetableName = timetableName,
                         )
                     }
@@ -210,6 +219,19 @@ class ScheduleViewModel @Inject constructor(
     /** 切换非本周课程灰块显示。 */
     fun setShowOtherWeek(value: Boolean) {
         viewModelScope.launch { userPreferencesRepository.setShowOtherWeekCourses(value) }
+    }
+
+    /**
+     * 串课：[epochDay] 这天改上 [sourceEpochDay] 那天的课。
+     * 选回它自己即取消（仓库层同一口径，见 [DayOverrideRepository.setOverride]）。
+     */
+    fun setDayOverride(epochDay: Long, sourceEpochDay: Long) {
+        viewModelScope.launch { dayOverrideRepository.setOverride(epochDay, sourceEpochDay) }
+    }
+
+    /** 取消某天的串课，恢复原课表。 */
+    fun clearDayOverride(epochDay: Long) {
+        viewModelScope.launch { dayOverrideRepository.clearOverride(epochDay) }
     }
 
     fun deleteCourse(courseId: String) {

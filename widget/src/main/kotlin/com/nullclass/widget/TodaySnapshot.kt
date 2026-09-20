@@ -1,6 +1,7 @@
 package com.nullclass.widget
 
 import com.nullclass.core.data.repository.CourseRepository
+import com.nullclass.core.data.repository.DayOverrideRepository
 import com.nullclass.core.data.repository.TermRepository
 import com.nullclass.core.model.TodaySnapshot
 import com.nullclass.core.model.assembleTodaySnapshot
@@ -11,9 +12,17 @@ import java.time.LocalDate
 suspend fun buildTodaySnapshot(
     termRepository: TermRepository,
     courseRepository: CourseRepository,
+    dayOverrideRepository: DayOverrideRepository,
 ): TodaySnapshot {
     val term = termRepository.getCurrent() ?: return TodaySnapshot.EMPTY
     val schedule = courseRepository.observeSchedule(term.id).first()
     val times = termRepository.getPeriodTimes(term.id)
-    return assembleTodaySnapshot(term, schedule, times, LocalDate.now())
+    return assembleTodaySnapshot(
+        term = term,
+        schedule = schedule,
+        periodTimes = times,
+        today = LocalDate.now(),
+        // 串课（调休）：小组件与今日页必须取同一天的课，口径全在 core:model
+        dayOverrides = dayOverrideRepository.indexNow(),
+    )
 }

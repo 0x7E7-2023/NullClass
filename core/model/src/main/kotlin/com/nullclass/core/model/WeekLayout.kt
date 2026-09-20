@@ -13,23 +13,45 @@ data class PlacedBlock(
 object WeekLayout {
 
     /**
+     * [term] + [overrides] 一起给出串课表（date → source date，见 [DayOverrides]）：
+     * 被串过的那一列改画来源日的课。两者留空（默认）时与串课功能上线前逐字节同构。
+     *
      * @return dayOfWeek(1..7) → 按开始节次升序排列的课块列表；
      *         无课的天不出现在 Map 中
      */
-    fun layoutForWeek(schedule: List<CourseWithBlocks>, week: Int): Map<Int, List<PlacedBlock>> {
+    fun layoutForWeek(
+        schedule: List<CourseWithBlocks>,
+        week: Int,
+        term: Term? = null,
+        overrides: Map<Long, Long> = emptyMap(),
+    ): Map<Int, List<PlacedBlock>> {
         require(week >= 1) { "week must be >= 1, was $week" }
+        val origins = originsForWeek(term, week, overrides)
         val result = mutableMapOf<Int, MutableList<PlacedBlock>>()
         for (courseWithBlocks in schedule) {
             for (block in courseWithBlocks.blocks) {
-                if (block.occursInWeek(week)) {
+                // 没串课的列：课块画在自己那天（原路径）
+                if (block.dayOfWeek !in origins && block.occursInWeek(week)) {
                     result.getOrPut(block.dayOfWeek) { mutableListOf() }
                         .add(PlacedBlock(courseWithBlocks.course, block))
+                }
+                // 串过的列：谁被借到这一列，就画在这一列（可以有多列借同一天）
+                for ((day, origin) in origins) {
+                    if (origin == null) continue // 串到了学期外 → 这列没课
+                    if (block.dayOfWeek == origin.dayOfWeek && block.occursInWeek(origin.week)) {
+                        result.getOrPut(day) { mutableListOf() }
+                            .add(PlacedBlock(courseWithBlocks.course, block))
+                    }
                 }
             }
         }
         result.values.forEach { blocks -> blocks.sortBy { it.block.startPeriod } }
         return result
     }
+
+    /** 串课表在第 [week] 周落到哪几列；[term] 为 null 或没串课时为空表。见 [DayOverrides.originsForWeek]。 */
+    private fun originsForWeek(term: Term?, week: Int, overrides: Map<Long, Long>): Map<Int, DayOrigin?> =
+        if (term == null || overrides.isEmpty()) emptyMap() else DayOverrides.originsForWeek(term, week, overrides)
 
     /**
      * 「非本周」的课块：整学期课表里第 [week] 周不上、但同一时段在别的周要上的安排
@@ -41,9 +63,15 @@ object WeekLayout {
      *
      * @return dayOfWeek(1..7) → 按开始节次升序排列的灰块；无灰块的天不出现在 Map 中
      */
-    fun otherWeekLayout(schedule: List<CourseWithBlocks>, week: Int): Map<Int, List<PlacedBlock>> {
+    fun otherWeekLayout(
+        schedule: List<CourseWithBlocks>,
+        week: Int,
+        term: Term? = null,
+        overrides: Map<Long, Long> = emptyMap(),
+    ): Map<Int, List<PlacedBlock>> {
         require(week >= 1) { "week must be >= 1, was $week" }
-        val thisWeek = layoutForWeek(schedule, week)
+        val origins = originsForWeek(term, week, overrides)
+        val thisWeek = layoutForWeek(schedule, week, term, overrides)
         // 先定序再挑，结果不随课表里的记录顺序变
         val candidates = schedule
             .flatMap { courseWithBlocks ->
@@ -67,6 +95,8 @@ object WeekLayout {
         val result = mutableMapOf<Int, MutableList<PlacedBlock>>()
         for (candidate in candidates) {
             val day = candidate.block.dayOfWeek
+            // 被串过的列压根不属于这一天了，「这天别的周有课」这句话在那一列不成立
+            if (day in origins) continue
             val taken = thisWeek[day].orEmpty() + result[day].orEmpty()
             if (taken.any { it.block.periodsOverlap(candidate.block) }) continue
             result.getOrPut(day) { mutableListOf() }.add(candidate)

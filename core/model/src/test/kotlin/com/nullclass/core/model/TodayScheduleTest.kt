@@ -129,4 +129,88 @@ class TodayScheduleTest {
         assertTrue(snapshot.blocks.isEmpty())
         assertNull(snapshot.nextUp(0))
     }
+
+    @Test
+    fun `串课 - 这天上另一天的课，时间仍按这天的作息`() {
+        val today = LocalDate.of(2026, 9, 12) // 第 1 周周六
+        val friday = LocalDate.of(2026, 9, 11) // 第 1 周周五
+        val schedule = schedule(
+            ScheduleBlock(id = "fri", courseId = "c1", startWeek = 1, endWeek = 20, dayOfWeek = 5, startPeriod = 1, endPeriod = 2),
+            ScheduleBlock(id = "sat", courseId = "c1", startWeek = 1, endWeek = 20, dayOfWeek = 6, startPeriod = 3, endPeriod = 3),
+        )
+        val overrides = mapOf(today.toEpochDay() to friday.toEpochDay())
+
+        val snapshot = assembleTodaySnapshot(term, schedule, times, today, overrides)
+
+        assertEquals(listOf("fri"), snapshot.blocks.map { it.placed.block.id })
+        assertEquals("8:00", snapshot.blocks[0].startTime)
+        assertEquals(friday, snapshot.swappedFrom)
+        // 周次报的仍是今天所在的周
+        assertEquals(1, snapshot.weekNumber)
+    }
+
+    @Test
+    fun `串课 - 单双周按来源日那一周算`() {
+        val today = LocalDate.of(2026, 9, 19) // 第 2 周周六
+        val schedule = schedule(
+            // 单周才上的周五课
+            ScheduleBlock(
+                id = "odd", courseId = "c1", startWeek = 1, endWeek = 20,
+                weekType = WeekType.ODD, dayOfWeek = 5, startPeriod = 1, endPeriod = 1,
+            ),
+        )
+        // 上第 2 周周五的课 → 双周，不上
+        val toWeek2Friday = mapOf(today.toEpochDay() to LocalDate.of(2026, 9, 18).toEpochDay())
+        assertTrue(assembleTodaySnapshot(term, schedule, times, today, toWeek2Friday).blocks.isEmpty())
+        // 上第 1 周周五的课 → 单周，上
+        val toWeek1Friday = mapOf(today.toEpochDay() to LocalDate.of(2026, 9, 11).toEpochDay())
+        assertEquals(
+            listOf("odd"),
+            assembleTodaySnapshot(term, schedule, times, today, toWeek1Friday).blocks.map { it.placed.block.id },
+        )
+    }
+
+    @Test
+    fun `串课 - 来源日在学期外则今天没课，周次照报`() {
+        val today = LocalDate.of(2026, 9, 12)
+        val schedule = schedule(
+            ScheduleBlock(id = "sat", courseId = "c1", startWeek = 1, endWeek = 20, dayOfWeek = 6, startPeriod = 1, endPeriod = 1),
+        )
+        val overrides = mapOf(today.toEpochDay() to LocalDate.of(2026, 8, 1).toEpochDay())
+
+        val snapshot = assembleTodaySnapshot(term, schedule, times, today, overrides)
+
+        assertTrue(snapshot.blocks.isEmpty())
+        assertEquals(1, snapshot.weekNumber)
+        assertEquals(LocalDate.of(2026, 8, 1), snapshot.swappedFrom)
+    }
+
+    @Test
+    fun `串课 - 别的日子被串不影响今天`() {
+        val today = LocalDate.of(2026, 9, 9)
+        val schedule = schedule(
+            ScheduleBlock(id = "wed", courseId = "c1", startWeek = 1, endWeek = 20, dayOfWeek = 3, startPeriod = 1, endPeriod = 1),
+        )
+        val overrides = mapOf(LocalDate.of(2026, 9, 12).toEpochDay() to LocalDate.of(2026, 9, 11).toEpochDay())
+
+        val snapshot = assembleTodaySnapshot(term, schedule, times, today, overrides)
+
+        assertEquals(listOf("wed"), snapshot.blocks.map { it.placed.block.id })
+        assertNull(snapshot.swappedFrom)
+    }
+
+    @Test
+    fun `串课 - 今天不在学期内时不生效，也不显示横幅`() {
+        val afterTerm = LocalDate.of(2027, 3, 1) // 20 周学期早已结束
+        val schedule = schedule(
+            ScheduleBlock(id = "fri", courseId = "c1", startWeek = 1, endWeek = 20, dayOfWeek = 5, startPeriod = 1, endPeriod = 2),
+        )
+        val overrides = mapOf(afterTerm.toEpochDay() to LocalDate.of(2026, 9, 11).toEpochDay())
+
+        val snapshot = assembleTodaySnapshot(term, schedule, times, afterTerm, overrides)
+
+        assertTrue(snapshot.blocks.isEmpty())
+        assertNull(snapshot.weekNumber)
+        assertNull(snapshot.swappedFrom)
+    }
 }

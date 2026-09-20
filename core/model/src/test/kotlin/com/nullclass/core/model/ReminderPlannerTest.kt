@@ -190,4 +190,79 @@ class ReminderPlannerTest {
         val otherBlock = upcoming.copy(block = upcoming.block.copy(id = "b2"))
         assertTrue(!ReminderPlanner.isAlreadySent(otherBlock, setOf(tag)))
     }
+
+    @Test
+    fun `串课 - 那天排来源日的课，时刻按那天的墙钟`() {
+        val schedule = listOf(
+            course(
+                ScheduleBlock(id = "fri", courseId = "c1", startWeek = 1, endWeek = 20, dayOfWeek = 5, startPeriod = 1, endPeriod = 2),
+                ScheduleBlock(id = "sat", courseId = "c1", startWeek = 1, endWeek = 20, dayOfWeek = 6, startPeriod = 3, endPeriod = 4),
+            ),
+        )
+        val saturday = LocalDate.of(2026, 9, 12) // 第 1 周周六
+        val friday = LocalDate.of(2026, 9, 11)
+        val overrides = mapOf(saturday.toEpochDay() to friday.toEpochDay())
+
+        // 只看周六当天
+        val from = saturday.atStartOfDay(zone).toInstant().toEpochMilli()
+        val out = ReminderPlanner.upcoming(
+            term, schedule, times, from, horizonDays = 0, zone = zone, dayOverrides = overrides,
+        )
+
+        assertEquals(listOf("fri"), out.map { it.block.id })
+        // 8:00 是周六当天的 8:00，不是周五的
+        assertEquals(
+            saturday.atTime(8, 0).atZone(zone).toInstant().toEpochMilli(),
+            out.single().startAtMillis,
+        )
+    }
+
+    @Test
+    fun `串课 - 跳过日期优先：这天放假就一节都不排`() {
+        val schedule = listOf(
+            course(ScheduleBlock(id = "fri", courseId = "c1", startWeek = 1, endWeek = 20, dayOfWeek = 5, startPeriod = 1, endPeriod = 2)),
+        )
+        val saturday = LocalDate.of(2026, 9, 12)
+        val from = saturday.atStartOfDay(zone).toInstant().toEpochMilli()
+
+        val out = ReminderPlanner.upcoming(
+            term, schedule, times, from, horizonDays = 0, zone = zone,
+            skipDates = setOf(saturday.toEpochDay()),
+            dayOverrides = mapOf(saturday.toEpochDay() to LocalDate.of(2026, 9, 11).toEpochDay()),
+        )
+
+        assertTrue(out.isEmpty())
+    }
+
+    @Test
+    fun `串课 - 来源日在学期外则这天不排课`() {
+        val schedule = listOf(
+            course(ScheduleBlock(id = "sat", courseId = "c1", startWeek = 1, endWeek = 20, dayOfWeek = 6, startPeriod = 1, endPeriod = 2)),
+        )
+        val saturday = LocalDate.of(2026, 9, 12)
+        val from = saturday.atStartOfDay(zone).toInstant().toEpochMilli()
+
+        val out = ReminderPlanner.upcoming(
+            term, schedule, times, from, horizonDays = 0, zone = zone,
+            dayOverrides = mapOf(saturday.toEpochDay() to LocalDate.of(2026, 8, 1).toEpochDay()),
+        )
+
+        assertTrue(out.isEmpty())
+    }
+
+    @Test
+    fun `串课 - 目标日在学期外则一节都不排`() {
+        val schedule = listOf(
+            course(ScheduleBlock(id = "fri", courseId = "c1", startWeek = 1, endWeek = 20, dayOfWeek = 5, startPeriod = 1, endPeriod = 2)),
+        )
+        val afterTerm = LocalDate.of(2027, 3, 1)
+        val from = afterTerm.atStartOfDay(zone).toInstant().toEpochMilli()
+
+        val out = ReminderPlanner.upcoming(
+            term, schedule, times, from, horizonDays = 0, zone = zone,
+            dayOverrides = mapOf(afterTerm.toEpochDay() to LocalDate.of(2026, 9, 11).toEpochDay()),
+        )
+
+        assertTrue(out.isEmpty())
+    }
 }

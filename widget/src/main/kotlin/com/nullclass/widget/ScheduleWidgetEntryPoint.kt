@@ -3,6 +3,7 @@ package com.nullclass.widget
 import android.content.Context
 import com.nullclass.core.data.prefs.UserPreferencesRepository
 import com.nullclass.core.data.repository.CourseRepository
+import com.nullclass.core.data.repository.DayOverrideRepository
 import com.nullclass.core.data.repository.TermRepository
 import dagger.hilt.EntryPoint
 import dagger.hilt.InstallIn
@@ -20,6 +21,7 @@ import dagger.hilt.components.SingletonComponent
 interface ScheduleWidgetEntryPoint {
     fun termRepository(): TermRepository
     fun courseRepository(): CourseRepository
+    fun dayOverrideRepository(): DayOverrideRepository
     fun userPreferences(): UserPreferencesRepository
 }
 

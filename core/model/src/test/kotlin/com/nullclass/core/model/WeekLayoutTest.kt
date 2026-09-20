@@ -179,4 +179,92 @@ class WeekLayoutTest {
         assertEquals(setOf(1), week4.keys)
         assertEquals(listOf("o"), week4.getValue(1).map { it.course.id })
     }
+
+    // ---- 串课（调休把某天设成上另一天的课）----
+
+    /** 2026-09-07 周一开学，20 周；第 5 周 = 10/5(一)..10/11(日)。 */
+    private val term = Term(
+        id = "t1",
+        name = "2026-2027-1",
+        firstDayEpochDay = java.time.LocalDate.of(2026, 9, 7).toEpochDay(),
+        totalWeeks = 20,
+    )
+
+    private fun day(month: Int, dayOfMonth: Int) =
+        java.time.LocalDate.of(2026, month, dayOfMonth).toEpochDay()
+
+    @Test
+    fun `串课 - 被串的那列画来源日的课，其余列不动`() {
+        val schedule = listOf(
+            CourseWithBlocks(course("fri"), listOf(block("fri", dayOfWeek = 5, endWeek = 20))),
+            CourseWithBlocks(course("sat"), listOf(block("sat", dayOfWeek = 6, endWeek = 20))),
+            CourseWithBlocks(course("mon"), listOf(block("mon", dayOfWeek = 1, endWeek = 20))),
+        )
+        // 10/10（周六）上 10/9（周五）的课
+        val overrides = mapOf(day(10, 10) to day(10, 9))
+
+        val layout = WeekLayout.layoutForWeek(schedule, week = 5, term = term, overrides = overrides)
+
+        assertEquals(listOf("fri"), layout.getValue(6).map { it.course.id })
+        assertEquals(listOf("fri"), layout.getValue(5).map { it.course.id })
+        assertEquals(listOf("mon"), layout.getValue(1).map { it.course.id })
+    }
+
+    @Test
+    fun `串课 - 来源日在学期外的那列空着`() {
+        val schedule = listOf(
+            CourseWithBlocks(course("sat"), listOf(block("sat", dayOfWeek = 6, endWeek = 20))),
+        )
+        val overrides = mapOf(day(10, 10) to java.time.LocalDate.of(2026, 8, 1).toEpochDay())
+
+        val layout = WeekLayout.layoutForWeek(schedule, week = 5, term = term, overrides = overrides)
+
+        assertFalse(layout.containsKey(6))
+    }
+
+    @Test
+    fun `串课 - 单双周按来源日那一周算`() {
+        val schedule = listOf(
+            CourseWithBlocks(course("odd"), listOf(block("odd", dayOfWeek = 5, endWeek = 20, weekType = WeekType.ODD))),
+        )
+        // 第 5 周（单周）的周六上第 4 周（双周）周五的课 → 那节单周课不出现
+        val toWeek4Friday = mapOf(day(10, 10) to day(10, 2))
+        val layout = WeekLayout.layoutForWeek(schedule, week = 5, term = term, overrides = toWeek4Friday)
+        assertFalse(layout.containsKey(6))
+
+        // 上本周（第 5 周，单周）周五的课 → 出现
+        val toWeek5Friday = mapOf(day(10, 10) to day(10, 9))
+        val layout2 = WeekLayout.layoutForWeek(schedule, week = 5, term = term, overrides = toWeek5Friday)
+        assertEquals(listOf("odd"), layout2.getValue(6).map { it.course.id })
+    }
+
+    @Test
+    fun `串课 - 不传 term 或没串课时与原行为一致`() {
+        val schedule = listOf(
+            CourseWithBlocks(course("sat"), listOf(block("sat", dayOfWeek = 6, endWeek = 20))),
+        )
+        val overrides = mapOf(day(10, 10) to day(10, 9))
+        assertEquals(
+            WeekLayout.layoutForWeek(schedule, week = 5),
+            WeekLayout.layoutForWeek(schedule, week = 5, term = null, overrides = overrides),
+        )
+        assertEquals(
+            WeekLayout.layoutForWeek(schedule, week = 5),
+            WeekLayout.layoutForWeek(schedule, week = 5, term = term, overrides = emptyMap()),
+        )
+    }
+
+    @Test
+    fun `串课 - 被串的那列不画非本周灰块`() {
+        val schedule = listOf(
+            // 周六只有第 10 周才上：第 5 周本该是灰块
+            CourseWithBlocks(course("late"), listOf(block("late", dayOfWeek = 6, startWeek = 10, endWeek = 20))),
+        )
+        val week5 = WeekLayout.otherWeekLayout(schedule, week = 5)
+        assertEquals(listOf("late"), week5.getValue(6).map { it.course.id })
+
+        val overrides = mapOf(day(10, 10) to day(10, 9))
+        val swapped = WeekLayout.otherWeekLayout(schedule, week = 5, term = term, overrides = overrides)
+        assertFalse(swapped.containsKey(6))
+    }
 }

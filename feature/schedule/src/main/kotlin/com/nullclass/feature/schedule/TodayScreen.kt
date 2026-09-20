@@ -24,6 +24,7 @@ import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
+import androidx.compose.material3.TextButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -100,6 +101,39 @@ fun TodayScreen(
                 ) {
                     TodayHeader(snapshot = ready.snapshot, nowMinute = nowMinute)
 
+                    ready.snapshot.swappedFrom?.let { source ->
+                        Surface(
+                            shape = MaterialTheme.shapes.medium,
+                            color = MaterialTheme.colorScheme.tertiaryContainer,
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(top = 8.dp),
+                        ) {
+                            Row(
+                                modifier = Modifier.padding(start = 16.dp, end = 8.dp, top = 6.dp, bottom = 6.dp),
+                                verticalAlignment = Alignment.CenterVertically,
+                            ) {
+                                Column(Modifier.weight(1f).padding(vertical = 4.dp)) {
+                                    Text(
+                                        "今天调课 · 上 ${source.monthValue}月${source.dayOfMonth}日" +
+                                            "（${ScheduleFormat.dayOfWeekLabel(source.dayOfWeek.value)}）的课",
+                                        style = MaterialTheme.typography.titleSmall,
+                                        fontWeight = FontWeight.Bold,
+                                        color = MaterialTheme.colorScheme.onTertiaryContainer,
+                                    )
+                                    Text(
+                                        "上课时间仍按今天的作息；课前提醒已跟着改",
+                                        style = MaterialTheme.typography.bodySmall,
+                                        color = MaterialTheme.colorScheme.onTertiaryContainer.copy(alpha = 0.75f),
+                                    )
+                                }
+                                TextButton(onClick = { viewModel.clearTodayOverride() }) {
+                                    Text("撤销", color = MaterialTheme.colorScheme.onTertiaryContainer)
+                                }
+                            }
+                        }
+                    }
+
                     todaySkipDate?.let { skip ->
                         Surface(
                             shape = MaterialTheme.shapes.medium,
@@ -116,7 +150,7 @@ fun TodayScreen(
                                     color = MaterialTheme.colorScheme.onSecondaryContainer,
                                 )
                                 Text(
-                                    "课前提醒已跳过；课程如有调课仍按课表显示",
+                                    "课前提醒已跳过；课表内容照常显示（要换成别天的课用「调课」）",
                                     style = MaterialTheme.typography.bodySmall,
                                     color = MaterialTheme.colorScheme.onSecondaryContainer.copy(alpha = 0.75f),
                                 )

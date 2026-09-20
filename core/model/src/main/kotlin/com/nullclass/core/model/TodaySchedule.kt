@@ -13,6 +13,11 @@ data class TodaySnapshot(
     /** 今天是本学期第几周；不在学期内为 null */
     val weekNumber: Int?,
     val blocks: List<TodayEntry>,
+    /**
+     * 今天被串课时，课来自哪一天（见 [DayOverride]）；没串课为 null。
+     * [weekNumber] 仍是**今天**的周次——顶栏说的是今天在第几周，与课从哪天借来无关。
+     */
+    val swappedFrom: LocalDate? = null,
 ) {
     data class TodayEntry(
         val placed: PlacedBlock,
@@ -48,22 +53,42 @@ data class TodaySnapshot(
 /**
  * 组装今日快照（纯函数，时区/日期注入可测）。
  * 节次配置残缺（起/止节次查不到时间行）的 block 跳过——用户可能改过节次表。
+ *
+ * [dayOverrides] 是串课表（date → source date，见 [DayOverrides.index]）：今天被串课时，
+ * 课取自来源日那一格，但节次时间仍是今天的墙钟时间（调课换的是「上什么课」，不是作息）。
  */
 fun assembleTodaySnapshot(
     term: Term,
     schedule: List<CourseWithBlocks>,
     periodTimes: List<PeriodTime>,
     today: LocalDate,
+    dayOverrides: Map<Long, Long> = emptyMap(),
 ): TodaySnapshot {
-    val week = term.weekOf(today.toEpochDay())
-        ?: return TodaySnapshot(termName = term.name, weekNumber = null, blocks = emptyList())
+    val displayWeek = term.weekOf(today.toEpochDay())
+    val sourceEpochDay = DayOverrides.sourceOf(dayOverrides, today.toEpochDay())
+    // 今天不在学期内时串课不生效（见 [DayOverrides.originOf]），横幅也不能出现：
+    // 否则顶栏说「今天不在学期内」，下面却挂着「今天调课 · 上 X 月 X 日的课」
+    val swappedFrom = if (displayWeek == null || sourceEpochDay == today.toEpochDay()) {
+        null
+    } else {
+        LocalDate.ofEpochDay(sourceEpochDay)
+    }
+    // 来源日不在学期内（串到了寒暑假里）→ 这天没课；周次仍报今天的，顶栏不受影响
+    val origin = DayOverrides.originOf(term, dayOverrides, today.toEpochDay())
+        ?: return TodaySnapshot(
+            termName = term.name,
+            weekNumber = displayWeek,
+            blocks = emptyList(),
+            swappedFrom = swappedFrom,
+        )
+    val week = origin.week
 
     val timesByIndex = periodTimes.associateBy { it.periodIndex }
     val entries = mutableListOf<TodaySnapshot.TodayEntry>()
     for (courseWithBlocks in schedule) {
         for (block in courseWithBlocks.blocks) {
             if (!block.occursInWeek(week)) continue
-            if (block.dayOfWeek != today.dayOfWeek.value) continue
+            if (block.dayOfWeek != origin.dayOfWeek) continue
             val startTime = timesByIndex[block.startPeriod] ?: continue
             val endTime = timesByIndex[block.endPeriod] ?: continue
             entries.add(
@@ -79,5 +104,10 @@ fun assembleTodaySnapshot(
         }
     }
     entries.sortWith(compareBy({ it.startMinuteOfDay }, { it.placed.block.startPeriod }))
-    return TodaySnapshot(termName = term.name, weekNumber = week, blocks = entries)
+    return TodaySnapshot(
+        termName = term.name,
+        weekNumber = displayWeek,
+        blocks = entries,
+        swappedFrom = swappedFrom,
+    )
 }

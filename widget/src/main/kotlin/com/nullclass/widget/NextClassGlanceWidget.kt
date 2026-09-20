@@ -40,7 +40,11 @@ class NextClassGlanceWidget : GlanceAppWidget() {
 
     override suspend fun provideGlance(context: Context, id: GlanceId) {
         val entryPoint = widgetEntryPoint(context)
-        val snapshot = buildTodaySnapshot(entryPoint.termRepository(), entryPoint.courseRepository())
+        val snapshot = buildTodaySnapshot(
+            entryPoint.termRepository(),
+            entryPoint.courseRepository(),
+            entryPoint.dayOverrideRepository(),
+        )
         val prefs = entryPoint.userPreferences()
         val initialFont = prefs.widgetFontSize.first()
         provideContent {

@@ -30,6 +30,10 @@ object ReminderPlanner {
      * 「这一节课」的提醒是否已经发过：同 blockId 且 startAt 相差在
      * [SENT_KEY_TOLERANCE_MS] 内的已发送键都算（同时覆盖时钟回拨场景——epoch 不变
      * 的精确匹配是它的特例）。
+     *
+     * 串课把同一个 block 排到相邻两天时（来源日本身没放假），两次开课正好差 24h
+     * ——容差是**严格小于**，刚好不误判成同一节。无夏令时的时区都如此；
+     * 有夏令时的地区那两天相差 23h/25h，其中 23h 的一边会被当成已发过而少发一次。
      */
     fun isAlreadySent(upcoming: UpcomingClass, sentKeys: Set<String>): Boolean {
         val prefix = "${upcoming.block.id}:"
@@ -70,6 +74,8 @@ object ReminderPlanner {
      *
      * - 学期外的日期跳过（weekOf == null）
      * - [skipDates] 里的日期跳过（节假日/手动跳过：这天不上课）
+     * - [dayOverrides] 串课表（date → source date，见 [DayOverrides]）：被串过的那天
+     *   排来源日的课，时刻仍按这一天的墙钟算
      * - 节次表缺该 block 起止节次对应行 → 静默跳过（用户改过节次表的防御）
      * - 今天已结束（endAt <= fromMillis）的课不出现；进行中/未开始的保留
      */
@@ -81,6 +87,7 @@ object ReminderPlanner {
         horizonDays: Int = 14,
         zone: java.time.ZoneId = java.time.ZoneId.systemDefault(),
         skipDates: Set<Long> = emptySet(),
+        dayOverrides: Map<Long, Long> = emptyMap(),
     ): List<UpcomingClass> {
         require(horizonDays >= 0) { "horizonDays must be >= 0" }
 
@@ -91,13 +98,15 @@ object ReminderPlanner {
         for (dayOffset in 0..horizonDays) {
             val day = fromDay.plusDays(dayOffset.toLong())
             if (day.toEpochDay() in skipDates) continue
-            val week = term.weekOf(day.toEpochDay()) ?: continue
+            // 串课：课取自来源日那一格，[dayStart] 仍是这一天的零点
+            val origin = DayOverrides.originOf(term, dayOverrides, day.toEpochDay()) ?: continue
+            val week = origin.week
             val dayStart = day.atStartOfDay(zone).toInstant().toEpochMilli()
 
             for (courseWithBlocks in schedule) {
                 for (block in courseWithBlocks.blocks) {
                     if (!block.occursInWeek(week)) continue
-                    if (block.dayOfWeek != day.dayOfWeek.value) continue
+                    if (block.dayOfWeek != origin.dayOfWeek) continue
                     val startTime = timesByIndex[block.startPeriod] ?: continue
                     val endTime = timesByIndex[block.endPeriod] ?: continue
                     val startAt = dayStart + startTime.startMinuteOfDay * 60_000L

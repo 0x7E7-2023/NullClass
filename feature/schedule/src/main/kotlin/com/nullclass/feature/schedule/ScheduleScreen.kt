@@ -80,6 +80,8 @@ fun ScheduleScreen(
     var detailBlock by remember { mutableStateOf<PlacedBlock?>(null) }
     var showWeekPicker by remember { mutableStateOf(false) }
     var showQuickSettings by remember { mutableStateOf(false) }
+    /** 点了表头哪一列（epoch day）→ 开调课面板。 */
+    var swapDay by remember { mutableStateOf<Long?>(null) }
 
     Scaffold(
         topBar = {
@@ -220,6 +222,8 @@ fun ScheduleScreen(
                         showTimeInCards = ready.showTimeInCards,
                         // 无水平 padding：与 WeekGrid 总宽严格一致，分栏才能逐列对齐
                         modifier = Modifier.fillMaxWidth(),
+                        dayOverrides = ready.dayOverrides,
+                        onDayClick = { swapDay = it },
                     )
 
                     HorizontalPager(
@@ -230,13 +234,18 @@ fun ScheduleScreen(
                         val layout = if (week == ready.selectedWeek) {
                             ready.layout
                         } else {
-                            WeekLayout.layoutForWeek(ready.schedule, week)
+                            WeekLayout.layoutForWeek(ready.schedule, week, ready.term, ready.dayOverrides)
                         }
                         // 灰块按「当前这一页的周」算：翻页动画里扫过的中间页也得各画各的
                         val otherWeekLayout = when {
                             !ready.showOtherWeek -> emptyMap<Int, List<PlacedBlock>>()
                             week == ready.selectedWeek -> ready.otherWeekLayout
-                            else -> WeekLayout.otherWeekLayout(ready.schedule, week)
+                            else -> WeekLayout.otherWeekLayout(
+                                ready.schedule,
+                                week,
+                                ready.term,
+                                ready.dayOverrides,
+                            )
                         }
                         Column(
                             Modifier
@@ -274,6 +283,23 @@ fun ScheduleScreen(
                             detailBlock = null
                         },
                         onDismiss = { detailBlock = null },
+                    )
+                }
+
+                swapDay?.let { day ->
+                    DaySwapDialog(
+                        term = ready.term,
+                        epochDay = day,
+                        sourceEpochDay = ready.dayOverrides[day],
+                        onSelect = { source ->
+                            viewModel.setDayOverride(day, source)
+                            swapDay = null
+                        },
+                        onClear = {
+                            viewModel.clearDayOverride(day)
+                            swapDay = null
+                        },
+                        onDismiss = { swapDay = null },
                     )
                 }
 

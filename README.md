@@ -21,6 +21,8 @@ An open-source class schedule app for Android universities. Local-first: no acco
   授权后可勿扰下响铃；权限状态一站式引导（通知/自启动/电池/精确闹钟/勿扰）
 - 📅 节假日与跳过日期：法定节假日在线同步（timor.tech → holiday-cn → Nager.Date 逐年多源自动降级，
   仅拉公开假日数据、不含任何个人信息），跳过日的课前提醒自动静音；也可手动添加跳过日期
+- 🔁 调课（串课）：调休时把某一天设成上另一天的课（「周六上周五的课」），
+  周视图点星期表头即可设置；今日页、周视图、小组件与课前提醒一起跟着改
 - 📤 课表导入导出（`.nullclass` 文件 + 二维码扫码分享）
 - 📥 WakeUp 课表一键迁移（`.wakeup_schedule`，连堂/单双周/节次时间/颜色全保留）
 - 🏫 教务系统导入（WebView 手工登录 + 社区适配器包；课表是图片的学校也能识别）

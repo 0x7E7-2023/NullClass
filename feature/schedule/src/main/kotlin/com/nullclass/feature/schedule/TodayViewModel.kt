@@ -3,6 +3,7 @@ package com.nullclass.feature.schedule
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.nullclass.core.data.repository.CourseRepository
+import com.nullclass.core.data.repository.DayOverrideRepository
 import com.nullclass.core.data.repository.HolidayRepository
 import com.nullclass.core.data.repository.TermRepository
 import com.nullclass.core.model.CourseWithBlocks
@@ -48,6 +49,7 @@ sealed interface TodayUiState {
 class TodayViewModel @Inject constructor(
     private val termRepository: TermRepository,
     private val courseRepository: CourseRepository,
+    private val dayOverrideRepository: DayOverrideRepository,
     holidayRepository: HolidayRepository,
 ) : ViewModel() {
 
@@ -67,11 +69,18 @@ class TodayViewModel @Inject constructor(
                 combine(
                     courseRepository.observeSchedule(term.id),
                     termRepository.observePeriodTimes(term.id),
+                    dayOverrideRepository.index,
                     dayTicker,
-                ) { schedule, periodTimes, _ ->
+                ) { schedule, periodTimes, overrides, _ ->
                     TodayUiState.Ready(
                         term = term,
-                        snapshot = assembleTodaySnapshot(term, schedule, periodTimes, LocalDate.now()),
+                        snapshot = assembleTodaySnapshot(
+                            term = term,
+                            schedule = schedule,
+                            periodTimes = periodTimes,
+                            today = LocalDate.now(),
+                            dayOverrides = overrides,
+                        ),
                         schedule = schedule,
                     )
                 }
@@ -96,5 +105,10 @@ class TodayViewModel @Inject constructor(
 
     fun deleteCourse(courseId: String) {
         viewModelScope.launch { courseRepository.deleteCourse(courseId) }
+    }
+
+    /** 顶部横幅的「恢复原课表」：撤掉今天的串课。 */
+    fun clearTodayOverride() {
+        viewModelScope.launch { dayOverrideRepository.clearOverride(LocalDate.now().toEpochDay()) }
     }
 }

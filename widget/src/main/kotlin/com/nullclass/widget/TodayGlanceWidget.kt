@@ -58,7 +58,11 @@ class TodayGlanceWidget : GlanceAppWidget() {
 
     override suspend fun provideGlance(context: Context, id: GlanceId) {
         val entryPoint = widgetEntryPoint(context)
-        val snapshot = buildTodaySnapshot(entryPoint.termRepository(), entryPoint.courseRepository())
+        val snapshot = buildTodaySnapshot(
+            entryPoint.termRepository(),
+            entryPoint.courseRepository(),
+            entryPoint.dayOverrideRepository(),
+        )
         val prefs = entryPoint.userPreferences()
         val initialFont = prefs.widgetFontSize.first()
         provideContent {
@@ -66,7 +70,11 @@ class TodayGlanceWidget : GlanceAppWidget() {
             val pageState = currentState<Preferences>()
             // 翻页可唤醒仍存活的 Glance 会话，此时 provideGlance 不会重跑。
             val liveSnapshot by produceState(snapshot, pageState) {
-                value = buildTodaySnapshot(entryPoint.termRepository(), entryPoint.courseRepository())
+                value = buildTodaySnapshot(
+                    entryPoint.termRepository(),
+                    entryPoint.courseRepository(),
+                    entryPoint.dayOverrideRepository(),
+                )
             }
             val now = LocalTime.now()
             TodayWidgetContent(

@@ -3,6 +3,7 @@ package com.nullclass.app.notification
 import android.content.Context
 import com.nullclass.core.data.prefs.UserPreferencesRepository
 import com.nullclass.core.data.repository.CourseRepository
+import com.nullclass.core.data.repository.DayOverrideRepository
 import com.nullclass.core.data.repository.ExamRepository
 import com.nullclass.core.data.repository.HolidayRepository
 import com.nullclass.core.data.repository.TermRepository
@@ -18,7 +19,7 @@ import javax.inject.Inject
 import javax.inject.Singleton
 
 /**
- * 提醒控制器：Application 常驻，观察课表/考试/学期/偏好/跳过日期变化 → 防抖 → 全量重排。
+ * 提醒控制器：Application 常驻，观察课表/考试/学期/偏好/跳过日期/串课变化 → 防抖 → 全量重排。
  * 另观察「勿扰下响铃」偏好，变化时同步通知渠道的 bypassDnd。
  */
 @Singleton
@@ -29,6 +30,7 @@ class ReminderController @Inject constructor(
     private val courseRepository: CourseRepository,
     private val examRepository: ExamRepository,
     private val holidayRepository: HolidayRepository,
+    private val dayOverrideRepository: DayOverrideRepository,
     private val userPrefs: UserPreferencesRepository,
 ) {
 
@@ -50,7 +52,9 @@ class ReminderController @Inject constructor(
                             examRepository.observeForTerm(term.id),
                             // 跳过日期变化（手动增删 / 节假日同步落库）触发重排
                             holidayRepository.skipDates,
-                        ) { _, _, _ -> Unit }
+                            // 串课变化：那天要提醒的是另一天的课
+                            dayOverrideRepository.index,
+                        ) { _, _, _, _ -> Unit }
                     }
                 }
                 // 编辑保存连发多条通知，防抖合并

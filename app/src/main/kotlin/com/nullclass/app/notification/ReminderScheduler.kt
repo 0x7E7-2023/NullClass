@@ -8,6 +8,7 @@ import androidx.work.WorkManager
 import androidx.work.workDataOf
 import com.nullclass.core.data.prefs.UserPreferencesRepository
 import com.nullclass.core.data.repository.CourseRepository
+import com.nullclass.core.data.repository.DayOverrideRepository
 import com.nullclass.core.data.repository.HolidayRepository
 import com.nullclass.core.data.repository.TermRepository
 import com.nullclass.core.model.ReminderPlanner
@@ -27,6 +28,7 @@ import javax.inject.Singleton
  * - WorkManager（默认）：持久化、免权限；Doze 下误差 0~15 分钟
  * - 精确闹钟（可选，默认关）：开关开且系统授权后到点准时；未授权/关回落 WorkManager
  * - 跳过日期（节假日/手动）里的课不排（[ReminderPlanner.upcoming] 过滤）
+ * - 串课（调休）当天排的是来源日的课，时刻按当天的作息（同上，口径在 core:model）
  * - uniqueWork 名 / 闹钟 URI 都含 blockId+startAt 保证幂等；先入队、再按名单取消不再需要的
  * - remindAt 已过但课未开始（仅 WorkManager 路径）→ 重新入队立即发；
  *   课已开始 → 按 [ReminderPlanner.shouldSendLate] 判定补发「已开始」迟发通知
@@ -38,6 +40,7 @@ class ReminderScheduler @Inject constructor(
     private val courseRepository: CourseRepository,
     private val userPrefs: UserPreferencesRepository,
     private val holidayRepository: HolidayRepository,
+    private val dayOverrideRepository: DayOverrideRepository,
     private val exactAlarmScheduler: ExactAlarmScheduler,
     private val examReminderScheduler: ExamReminderScheduler,
 ) {
@@ -57,10 +60,12 @@ class ReminderScheduler @Inject constructor(
             val schedule = courseRepository.observeSchedule(term.id).first()
             val times = termRepository.getPeriodTimes(term.id)
             val skipDates = holidayRepository.skipEpochDays()
+            val dayOverrides = dayOverrideRepository.indexNow()
 
             val planned = ReminderPlanner.upcoming(
                 term, schedule, times, now,
                 horizonDays = HORIZON_DAYS, zone = zone, skipDates = skipDates,
+                dayOverrides = dayOverrides,
             )
 
             if (exactAlarmScheduler.canUseExact()) {

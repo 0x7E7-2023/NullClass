@@ -86,3 +86,18 @@ val MIGRATION_4_5 = object : Migration(4, 5) {
         db.execSQL("CREATE INDEX IF NOT EXISTS `index_skip_dates_type` ON `skip_dates` (`type`)")
     }
 }
+
+/**
+ * v5 → v6：加入串课表（调休时某天改上另一天的课，纯本地、不同步）。
+ * 纯新增表，无存量数据迁移。
+ */
+val MIGRATION_5_6 = object : Migration(5, 6) {
+
+    override fun migrate(db: SupportSQLiteDatabase) {
+        db.execSQL(
+            "CREATE TABLE IF NOT EXISTS `day_overrides` (" +
+                "`epochDay` INTEGER NOT NULL, `sourceEpochDay` INTEGER NOT NULL, " +
+                "`updatedAt` INTEGER NOT NULL, PRIMARY KEY(`epochDay`))",
+        )
+    }
+}

@@ -6,7 +6,9 @@ import com.nullclass.core.data.db.NullClassDatabase
 import com.nullclass.core.data.db.MIGRATION_2_3
 import com.nullclass.core.data.db.MIGRATION_3_4
 import com.nullclass.core.data.db.MIGRATION_4_5
+import com.nullclass.core.data.db.MIGRATION_5_6
 import com.nullclass.core.data.db.dao.CourseDao
+import com.nullclass.core.data.db.dao.DayOverrideDao
 import com.nullclass.core.data.db.dao.ExamDao
 import com.nullclass.core.data.db.dao.PeriodTimeDao
 import com.nullclass.core.data.db.dao.SkipDateDao
@@ -46,6 +48,7 @@ internal object DataModule {
             .addMigrations(MIGRATION_2_3)
             .addMigrations(MIGRATION_3_4)
             .addMigrations(MIGRATION_4_5)
+            .addMigrations(MIGRATION_5_6)
             .build()
 
     @Provides
@@ -68,6 +71,9 @@ internal object DataModule {
 
     @Provides
     fun provideSkipDateDao(db: NullClassDatabase): SkipDateDao = db.skipDateDao()
+
+    @Provides
+    fun provideDayOverrideDao(db: NullClassDatabase): DayOverrideDao = db.dayOverrideDao()
 }
 
 @Module
