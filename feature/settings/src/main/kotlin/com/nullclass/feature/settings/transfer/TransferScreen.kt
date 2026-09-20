@@ -102,6 +102,12 @@ fun TransferScreen(
         uri?.let { viewModel.importWakeUpFromUri(it, displayName(uri)) }
     }
 
+    val openShiguangLauncher = rememberLauncherForActivityResult(
+        ActivityResultContracts.OpenDocument(),
+    ) { uri ->
+        uri?.let { viewModel.importShiguangFromUri(it, displayName(uri)) }
+    }
+
     val openQrImageLauncher = rememberLauncherForActivityResult(
         ActivityResultContracts.GetContent(),
     ) { uri ->
@@ -302,6 +308,21 @@ fun TransferScreen(
                 openWakeUpLauncher.launch(arrayOf("*/*"))
             }, enabled = !state.busy, modifier = Modifier.fillMaxWidth()) { Text("选择 .wakeup_schedule 文件") }
             SectionFeedback(state, TransferSection.WAKEUP)
+
+            HorizontalDivider(modifier = Modifier.padding(vertical = 8.dp))
+
+            // ---- 拾光课程表 ----
+            Text("从拾光课程表迁移", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold)
+            Text(
+                "在拾光课程表里「我的 → 高级功能 → 课表导入/导出」导出课程文件，" +
+                    "选择那个 shiguangschedule_*.json 即可迁移（课程、单双周、作息表与开学日期都会带过来）。",
+                style = MaterialTheme.typography.bodySmall,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+            )
+            OutlinedButton(onClick = {
+                openShiguangLauncher.launch(arrayOf("application/json", "*/*"))
+            }, enabled = !state.busy, modifier = Modifier.fillMaxWidth()) { Text("选择拾光导出的 .json 文件") }
+            SectionFeedback(state, TransferSection.SHIGUANG)
 
             HorizontalDivider(modifier = Modifier.padding(vertical = 8.dp))
 

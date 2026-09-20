@@ -36,10 +36,10 @@ data class ScheduleDocument(
 /**
  * 导入来源标记（[ScheduleDocument.deviceId] 的取值约定）。
  *
- * `jw-*`（教务适配器）、[WAKEUP_IMPORT]（WakeUp 迁移）与 [QR_IMPORT]（扫码分享包）
- * 这类来源**每次导入都重新生成记录 UUID**，纯按 ID 合并会让重复导入变成复制一份——
- * :sync 的 ImportAligner 靠这个标记决定要不要先做「同名学期对齐」。其余来源
- * （`.nullclass` 备份，deviceId = 导出设备）沿用记录原有 ID，走纯 LWW 即可。
+ * `jw-*`（教务适配器）、[WAKEUP_IMPORT]（WakeUp 迁移）、[SHIGUANG_IMPORT]（拾光迁移）
+ * 与 [QR_IMPORT]（扫码分享包）这类来源**每次导入都重新生成记录 UUID**，纯按 ID 合并会让
+ * 重复导入变成复制一份—— :sync 的 ImportAligner 靠这个标记决定要不要先做「同名学期对齐」。
+ * 其余来源（`.nullclass` 备份，deviceId = 导出设备）沿用记录原有 ID，走纯 LWW 即可。
  */
 object ImportProvenance {
     /** 教务适配器：`jw-<schoolKey>`。 */
@@ -48,11 +48,15 @@ object ImportProvenance {
     /** WakeUp 迁移。 */
     const val WAKEUP_IMPORT = "wakeup-import"
 
+    /** 拾光课程表导出文件（shiguangschedule_*.json）迁移。 */
+    const val SHIGUANG_IMPORT = "shiguang-import"
+
     /** 扫码分享包（NULLCLASS3，重铸 ID 的当前学期书包）。 */
     const val QR_IMPORT = "qr-import"
 
     fun isFreshIdImport(deviceId: String): Boolean =
-        deviceId.startsWith(JW_PREFIX) || deviceId == WAKEUP_IMPORT || deviceId == QR_IMPORT
+        deviceId.startsWith(JW_PREFIX) || deviceId == WAKEUP_IMPORT ||
+            deviceId == SHIGUANG_IMPORT || deviceId == QR_IMPORT
 }
 
 /** 课表（顶层容器，v2 格式的后加字段；旧版本快照里没有）。 */

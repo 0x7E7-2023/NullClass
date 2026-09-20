@@ -8,7 +8,7 @@ import com.nullclass.importer.ScheduleDocument
  * 导入对齐：把「同名学期」认成同一个学期，避免每次重新导入都复制一份课表。
  *
  * **只对「每次导入都重铸 UUID」的来源**（[ImportProvenance.isFreshIdImport]：教务适配器、
- * WakeUp 迁移、扫码分享包）生效。这类来源的记录 ID 每次都变，纯按 ID 做 LWW 会让「一键刷新」
+ * WakeUp / 拾光迁移、扫码分享包）生效。这类来源的记录 ID 每次都变，纯按 ID 做 LWW 会让「一键刷新」
  * 变成再追加一份；这里在合并**之前**把新数据对齐到本地已有记录上：
  *
  * - 学期按 `name` 对齐，**只在 ID 不同**（说明是新生成的一份）时复用本地 ID，内容取这次导入

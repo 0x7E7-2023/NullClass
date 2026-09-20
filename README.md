@@ -25,6 +25,7 @@ An open-source class schedule app for Android universities. Local-first: no acco
   周视图点星期表头即可设置；今日页、周视图、小组件与课前提醒一起跟着改
 - 📤 课表导入导出（`.nullclass` 文件 + 二维码扫码分享）
 - 📥 WakeUp 课表一键迁移（`.wakeup_schedule`，连堂/单双周/节次时间/颜色全保留）
+- 📥 拾光课程表一键迁移（导出的 `shiguangschedule_*.json`，课程/单双周/作息表/开学日期全带过来）
 - 🏫 教务系统导入（WebView 手工登录 + 社区适配器包；课表是图片的学校也能识别）
 - 🔄 WebDAV 同步（坚果云/NextCloud 自建，端到端属于你；支持定时自动同步）
 - 🎨 Material 3 + 动态取色（Material You）
@@ -50,6 +51,7 @@ An open-source class schedule app for Android universities. Local-first: no acco
 
 - 课表可随时导出为 `.nullclass` 文件（全部学期）或二维码（当前学期，扫码后并入对方当前课表），发给同学即可导入（合并语义，不覆盖更新的数据）
 - 从 WakeUp 课表迁移：WakeUp 内备份出 `.wakeup_schedule` 文件 → 空课「导入/导出 → 从 WakeUp 迁移」
+- 从拾光课程表迁移：拾光「我的 → 高级功能 → 课表导入/导出」导出课程文件 → 空课「导入/导出 → 从拾光课程表迁移」（直接点开那个 json 也认）
 - 多设备同步：设置里填 WebDAV（推荐坚果云等支持 HTTPS 的服务）
 
 ### 求你的学校适配 / Request your school

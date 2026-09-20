@@ -11,6 +11,7 @@ import com.nullclass.importer.ImportProvenance
 import com.nullclass.importer.NullClassCodec
 import com.nullclass.importer.QrPayload
 import com.nullclass.importer.ScheduleDocument
+import com.nullclass.importer.shiguang.ShiguangParser
 import com.nullclass.importer.wakeup.WakeUpParser
 import com.nullclass.sync.SnapshotCodec
 import com.nullclass.sync.SyncManager
@@ -251,20 +252,22 @@ class TransferViewModel @Inject constructor(
 
     // ---- 文件导入 ----
 
-    /** SAF/Intent 打开的文件 → 预览。 */
+    /**
+     * SAF/Intent 打开的文件 → 预览。
+     *
+     * 用户直接点开拾光导出的 json 走的也是这条路（系统只知道它是 json，不知道是谁的），
+     * 所以这里认一下：不是我们的格式、长得像拾光，就交给拾光解析器，别甩一句
+     * 「文件格式不对」让用户去猜。
+     */
     fun importFromUri(uri: Uri, displayName: String? = null) {
         viewModelScope.launch {
             _state.update { it.copy(section = TransferSection.FILE, busy = true, message = null) }
-            val raw = try {
-                withContext(Dispatchers.IO) {
-                    appContext.contentResolver.openInputStream(uri)?.use { it.readBytes().toString(Charsets.UTF_8) }
-                        ?: error("无法读取文件")
-                }
-            } catch (e: Exception) {
-                _state.update { it.copy(busy = false, message = "读取失败：${e.message}", messageIsError = true) }
+            val raw = readTextOrFail(uri, TransferSection.FILE) ?: return@launch
+            _state.update { it.copy(busy = false) }
+            if (ShiguangParser.looksLikeShiguang(raw)) {
+                previewShiguang(raw, section = TransferSection.FILE, displayName = displayName)
                 return@launch
             }
-            _state.update { it.copy(busy = false) }
             parseRaw({ NullClassCodec.decode(raw) }, source = "文件 ${displayName ?: uri.lastPathSegment ?: ""}", section = TransferSection.FILE)
         }
     }
@@ -273,15 +276,7 @@ class TransferViewModel @Inject constructor(
     fun importWakeUpFromUri(uri: Uri, displayName: String? = null) {
         viewModelScope.launch {
             _state.update { it.copy(section = TransferSection.WAKEUP, busy = true, message = null) }
-            val raw = try {
-                withContext(Dispatchers.IO) {
-                    appContext.contentResolver.openInputStream(uri)?.use { it.readBytes().toString(Charsets.UTF_8) }
-                        ?: error("无法读取文件")
-                }
-            } catch (e: Exception) {
-                _state.update { it.copy(busy = false, message = "读取失败：${e.message}", messageIsError = true) }
-                return@launch
-            }
+            val raw = readTextOrFail(uri, TransferSection.WAKEUP) ?: return@launch
             _state.update { it.copy(busy = false) }
             try {
                 val result = WakeUpParser.parse(raw)
@@ -291,7 +286,7 @@ class TransferViewModel @Inject constructor(
                             source = "WakeUp ${displayName ?: "课表"}",
                             section = TransferSection.WAKEUP,
                             document = ScheduleDocument(
-                                deviceId = "wakeup-import",
+                                deviceId = ImportProvenance.WAKEUP_IMPORT,
                                 generatedAt = System.currentTimeMillis(),
                                 terms = listOf(result.term),
                                 courses = result.courses,
@@ -316,6 +311,81 @@ class TransferViewModel @Inject constructor(
                 _state.update { it.copy(message = e.message ?: "不是有效的 WakeUp 文件", messageIsError = true) }
             }
         }
+    }
+
+    /**
+     * 拾光课程表导出的 json 文件 → 预览（新学期，合并后激活）。
+     *
+     * 导出文件里没有课表名，所以学期名取文件名（`shiguangschedule_20260920_101530.json`
+     * 这种自动名没信息量，交给解析器用默认名）。
+     */
+    fun importShiguangFromUri(uri: Uri, displayName: String? = null) {
+        viewModelScope.launch {
+            _state.update { it.copy(section = TransferSection.SHIGUANG, busy = true, message = null) }
+            val raw = readTextOrFail(uri, TransferSection.SHIGUANG) ?: return@launch
+            _state.update { it.copy(busy = false) }
+            previewShiguang(raw, section = TransferSection.SHIGUANG, displayName = displayName)
+        }
+    }
+
+    /** 拾光解析 → 预览（两个入口共用：专门的迁移按钮，和「点开 json 文件」的兜底识别）。 */
+    private fun previewShiguang(raw: String, section: TransferSection, displayName: String?) {
+        try {
+            val result = ShiguangParser.parse(raw, termName = termNameFromShiguangFile(displayName))
+            _state.update {
+                it.copy(
+                    section = section,
+                    preview = ImportPreview(
+                        source = "拾光课程表 ${displayName ?: "导出文件"}",
+                        section = section,
+                        document = ScheduleDocument(
+                            deviceId = ImportProvenance.SHIGUANG_IMPORT,
+                            generatedAt = System.currentTimeMillis(),
+                            terms = listOf(result.term),
+                            courses = result.courses,
+                            blocks = result.blocks,
+                            periodTimes = result.periodTimes,
+                        ),
+                        termSummaries = listOf(
+                            TermSummary(
+                                name = result.term.name,
+                                totalWeeks = result.term.totalWeeks,
+                                courseCount = result.courses.size,
+                                blockCount = result.blocks.size,
+                                examCount = 0,
+                            ),
+                        ),
+                        warnings = result.warnings,
+                        activateTermName = result.term.name,
+                    ),
+                )
+            }
+        } catch (e: IllegalArgumentException) {
+            _state.update {
+                it.copy(section = section, message = e.message ?: "不是有效的拾光课程表导出文件", messageIsError = true)
+            }
+        }
+    }
+
+    /** 读取 SAF 文件内容；失败时直接写进 state 并返回 null（调用方 return）。 */
+    private suspend fun readTextOrFail(uri: Uri, section: TransferSection): String? = try {
+        withContext(Dispatchers.IO) {
+            appContext.contentResolver.openInputStream(uri)?.use { it.readBytes().toString(Charsets.UTF_8) }
+                ?: error("无法读取文件")
+        }
+    } catch (e: Exception) {
+        _state.update { it.copy(section = section, busy = false, message = "读取失败：${e.message}", messageIsError = true) }
+        null
+    }
+
+    /**
+     * 拾光的导出文件名是 `shiguangschedule_yyyyMMdd_HHmmss.json`（没有课表名），
+     * 用户自己改过名才有信息量——认得出自动名就交回解析器的默认学期名。
+     */
+    private fun termNameFromShiguangFile(displayName: String?): String? {
+        val base = displayName?.substringBeforeLast('.')?.trim().orEmpty()
+        if (base.isEmpty()) return null
+        return if (Regex("""^shiguangschedule[_-]?\d*[_-]?\d*$""", RegexOption.IGNORE_CASE).matches(base)) null else base
     }
 
     // ---- 合并执行 ----
