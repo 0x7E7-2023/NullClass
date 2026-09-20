@@ -1,0 +1,26 @@
+{
+  "_comment": "合成回归用例：USTC 周日开始一周，空课从 2026-08-31 周一开始。期望周次按实际日期独立计算。",
+  "term": {
+    "name": "周日跨周回归",
+    "firstDay": "2026-08-31",
+    "totalWeeks": 18
+  },
+  "lessonList": [
+    { "id": 1, "name": "第三周周日课程" },
+    { "id": 2, "name": "空课单周课程" },
+    { "id": 3, "name": "空课双周课程" },
+    { "id": 4, "name": "周界相邻课程" }
+  ],
+  "scheduleList": [
+    { "lessonId": 1, "weekday": 7, "weekIndex": 4, "date": "2026-09-20", "startTime": 750, "periods": 2 },
+    { "lessonId": 2, "weekday": 7, "weekIndex": 2, "date": "2026-09-06", "startTime": 945, "periods": 2 },
+    { "lessonId": 2, "weekday": 7, "weekIndex": 4, "date": "2026-09-20", "startTime": 945, "periods": 2 },
+    { "lessonId": 2, "weekday": 7, "weekIndex": 6, "date": "2026-10-04", "startTime": 945, "periods": 2 },
+    { "lessonId": 3, "weekday": 7, "weekIndex": 3, "date": "2026-09-13", "startTime": 1400, "periods": 2 },
+    { "lessonId": 3, "weekday": 7, "weekIndex": 5, "date": "2026-09-27", "startTime": 1400, "periods": 2 },
+    { "lessonId": 3, "weekday": 7, "weekIndex": 7, "date": "2026-10-11", "startTime": 1400, "periods": 2 },
+    { "lessonId": 4, "weekday": 6, "weekIndex": 3, "date": "2026-09-19", "startTime": 1555, "periods": 2 },
+    { "lessonId": 4, "weekday": 7, "weekIndex": 4, "date": "2026-09-20", "startTime": 1555, "periods": 2 },
+    { "lessonId": 4, "weekday": 1, "weekIndex": 4, "date": "2026-09-21", "startTime": 1555, "periods": 2 }
+  ]
+}

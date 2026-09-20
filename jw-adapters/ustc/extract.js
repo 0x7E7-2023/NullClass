@@ -195,19 +195,6 @@
         };
     }
 
-    function pad2(n) {
-        return (n < 10 ? '0' : '') + n;
-    }
-
-    function calculateFirstMondayFromSchedule(s) {
-        if (!s || !s.date || !s.weekIndex || !s.weekday) return null;
-        var d = new Date(s.date);
-        if (isNaN(d.getTime())) return null;
-        var daysBack = (s.weekIndex - 1) * 7 + (s.weekday - 1);
-        var firstMon = new Date(d.getTime() - daysBack * 86400000);
-        return firstMon.getFullYear() + '-' + pad2(firstMon.getMonth() + 1) + '-' + pad2(firstMon.getDate());
-    }
-
     function sanitizeLessons(rawList) {
         var out = [];
         var list = rawList || [];
@@ -313,9 +300,7 @@
                 var cleanSchedules = sanitizeSchedules(resObj.scheduleList);
 
                 var firstDay = apiFirstDay || semInfo.startDate;
-                if (!firstDay && cleanSchedules.length > 0) {
-                    firstDay = calculateFirstMondayFromSchedule(cleanSchedules[0]);
-                }
+                // 缺失日期时由 parse.js 按 USTC 的周日周界推算，日期换算集中回归验证。
 
                 var maxWeek = apiTotalWeeks || 0;
                 for (var w = 0; w < cleanSchedules.length; w++) {

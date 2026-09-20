@@ -37,12 +37,56 @@
         return (n < 10 ? '0' : '') + n;
     }
 
+    // 按日历日期运算，避免本地时区和夏令时把午夜挪到前一天。
+    function epochDayOf(value) {
+        var match = /^(\d{4})-(\d{2})-(\d{2})$/.exec(text(value));
+        if (!match) return null;
+        var year = Number(match[1]);
+        var month = Number(match[2]);
+        var day = Number(match[3]);
+        var millis = Date.UTC(year, month - 1, day);
+        var date = new Date(millis);
+        if (date.getUTCFullYear() !== year || date.getUTCMonth() !== month - 1 || date.getUTCDate() !== day) {
+            return null;
+        }
+        return millis / 86400000;
+    }
+
+    function weekdayOf(epochDay) {
+        return new Date(epochDay * 86400000).getUTCDay() || 7;
+    }
+
+    function isoOfDay(epochDay) {
+        var date = new Date(epochDay * 86400000);
+        return date.getUTCFullYear() + '-' + pad2(date.getUTCMonth() + 1) + '-' + pad2(date.getUTCDate());
+    }
+
     function currentMondayIso() {
         var now = new Date();
-        var offset = (now.getDay() + 6) % 7;
-        var monday = new Date(now.getTime() - offset * 86400000);
-        return monday.getFullYear() + '-' + pad2(monday.getMonth() + 1) + '-' + pad2(monday.getDate());
+        var today = epochDayOf(now.getFullYear() + '-' + pad2(now.getMonth() + 1) + '-' + pad2(now.getDate()));
+        return isoOfDay(today - (weekdayOf(today) + 6) % 7);
     }
+
+    var warnings = [];
+    var firstDayEpoch = epochDayOf(term.firstDay);
+    if (firstDayEpoch === null) {
+        for (var f = 0; f < scheduleList.length; f++) {
+            var candidate = scheduleList[f];
+            var candidateDate = epochDayOf(candidate.date);
+            var candidateWeek = intOf(candidate.weekIndex);
+            if (candidateDate === null || !(candidateWeek >= 1)) continue;
+            // USTC 一周从周日开始：该周周一在周日之后一天，不能回退六天。
+            firstDayEpoch = candidateDate - (candidateWeek - 1) * 7 - (weekdayOf(candidateDate) % 7 - 1);
+            warnings.push('学期起始日期未提供或无效，已按排课日期推算第一周周一为 ' + isoOfDay(firstDayEpoch) + '，请核对');
+            break;
+        }
+    }
+    if (firstDayEpoch === null) {
+        firstDayEpoch = epochDayOf(currentMondayIso());
+        warnings.push('无法取得学期起始日期，已按本周周一（' + isoOfDay(firstDayEpoch) + '）推算，请在学期管理中核对');
+    }
+    var firstDay = isoOfDay(firstDayEpoch);
+    var firstWeekday = weekdayOf(firstDayEpoch);
 
     function getStartPeriod(time) {
         var t = intOf(time);
@@ -116,9 +160,36 @@
 
     var courseMap = {};
     var courseOrder = [];
+    var inferredDates = 0;
+    var invalidSchedules = 0;
+    var beforeTerm = 0;
+    var afterLimit = 0;
 
     for (var sIdx = 0; sIdx < scheduleList.length; sIdx++) {
         var s = scheduleList[sIdx];
+        var date = epochDayOf(s.date);
+        if (date === null) {
+            var sourceDay = intOf(s.weekday);
+            var sourceWeek = intOf(s.weekIndex);
+            if (!(sourceDay >= 1 && sourceDay <= 7 && sourceWeek >= 1)) {
+                invalidSchedules++;
+                continue;
+            }
+            // 旧数据缺少日期时，仍需把教务的周日周界转换为导入学期的周界。
+            date = firstDayEpoch + (sourceWeek - 1) * 7 + sourceDay % 7 - firstWeekday % 7;
+            inferredDates++;
+        }
+        var day = weekdayOf(date);
+        var week = Math.floor((date - firstDayEpoch) / 7) + 1;
+        if (week < 1) {
+            beforeTerm++;
+            continue;
+        }
+        if (week > 30) {
+            afterLimit++;
+            continue;
+        }
+
         var lInfo = lessonMap[s.lessonId] || { name: '未知课程', teacher: null };
         var cName = lInfo.name;
         var cTeacher = text(s.personName) || lInfo.teacher || null;
@@ -134,16 +205,10 @@
             courseOrder.push(cKey);
         }
 
-        var day = intOf(s.weekday);
-        if (!(day >= 1 && day <= 7)) continue;
-
         var startP = getStartPeriod(s.startTime);
         var periods = intOf(s.periods) || 1;
         var endP = startP + periods - 1;
         var loc = locationOf(s.room, s.customPlace);
-        var week = intOf(s.weekIndex);
-        if (!week || week < 1) continue;
-
         var slotKey = [day, startP, endP, loc || ''].join('|');
         if (!courseMap[cKey].slots[slotKey]) {
             courseMap[cKey].slots[slotKey] = {
@@ -191,7 +256,6 @@
     }
 
     var termName = text(term.name) || '当前学期';
-    var firstDay = term.firstDay || currentMondayIso();
     var totalWeeks = intOf(term.totalWeeks);
     if (!totalWeeks || totalWeeks < 1) {
         totalWeeks = maxWeek > 0 ? maxWeek : 18;
@@ -202,7 +266,12 @@
     if (totalWeeks > 30) totalWeeks = 30;
     if (totalWeeks < 1) totalWeeks = 18;
 
-    return JSON.stringify({
+    if (inferredDates) warnings.push('有 ' + inferredDates + ' 条排课缺少有效日期，已按教务周次和星期推算，请核对');
+    if (invalidSchedules) warnings.push('有 ' + invalidSchedules + ' 条排课缺少有效日期、周次或星期，无法确定上课日期，已跳过');
+    if (beforeTerm) warnings.push('有 ' + beforeTerm + ' 条排课早于学期起始日（' + firstDay + '），已跳过，请核对学期日期');
+    if (afterLimit) warnings.push('有 ' + afterLimit + ' 条排课超出空课支持的 30 周范围，已跳过，请核对学期日期');
+
+    var result = {
         specVersion: 1,
         kind: 'schedule',
         ocrAssisted: false,
@@ -215,5 +284,7 @@
                 courses: courses
             }
         ]
-    });
+    };
+    if (warnings.length) result.warnings = warnings;
+    return JSON.stringify(result);
 })()

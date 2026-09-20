@@ -17,6 +17,11 @@
       "name": "2026-2027 学年第一学期",
       "extracted": "fixtures/basic.extracted.json",
       "expected": "fixtures/basic.expected.json"
+    },
+    {
+      "name": "周日跨周、单双周及相邻日期（合成回归）",
+      "extracted": "fixtures/sunday-week-boundary.extracted.json",
+      "expected": "fixtures/sunday-week-boundary.expected.json"
     }
   ]
 }

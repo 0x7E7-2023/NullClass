@@ -4,6 +4,13 @@
 格式遵循 [Keep a Changelog](https://keepachangelog.com/zh-CN/1.1.0/)，
 版本遵循 [语义化版本](https://semver.org/lang/zh-CN/)。
 
+## [Unreleased]
+
+### 修复
+
+- **USTC 周日课程错后一周**：适配器按实际排课日期换算空课周次，修正教务周日开周、
+  空课周一开周造成的错位，重新计算单双周；缺少学期起始日期时，也按正确的周界推算。
+
 ## [0.9.9] - 2026-09-19
 
 ### 2026-09-20 重发（versionCode 29）
