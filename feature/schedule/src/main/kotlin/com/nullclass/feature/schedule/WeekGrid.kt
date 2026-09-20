@@ -17,6 +17,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -83,6 +84,23 @@ internal fun WeekGrid(
     val hairline = with(LocalDensity.current) { 1.toDp() }
     // 略淡于上午/下午/晚的分隔线（全不透明 + 1dp），这里是七成透明度 + hairline
     val gridColor = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.7f)
+    val sessionColor = MaterialTheme.colorScheme.outlineVariant
+    // 每列上「被某个课块从中间穿过」的行边界，逐列记下来，画线时整段跳过。
+    // 课块四周各留了 1.5dp 的空，线照画不误的话会从课块两侧各露出一小截，
+    // 看着像课块被横着划了一刀 —— 比整条线压过去还奇怪。灰块同样是一整块，同等对待。
+    val coveredRows = remember(layout, otherWeekLayout, weekDays, totalPeriods) {
+        weekDays.map { day ->
+            val covered = BooleanArray(totalPeriods + 1)
+            for (placed in layout[day].orEmpty() + otherWeekLayout[day].orEmpty()) {
+                val start = placed.block.startPeriod
+                // 第 b 节与第 b+1 节之间那条线记作边界 b；只有块**内部**的边界要盖掉
+                for (boundary in start until start + placed.block.periodCount - 1) {
+                    if (boundary in 1 until totalPeriods) covered[boundary] = true
+                }
+            }
+            covered
+        }
+    }
     // 当前时间线：仅本周页；今天那一列没显示（关掉了周末又逢周末）就不画；时刻须在节次表跨度内
     val nowLineY = todayDayOfWeek?.let { today ->
         if (today in weekDays) {
@@ -99,35 +117,49 @@ internal fun WeekGrid(
                 // 纵向滚动链路 maxHeight = 无穷，fillMaxHeight 会失效、列高塌成课块堆高度；
                 // 显式钉为「节数 × 行高」，今日高亮条与空白格点击区才能铺满整张网格
                 .height(PeriodCellHeight * totalPeriods)
-                // 网格线画在课块下面，只让空白单元格显出分隔，不破坏课块自身的填充与描边。
+                // 网格线与会话分隔线都画在课块下面，且逐列绘制、遇到课块就断开：
+                // 格线是给空时段用的参照，不该压在课上，也不该把一节跨多节的课切成几段。
                 .drawBehind {
-                if (showGridLines && weekDays.isNotEmpty()) {
+                    if (weekDays.isEmpty()) return@drawBehind
                     val rowHeightPx = PeriodCellHeight.toPx()
                     val periodColumnWidthPx = periodColumnWidth(showTimeInCards).toPx()
                     val dayWidthPx =
                         ((size.width - periodColumnWidthPx) / weekDays.size).coerceAtLeast(0f)
-                    val strokeWidthPx = hairline.toPx()
+                    val gridStrokePx = hairline.toPx()
+                    val sessionStrokePx = 1.dp.toPx()
 
-                    for (column in 0..weekDays.size) {
-                        val x = periodColumnWidthPx + dayWidthPx * column
-                        drawLine(
-                            color = gridColor,
-                            start = Offset(x, 0f),
-                            end = Offset(x, rowHeightPx * totalPeriods),
-                            strokeWidth = strokeWidthPx,
-                        )
+                    // 竖线整列贯通：它落在相邻两列课块之间 1.5dp 的空档里，本来就碰不到课块
+                    if (showGridLines) {
+                        for (column in 0..weekDays.size) {
+                            val x = periodColumnWidthPx + dayWidthPx * column
+                            drawLine(
+                                color = gridColor,
+                                start = Offset(x, 0f),
+                                end = Offset(x, rowHeightPx * totalPeriods),
+                                strokeWidth = gridStrokePx,
+                            )
+                        }
                     }
+
                     for (row in 0..totalPeriods) {
+                        // 上午/下午/晚上换段那条线更重，且关掉网格线后仍要画
+                        val isSession = row in 1 until totalPeriods &&
+                            periodTimes.getOrNull(row)?.session != periodTimes.getOrNull(row - 1)?.session
+                        if (!isSession && !showGridLines) continue
                         val y = rowHeightPx * row
-                        drawLine(
-                            color = gridColor,
-                            start = Offset(periodColumnWidthPx, y),
-                            end = Offset(size.width, y),
-                            strokeWidth = strokeWidthPx,
-                        )
+                        val color = if (isSession) sessionColor else gridColor
+                        val stroke = if (isSession) sessionStrokePx else gridStrokePx
+                        // 会话分隔线连左侧节次列一起横贯（首尾两条边界不可能是会话分界）
+                        if (isSession) {
+                            drawLine(color, Offset(0f, y), Offset(periodColumnWidthPx, y), stroke)
+                        }
+                        for (column in weekDays.indices) {
+                            if (coveredRows[column][row]) continue
+                            val x = periodColumnWidthPx + dayWidthPx * column
+                            drawLine(color, Offset(x, y), Offset(x + dayWidthPx, y), stroke)
+                        }
                     }
-                }
-            },
+                },
         ) {
             PeriodColumn(periodTimes, showTimeInCards)
             for (day in weekDays) {
@@ -142,18 +174,9 @@ internal fun WeekGrid(
                 )
             }
         }
-        // 会话分隔线（上午/下午/晚上）：整行覆盖层，y 与课块网格（PeriodCellHeight × index）严格对齐
-        periodTimes.forEachIndexed { index, time ->
-            if (index > 0 && periodTimes[index - 1].session != time.session) {
-                HorizontalDivider(
-                    modifier = Modifier
-                        .offset(y = PeriodCellHeight * index)
-                        .fillMaxWidth(),
-                    color = MaterialTheme.colorScheme.outlineVariant,
-                )
-            }
-        }
-        // 当前时间线：横贯网格，压在分隔线之上
+        // 会话分隔线（上午/下午/晚上）在上面的 drawBehind 里与网格线一起画 —— 它原先是压在
+        // 课块之上的整行覆盖层，跨越上午/下午分界的课（如 3-6 节）会被拦腰划一道。
+        // 当前时间线：横贯网格，压在课块之上（这条就是要盖着课画的）
         nowLineY?.let { y ->
             HorizontalDivider(
                 modifier = Modifier
@@ -234,9 +257,9 @@ private fun DayColumn(
                     .height(PeriodCellHeight * placed.block.periodCount)
                     .padding(1.5.dp)
                     .clip(RoundedCornerShape(8.dp))
-                    // 先铺一层不透明底再叠课程色：容器只有 15%~18% 不透明度，直接画的话
-                    // 下层网格线会从块里透出来（跨节课块被中间那条行线一劈两半，看着像网格
-                    // 压在课块上面）。底色取 Scaffold 的 background，叠加结果与原来同色。
+                    // 先铺一层不透明底再叠课程色：容器只有 15%~18% 不透明度，冲突课（同一
+                    // 天同一时段两门课）是直接叠着画的，不垫底的话两门课的颜色会混在一起，
+                    // 谁都看不清。底色取 Scaffold 的 background，叠加结果与不垫底时同色。
                     .background(MaterialTheme.colorScheme.background)
                     .background(color.container)
                     .border(hairline, color.border, RoundedCornerShape(8.dp))
@@ -314,7 +337,8 @@ private fun OtherWeekBlock(placed: PlacedBlock, onBlockClick: (PlacedBlock) -> U
             .height(PeriodCellHeight * placed.block.periodCount)
             .padding(1.5.dp)
             .clip(RoundedCornerShape(8.dp))
-            // 同真课块：灰块更透（6%~8%），不垫不透明底的话网格线透得更明显
+            // 同真课块垫一层不透明底：灰块更透（6%~8%），垫了底色才与真课块走同一套合成，
+            // 叠在什么上面（今日高亮、以后的背景图）都是同一个灰
             .background(MaterialTheme.colorScheme.background)
             .background(color.container)
             .border(hairline, color.border, RoundedCornerShape(8.dp))

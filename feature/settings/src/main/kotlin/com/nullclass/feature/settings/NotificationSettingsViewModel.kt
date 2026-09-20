@@ -3,12 +3,8 @@ package com.nullclass.feature.settings
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.nullclass.core.data.prefs.UserPreferencesRepository
-import com.nullclass.core.data.repository.DayOverrideRepository
 import com.nullclass.core.data.repository.HolidayRepository
-import com.nullclass.core.data.repository.TermRepository
-import com.nullclass.core.model.DayOverride
 import com.nullclass.core.model.SkipDate
-import com.nullclass.core.model.Term
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -29,8 +25,6 @@ data class HolidayMessage(
 class NotificationSettingsViewModel @Inject constructor(
     private val userPreferences: UserPreferencesRepository,
     private val holidayRepository: HolidayRepository,
-    private val dayOverrideRepository: DayOverrideRepository,
-    termRepository: TermRepository,
 ) : ViewModel() {
 
     /** 课程提醒提前量（0 = 关闭）。 */
@@ -63,14 +57,6 @@ class NotificationSettingsViewModel @Inject constructor(
 
     /** 全部跳过日期（含补班日），按日期升序。 */
     val skipDates: StateFlow<List<SkipDate>> = holidayRepository.skipDates
-        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), emptyList())
-
-    /** 当前学期：调课只在学期内有意义，日期选择器据此限定可选范围。 */
-    val currentTerm: StateFlow<Term?> = termRepository.observeCurrent()
-        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), null)
-
-    /** 全部调课（串课）记录，按日期升序。 */
-    val dayOverrides: StateFlow<List<DayOverride>> = dayOverrideRepository.overrides
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), emptyList())
 
     private val _holidayBusy = MutableStateFlow(false)
@@ -128,15 +114,5 @@ class NotificationSettingsViewModel @Inject constructor(
 
     fun removeDate(epochDay: Long) {
         viewModelScope.launch { holidayRepository.removeDate(epochDay) }
-    }
-
-    /** 调课：[epochDay] 这天改上 [sourceEpochDay] 那天的课。 */
-    fun setDayOverride(epochDay: Long, sourceEpochDay: Long) {
-        viewModelScope.launch { dayOverrideRepository.setOverride(epochDay, sourceEpochDay) }
-    }
-
-    /** 取消某天的调课。 */
-    fun clearDayOverride(epochDay: Long) {
-        viewModelScope.launch { dayOverrideRepository.clearOverride(epochDay) }
     }
 }

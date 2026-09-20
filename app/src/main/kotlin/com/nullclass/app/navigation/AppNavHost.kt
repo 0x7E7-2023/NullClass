@@ -61,6 +61,7 @@ import com.nullclass.feature.exam.ExamScreen
 import com.nullclass.feature.schedule.ScheduleScreen
 import com.nullclass.feature.schedule.TodayScreen
 import com.nullclass.feature.settings.AboutScreen
+import com.nullclass.feature.settings.QuickActionsScreen
 import com.nullclass.feature.settings.NotificationSettingsScreen
 import com.nullclass.feature.settings.ProfileScreen
 import com.nullclass.feature.settings.SettingsScreen
@@ -80,6 +81,7 @@ object Routes {
     const val TIMETABLE_CREATE = "timetable_create"
     const val SETTINGS = "settings"
     const val NOTIFICATION_SETTINGS = "notification_settings"
+    const val QUICK_ACTIONS = "quick_actions"
     const val ABOUT = "about"
     const val TRANSFER = "transfer"
     const val EXAM_EDIT = "exam_edit?examId={examId}&courseId={courseId}"
@@ -318,6 +320,7 @@ fun AppNavHost() {
             screen(Routes.PROFILE, bottomBar = pageBottomBar, bottomBarHeight = bottomBarHeight) {
                 ProfileScreen(
                     onEditTerm = { termId -> navController.navigate(Routes.termEdit(termId)) },
+                    onOpenQuickActions = { navController.navigate(Routes.QUICK_ACTIONS) },
                     onOpenTimetableList = { navController.navigate(Routes.TIMETABLE_LIST) },
                     onOpenTermList = { navController.navigate(Routes.TERM_LIST) },
                     onOpenTransfer = { navController.navigate(Routes.TRANSFER) },
@@ -386,6 +389,9 @@ fun AppNavHost() {
             }
             screen(Routes.NOTIFICATION_SETTINGS) {
                 NotificationSettingsScreen(onBack = ::back)
+            }
+            screen(Routes.QUICK_ACTIONS) {
+                QuickActionsScreen(onBack = ::back)
             }
             screen(Routes.ABOUT) {
                 AboutScreen(onBack = ::back)

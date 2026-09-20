@@ -16,6 +16,7 @@ import androidx.compose.material.icons.filled.DateRange
 import androidx.compose.material.icons.filled.Info
 import androidx.compose.material.icons.filled.List
 import androidx.compose.material.icons.filled.Notifications
+import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material.icons.filled.Share
 import androidx.compose.material3.Icon
@@ -34,12 +35,13 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 
 /**
- * 「我的」Tab：入口中枢——学期卡片、学期管理、导入/导出、应用设置、关于（子页）。
+ * 「我的」Tab：入口中枢——学期卡片、快捷操作、学期管理、导入/导出、应用设置、关于（子页）。
  * 长表单类内容（WebDAV、提醒、小组件）保留在应用设置子页，中枢只做导航聚合。
  */
 @Composable
 fun ProfileScreen(
     onEditTerm: (termId: String?) -> Unit,
+    onOpenQuickActions: () -> Unit,
     onOpenTimetableList: () -> Unit,
     onOpenTermList: () -> Unit,
     onOpenTransfer: () -> Unit,
@@ -110,6 +112,16 @@ fun ProfileScreen(
                     .padding(top = 16.dp),
                 verticalArrangement = Arrangement.spacedBy(8.dp),
             ) {
+                EntryRow(
+                    icon = Icons.Default.Refresh,
+                    title = "快捷操作",
+                    subtitle = if (state.upcomingDaySwaps > 0) {
+                        "调课（串课）· 今天及以后有 ${state.upcomingDaySwaps} 条"
+                    } else {
+                        "调课（串课）：调休时把某一天设成上另一天的课"
+                    },
+                    onClick = onOpenQuickActions,
+                )
                 EntryRow(
                     icon = Icons.AutoMirrored.Filled.List,
                     title = "课表管理",
