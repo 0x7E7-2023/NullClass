@@ -54,12 +54,14 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
+import com.nullclass.core.data.prefs.UserPreferencesRepository
 import com.nullclass.core.ui.layout.LocalWindowSize
 import com.nullclass.core.ui.theme.NullClassTheme
 import com.nullclass.importer.jw.JwAdapter
 import com.nullclass.importer.jw.JwAdapterSource
 import com.nullclass.importer.jw.JwManifest
 import dagger.hilt.android.AndroidEntryPoint
+import javax.inject.Inject
 
 /** 「提交我的学校适配」issue 入口。 */
 private const val ADAPTER_REQUEST_URL =
@@ -74,10 +76,15 @@ private const val ADAPTER_REQUEST_URL =
 @AndroidEntryPoint
 class JwImportActivity : ComponentActivity() {
 
+    @Inject lateinit var userPreferences: UserPreferencesRepository
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        // 同步读上次的主题，首帧就是用户选的深浅色
+        val initialThemeMode = userPreferences.lastThemeMode
         setContent {
-            NullClassTheme {
+            val themeMode by userPreferences.themeMode.collectAsState(initial = initialThemeMode)
+            NullClassTheme(themeMode) {
                 val viewModel: JwImportViewModel = hiltViewModel()
                 JwImportScreen(
                     viewModel = viewModel,

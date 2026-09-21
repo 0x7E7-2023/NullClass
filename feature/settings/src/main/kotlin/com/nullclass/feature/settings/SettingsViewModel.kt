@@ -3,6 +3,7 @@ package com.nullclass.feature.settings
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.nullclass.core.data.prefs.UserPreferencesRepository
+import com.nullclass.core.model.ThemeMode
 import com.nullclass.core.model.WidgetFontSize
 import com.nullclass.sync.AutoSyncInterval
 import com.nullclass.sync.SyncManager
@@ -58,6 +59,14 @@ class SettingsViewModel @Inject constructor(
     /** 周视图是否在空着的时段显示非本周的课。与课表「显示设置」里的开关是同一个偏好。 */
     val showOtherWeekCourses: StateFlow<Boolean> = userPreferences.showOtherWeekCourses
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), false)
+
+    /** 应用配色模式。 */
+    val themeMode: StateFlow<ThemeMode> = userPreferences.themeMode
+        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), ThemeMode.DYNAMIC)
+
+    fun setThemeMode(value: ThemeMode) {
+        viewModelScope.launch { userPreferences.setThemeMode(value) }
+    }
 
     fun setShowOtherWeekCourses(value: Boolean) {
         viewModelScope.launch { userPreferences.setShowOtherWeekCourses(value) }

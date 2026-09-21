@@ -1,21 +1,30 @@
 package com.nullclass.core.data.prefs
 
 import android.content.Context
+import androidx.datastore.core.handlers.ReplaceFileCorruptionHandler
 import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.edit
+import androidx.datastore.preferences.core.emptyPreferences
 import androidx.datastore.preferences.core.intPreferencesKey
 import androidx.datastore.preferences.core.longPreferencesKey
 import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.datastore.preferences.core.stringSetPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
+import com.nullclass.core.model.ThemeMode
 import com.nullclass.core.model.WidgetFontSize
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.onEach
 import javax.inject.Inject
 import javax.inject.Singleton
 
-private val Context.userPrefs by preferencesDataStore(name = "user_prefs")
+// 文件损坏时整库重置为默认值：Application.onCreate 就在读这些偏好，抛异常等于每次启动必崩
+private val Context.userPrefs by preferencesDataStore(
+    name = "user_prefs",
+    corruptionHandler = ReplaceFileCorruptionHandler { emptyPreferences() },
+)
 
 /** 用户偏好（课程/考试提醒提前量等）。与 WebDAV 凭证（:sync）分库存储。 */
 @Singleton
@@ -34,6 +43,7 @@ class UserPreferencesRepository @Inject constructor(
         val SHOW_GRID_LINES = booleanPreferencesKey("show_grid_lines")
         val SHOW_OTHER_WEEK_COURSES = booleanPreferencesKey("show_other_week_courses")
         val WIDGET_FONT_SIZE = stringPreferencesKey("widget_font_size")
+        val THEME_MODE = stringPreferencesKey("theme_mode")
         val SENT_REMINDER_KEYS = stringSetPreferencesKey("sent_reminder_keys")
         val EXACT_REMINDER = booleanPreferencesKey("exact_reminder")
         val REMINDER_BYPASS_DND = booleanPreferencesKey("reminder_bypass_dnd")
@@ -132,6 +142,25 @@ class UserPreferencesRepository @Inject constructor(
         context.userPrefs.edit { it[Keys.WIDGET_FONT_SIZE] = value.name }
     }
 
+    /** 应用配色模式。默认 Material 取色；未知值回落默认。每次读到都顺手写进 [lastThemeMode] 的镜像。 */
+    val themeMode: Flow<ThemeMode> =
+        context.userPrefs.data.map { ThemeMode.fromName(it[Keys.THEME_MODE]) }
+            .distinctUntilChanged()
+            .onEach { themeCache.edit().putString(THEME_MODE_CACHE_KEY, it.name).apply() }
+
+    private val themeCache by lazy { context.getSharedPreferences("theme_cache", Context.MODE_PRIVATE) }
+
+    /**
+     * [themeMode] 上次读到的值，同步可读：Activity 首帧直接用它，
+     * 不必等 DataStore 异步首发（否则要么先按默认主题画一帧再切，要么首帧空白）。以 DataStore 为准。
+     */
+    val lastThemeMode: ThemeMode
+        get() = ThemeMode.fromName(themeCache.getString(THEME_MODE_CACHE_KEY, null))
+
+    suspend fun setThemeMode(value: ThemeMode) {
+        context.userPrefs.edit { it[Keys.THEME_MODE] = value.name }
+    }
+
     /**
      * 已实际发出的提醒通知 tag 集合（课程/考试各自的 reminder tag），迟发补发用它去重，
      * 防止每次重排都复活用户已划掉的通知。写入时顺手清掉 24h 前的旧键，集合不会无限膨胀。
@@ -202,6 +231,7 @@ class UserPreferencesRepository @Inject constructor(
         const val DEFAULT_LEAD_MINUTES = 15
         const val DEFAULT_EXAM_REMINDER_LEAD_MINUTES = 24 * 60
         private const val MAX_EXAM_REMINDER_LEAD_MINUTES = 7 * 24 * 60
+        private const val THEME_MODE_CACHE_KEY = "theme_mode"
         private const val PRUNE_AFTER_MS = 24L * 3600 * 1000
     }
 }

@@ -3,6 +3,7 @@ package com.nullclass.feature.settings
 import android.appwidget.AppWidgetManager
 import android.content.ComponentName
 import android.content.Context
+import android.os.Build
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -46,6 +47,7 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
+import com.nullclass.core.model.ThemeMode
 import com.nullclass.core.model.WidgetFontSize
 import com.nullclass.core.ui.layout.AdaptiveColumn
 import com.nullclass.sync.AutoSyncInterval
@@ -55,7 +57,7 @@ import java.time.Instant
 import java.time.ZoneId
 import java.time.format.DateTimeFormatter
 
-/** 应用设置：WebDAV 同步、自动同步、桌面小组件、课表显示。提醒相关在「通知与提醒」页。 */
+/** 应用设置：外观、WebDAV 同步、自动同步、桌面小组件、课表显示。提醒相关在「通知与提醒」页。 */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SettingsScreen(
@@ -68,6 +70,7 @@ fun SettingsScreen(
     val autoSyncInterval by viewModel.autoSyncInterval.collectAsState()
     val widgetFontSize by viewModel.widgetFontSize.collectAsState()
     val showOtherWeekCourses by viewModel.showOtherWeekCourses.collectAsState()
+    val themeMode by viewModel.themeMode.collectAsState()
 
     val context = LocalContext.current
 
@@ -100,6 +103,26 @@ fun SettingsScreen(
             imePadding = false,
             verticalArrangement = Arrangement.spacedBy(12.dp),
         ) {
+            // ---- 外观 ----
+            Text("外观", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold)
+            Text(
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+                    "Material 取色跟随壁纸配色与系统深浅色；浅色 / 深色固定使用内置配色。桌面小组件始终跟随系统。"
+                } else {
+                    "当前系统不支持壁纸取色，Material 取色将使用内置配色并跟随系统深浅色。桌面小组件始终跟随系统。"
+                },
+                style = MaterialTheme.typography.bodySmall,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+            )
+            SegmentedSelector(
+                options = ThemeMode.entries,
+                selected = themeMode,
+                label = { it.label },
+                onSelect = viewModel::setThemeMode,
+            )
+
+            HorizontalDivider(modifier = Modifier.padding(vertical = 8.dp))
+
             Text("WebDAV 同步", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold)
             Text(
                 "课表通过你自己的 WebDAV 服务器（坚果云、NextCloud 等）在设备间同步。" +
@@ -195,8 +218,10 @@ fun SettingsScreen(
                 style = MaterialTheme.typography.bodySmall,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
             )
-            AutoSyncSelector(
+            SegmentedSelector(
+                options = AutoSyncInterval.entries,
                 selected = autoSyncInterval,
+                label = { it.label },
                 onSelect = viewModel::setAutoSyncInterval,
             )
 
@@ -215,8 +240,10 @@ fun SettingsScreen(
                 style = MaterialTheme.typography.bodySmall,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
             )
-            WidgetFontSizeSelector(
+            SegmentedSelector(
+                options = WidgetFontSize.entries,
                 selected = widgetFontSize,
+                label = { it.label },
                 onSelect = viewModel::setWidgetFontSize,
             )
             Row(horizontalArrangement = Arrangement.spacedBy(12.dp), modifier = Modifier.fillMaxWidth()) {
@@ -256,35 +283,20 @@ fun SettingsScreen(
 }
 
 @Composable
-private fun WidgetFontSizeSelector(
-    selected: WidgetFontSize,
-    onSelect: (WidgetFontSize) -> Unit,
+private fun <T> SegmentedSelector(
+    options: List<T>,
+    selected: T,
+    label: (T) -> String,
+    onSelect: (T) -> Unit,
 ) {
-    val options = WidgetFontSize.entries
     SingleChoiceSegmentedButtonRow(modifier = Modifier.fillMaxWidth()) {
-        options.forEachIndexed { index, size ->
+        options.forEachIndexed { index, option ->
             SegmentedButton(
-                selected = selected == size,
-                onClick = { onSelect(size) },
+                selected = selected == option,
+                onClick = { onSelect(option) },
                 shape = SegmentedButtonDefaults.itemShape(index, options.size),
             ) {
-                Text(size.label, fontSize = 13.sp)
-            }
-        }
-    }
-}
-
-@Composable
-private fun AutoSyncSelector(selected: AutoSyncInterval, onSelect: (AutoSyncInterval) -> Unit) {
-    val options = AutoSyncInterval.entries
-    SingleChoiceSegmentedButtonRow(modifier = Modifier.fillMaxWidth()) {
-        options.forEachIndexed { index, interval ->
-            SegmentedButton(
-                selected = selected == interval,
-                onClick = { onSelect(interval) },
-                shape = SegmentedButtonDefaults.itemShape(index, options.size),
-            ) {
-                Text(interval.label, fontSize = 13.sp)
+                Text(label(option), fontSize = 13.sp)
             }
         }
     }

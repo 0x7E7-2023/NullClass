@@ -27,6 +27,10 @@ dependencies {
     api(platform(libs.compose.bom))
     api(libs.compose.ui)
     api(libs.compose.material3)
+    // NullClassTheme 的公开参数是 ThemeMode
+    api(project(":core:model"))
+    // 主题里按手动深浅色重设系统栏（enableEdgeToEdge / LocalActivity）
+    implementation(libs.androidx.activity.compose)
     debugImplementation(libs.compose.ui.tooling)
     debugImplementation(libs.compose.ui.tooling.preview)
 }

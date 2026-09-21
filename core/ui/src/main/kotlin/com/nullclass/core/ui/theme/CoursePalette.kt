@@ -36,7 +36,7 @@ data class CourseColor(
 @Composable
 fun courseColor(colorIndex: Int): CourseColor {
     val base = CoursePalette[colorIndex.mod(CoursePalette.size)]
-    // 深色主题底色暗，透明度再低课块会隐形；浅色主题压到 5% 只留一点色底
+    // 深色主题底色暗，透明度再低课块会隐形；浅色主题略低一档只留一层色底
     val containerAlpha = if (MaterialTheme.colorScheme.background.luminance() < 0.5f) 0.18f else 0.15f
     return CourseColor(
         container = base.copy(alpha = containerAlpha),
