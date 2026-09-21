@@ -37,13 +37,16 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
+import com.nullclass.core.ui.layout.LocalWindowSize
 import com.nullclass.importer.NullClassCodec
 import com.nullclass.importer.jw.JwAdapter
 import com.nullclass.importer.jw.JwAskRequest
@@ -155,7 +158,15 @@ fun JwWebViewStep(
             },
         )
     }
-    var isDesktopMode by remember { mutableStateOf(true) }
+    // rememberSaveable：这是用户显式点「切换手机版/电脑版」的选择（见下方按钮），
+    // 旋转重建后 WebView 的 factory 会照它重设 UA，不保存的话用户的选择会被打回电脑版。
+    // 注意本文件其余状态**有意不保存**，理由见下：
+    //   frozen / extracting —— 提取期的运行时态。旋转后协程已死，恢复成 true 会让
+    //     网络一直冻着、按钮一直转圈，比丢失更糟。
+    //   ocrEnabled —— 是 OCR 能力探测的结果，LaunchedEffect 每次都会重新写。
+    //   autoTriggered —— 防重复自动提取的哨兵。页面重新加载后本就该允许再触发一次。
+    //   webView / scriptBridge —— 实例，无法序列化。
+    var isDesktopMode by rememberSaveable { mutableStateOf(true) }
     var defaultUserAgent by remember { mutableStateOf<String?>(null) }
     var lastErrorLog by remember { mutableStateOf<String?>(null) }
     val consoleLogs = remember { Collections.synchronizedList(mutableListOf<String>()) }
@@ -444,11 +455,15 @@ fun JwWebViewStep(
                 .fillMaxWidth()
                 .weight(1f),
         )
+        // 手机横屏（约 400dp 高）下这条操作栏原本要吃掉约 130dp，减去 TopAppBar 后
+        // WebView 只剩约 200dp，键盘一弹更是只剩约 100dp——而用户正要在里面输
+        // 账号、密码、验证码。矮屏收紧间距、状态文字压成一行、冻结提示缩短文案。
+        val compactBar = LocalWindowSize.current.isCompactHeight
         Column(
             Modifier
                 .fillMaxWidth()
-                .padding(12.dp),
-            verticalArrangement = Arrangement.spacedBy(8.dp),
+                .padding(if (compactBar) 8.dp else 12.dp),
+            verticalArrangement = Arrangement.spacedBy(if (compactBar) 4.dp else 8.dp),
         ) {
             Row(
                 modifier = Modifier.fillMaxWidth(),
@@ -459,6 +474,8 @@ fun JwWebViewStep(
                     status,
                     style = MaterialTheme.typography.bodySmall,
                     color = if (lastErrorLog != null) MaterialTheme.colorScheme.error else MaterialTheme.colorScheme.onSurfaceVariant,
+                    maxLines = if (compactBar) 1 else Int.MAX_VALUE,
+                    overflow = TextOverflow.Ellipsis,
                     modifier = Modifier.weight(1f),
                 )
                 TextButton(
@@ -468,10 +485,17 @@ fun JwWebViewStep(
                 }
             }
             if (frozen) {
+                // 安全提示不能因为屏幕矮就不显示，只缩短文案
                 Text(
-                    "提取期间已冻结网页网络（防止适配器把页面内容发到站外）。",
+                    if (compactBar) {
+                        "提取期间已冻结网页网络。"
+                    } else {
+                        "提取期间已冻结网页网络（防止适配器把页面内容发到站外）。"
+                    },
                     style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.tertiary,
+                    maxLines = if (compactBar) 1 else Int.MAX_VALUE,
+                    overflow = TextOverflow.Ellipsis,
                 )
             }
             Row(horizontalArrangement = Arrangement.spacedBy(12.dp), modifier = Modifier.fillMaxWidth()) {

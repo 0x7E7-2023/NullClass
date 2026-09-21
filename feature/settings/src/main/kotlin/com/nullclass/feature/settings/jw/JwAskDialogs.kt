@@ -19,6 +19,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -55,7 +56,9 @@ private fun SelectDialog(
     adapterLabel: String,
     onResult: (JwAskResult) -> Unit,
 ) {
-    var selected by remember(request) { mutableStateOf(request.defaultIndex) }
+    // rememberSaveable：旋转会重建 Activity，已选中的项不该被打回默认值。
+    // request 作组合键，换一个请求时照常重置。
+    var selected by rememberSaveable(request) { mutableStateOf(request.defaultIndex) }
     AlertDialog(
         onDismissRequest = { onResult(JwAskResult.Cancelled) },
         title = { AskTitle(adapterLabel, request.title) },
@@ -114,7 +117,8 @@ private fun PromptDialog(
     adapterLabel: String,
     onResult: (JwAskResult) -> Unit,
 ) {
-    var text by remember(request) { mutableStateOf(request.defaultText) }
+    // rememberSaveable：脚本常靠这个框要学号/密码之类，旋转一次就清空太伤
+    var text by rememberSaveable(request) { mutableStateOf(request.defaultText) }
     AlertDialog(
         onDismissRequest = { onResult(JwAskResult.Cancelled) },
         title = { AskTitle(adapterLabel, request.title) },

@@ -22,6 +22,8 @@ import androidx.compose.material.icons.filled.Person
 import androidx.compose.material3.Icon
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
+import androidx.compose.material3.NavigationRail
+import androidx.compose.material3.NavigationRailItem
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -51,6 +53,7 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
+import com.nullclass.core.ui.layout.LocalWindowSize
 import com.nullclass.feature.edit.CourseEditScreen
 import com.nullclass.feature.edit.TermEditScreen
 import com.nullclass.feature.edit.TermListScreen
@@ -156,18 +159,28 @@ private fun NavGraphBuilder.screen(
     arguments: List<NamedNavArgument> = emptyList(),
     bottomBar: (@Composable () -> Unit)? = null,
     bottomBarHeight: () -> Dp = { 0.dp },
+    /** true = 导航条在侧边（手机横屏的 NavigationRail），预留的是宽度而不是高度。 */
+    railMode: () -> Boolean = { false },
     content: @Composable AnimatedContentScope.(NavBackStackEntry) -> Unit,
 ) {
     composable(route, arguments) { entry ->
         ExitingTouchShield {
             // 仅顶层页预留底栏高度；子页进出期间旧页面的尺寸始终稳定。
             Box(Modifier.fillMaxSize()) {
-                val padding = PaddingValues(bottom = bottomBarHeight())
+                val rail = railMode()
+                val barSize = bottomBarHeight()
+                // start/bottom 而非 left/top：RTL 下自动镜像到右侧
+                val padding = if (rail) {
+                    PaddingValues(start = barSize)
+                } else {
+                    PaddingValues(bottom = barSize)
+                }
                 Box(Modifier.fillMaxSize().padding(padding).consumeWindowInsets(padding)) {
                     content(this@composable, entry)
                 }
                 if (bottomBar != null) {
-                    Box(Modifier.align(Alignment.BottomCenter)) { bottomBar() }
+                    val align = if (rail) Alignment.CenterStart else Alignment.BottomCenter
+                    Box(Modifier.align(align)) { bottomBar() }
                 }
             }
         }
@@ -210,9 +223,23 @@ fun AppNavHost() {
     val currentRoute = backStackEntry?.destination?.route
     // 底栏只在四个顶层页显示；详情/子页推入后隐藏，返回键自然恢复
     val showTabBar = currentRoute in TopTabs.map { it.route }
-    var bottomBarHeightPx by remember { mutableIntStateOf(0) }
+    // 手机横屏：底部 NavigationBar 的 80dp 要吃掉 400dp 可用高度的 20%，而横向
+    // 反而多出几百 dp 没处用。换成侧边 NavigationRail，把高度尽数还给内容，
+    // 顺便消化掉横屏多出来的宽度——课表一屏可见节次能从约 3 节回到约 6 节。
+    val useRail = LocalWindowSize.current.isCompactHeight
+    // 宽屏（≥840dp，平板横屏 / 大平板竖屏）下「我的」与「考试」走双栏
+    val twoPaneProfile = LocalWindowSize.current.isExpandedWidth
+    // 按 useRail 作键重置：Rail 模式量的是宽度、Bar 模式量的是高度，两者语义不同。
+    // 窗口尺寸变化未必都走 Activity 重建（LocalWindowSize 来自 BoxWithConstraints，
+    // 同一 composition 内就能翻转），不重置的话会拿上一个方向的尺寸当这个方向用。
+    var bottomBarHeightPx by remember(useRail) { mutableIntStateOf(0) }
     val density = LocalDensity.current
-    val defaultBottomBarHeight = 80.dp + WindowInsets.navigationBars.asPaddingValues().calculateBottomPadding()
+    val defaultBottomBarHeight = if (useRail) {
+        // Rail 量的是宽度，系统栏由 NavigationRail 自己的 windowInsets 处理
+        80.dp
+    } else {
+        80.dp + WindowInsets.navigationBars.asPaddingValues().calculateBottomPadding()
+    }
     val bottomBarHeight = {
         if (bottomBarHeightPx == 0) defaultBottomBarHeight
         else with(density) { bottomBarHeightPx.toDp() }
@@ -251,25 +278,40 @@ fun AppNavHost() {
         visibleEntries.lastOrNull { entry ->
             TopTabs.any { it.route == entry.destination.route }
         }?.destination?.route
+    val onTabClick: (TopTab) -> Unit = { tab ->
+        if (showTabBar && currentRoute != tab.route) {
+            navController.navigate(tab.route) {
+                popUpTo(navController.graph.findStartDestination().id) {
+                    saveState = true
+                }
+                launchSingleTop = true
+                restoreState = true
+            }
+        }
+    }
     val tabBar: @Composable (Modifier) -> Unit = { modifier ->
-        NavigationBar(modifier.onSizeChanged { bottomBarHeightPx = it.height }) {
-            TopTabs.forEach { tab ->
-                NavigationBarItem(
-                    selected = selectedRoute == tab.route,
-                    onClick = {
-                        if (showTabBar && currentRoute != tab.route) {
-                            navController.navigate(tab.route) {
-                                popUpTo(navController.graph.findStartDestination().id) {
-                                    saveState = true
-                                }
-                                launchSingleTop = true
-                                restoreState = true
-                            }
-                        }
-                    },
-                    icon = { Icon(tab.icon, contentDescription = tab.label) },
-                    label = { Text(tab.label) },
-                )
+        if (useRail) {
+            // 量宽度：外层给内容预留的是 start padding
+            NavigationRail(modifier.onSizeChanged { bottomBarHeightPx = it.width }) {
+                TopTabs.forEach { tab ->
+                    NavigationRailItem(
+                        selected = selectedRoute == tab.route,
+                        onClick = { onTabClick(tab) },
+                        icon = { Icon(tab.icon, contentDescription = tab.label) },
+                        label = { Text(tab.label) },
+                    )
+                }
+            }
+        } else {
+            NavigationBar(modifier.onSizeChanged { bottomBarHeightPx = it.height }) {
+                TopTabs.forEach { tab ->
+                    NavigationBarItem(
+                        selected = selectedRoute == tab.route,
+                        onClick = { onTabClick(tab) },
+                        icon = { Icon(tab.icon, contentDescription = tab.label) },
+                        label = { Text(tab.label) },
+                    )
+                }
             }
         }
     }
@@ -293,7 +335,7 @@ fun AppNavHost() {
             popExitTransition = { fadeOut(tween(PageFadeDurationMillis)) },
             modifier = Modifier.fillMaxSize(),
         ) {
-            screen(Routes.TODAY, bottomBar = pageBottomBar, bottomBarHeight = bottomBarHeight) {
+            screen(Routes.TODAY, bottomBar = pageBottomBar, bottomBarHeight = bottomBarHeight, railMode = { useRail }) {
                 TodayScreen(
                     onEditCourse = { courseId ->
                         navController.navigate(Routes.courseEdit(courseId = courseId))
@@ -303,7 +345,7 @@ fun AppNavHost() {
                     onEditTerm = { termId -> navController.navigate(Routes.termEdit(termId)) },
                 )
             }
-            screen(Routes.SCHEDULE, bottomBar = pageBottomBar, bottomBarHeight = bottomBarHeight) {
+            screen(Routes.SCHEDULE, bottomBar = pageBottomBar, bottomBarHeight = bottomBarHeight, railMode = { useRail }) {
                 ScheduleScreen(
                     onCreateCourse = { navController.navigate(Routes.courseEdit()) },
                     onEditCourse = { courseId ->
@@ -314,26 +356,36 @@ fun AppNavHost() {
                     onEditTerm = { termId -> navController.navigate(Routes.termEdit(termId)) },
                 )
             }
-            screen(Routes.EXAMS, bottomBar = pageBottomBar, bottomBarHeight = bottomBarHeight) {
-                ExamScreen(
-                    onAddExam = { navController.navigate(Routes.examEdit()) },
-                    onEditExam = { examId -> navController.navigate(Routes.examEdit(examId = examId)) },
-                    onEditTerm = { termId -> navController.navigate(Routes.termEdit(termId)) },
-                )
+            screen(Routes.EXAMS, bottomBar = pageBottomBar, bottomBarHeight = bottomBarHeight, railMode = { useRail }) {
+                if (twoPaneProfile) {
+                    ExamTwoPane(outerNav = navController)
+                } else {
+                    ExamScreen(
+                        onAddExam = { navController.navigate(Routes.examEdit()) },
+                        onEditExam = { examId -> navController.navigate(Routes.examEdit(examId = examId)) },
+                        onEditTerm = { termId -> navController.navigate(Routes.termEdit(termId)) },
+                    )
+                }
             }
-            screen(Routes.PROFILE, bottomBar = pageBottomBar, bottomBarHeight = bottomBarHeight) {
-                ProfileScreen(
-                    onEditTerm = { termId -> navController.navigate(Routes.termEdit(termId)) },
-                    onOpenQuickActions = { navController.navigate(Routes.QUICK_ACTIONS) },
-                    onOpenTimetableList = { navController.navigate(Routes.TIMETABLE_LIST) },
-                    onOpenTermList = { navController.navigate(Routes.TERM_LIST) },
-                    onOpenTransfer = { navController.navigate(Routes.TRANSFER) },
-                    onOpenNotificationSettings = {
-                        navController.navigate(Routes.NOTIFICATION_SETTINGS)
-                    },
-                    onOpenSettings = { navController.navigate(Routes.SETTINGS) },
-                    onOpenAbout = { navController.navigate(Routes.ABOUT) },
-                )
+            screen(Routes.PROFILE, bottomBar = pageBottomBar, bottomBarHeight = bottomBarHeight, railMode = { useRail }) {
+                // 宽屏（≥840dp）走双栏：左边入口常驻、右边显示子页。
+                // 这 7 个子页都不带导航参数，所以详情侧能直接渲染，不必嵌套 NavHost。
+                if (twoPaneProfile) {
+                    ProfileTwoPane(navController = navController)
+                } else {
+                    ProfileScreen(
+                        onEditTerm = { termId -> navController.navigate(Routes.termEdit(termId)) },
+                        onOpenQuickActions = { navController.navigate(Routes.QUICK_ACTIONS) },
+                        onOpenTimetableList = { navController.navigate(Routes.TIMETABLE_LIST) },
+                        onOpenTermList = { navController.navigate(Routes.TERM_LIST) },
+                        onOpenTransfer = { navController.navigate(Routes.TRANSFER) },
+                        onOpenNotificationSettings = {
+                            navController.navigate(Routes.NOTIFICATION_SETTINGS)
+                        },
+                        onOpenSettings = { navController.navigate(Routes.SETTINGS) },
+                        onOpenAbout = { navController.navigate(Routes.ABOUT) },
+                    )
+                }
             }
             screen(
                 route = Routes.COURSE_EDIT,
@@ -420,7 +472,7 @@ fun AppNavHost() {
         }
 
         if (showTabBar && !transitionWithChild) {
-            tabBar(Modifier.align(Alignment.BottomCenter))
+            tabBar(Modifier.align(if (useRail) Alignment.CenterStart else Alignment.BottomCenter))
         }
     }
 }

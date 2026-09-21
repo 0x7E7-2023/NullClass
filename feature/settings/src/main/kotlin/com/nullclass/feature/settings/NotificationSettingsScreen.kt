@@ -14,6 +14,7 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -41,6 +42,7 @@ import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.collectAsState
@@ -50,6 +52,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -62,6 +65,8 @@ import androidx.lifecycle.LifecycleOwner
 import com.nullclass.core.model.ScheduleFormat
 import com.nullclass.core.model.SkipDate
 import com.nullclass.core.model.SkipDateType
+import com.nullclass.core.ui.layout.AdaptiveColumn
+import com.nullclass.core.ui.layout.LocalWindowSize
 import java.time.Instant
 import java.time.LocalDate
 import java.time.ZoneId
@@ -90,7 +95,9 @@ fun NotificationSettingsScreen(
     val holidayBusy by viewModel.holidayBusy.collectAsState()
     val holidayMessage by viewModel.holidayMessage.collectAsState()
 
+    val appBarScrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior()
     Scaffold(
+        modifier = Modifier.nestedScroll(appBarScrollBehavior.nestedScrollConnection),
         topBar = {
             TopAppBar(
                 title = { Text("通知与提醒") },
@@ -99,17 +106,16 @@ fun NotificationSettingsScreen(
                         Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "返回")
                     }
                 },
+                scrollBehavior = appBarScrollBehavior,
             )
         },
         containerColor = MaterialTheme.colorScheme.background,
     ) { padding ->
-        Column(
-            Modifier
-                .fillMaxSize()
-                .padding(padding)
-                .verticalScroll(rememberScrollState())
-                .padding(horizontal = 16.dp)
-                .padding(bottom = 24.dp),
+        AdaptiveColumn(
+            modifier = Modifier.padding(padding),
+            scrollState = rememberScrollState(),
+            contentPadding = PaddingValues(start = 16.dp, end = 16.dp, bottom = 24.dp),
+            imePadding = false,
             verticalArrangement = Arrangement.spacedBy(12.dp),
         ) {
             // ---- 权限引导 ----
@@ -213,6 +219,12 @@ fun NotificationSettingsScreen(
             if (showDatePicker) {
                 val pickerState = androidx.compose.material3.rememberDatePickerState(
                     initialSelectedDateMillis = LocalDate.now().toEpochDay() * 86_400_000L,
+                    // 矮屏（手机横屏）放不下 568dp 的日历，直接开输入模式
+                    initialDisplayMode = if (LocalWindowSize.current.isCompactHeight) {
+                        androidx.compose.material3.DisplayMode.Input
+                    } else {
+                        androidx.compose.material3.DisplayMode.Picker
+                    },
                 )
                 DatePickerDialog(
                     onDismissRequest = { showDatePicker = false },

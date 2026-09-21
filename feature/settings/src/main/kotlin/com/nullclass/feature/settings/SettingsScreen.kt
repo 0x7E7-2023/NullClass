@@ -6,12 +6,13 @@ import android.content.Context
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.safeDrawing
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.Button
@@ -31,12 +32,14 @@ import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.PasswordVisualTransformation
@@ -44,6 +47,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import com.nullclass.core.model.WidgetFontSize
+import com.nullclass.core.ui.layout.AdaptiveColumn
 import com.nullclass.sync.AutoSyncInterval
 import com.nullclass.widget.NextClassWidgetReceiver
 import com.nullclass.widget.TodayWidgetReceiver
@@ -67,7 +71,9 @@ fun SettingsScreen(
 
     val context = LocalContext.current
 
+    val appBarScrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior()
     Scaffold(
+        modifier = Modifier.nestedScroll(appBarScrollBehavior.nestedScrollConnection),
         topBar = {
             TopAppBar(
                 title = { Text("设置") },
@@ -79,17 +85,19 @@ fun SettingsScreen(
                 actions = {
                     TextButton(onClick = onOpenTransfer) { Text("导入 / 导出") }
                 },
+                scrollBehavior = appBarScrollBehavior,
             )
         },
+        // safeDrawing：WebDAV 的地址/账号/密码三个输入框在页面下半部，
+        // 键盘弹出时靠它收缩滚动视口，否则会被盖住且滚不出来。
+        contentWindowInsets = WindowInsets.safeDrawing,
         containerColor = MaterialTheme.colorScheme.background,
     ) { padding ->
-        Column(
-            Modifier
-                .fillMaxSize()
-                .padding(padding)
-                .verticalScroll(rememberScrollState())
-                .padding(horizontal = 16.dp)
-                .padding(bottom = 24.dp),
+        AdaptiveColumn(
+            modifier = Modifier.padding(padding),
+            scrollState = rememberScrollState(),
+            contentPadding = PaddingValues(start = 16.dp, end = 16.dp, bottom = 24.dp),
+            imePadding = false,
             verticalArrangement = Arrangement.spacedBy(12.dp),
         ) {
             Text("WebDAV 同步", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold)

@@ -4,10 +4,10 @@ import android.content.Intent
 import android.graphics.Bitmap
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.widthIn
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
@@ -27,6 +27,8 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.core.content.FileProvider
+import com.nullclass.core.ui.layout.AdaptiveDialogContent
+import com.nullclass.core.ui.layout.LocalWindowSize
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -59,12 +61,16 @@ internal fun QrShareDialog(
         onDismissRequest = onDismiss,
         title = { Text("扫码导入课表") },
         text = {
-            Column(
+            AdaptiveDialogContent(
                 verticalArrangement = Arrangement.spacedBy(8.dp),
                 horizontalAlignment = Alignment.CenterHorizontally,
                 modifier = Modifier.fillMaxWidth(),
             ) {
                 val current = bitmap
+                // 二维码边长封顶：aspectRatio(1f) 让高度跟着弹窗宽度走，横屏弹窗
+                // 更宽就更高，会把下面的说明文字和「分享图片 / 关闭」挤出屏幕。
+                // 矮屏收得更紧，保证按钮始终可见。
+                val qrMaxSide = if (LocalWindowSize.current.isCompactHeight) 180.dp else 280.dp
                 when {
                     current != null -> Image(
                         bitmap = current.asImageBitmap(),
@@ -73,6 +79,7 @@ internal fun QrShareDialog(
                         // fillMaxWidth + 1:1：高度跟弹窗宽度走，不再用位图像素当 dp
                         // （1024px 图在 mdpi/LDPlayer 上等于 1024dp，会把对话框撑破）。
                         modifier = Modifier
+                            .widthIn(max = qrMaxSide)
                             .fillMaxWidth()
                             .aspectRatio(1f)
                             .padding(4.dp),

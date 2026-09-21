@@ -7,6 +7,9 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.IntrinsicSize
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.safeDrawing
+import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
@@ -43,6 +46,7 @@ import com.nullclass.core.model.PlacedBlock
 import com.nullclass.core.model.ScheduleFormat
 import com.nullclass.core.model.Session
 import com.nullclass.core.model.TodaySnapshot
+import com.nullclass.core.ui.layout.AdaptiveColumn
 import com.nullclass.core.ui.theme.courseColor
 
 /**
@@ -63,7 +67,15 @@ fun TodayScreen(
     val todaySkipDate by viewModel.todaySkipDate.collectAsState()
     var detailBlock by remember { mutableStateOf<PlacedBlock?>(null) }
 
-    Scaffold(containerColor = MaterialTheme.colorScheme.background) { padding ->
+    Scaffold(
+        // safeDrawing 而非默认的 systemBars：主题声明了 windowLayoutInDisplayCutoutMode
+        // = shortEdges，横屏时挖孔转到侧边，systemBars 不含 displayCutout、补偿不到，
+        // 内容会被刘海压住。课表页与考试页已各自做了同样的处理，这里保持一致。
+        // 用完整的 safeDrawing（而不是只取 Horizontal）：这页没有 TopAppBar，
+        // 顶部状态栏的 inset 还得靠它，只取水平方向会把内容顶到状态栏下面。
+        contentWindowInsets = WindowInsets.safeDrawing,
+        containerColor = MaterialTheme.colorScheme.background,
+    ) { padding ->
         when (val s = state) {
             TodayUiState.Loading -> Box(
                 Modifier
@@ -92,12 +104,11 @@ fun TodayScreen(
             is TodayUiState.Ready -> {
                 val ready = s
                 val nowMinute = rememberNowMinute()
-                Column(
-                    Modifier
-                        .fillMaxSize()
-                        .padding(padding)
-                        .verticalScroll(rememberScrollState())
-                        .padding(horizontal = 16.dp),
+                AdaptiveColumn(
+                    modifier = Modifier.padding(padding),
+                    scrollState = rememberScrollState(),
+                    contentPadding = PaddingValues(horizontal = 16.dp),
+                    imePadding = false,
                 ) {
                     TodayHeader(snapshot = ready.snapshot, nowMinute = nowMinute)
 

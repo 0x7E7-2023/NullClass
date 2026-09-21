@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.DatePicker
 import androidx.compose.material3.DatePickerDialog
+import androidx.compose.material3.DisplayMode
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FilterChip
 import androidx.compose.material3.MaterialTheme
@@ -21,6 +22,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.unit.dp
 import com.nullclass.core.model.ScheduleFormat
 import com.nullclass.core.model.Term
+import com.nullclass.core.ui.layout.LocalWindowSize
 import java.time.LocalDate
 
 /** DatePicker 的毫秒口径是 UTC 零点，与 epochDay 的换算只在这一处出现。 */
@@ -115,6 +117,12 @@ internal fun DaySwapDialog(
             initialSelectedDateMillis = (sourceEpochDay ?: epochDay) * MILLIS_PER_DAY,
             // 学期外的日子没有课表可借，选了也是空白一天——直接不让选
             selectableDates = remember(term) { termSelectableDates(term) },
+            // 矮屏（手机横屏）放不下 568dp 的日历，直接开输入模式
+            initialDisplayMode = if (LocalWindowSize.current.isCompactHeight) {
+                DisplayMode.Input
+            } else {
+                DisplayMode.Picker
+            },
         )
         DatePickerDialog(
             onDismissRequest = { showDatePicker = false },

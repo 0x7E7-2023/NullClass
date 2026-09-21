@@ -10,7 +10,9 @@ import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.compose.setContent
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -23,6 +25,7 @@ import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Clear
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
@@ -35,6 +38,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -44,11 +48,13 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
+import com.nullclass.core.ui.layout.LocalWindowSize
 import com.nullclass.core.ui.theme.NullClassTheme
 import com.nullclass.importer.jw.JwAdapter
 import com.nullclass.importer.jw.JwAdapterSource
@@ -112,10 +118,30 @@ private fun JwImportScreen(
 ) {
     val state by viewModel.state.collectAsState()
     val context = LocalContext.current
-    var selected by remember { mutableStateOf<JwAdapter?>(null) }
+
+    // 旋转会重建整个 Activity（manifest 里两个 Activity 都没有 configChanges）。
+    // 下面这三个状态原本是裸 remember，转一下屏就弹回学校列表、手输的教务地址也没了。
+    // 第 127 行的 BackHandler 已经专门防住了「登录到一半误滑一下整个导入流程就没了」，
+    // 旋转是同一个威胁的另一条路径，这里一并堵上。
+    // JwAdapter 不是 Parcelable，存 key 再从适配器列表查回。
+    fun findAdapter(key: String?): JwAdapter? = key?.let { k ->
+        state.builtin.firstOrNull { it.key == k } ?: state.user.firstOrNull { it.key == k }
+    }
+
+    var selectedKey by rememberSaveable { mutableStateOf<String?>(null) }
     /** 通用适配器（startUrlPrompt）手输的教务地址。 */
-    var startUrl by remember { mutableStateOf<String?>(null) }
-    var pendingStartUrl by remember { mutableStateOf<JwAdapter?>(null) }
+    var startUrl by rememberSaveable { mutableStateOf<String?>(null) }
+    var pendingStartUrlKey by rememberSaveable { mutableStateOf<String?>(null) }
+
+    val selected = findAdapter(selectedKey)
+    val pendingStartUrl = findAdapter(pendingStartUrlKey)
+
+    // selectedKey 有值、但从列表里还查不到对应适配器 = 列表的异步加载没回来。
+    // 进程被杀后恢复必然经过这个窗口（rememberSaveable 先恢复 key，ViewModel 才去
+    // IO 读适配器库）。这段时间里既不能当成「没选过」退回学校列表，更不能让返回键
+    // 把整个导入流程退掉——所以下面一律按 selectedKey（用户的意图）判断，
+    // 只有真正要渲染适配器内容时才用 selected。
+    val restoringSelection = selectedKey != null && selected == null
 
     val zipLauncher = rememberLauncherForActivityResult(ActivityResultContracts.OpenDocument()) { uri ->
         uri?.let { viewModel.importZip(it, it.lastPathSegment?.substringAfterLast('/')) }
@@ -124,7 +150,7 @@ private fun JwImportScreen(
     // 系统返回手势对齐顶栏返回键：选中学校后返回 = 回学校列表，而不是把整个
     // 导入 Activity 退掉——手势退出走的是系统跨 Activity 预测动画，和顶栏的
     // 「回退一步」行为不一致，登录到一半误滑一下整个导入流程就没了。
-    BackHandler(enabled = selected != null) { selected = null }
+    BackHandler(enabled = selectedKey != null) { selectedKey = null }
 
     /** 上次成功的课表页地址；只对「上次就是这个适配器」有意义。 */
     fun rememberedUrl(adapter: JwAdapter): String? =
@@ -139,39 +165,52 @@ private fun JwImportScreen(
      */
     fun pick(adapter: JwAdapter, askAddress: Boolean) {
         if (adapter.promptsForStartUrl && (askAddress || rememberedUrl(adapter) == null)) {
-            pendingStartUrl = adapter
+            pendingStartUrlKey = adapter.key
         } else {
             // 「照上次再来一遍」：别把上一轮手填的地址带进来
             startUrl = null
-            selected = adapter
+            selectedKey = adapter.key
         }
     }
 
+    val appBarScrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior()
     Scaffold(
+        modifier = Modifier.nestedScroll(appBarScrollBehavior.nestedScrollConnection),
         topBar = {
             TopAppBar(
                 title = { Text(selected?.displayName ?: "教务导入") },
                 navigationIcon = {
-                    IconButton(onClick = { if (selected == null) onCancel() else selected = null }) {
+                    IconButton(onClick = { if (selectedKey == null) onCancel() else selectedKey = null }) {
                         Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "返回")
                     }
                 },
+                scrollBehavior = appBarScrollBehavior,
             )
         },
         containerColor = MaterialTheme.colorScheme.background,
     ) { padding ->
         val adapter = selected
         if (adapter == null) {
-            SchoolPicker(
-                state = state,
-                onPick = { pick(it, askAddress = true) },
-                onRefresh = { pick(it, askAddress = false) },
-                onImportZip = { zipLauncher.launch(arrayOf("application/zip", "application/octet-stream", "*/*")) },
-                onLoadLibrary = viewModel::loadLibrary,
-                onShowDetails = viewModel::showDetails,
-                onDelete = viewModel::delete,
-                modifier = Modifier.padding(padding),
-            )
+            if (restoringSelection) {
+                // 适配器列表还在加载：占位等它回来，别把用户打回学校列表
+                Box(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(padding),
+                    contentAlignment = Alignment.Center,
+                ) { CircularProgressIndicator() }
+            } else {
+                SchoolPicker(
+                    state = state,
+                    onPick = { pick(it, askAddress = true) },
+                    onRefresh = { pick(it, askAddress = false) },
+                    onImportZip = { zipLauncher.launch(arrayOf("application/zip", "application/octet-stream", "*/*")) },
+                    onLoadLibrary = viewModel::loadLibrary,
+                    onShowDetails = viewModel::showDetails,
+                    onDelete = viewModel::delete,
+                    modifier = Modifier.padding(padding),
+                )
+            }
         } else {
             JwWebViewStep(
                 adapter = adapter,
@@ -203,10 +242,10 @@ private fun JwImportScreen(
             initial = startUrl ?: rememberedUrl(adapter).orEmpty(),
             onSubmit = { url ->
                 startUrl = url
-                selected = adapter
-                pendingStartUrl = null
+                selectedKey = adapter.key
+                pendingStartUrlKey = null
             },
-            onDismiss = { pendingStartUrl = null },
+            onDismiss = { pendingStartUrlKey = null },
         )
     }
 
@@ -280,15 +319,37 @@ private fun SchoolPicker(
     // 平时它只在命中查询时出现（搜「通用」/「univ」能找到它，其余时候不占地方）。
     val fallbackRows = if (noHits) fallbackAdapters else matchedFallbacks
 
+    // 手机横屏可用高度约 400dp，而这一页的固定 chrome（标题 + 开场白 + 搜索框 +
+    // 一键刷新 + 分隔线 + 底部三个入口 + 上下 padding + 间距）累计也在 400dp 上下，
+    // weight(1f) 的学校列表会被挤到接近 0——点进搜索框弹出键盘后一条学校都看不见。
+    // 矮屏下：标题让位给 TopAppBar（那里已经写着「教务导入」）、说明文字一律收起、
+    // 底部入口挪进列表末尾跟着滚，把高度尽数让给列表本身。
+    val compact = LocalWindowSize.current.isCompactHeight
+
+    val bottomActions: @Composable ColumnScope.() -> Unit = {
+        HorizontalDivider()
+        Row(horizontalArrangement = Arrangement.spacedBy(12.dp), modifier = Modifier.fillMaxWidth()) {
+            OutlinedButton(onClick = onImportZip, modifier = Modifier.weight(1f)) { Text("导入适配器包") }
+            OutlinedButton(onClick = { linkDialog = true }, modifier = Modifier.weight(1f)) { Text("从链接添加") }
+        }
+        TextButton(onClick = {
+            context.startActivity(
+                Intent(Intent.ACTION_VIEW, Uri.parse(ADAPTER_REQUEST_URL)),
+            )
+        }) { Text("没有我的学校？提交适配请求") }
+    }
+
     Column(
         modifier = modifier
             .fillMaxSize()
-            .padding(16.dp),
-        verticalArrangement = Arrangement.spacedBy(12.dp),
+            .padding(if (compact) 12.dp else 16.dp),
+        verticalArrangement = Arrangement.spacedBy(if (compact) 8.dp else 12.dp),
     ) {
-        Text("从教务系统导入课表", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold)
-        // 搜索时把开场白收起来，结果多留几行
-        if (!searching) {
+        if (!compact) {
+            Text("从教务系统导入课表", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold)
+        }
+        // 搜索时把开场白收起来，结果多留几行；矮屏一律收起
+        if (!searching && !compact) {
             Text(
                 "登录由你在下方网页里手工完成（验证码/扫码/短信都自己操作），空课不会碰你的教务账号密码；" +
                     "登录后进入课表页面，点「提取课表」即可。",
@@ -303,7 +364,7 @@ private fun SchoolPicker(
             Button(onClick = { onRefresh(lastAdapter) }, modifier = Modifier.fillMaxWidth()) {
                 Text("一键刷新：${lastAdapter.displayName}")
             }
-            if (!searching) {
+            if (!searching && !compact) {
                 Text(
                     "复用上次的登录状态重新提取（学校改了课表时用）。",
                     style = MaterialTheme.typography.bodySmall,
@@ -380,18 +441,17 @@ private fun SchoolPicker(
                     AdapterRow(adapter, badge = "通用", onPick = onPick, onDetails = onShowDetails)
                 }
             }
+            // 矮屏把底部入口收进列表末尾跟着滚，固定区腾出来给学校列表
+            if (compact) {
+                item {
+                    Column(verticalArrangement = Arrangement.spacedBy(8.dp)) { bottomActions() }
+                }
+            }
         }
 
-        HorizontalDivider()
-        Row(horizontalArrangement = Arrangement.spacedBy(12.dp), modifier = Modifier.fillMaxWidth()) {
-            OutlinedButton(onClick = onImportZip, modifier = Modifier.weight(1f)) { Text("导入适配器包") }
-            OutlinedButton(onClick = { linkDialog = true }, modifier = Modifier.weight(1f)) { Text("从链接添加") }
+        if (!compact) {
+            bottomActions()
         }
-        TextButton(onClick = {
-            context.startActivity(
-                Intent(Intent.ACTION_VIEW, Uri.parse(ADAPTER_REQUEST_URL)),
-            )
-        }) { Text("没有我的学校？提交适配请求") }
     }
 
     if (linkDialog) {
@@ -480,7 +540,8 @@ private fun StartUrlDialog(
     onSubmit: (String) -> Unit,
     onDismiss: () -> Unit,
 ) {
-    var url by remember { mutableStateOf(initial) }
+    // rememberSaveable：旋转会重建 Activity，手输到一半的教务地址不该被清空
+    var url by rememberSaveable { mutableStateOf(initial) }
     val normalized = normalizeStartUrl(url)
     AlertDialog(
         onDismissRequest = onDismiss,
@@ -533,7 +594,9 @@ private fun normalizeStartUrl(raw: String): String? {
 }
 
 @Composable
-private fun LinkDialog(onSubmit: (String) -> Unit, onDismiss: () -> Unit) {    var url by remember { mutableStateOf("") }
+private fun LinkDialog(onSubmit: (String) -> Unit, onDismiss: () -> Unit) {
+    // rememberSaveable：旋转会重建 Activity，粘进来的链接不该被清空
+    var url by rememberSaveable { mutableStateOf("") }
     AlertDialog(
         onDismissRequest = onDismiss,
         title = { Text("从适配器库添加") },

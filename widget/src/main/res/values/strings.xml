@@ -2,4 +2,7 @@
 <resources>
     <string name="widget_today_label">空课 · 今日课程</string>
     <string name="widget_next_label">空课 · 下节课</string>
+    <!-- 小组件选择器里的一句话说明（API 31+） -->
+    <string name="widget_today_description">今天剩下的课，按时间顺序排列</string>
+    <string name="widget_next_description">下一节课的时间与地点</string>
 </resources>

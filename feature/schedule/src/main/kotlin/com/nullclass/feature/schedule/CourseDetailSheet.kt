@@ -5,6 +5,8 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FilledTonalButton
@@ -57,6 +59,10 @@ internal fun CourseDetailSheet(
         Column(
             modifier = Modifier
                 .fillMaxWidth()
+                // 内容含两段长度不定的列表（时间安排 / 考试），课程安排多或带考试时
+                // 底部「编辑 / 删除」会被推出可视区。手机横屏可用高度只有约 400dp，
+                // 不给滚动就等于按钮点不到，用户只能取消退出。
+                .verticalScroll(rememberScrollState())
                 .padding(horizontal = 24.dp)
                 .padding(bottom = 24.dp),
         ) {

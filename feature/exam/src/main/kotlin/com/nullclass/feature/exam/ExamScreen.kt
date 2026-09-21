@@ -7,10 +7,13 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.WindowInsetsSides
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.only
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.safeDrawing
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -30,6 +33,7 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -39,11 +43,13 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import com.nullclass.core.model.ExamFormat
 import com.nullclass.core.model.ExamWithCourse
+import com.nullclass.core.ui.layout.AdaptiveWidthWrapper
 import com.nullclass.core.ui.theme.courseColor
 
 /** 当前学期考试汇总页；考试数据仍通过 courseId 归属于课程。 */
@@ -59,7 +65,9 @@ fun ExamScreen(
     val message by viewModel.message.collectAsState()
     var deleteTarget by remember { mutableStateOf<ExamWithCourse?>(null) }
 
+    val appBarScrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior()
     Scaffold(
+        modifier = Modifier.nestedScroll(appBarScrollBehavior.nestedScrollConnection),
         topBar = {
             TopAppBar(
                 title = { Text("考试") },
@@ -69,10 +77,14 @@ fun ExamScreen(
                             Icon(Icons.Default.Add, contentDescription = "添加考试")
                         }
                     }
-                }
+                },
+                scrollBehavior = appBarScrollBehavior,
             )
         },
-        contentWindowInsets = WindowInsets(0),
+        // 垂直方向归零（顶栏自吃状态栏，底栏在外层 NavHost）；水平方向垫
+        // safeDrawing，避开横屏时转到侧边的刘海/挖孔——主题声明了
+        // windowLayoutInDisplayCutoutMode = shortEdges，不补偿会盖住列表内容。
+        contentWindowInsets = WindowInsets.safeDrawing.only(WindowInsetsSides.Horizontal),
         containerColor = MaterialTheme.colorScheme.background,
     ) { padding ->
         when (val s = state) {
@@ -110,10 +122,9 @@ fun ExamScreen(
                 val pastGroups = past.groupBy { it.exam.dateEpochDay }.toSortedMap(compareByDescending { it })
                 val next = upcoming.firstOrNull()
 
+                AdaptiveWidthWrapper(modifier = Modifier.padding(padding)) {
                 LazyColumn(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .padding(padding),
+                    modifier = Modifier.fillMaxSize(),
                     contentPadding = PaddingValues(start = 16.dp, top = 8.dp, end = 16.dp, bottom = 96.dp),
                     verticalArrangement = Arrangement.spacedBy(12.dp),
                 ) {
@@ -171,6 +182,7 @@ fun ExamScreen(
                             )
                         }
                     }
+                }
                 }
             }
         }

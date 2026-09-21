@@ -2,6 +2,9 @@ package com.nullclass.feature.settings
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.safeDrawing
+import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -27,6 +30,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
+import com.nullclass.core.ui.layout.AdaptiveColumn
 
 /**
  * 「我的」Tab：入口中枢——学期卡片、快捷操作、学期管理、导入/导出、应用设置、关于（子页）。
@@ -46,14 +50,18 @@ fun ProfileScreen(
 ) {
     val state by viewModel.uiState.collectAsState()
 
-    Scaffold(containerColor = MaterialTheme.colorScheme.background) { padding ->
-        Column(
-            Modifier
-                .fillMaxSize()
-                .padding(padding)
-                .verticalScroll(rememberScrollState())
-                .padding(horizontal = 16.dp)
-                .padding(bottom = 24.dp),
+    Scaffold(
+        // 同 TodayScreen：主题是 shortEdges，横屏侧边刘海要靠 safeDrawing 才补偿得到；
+        // 这页也没有 TopAppBar，所以取完整的 safeDrawing 以保留顶部状态栏 inset。
+        contentWindowInsets = WindowInsets.safeDrawing,
+        containerColor = MaterialTheme.colorScheme.background,
+    ) { padding ->
+        AdaptiveColumn(
+            modifier = Modifier.padding(padding),
+            scrollState = rememberScrollState(),
+            contentPadding = PaddingValues(start = 16.dp, end = 16.dp, bottom = 24.dp),
+            // 这页没有输入框，保持原有 inset 行为
+            imePadding = false,
         ) {
             Text(
                 "我的",

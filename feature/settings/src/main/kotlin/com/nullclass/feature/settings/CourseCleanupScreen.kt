@@ -19,6 +19,7 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.Checkbox
 import androidx.compose.material3.DatePicker
 import androidx.compose.material3.DatePickerDialog
+import androidx.compose.material3.DisplayMode
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FilterChip
 import androidx.compose.material3.Icon
@@ -33,6 +34,7 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.rememberDatePickerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -46,11 +48,14 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import com.nullclass.core.model.ScheduleBlock
 import com.nullclass.core.model.ScheduleFormat
+import com.nullclass.core.ui.layout.AdaptiveWidthWrapper
+import com.nullclass.core.ui.layout.LocalWindowSize
 
 /**
  * 「我的 → 快捷操作 → 快速删课」：按周次或某一天筛出课，勾选批量删除。
@@ -81,7 +86,9 @@ fun CourseCleanupScreen(
     val visibleRows = state.rows
     val selectedRows = visibleRows.filter { it.course.id in selected }
 
+    val appBarScrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior()
     Scaffold(
+        modifier = Modifier.nestedScroll(appBarScrollBehavior.nestedScrollConnection),
         topBar = {
             TopAppBar(
                 title = { Text("快速删课") },
@@ -104,6 +111,7 @@ fun CourseCleanupScreen(
                         ) { Text(if (allSelected) "取消全选" else "全选") }
                     }
                 },
+                scrollBehavior = appBarScrollBehavior,
             )
         },
         bottomBar = {
@@ -144,10 +152,10 @@ fun CourseCleanupScreen(
             return@Scaffold
         }
 
+        AdaptiveWidthWrapper(modifier = Modifier.padding(padding)) {
         Column(
             Modifier
                 .fillMaxSize()
-                .padding(padding)
                 .padding(horizontal = 16.dp),
         ) {
             Text(
@@ -256,6 +264,7 @@ fun CourseCleanupScreen(
                 }
             }
         }
+        }
 
         if (pickingDate) {
             // key(state.date)：rememberDatePickerState 内部是无 key 的 rememberSaveable，
@@ -265,6 +274,12 @@ fun CourseCleanupScreen(
                     initialSelectedDateMillis = state.date * MILLIS_PER_DAY,
                     initialDisplayedMonthMillis = state.date * MILLIS_PER_DAY,
                     selectableDates = remember(term) { termSelectableDates(term) },
+                    // 矮屏（手机横屏）放不下 568dp 的日历，直接开输入模式
+                    initialDisplayMode = if (LocalWindowSize.current.isCompactHeight) {
+                        DisplayMode.Input
+                    } else {
+                        DisplayMode.Picker
+                    },
                 )
                 DatePickerDialog(
                     onDismissRequest = { pickingDate = false },

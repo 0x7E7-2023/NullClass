@@ -24,6 +24,7 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -32,9 +33,11 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
+import com.nullclass.core.ui.layout.AdaptiveWidthWrapper
 
 /**
  * 学期管理：列表切换当前学期、编辑（周数 / 第 1 周日期 / 每周起始日 / 节次时间）、删除、新建。
@@ -51,7 +54,9 @@ fun TermListScreen(
     val state by viewModel.uiState.collectAsState()
     var pendingDelete by remember { mutableStateOf<TermListItem?>(null) }
 
+    val appBarScrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior()
     Scaffold(
+        modifier = Modifier.nestedScroll(appBarScrollBehavior.nestedScrollConnection),
         topBar = {
             TopAppBar(
                 title = { Text("学期管理") },
@@ -63,6 +68,7 @@ fun TermListScreen(
                 actions = {
                     TextButton(onClick = onCreateTerm) { Text("新建") }
                 },
+                scrollBehavior = appBarScrollBehavior,
             )
         },
         containerColor = MaterialTheme.colorScheme.background,
@@ -88,14 +94,14 @@ fun TermListScreen(
                 }
             }
         } else {
-            LazyColumn(
-                Modifier
-                    .fillMaxSize()
-                    .padding(padding)
-                    .padding(horizontal = 16.dp)
-                    .padding(bottom = 24.dp),
-                verticalArrangement = Arrangement.spacedBy(8.dp),
-            ) {
+            AdaptiveWidthWrapper(modifier = Modifier.padding(padding)) {
+                LazyColumn(
+                    Modifier
+                        .fillMaxSize()
+                        .padding(horizontal = 16.dp)
+                        .padding(bottom = 24.dp),
+                    verticalArrangement = Arrangement.spacedBy(8.dp),
+                ) {
                 state.timetableName?.let { name ->
                     item(key = "timetable-label") {
                         Text(
@@ -112,6 +118,7 @@ fun TermListScreen(
                         onEdit = { onEditTerm(item.term.id) },
                         onDelete = { pendingDelete = item },
                     )
+                }
                 }
             }
         }

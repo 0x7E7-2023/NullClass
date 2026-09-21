@@ -78,6 +78,12 @@ internal fun WeekGrid(
     nowMinuteOfDay: Int?,
     onBlockClick: (PlacedBlock) -> Unit,
     otherWeekLayout: Map<Int, List<PlacedBlock>> = emptyMap(),
+    /**
+     * 单节行高。默认 [PeriodCellHeight]，由调用方按可用高度放大：
+     * 平板竖屏净高一千多 dp，固定 56dp 会让整张网格只占 672dp、下方空出一大片；
+     * 手机横屏则保持 56dp 下限，靠外层 verticalScroll 滚动。
+     */
+    cellHeight: Dp = PeriodCellHeight,
     modifier: Modifier = Modifier,
 ) {
     val totalPeriods = periodTimes.size.coerceAtLeast(1)
@@ -104,7 +110,7 @@ internal fun WeekGrid(
     // 当前时间线：仅本周页；今天那一列没显示（关掉了周末又逢周末）就不画；时刻须在节次表跨度内
     val nowLineY = todayDayOfWeek?.let { today ->
         if (today in weekDays) {
-            nowMinuteOfDay?.let { nowLineYDp(periodTimes, it) }
+            nowMinuteOfDay?.let { nowLineYDp(periodTimes, it, cellHeight) }
         } else {
             null
         }
@@ -116,12 +122,12 @@ internal fun WeekGrid(
                 .fillMaxWidth()
                 // 纵向滚动链路 maxHeight = 无穷，fillMaxHeight 会失效、列高塌成课块堆高度；
                 // 显式钉为「节数 × 行高」，今日高亮条与空白格点击区才能铺满整张网格
-                .height(PeriodCellHeight * totalPeriods)
+                .height(cellHeight * totalPeriods)
                 // 网格线与会话分隔线都画在课块下面，且逐列绘制、遇到课块就断开：
                 // 格线是给空时段用的参照，不该压在课上，也不该把一节跨多节的课切成几段。
                 .drawBehind {
                     if (weekDays.isEmpty()) return@drawBehind
-                    val rowHeightPx = PeriodCellHeight.toPx()
+                    val rowHeightPx = cellHeight.toPx()
                     val periodColumnWidthPx = periodColumnWidth(showTimeInCards).toPx()
                     val dayWidthPx =
                         ((size.width - periodColumnWidthPx) / weekDays.size).coerceAtLeast(0f)
@@ -161,7 +167,7 @@ internal fun WeekGrid(
                     }
                 },
         ) {
-            PeriodColumn(periodTimes, showTimeInCards)
+            PeriodColumn(periodTimes, showTimeInCards, cellHeight)
             for (day in weekDays) {
                 DayColumn(
                     isToday = todayDayOfWeek == day,
@@ -170,6 +176,7 @@ internal fun WeekGrid(
                     periodTimes = periodTimes,
                     showTimeInCards = showTimeInCards,
                     onBlockClick = onBlockClick,
+                    cellHeight = cellHeight,
                     modifier = Modifier.weight(1f),
                 )
             }
@@ -189,14 +196,14 @@ internal fun WeekGrid(
     }
 }
 
-/** 左侧节次列：起-号-止 紧贴堆叠（时间标在课块上时仅节次号），每格严格 PeriodCellHeight 高。 */
+/** 左侧节次列：起-号-止 紧贴堆叠（时间标在课块上时仅节次号），每格严格 cellHeight 高。 */
 @Composable
-private fun PeriodColumn(periodTimes: List<PeriodTime>, showTimeInCards: Boolean) {
+private fun PeriodColumn(periodTimes: List<PeriodTime>, showTimeInCards: Boolean, cellHeight: Dp) {
     Column(modifier = Modifier.width(periodColumnWidth(showTimeInCards))) {
         periodTimes.forEach { time ->
             Column(
                 modifier = Modifier
-                    .height(PeriodCellHeight)
+                    .height(cellHeight)
                     .fillMaxWidth()
                     .padding(horizontal = 4.dp, vertical = 4.dp),
                 horizontalAlignment = Alignment.CenterHorizontally,
@@ -238,6 +245,7 @@ private fun DayColumn(
     periodTimes: List<PeriodTime>,
     showTimeInCards: Boolean,
     onBlockClick: (PlacedBlock) -> Unit,
+    cellHeight: Dp,
     modifier: Modifier = Modifier,
 ) {
     val density = LocalDensity.current
@@ -246,15 +254,15 @@ private fun DayColumn(
     Box(modifier = modifier.fillMaxHeight()) {
         // 灰块先画：它只出现在当周空着的时段里，与真课块不会重叠，先画只是万无一失
         otherWeekBlocks.forEach { placed ->
-            OtherWeekBlock(placed = placed, onBlockClick = onBlockClick)
+            OtherWeekBlock(placed = placed, onBlockClick = onBlockClick, cellHeight = cellHeight)
         }
         blocks.forEach { placed ->
             val color = courseColor(placed.course.colorIndex)
             Box(
                 modifier = Modifier
-                    .offset(y = PeriodCellHeight * (placed.block.startPeriod - 1))
+                    .offset(y = cellHeight * (placed.block.startPeriod - 1))
                     .fillMaxWidth()
-                    .height(PeriodCellHeight * placed.block.periodCount)
+                    .height(cellHeight * placed.block.periodCount)
                     .padding(1.5.dp)
                     .clip(RoundedCornerShape(8.dp))
                     // 先铺一层不透明底再叠课程色：容器只有 15%~18% 不透明度，冲突课（同一
@@ -270,6 +278,32 @@ private fun DayColumn(
                     horizontalAlignment = Alignment.CenterHorizontally,
                     modifier = Modifier.padding(horizontal = 2.dp, vertical = 3.dp),
                 ) {
+                    // 行数按可用高度推算，而不是写死 3 行 + 2 行。
+                    // 写死的问题：格子净高只有约 47dp，而课名 3 行(13sp)+地点 2 行(11sp)
+                    // 要 61dp——排得下 3 行所以 Ellipsis 根本不触发，超出部分被外面的
+                    // clip 直接裁成半个字；系统字体放大后更早发生。
+                    // sp.toDp() 会带上 fontScale，字体放大时行数自动减少而不是被裁。
+                    val blockDensity = LocalDensity.current
+                    val nameLineDp = with(blockDensity) { 13.sp.toDp() }
+                    val locationLineDp = with(blockDensity) { 11.sp.toDp() }
+                    val hasLocation = !placed.block.location.isNullOrBlank()
+                    // 课块净高：行高 × 跨节数 − 外边距(1.5dp×2) − 内边距(3dp×2)
+                    val contentHeight =
+                        cellHeight * placed.block.periodCount - 1.5.dp * 2 - 3.dp * 2
+                    // 地点最多 2 行，但先给它留 1 行，剩下的都归课名
+                    val reservedForLocation = if (hasLocation) locationLineDp else 0.dp
+                    val nameLines = if (nameLineDp > 0.dp) {
+                        ((contentHeight - reservedForLocation) / nameLineDp).toInt()
+                    } else {
+                        1
+                    }.coerceIn(1, 4)
+                    val leftover = contentHeight - nameLineDp * nameLines
+                    val locationLines = if (hasLocation && locationLineDp > 0.dp) {
+                        (leftover / locationLineDp).toInt().coerceIn(1, 2)
+                    } else {
+                        1
+                    }
+
                     Text(
                         text = placed.course.name,
                         fontSize = 11.sp,
@@ -277,17 +311,17 @@ private fun DayColumn(
                         fontWeight = FontWeight.SemiBold,
                         color = MaterialTheme.colorScheme.onSurface,
                         textAlign = TextAlign.Center,
-                        maxLines = 3,
+                        maxLines = nameLines,
                         overflow = TextOverflow.Ellipsis,
                     )
-                    if (!placed.block.location.isNullOrBlank()) {
+                    if (hasLocation) {
                         Text(
                             text = placed.block.location!!,
                             fontSize = 9.sp,
                             lineHeight = 11.sp,
                             color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.75f),
                             textAlign = TextAlign.Center,
-                            maxLines = 2,
+                            maxLines = locationLines,
                             overflow = TextOverflow.Ellipsis,
                         )
                     }
@@ -327,14 +361,14 @@ private fun DayColumn(
  * 单节的灰块（56dp 高）也放得下这四行。
  */
 @Composable
-private fun OtherWeekBlock(placed: PlacedBlock, onBlockClick: (PlacedBlock) -> Unit) {
+private fun OtherWeekBlock(placed: PlacedBlock, onBlockClick: (PlacedBlock) -> Unit, cellHeight: Dp) {
     val color = otherWeekBlockColor()
     val hairline = with(LocalDensity.current) { 1.toDp() }
     Box(
         modifier = Modifier
-            .offset(y = PeriodCellHeight * (placed.block.startPeriod - 1))
+            .offset(y = cellHeight * (placed.block.startPeriod - 1))
             .fillMaxWidth()
-            .height(PeriodCellHeight * placed.block.periodCount)
+            .height(cellHeight * placed.block.periodCount)
             .padding(1.5.dp)
             .clip(RoundedCornerShape(8.dp))
             // 同真课块垫一层不透明底：灰块更透（6%~8%），垫了底色才与真课块走同一套合成，
@@ -384,7 +418,7 @@ private fun OtherWeekText(
 }
 
 /** 当前时刻在节次网格中的纵向偏移；空表或时刻不在首节开始～末节结束之间时返回 null。 */
-private fun nowLineYDp(periodTimes: List<PeriodTime>, nowMinute: Int): Dp? {
+private fun nowLineYDp(periodTimes: List<PeriodTime>, nowMinute: Int, cellHeight: Dp): Dp? {
     if (periodTimes.isEmpty()) return null
     if (nowMinute < periodTimes.first().startMinuteOfDay || nowMinute > periodTimes.last().endMinuteOfDay) {
         return null
@@ -393,7 +427,7 @@ private fun nowLineYDp(periodTimes: List<PeriodTime>, nowMinute: Int): Dp? {
         if (nowMinute <= time.endMinuteOfDay) {
             val span = (time.endMinuteOfDay - time.startMinuteOfDay).coerceAtLeast(1)
             val fraction = ((nowMinute - time.startMinuteOfDay).toFloat() / span).coerceIn(0f, 1f)
-            return PeriodCellHeight * (index + fraction)
+            return cellHeight * (index + fraction)
         }
     }
     return null

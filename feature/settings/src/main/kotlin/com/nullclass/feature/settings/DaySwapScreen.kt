@@ -2,6 +2,7 @@ package com.nullclass.feature.settings
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -23,20 +24,25 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.key
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import com.nullclass.core.model.DayOverride
 import com.nullclass.core.model.ScheduleFormat
 import com.nullclass.core.model.Term
+import com.nullclass.core.ui.layout.AdaptiveColumn
+import com.nullclass.core.ui.layout.LocalWindowSize
 import java.time.LocalDate
 
 /**
@@ -55,7 +61,9 @@ fun DaySwapScreen(
     val term by viewModel.currentTerm.collectAsState()
     val overrides by viewModel.dayOverrides.collectAsState()
 
+    val appBarScrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior()
     Scaffold(
+        modifier = Modifier.nestedScroll(appBarScrollBehavior.nestedScrollConnection),
         topBar = {
             TopAppBar(
                 title = { Text("调课（串课）") },
@@ -64,17 +72,16 @@ fun DaySwapScreen(
                         Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "返回")
                     }
                 },
+                scrollBehavior = appBarScrollBehavior,
             )
         },
         containerColor = MaterialTheme.colorScheme.background,
     ) { padding ->
-        Column(
-            Modifier
-                .fillMaxSize()
-                .padding(padding)
-                .verticalScroll(rememberScrollState())
-                .padding(horizontal = 16.dp)
-                .padding(bottom = 24.dp),
+        AdaptiveColumn(
+            modifier = Modifier.padding(padding),
+            scrollState = rememberScrollState(),
+            contentPadding = PaddingValues(start = 16.dp, end = 16.dp, bottom = 24.dp),
+            imePadding = false,
             verticalArrangement = Arrangement.spacedBy(12.dp),
         ) {
             DaySwapSection(
@@ -104,8 +111,11 @@ private fun DaySwapSection(
     )
 
     // null = 关着；pending 为 null = 正在选「哪一天」，非 null = 正在选「上哪天的课」
-    var picking by remember { mutableStateOf(false) }
-    var pendingTarget by remember { mutableStateOf<Long?>(null) }
+    // rememberSaveable：这是两步流程的步骤索引。旋转会重建 Activity，用裸 remember
+    // 的话第 1 步选完、第 2 步还没确认时转个屏，进度**静默归零**且没有任何提示，
+    // 用户只会觉得「刚才点的怎么没了」。
+    var picking by rememberSaveable { mutableStateOf(false) }
+    var pendingTarget by rememberSaveable { mutableStateOf<Long?>(null) }
 
     if (term == null) {
         Text(
@@ -137,6 +147,12 @@ private fun DaySwapSection(
                 initialDisplayedMonthMillis = (target ?: defaultDisplayedDay(term)) * MILLIS_PER_DAY,
                 // 学期外的日子没有课表可借、也排不出提醒，直接不让选
                 selectableDates = remember(term) { termSelectableDates(term) },
+                // 矮屏（手机横屏）放不下 568dp 的日历，直接开输入模式
+                initialDisplayMode = if (LocalWindowSize.current.isCompactHeight) {
+                    androidx.compose.material3.DisplayMode.Input
+                } else {
+                    androidx.compose.material3.DisplayMode.Picker
+                },
             )
             DatePickerDialog(
                 onDismissRequest = {

@@ -4,15 +4,19 @@ import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.WindowInsetsSides
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.heightIn
+import androidx.compose.foundation.layout.only
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.safeDrawing
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
@@ -49,6 +53,7 @@ import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -83,7 +88,9 @@ fun ScheduleScreen(
     /** 点了表头哪一列（epoch day）→ 开调课面板。 */
     var swapDay by remember { mutableStateOf<Long?>(null) }
 
+    val appBarScrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior()
     Scaffold(
+        modifier = Modifier.nestedScroll(appBarScrollBehavior.nestedScrollConnection),
         topBar = {
             TopAppBar(
                 title = {
@@ -128,6 +135,7 @@ fun ScheduleScreen(
                 colors = TopAppBarDefaults.topAppBarColors(
                     containerColor = MaterialTheme.colorScheme.background,
                 ),
+                scrollBehavior = appBarScrollBehavior,
             )
         },
         floatingActionButton = {
@@ -138,8 +146,11 @@ fun ScheduleScreen(
             }
         },
         // 顶栏自己吃状态栏 inset；底栏在外层 NavHost，这里再垫 navigationBars
-        // 会在课表和底栏之间多出一横条空白。
-        contentWindowInsets = WindowInsets(0),
+        // 会在课表和底栏之间多出一横条空白。所以垂直方向仍然归零。
+        // 水平方向必须垫 safeDrawing：主题声明了 windowLayoutInDisplayCutoutMode
+        // = shortEdges（内容主动延伸进刘海区），横屏时挖孔转到侧边，不补偿就会
+        // 盖住课表最左或最右一整列。systemBars 不含 displayCutout，只能用 safeDrawing。
+        contentWindowInsets = WindowInsets.safeDrawing.only(WindowInsetsSides.Horizontal),
         containerColor = MaterialTheme.colorScheme.background,
     ) { padding ->
         when (val s = state) {
@@ -247,22 +258,33 @@ fun ScheduleScreen(
                                 ready.dayOverrides,
                             )
                         }
-                        Column(
-                            Modifier
-                                .fillMaxSize()
-                                .verticalScroll(rememberScrollState()),
-                        ) {
-                            WeekGrid(
-                                periodTimes = ready.periodTimes,
-                                layout = layout,
-                                weekDays = weekDays,
-                                todayDayOfWeek = if (week == ready.todayWeek) ready.todayDayOfWeek else null,
-                                showTimeInCards = ready.showTimeInCards,
-                                showGridLines = ready.showGridLines,
-                                nowMinuteOfDay = if (week == ready.todayWeek && ready.showNowLine) nowMinute else null,
-                                onBlockClick = { detailBlock = it },
-                                otherWeekLayout = otherWeekLayout,
-                            )
+                        // 行高按可用高度自适应，但不低于 56dp。
+                        // 必须在 verticalScroll **外面** 量：滚动链路里 maxHeight 是无穷，
+                        // WeekGrid 内部再怎么 BoxWithConstraints 也只会拿到无界约束
+                        // （WeekGrid 自己的注释也记着这件事）。
+                        // 平板竖屏净高一千多 dp：固定 56dp 会让 12 节只占 672dp，下方空出一大片；
+                        // 手机横屏净高不到 200dp：取 56dp 下限，照旧靠滚动看全。
+                        BoxWithConstraints(Modifier.fillMaxSize()) {
+                            val totalPeriods = ready.periodTimes.size.coerceAtLeast(1)
+                            val cellHeight = maxOf(PeriodCellHeight, maxHeight / totalPeriods)
+                            Column(
+                                Modifier
+                                    .fillMaxSize()
+                                    .verticalScroll(rememberScrollState()),
+                            ) {
+                                WeekGrid(
+                                    periodTimes = ready.periodTimes,
+                                    layout = layout,
+                                    weekDays = weekDays,
+                                    todayDayOfWeek = if (week == ready.todayWeek) ready.todayDayOfWeek else null,
+                                    showTimeInCards = ready.showTimeInCards,
+                                    showGridLines = ready.showGridLines,
+                                    nowMinuteOfDay = if (week == ready.todayWeek && ready.showNowLine) nowMinute else null,
+                                    onBlockClick = { detailBlock = it },
+                                    otherWeekLayout = otherWeekLayout,
+                                    cellHeight = cellHeight,
+                                )
+                            }
                         }
                     }
                 }

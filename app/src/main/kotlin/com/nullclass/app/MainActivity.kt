@@ -16,6 +16,7 @@ import androidx.core.content.ContextCompat
 import androidx.lifecycle.lifecycleScope
 import com.nullclass.app.navigation.AppNavHost
 import com.nullclass.core.data.prefs.UserPreferencesRepository
+import com.nullclass.core.ui.layout.ProvideWindowSize
 import com.nullclass.core.ui.theme.NullClassTheme
 import com.nullclass.feature.settings.transfer.PendingImport
 import dagger.hilt.android.AndroidEntryPoint
@@ -44,7 +45,11 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background,
                 ) {
-                    AppNavHost()
+                    // 窗口尺寸档位在这里量一次向下提供：Activity 没有 configChanges，
+                    // 旋转/分屏 resize 会整体重建，自然跟着重测
+                    ProvideWindowSize {
+                        AppNavHost()
+                    }
                 }
             }
         }

@@ -25,17 +25,21 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
+import com.nullclass.core.ui.layout.AdaptiveWidthWrapper
 
 /**
  * 课表管理：列表切换当前课表、重命名、删除、新建。
@@ -50,9 +54,17 @@ fun TimetableListScreen(
 ) {
     val state by viewModel.uiState.collectAsState()
     var pendingDelete by remember { mutableStateOf<TimetableListItem?>(null) }
-    var pendingRename by remember { mutableStateOf<TimetableListItem?>(null) }
+    // 重命名对话框里有用户正在输入的文本，旋转重建后不该连对话框带内容一起消失。
+    // TimetableListItem 不是 Parcelable，存 id 再从列表查回。
+    // （pendingDelete 是纯确认框、没有输入，旋转关掉即可，不值得一并复杂化。）
+    var pendingRenameId by rememberSaveable { mutableStateOf<String?>(null) }
+    val pendingRename = pendingRenameId?.let { id ->
+        state.items.firstOrNull { it.timetable.id == id }
+    }
 
+    val appBarScrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior()
     Scaffold(
+        modifier = Modifier.nestedScroll(appBarScrollBehavior.nestedScrollConnection),
         topBar = {
             TopAppBar(
                 title = { Text("课表管理") },
@@ -64,6 +76,7 @@ fun TimetableListScreen(
                 actions = {
                     TextButton(onClick = onCreateTimetable) { Text("新建") }
                 },
+                scrollBehavior = appBarScrollBehavior,
             )
         },
         containerColor = MaterialTheme.colorScheme.background,
@@ -89,21 +102,22 @@ fun TimetableListScreen(
                 }
             }
         } else {
-            LazyColumn(
-                Modifier
-                    .fillMaxSize()
-                    .padding(padding)
-                    .padding(horizontal = 16.dp)
-                    .padding(bottom = 24.dp),
-                verticalArrangement = Arrangement.spacedBy(8.dp),
-            ) {
-                items(state.items, key = { it.timetable.id }) { item ->
-                    TimetableRow(
-                        item = item,
-                        onSelect = { viewModel.setActive(item.timetable.id) },
-                        onRename = { pendingRename = item },
-                        onDelete = { pendingDelete = item },
-                    )
+            AdaptiveWidthWrapper(modifier = Modifier.padding(padding)) {
+                LazyColumn(
+                    Modifier
+                        .fillMaxSize()
+                        .padding(horizontal = 16.dp)
+                        .padding(bottom = 24.dp),
+                    verticalArrangement = Arrangement.spacedBy(8.dp),
+                ) {
+                    items(state.items, key = { it.timetable.id }) { item ->
+                        TimetableRow(
+                            item = item,
+                            onSelect = { viewModel.setActive(item.timetable.id) },
+                            onRename = { pendingRenameId = item.timetable.id },
+                            onDelete = { pendingDelete = item },
+                        )
+                    }
                 }
             }
         }
@@ -146,9 +160,10 @@ fun TimetableListScreen(
     }
 
     pendingRename?.let { item ->
-        var name by remember(item) { mutableStateOf(item.timetable.name) }
+        // 用 id 而非 item 实例作组合键：实例每次重组都可能是新的，会把输入打回原名
+        var name by rememberSaveable(item.timetable.id) { mutableStateOf(item.timetable.name) }
         AlertDialog(
-            onDismissRequest = { pendingRename = null },
+            onDismissRequest = { pendingRenameId = null },
             title = { Text("重命名课表") },
             text = {
                 OutlinedTextField(
@@ -162,13 +177,13 @@ fun TimetableListScreen(
                 TextButton(
                     onClick = {
                         val trimmed = name.trim()
-                        pendingRename = null
+                        pendingRenameId = null
                         if (trimmed.isNotEmpty()) viewModel.rename(item.timetable.id, trimmed)
                     },
                 ) { Text("保存") }
             },
             dismissButton = {
-                TextButton(onClick = { pendingRename = null }) { Text("取消") }
+                TextButton(onClick = { pendingRenameId = null }) { Text("取消") }
             },
         )
     }
