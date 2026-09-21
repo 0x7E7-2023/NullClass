@@ -71,7 +71,7 @@ import java.time.format.DateTimeFormatter
  * 通知与提醒：权限引导（通知/自启动/电池/精确闹钟/勿扰）、提前提醒时间、
  * 节假日在线同步与跳过日期。
  *
- * 调课（串课）原先也挂在这页尾部，已挪到「我的 → 快捷操作」（见 [QuickActionsScreen]）：
+ * 调课（串课）原先也挂在这页尾部，已挪到「我的 → 快捷操作 → 调课」（见 [DaySwapScreen]）：
  * 它是调休当天要用的操作，不该埋在一页提醒设置的最底下。
  */
 @OptIn(ExperimentalMaterial3Api::class)

@@ -61,6 +61,8 @@ import com.nullclass.feature.exam.ExamScreen
 import com.nullclass.feature.schedule.ScheduleScreen
 import com.nullclass.feature.schedule.TodayScreen
 import com.nullclass.feature.settings.AboutScreen
+import com.nullclass.feature.settings.CourseCleanupScreen
+import com.nullclass.feature.settings.DaySwapScreen
 import com.nullclass.feature.settings.QuickActionsScreen
 import com.nullclass.feature.settings.NotificationSettingsScreen
 import com.nullclass.feature.settings.ProfileScreen
@@ -82,6 +84,8 @@ object Routes {
     const val SETTINGS = "settings"
     const val NOTIFICATION_SETTINGS = "notification_settings"
     const val QUICK_ACTIONS = "quick_actions"
+    const val DAY_SWAP = "day_swap"
+    const val COURSE_CLEANUP = "course_cleanup"
     const val ABOUT = "about"
     const val TRANSFER = "transfer"
     const val EXAM_EDIT = "exam_edit?examId={examId}&courseId={courseId}"
@@ -391,7 +395,17 @@ fun AppNavHost() {
                 NotificationSettingsScreen(onBack = ::back)
             }
             screen(Routes.QUICK_ACTIONS) {
-                QuickActionsScreen(onBack = ::back)
+                QuickActionsScreen(
+                    onBack = ::back,
+                    onOpenDaySwap = { navController.navigate(Routes.DAY_SWAP) },
+                    onOpenCourseCleanup = { navController.navigate(Routes.COURSE_CLEANUP) },
+                )
+            }
+            screen(Routes.DAY_SWAP) {
+                DaySwapScreen(onBack = ::back)
+            }
+            screen(Routes.COURSE_CLEANUP) {
+                CourseCleanupScreen(onBack = ::back)
             }
             screen(Routes.ABOUT) {
                 AboutScreen(onBack = ::back)
