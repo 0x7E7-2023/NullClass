@@ -296,14 +296,8 @@ fun ScheduleScreen(
                         courseWithBlocks = courseWithBlocks,
                         onAddExam = onAddExam,
                         onEditExam = onEditExam,
-                        onEdit = {
-                            detailBlock = null
-                            onEditCourse(placed.course.id)
-                        },
-                        onDelete = {
-                            viewModel.deleteCourse(placed.course.id)
-                            detailBlock = null
-                        },
+                        onEdit = { onEditCourse(placed.course.id) },
+                        onDelete = { viewModel.deleteCourse(placed.course.id) },
                         onDismiss = { detailBlock = null },
                     )
                 }

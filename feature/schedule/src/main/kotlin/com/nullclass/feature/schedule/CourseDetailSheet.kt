@@ -18,12 +18,17 @@ import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
+import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
@@ -34,8 +39,13 @@ import com.nullclass.core.model.ExamWithCourse
 import com.nullclass.core.model.PlacedBlock
 import com.nullclass.core.model.ScheduleFormat
 import com.nullclass.core.ui.theme.courseColor
+import kotlinx.coroutines.launch
 
-/** 课程详情弹层：信息 + 全部时间安排 + 编辑/删除。 */
+/**
+ * 课程详情弹层：信息 + 全部时间安排 + 编辑/删除。
+ *
+ * 各操作回调在弹层收起动画播完、[onDismiss] 之后才调用，调用方无需自行关闭弹层。
+ */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 internal fun CourseDetailSheet(
@@ -55,7 +65,22 @@ internal fun CourseDetailSheet(
         viewModel.selectCourse(placed.course.id)
     }
 
-    ModalBottomSheet(onDismissRequest = onDismiss) {
+    val sheetState = rememberModalBottomSheetState()
+    val scope = rememberCoroutineScope()
+    var closing by remember { mutableStateOf(false) }
+
+    // 先播收起动画再执行操作。直接导航的话弹层窗口会随页面转场结束被连带销毁：
+    // 先卡住再突然消失，之后再打开弹层也不播入场动画。closing 防连点重复导航。
+    fun closeThen(action: () -> Unit) {
+        if (closing) return
+        closing = true
+        scope.launch { sheetState.hide() }.invokeOnCompletion {
+            onDismiss()
+            action()
+        }
+    }
+
+    ModalBottomSheet(onDismissRequest = onDismiss, sheetState = sheetState) {
         Column(
             modifier = Modifier
                 .fillMaxWidth()
@@ -115,7 +140,7 @@ internal fun CourseDetailSheet(
                 horizontalArrangement = Arrangement.SpaceBetween,
             ) {
                 Text("考试安排", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold)
-                IconButton(onClick = { onAddExam(course.id) }) {
+                IconButton(onClick = { closeThen { onAddExam(course.id) } }) {
                     Icon(Icons.Default.Add, contentDescription = "添加考试")
                 }
             }
@@ -128,7 +153,7 @@ internal fun CourseDetailSheet(
                 )
             } else {
                 exams.forEach { item ->
-                    ExamSummaryRow(item = item, onClick = { onEditExam(item.exam.id) })
+                    ExamSummaryRow(item = item, onClick = { closeThen { onEditExam(item.exam.id) } })
                 }
             }
             Row(
@@ -137,7 +162,7 @@ internal fun CourseDetailSheet(
                     .padding(top = 16.dp),
                 horizontalArrangement = Arrangement.spacedBy(12.dp),
             ) {
-                FilledTonalButton(onClick = onEdit, modifier = Modifier.weight(1f)) {
+                FilledTonalButton(onClick = { closeThen(onEdit) }, modifier = Modifier.weight(1f)) {
                     Text("编辑")
                 }
                 TextButton(
@@ -158,7 +183,7 @@ internal fun CourseDetailSheet(
             confirmButton = {
                 TextButton(onClick = {
                     confirmDelete.value = false
-                    onDelete()
+                    closeThen(onDelete)
                 }) { Text("删除", color = MaterialTheme.colorScheme.error) }
             },
             dismissButton = {

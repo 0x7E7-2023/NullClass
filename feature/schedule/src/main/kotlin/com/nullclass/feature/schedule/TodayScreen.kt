@@ -209,14 +209,8 @@ fun TodayScreen(
                         courseWithBlocks = ready.schedule.firstOrNull { it.course.id == placed.course.id },
                         onAddExam = onAddExam,
                         onEditExam = onEditExam,
-                        onEdit = {
-                            detailBlock = null
-                            onEditCourse(placed.course.id)
-                        },
-                        onDelete = {
-                            viewModel.deleteCourse(placed.course.id)
-                            detailBlock = null
-                        },
+                        onEdit = { onEditCourse(placed.course.id) },
+                        onDelete = { viewModel.deleteCourse(placed.course.id) },
                         onDismiss = { detailBlock = null },
                     )
                 }
