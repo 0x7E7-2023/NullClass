@@ -43,8 +43,10 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
+import androidx.compose.material3.rememberTopAppBarState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -56,6 +58,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -91,7 +94,30 @@ fun ScheduleScreen(
     /** 点了表头哪一列（epoch day）→ 开调课面板。 */
     var swapDay by remember { mutableStateOf<Long?>(null) }
 
-    val appBarScrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior()
+    // 网格铺不满一屏时把顶栏钉死。enterAlways 只看手势方向，内容滚不滚得动它不管；
+    // 而这一屏的行高是按可用高度撑开的 —— 顶栏一收，网格马上长高把空出来的地方填满，
+    // 反向一划又缩回去，整张表跟着手指上下伸缩像弹簧（平板竖屏排满课时最扎眼）。
+    // 本来就滑不动的一屏，顶栏也没有收起来的理由。
+    //
+    // 换成 pinned，而不是给 enterAlways 传 canScroll：canScroll 只拦得住嵌套滚动这条路，
+    // TopAppBar 自身还挂着一个 draggable（M3 1.4.0 里它只看 isPinned，不看 canScroll）——
+    // 手指撑在顶栏上往上拖照样把它拖收，而 canScroll=false 又把「在网格上往下划把它划回来」
+    // 堵死了，顶栏就永久卡在半截。pinned 的 isPinned 是 true，那个 draggable 根本不会装上。
+    var gridScrollable by remember { mutableStateOf(false) }
+    val appBarState = rememberTopAppBarState()
+    val appBarScrollBehavior = if (gridScrollable) {
+        TopAppBarDefaults.enterAlwaysScrollBehavior(state = appBarState)
+    } else {
+        TopAppBarDefaults.pinnedScrollBehavior(state = appBarState)
+    }
+    // 钉住的那一刻顶栏可能正停在半收态（旋屏、改节次数、换课表都会碰上），
+    // 而 pinned 从不动 heightOffset，不主动归位就会一直收着。
+    LaunchedEffect(gridScrollable) {
+        if (!gridScrollable) {
+            appBarState.heightOffset = 0f
+            appBarState.contentOffset = 0f
+        }
+    }
     Scaffold(
         modifier = Modifier.nestedScroll(appBarScrollBehavior.nestedScrollConnection),
         topBar = {
@@ -244,36 +270,48 @@ fun ScheduleScreen(
                         onDayClick = { swapDay = it },
                     )
 
-                    HorizontalPager(
-                        state = pagerState,
-                        modifier = Modifier.fillMaxSize(),
-                    ) { page ->
-                        val week = page + 1
-                        val layout = if (week == ready.selectedWeek) {
-                            ready.layout
-                        } else {
-                            WeekLayout.layoutForWeek(ready.schedule, week, ready.term, ready.dayOverrides)
+                    // 行高按可用高度自适应，但不低于 56dp。
+                    // 必须在 verticalScroll **外面** 量：滚动链路里 maxHeight 是无穷，
+                    // WeekGrid 内部再怎么 BoxWithConstraints 也只会拿到无界约束
+                    // （WeekGrid 自己的注释也记着这件事）。
+                    // 同样放在翻页器**外面**：每页各量一次的话，下面那一下 heightOffset
+                    // 读数会把每一页都拖着跟顶栏动画逐帧重组，顺带重算相邻页的 layout。
+                    // 平板竖屏净高一千多 dp：固定 56dp 会让 12 节只占 672dp，下方空出一大片；
+                    // 手机横屏净高不到 200dp：取 56dp 下限，照旧靠滚动看全。
+                    BoxWithConstraints(Modifier.fillMaxSize()) {
+                        val totalPeriods = ready.periodTimes.size.coerceAtLeast(1)
+                        // 顶栏收起时 Scaffold 的顶部内边距变小，这里的 maxHeight 反倒变大。
+                        // 直接拿它算行高，网格就会跟着顶栏一起伸缩；「够不够滚」的判断也会
+                        // 随之自激（收起→变高→不用滚→展开→又要滚→收起……）。
+                        // heightOffset 是顶栏当前收起的像素数（≤0），加回去正好得到顶栏
+                        // 完全展开时的净高 —— 与顶栏状态无关，行高和判断因此都是恒定的。
+                        val expandedHeight = maxHeight + with(LocalDensity.current) {
+                            appBarState.heightOffset.toDp()
                         }
-                        // 灰块按「当前这一页的周」算：翻页动画里扫过的中间页也得各画各的
-                        val otherWeekLayout = when {
-                            !ready.showOtherWeek -> emptyMap<Int, List<PlacedBlock>>()
-                            week == ready.selectedWeek -> ready.otherWeekLayout
-                            else -> WeekLayout.otherWeekLayout(
-                                ready.schedule,
-                                week,
-                                ready.term,
-                                ready.dayOverrides,
-                            )
-                        }
-                        // 行高按可用高度自适应，但不低于 56dp。
-                        // 必须在 verticalScroll **外面** 量：滚动链路里 maxHeight 是无穷，
-                        // WeekGrid 内部再怎么 BoxWithConstraints 也只会拿到无界约束
-                        // （WeekGrid 自己的注释也记着这件事）。
-                        // 平板竖屏净高一千多 dp：固定 56dp 会让 12 节只占 672dp，下方空出一大片；
-                        // 手机横屏净高不到 200dp：取 56dp 下限，照旧靠滚动看全。
-                        BoxWithConstraints(Modifier.fillMaxSize()) {
-                            val totalPeriods = ready.periodTimes.size.coerceAtLeast(1)
-                            val cellHeight = maxOf(PeriodCellHeight, maxHeight / totalPeriods)
+                        val cellHeight = maxOf(PeriodCellHeight, expandedHeight / totalPeriods)
+                        SideEffect { gridScrollable = PeriodCellHeight * totalPeriods > expandedHeight }
+
+                        HorizontalPager(
+                            state = pagerState,
+                            modifier = Modifier.fillMaxSize(),
+                        ) { page ->
+                            val week = page + 1
+                            val layout = if (week == ready.selectedWeek) {
+                                ready.layout
+                            } else {
+                                WeekLayout.layoutForWeek(ready.schedule, week, ready.term, ready.dayOverrides)
+                            }
+                            // 灰块按「当前这一页的周」算：翻页动画里扫过的中间页也得各画各的
+                            val otherWeekLayout = when {
+                                !ready.showOtherWeek -> emptyMap<Int, List<PlacedBlock>>()
+                                week == ready.selectedWeek -> ready.otherWeekLayout
+                                else -> WeekLayout.otherWeekLayout(
+                                    ready.schedule,
+                                    week,
+                                    ready.term,
+                                    ready.dayOverrides,
+                                )
+                            }
                             Column(
                                 Modifier
                                     .fillMaxSize()
