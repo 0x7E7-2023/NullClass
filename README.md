@@ -134,6 +134,22 @@ git clone --recursive https://github.com/0x7E7-2023/NullClass.git
 **当前阶段：功能完善**——核心功能已齐，接下来以打磨现有体验、修 bug、补细节为主，
 并持续接入更多学校适配器。欢迎通过 [Issues](../../issues) 反馈问题和建议。
 
+## 致谢 / Acknowledgements
+
+特别感谢 **[拾光课程表](https://github.com/ShiGuangSchedule/shiguangschedule)**（开源、无广告的课程表 APP，Apache-2.0）及其社区——
+空课能这么快支持这么多学校，绝大部分功劳在他们身上：
+
+- **教务适配器**：内置的学校适配器里有 **49 个移植自**拾光的社区适配库
+  [shiguang_warehouse](https://github.com/ShiGuangSchedule/shiguang_warehouse)（MIT，维护者 **星河欲转** 与众多社区贡献者）——
+  自己从零写的只有 `ustc`、`dlutci` 和通用适配器三个。
+  每个移植件都在自己的 `AUDIT.md` 里标注了上游文件、上游作者与快照 commit，移植口径见
+  [`docs/jw-adapter-porting.md`](docs/jw-adapter-porting.md)。
+- **迁移支持**：「从拾光课程表迁移」所依据的导出格式，来自拾光的[公开文档](https://sgschedule.jursin.top/guide/user/schedule-import)
+  与适配脚本的实际输出。
+
+上游以 MIT / Apache-2.0 授权，相应的版权与许可声明随移植件一并保留。
+如果你在用拾光，也请去给他们点个 star。
+
 ## 许可证 / License
 
 [GPL-3.0](LICENSE)

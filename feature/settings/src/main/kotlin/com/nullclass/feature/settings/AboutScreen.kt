@@ -45,6 +45,9 @@ private const val REPO_URL = "https://github.com/0x7E7-2023/NullClass"
 private const val ISSUES_URL = "$REPO_URL/issues"
 private const val LICENSE_URL = "$REPO_URL/blob/main/LICENSE"
 
+/** 上游：内置教务适配器绝大多数移植自拾光课程表社区的适配库（见 README「致谢」）。 */
+private const val SHIGUANG_URL = "https://github.com/ShiGuangSchedule/shiguangschedule"
+
 /**
  * 与 GitHub Contributors 对齐（按提交数降序）。发版时核对；
  * 不含 Co-Author 机器人。
@@ -125,6 +128,11 @@ fun AboutScreen(onBack: () -> Unit) {
                     subtitle = "GNU GPL-3.0",
                     onClick = { context.openHttps(LICENSE_URL) },
                 )
+                LinkRow(
+                    title = "致谢 · 拾光课程表",
+                    subtitle = "github.com/ShiGuangSchedule",
+                    onClick = { context.openHttps(SHIGUANG_URL) },
+                )
             }
 
             Text(
@@ -132,6 +140,13 @@ fun AboutScreen(onBack: () -> Unit) {
                 style = MaterialTheme.typography.bodySmall,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
                 modifier = Modifier.padding(top = 32.dp),
+            )
+            Text(
+                "内置教务适配器绝大多数移植自拾光课程表社区的适配库 shiguang_warehouse（MIT），" +
+                    "「从拾光课程表迁移」也基于拾光公开的导出格式。感谢拾光课程表及其社区。",
+                style = MaterialTheme.typography.bodySmall,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                modifier = Modifier.padding(top = 8.dp),
             )
         }
     }

@@ -6,6 +6,13 @@
 
 ## [Unreleased]
 
+### 变更
+
+- **致谢拾光课程表**：README 新增「致谢」一节，应用内「关于」页加上上游链接与说明 ——
+  内置教务适配器绝大多数移植自拾光社区的适配库
+  [shiguang_warehouse](https://github.com/ShiGuangSchedule/shiguang_warehouse)（MIT），
+  「从拾光课程表迁移」也基于拾光公开的导出格式。
+
 ## [0.9.96] - 2026-09-22
 
 ### 新增
