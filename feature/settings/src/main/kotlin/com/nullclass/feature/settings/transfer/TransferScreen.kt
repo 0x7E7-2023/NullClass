@@ -184,6 +184,24 @@ fun TransferScreen(
             imePadding = false,
             verticalArrangement = Arrangement.spacedBy(12.dp),
         ) {
+            // ---- 教务导入 ----
+            Text("从教务系统导入", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold)
+            Text(
+                "在网页里自己登录教务系统（空课不碰你的账号密码），打开课表页后一键提取。",
+                style = MaterialTheme.typography.bodySmall,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+            )
+            OutlinedButton(
+                onClick = {
+                    jwLauncher.launch(com.nullclass.feature.settings.jw.JwImportActivity.intent(context))
+                },
+                enabled = !state.busy,
+                modifier = Modifier.fillMaxWidth(),
+            ) { Text("选择学校并登录提取") }
+            SectionFeedback(state, TransferSection.JW)
+
+            HorizontalDivider(modifier = Modifier.padding(vertical = 8.dp))
+
             // ---- 导出 ----
             Text("备份与分享", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold)
             Text(
@@ -330,24 +348,6 @@ fun TransferScreen(
             }, enabled = !state.busy, modifier = Modifier.fillMaxWidth()) { Text("选择拾光导出的 .json 文件") }
             SectionFeedback(state, TransferSection.SHIGUANG)
 
-            HorizontalDivider(modifier = Modifier.padding(vertical = 8.dp))
-
-            // ---- 教务导入 ----
-            Text("从教务系统导入", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold)
-            Text(
-                "在网页里自己登录教务系统（空课不碰你的账号密码），打开课表页后一键提取。",
-                style = MaterialTheme.typography.bodySmall,
-                color = MaterialTheme.colorScheme.onSurfaceVariant,
-            )
-            OutlinedButton(
-                onClick = {
-                    jwLauncher.launch(com.nullclass.feature.settings.jw.JwImportActivity.intent(context))
-                },
-                enabled = !state.busy,
-                modifier = Modifier.fillMaxWidth(),
-            ) { Text("选择学校并登录提取") }
-
-            SectionFeedback(state, TransferSection.JW)
             Text(
                 "导入采用合并语义：同一记录以修改时间新者胜，不会覆盖更新的本地数据。",
                 style = MaterialTheme.typography.bodySmall,
