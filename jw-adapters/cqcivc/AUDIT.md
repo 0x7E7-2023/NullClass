@@ -271,5 +271,5 @@ grep -nE "fetch\(|XMLHttpRequest|sendBeacon|WebSocket|\.src\s*=|localStorage|eva
 ## 11. 签名
 
 - 上游作者：`星河欲转`（shiguang_warehouse，MIT）
-- 移植：`0x7E-2023`
+- 移植：`0x7E7-2023`
 - 日期：2026-09-13

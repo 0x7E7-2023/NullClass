@@ -3,7 +3,7 @@
   "key": "hnie",
   "name": "湖南工程学院",
   "version": "1.0.0",
-  "author": "上游 Mercury（MIT）；移植 0x7E-2023",
+  "author": "上游 Mercury（MIT）；移植 0x7E7-2023",
   "homepage": "https://github.com/XingHeYuZhuan/shiguang_warehouse",
   "loginUrl": "http://jwcmis.hnie.edu.cn",
   "scheduleUrlHint": "http://jwcmis.hnie.edu.cn/jsxsd/xskb/xskb_list.do",

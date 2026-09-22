@@ -13,7 +13,7 @@
   | `CUIT_02` | 成都信息工程大学**教务管理系统** | `cuit_bk_old.js` ← **本件** | `https://jwc.cuit.edu.cn/` |
 
   本件取的是 `CUIT_02`，`loginUrl` 用 `https://jwc.cuit.edu.cn/`。
-- **移植者**：0x7E-2023　**日期**：2026-09-17
+- **移植者**：0x7E7-2023　**日期**：2026-09-17
 - **取数方式**：接口三连（同源相对路径）→ 课表页 HTML 里课程是**内嵌的 JS 块**
   （`activity = new TaskActivity(...)` + `index = 星期 * unitCount + 节次`），
   与同族 `hpu` / `uestc` / `zua` / `zzvcae` / `dlmu` / `neuq` / `hfnu` / `xatu` / `tjau` 同一路数。
@@ -449,5 +449,5 @@
 - 平台名订正：`/eams/` 是**上海树维信息科技有限公司**（SupWisdom）的产品，**不是强智**。
 - 本目录只包含 `manifest.json` / `extract.js` / `parse.js` / `AUDIT.md` / `fixtures/*`，
   **没有改动任何其它文件**（`index.json` 由主 agent 统一添加）。
-- **移植者**：0x7E-2023　**日期**：2026-09-17　**签名**：本文件与代码逐条对照过，
+- **移植者**：0x7E7-2023　**日期**：2026-09-17　**签名**：本文件与代码逐条对照过，
   第 4 节的请求清单与 `extract.js` 的实际请求一致，第 7/8 节的结论与代码一致。

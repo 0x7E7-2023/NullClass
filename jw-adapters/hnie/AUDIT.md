@@ -6,7 +6,7 @@
   `adapters.yaml` 里 `maintainer: Mercury`、`adapter_name: 湖南工程学院`、
   `import_url: http://jwcmis.hnie.edu.cn`）
 - **上游快照**：commit `e62554a4034386b893bcd6813c7b2b64f8c730a3`（2026-09-12 12:50:29 +0800）
-- **移植者**：`0x7E-2023`　**日期**：2026-09-13
+- **移植者**：`0x7E7-2023`　**日期**：2026-09-13
 - **结论**：请求**只有**一台教务服务器（`jwcmis.hnie.edu.cn`）上的**两条相对路径**；不读账号密码、
   不碰成绩 / 学籍 / 个人信息、不写页面、不外发任何数据、不埋点、不 eval 远程代码。
   逐条签名见 §6（移植手册 §5 八条）与 §7（本批 10 条检查表）。
@@ -79,7 +79,7 @@
 | `key` | `hnie` | 与目录名一致；不与既有 23 个适配器重复 |
 | `name` | `湖南工程学院` | 上游 `adapters.yaml` 的 `adapter_name` |
 | `version` | `1.0.0` | |
-| `author` | `上游 Mercury（MIT）；移植 0x7E-2023` | 上游 `maintainer` 是 **Mercury**（`adapters.yaml`），照抄保留贡献者记录 |
+| `author` | `上游 Mercury（MIT）；移植 0x7E7-2023` | 上游 `maintainer` 是 **Mercury**（`adapters.yaml`），照抄保留贡献者记录 |
 | `homepage` | 上游仓库 | |
 | `loginUrl` | `http://jwcmis.hnie.edu.cn` | 上游 `import_url` 原值。**是 http**：规范允许，应用会显示「不安全连接」标记 —— 这是学校侧的现实，不是本件引入的 |
 | `scheduleUrlHint` | `http://jwcmis.hnie.edu.cn/jsxsd/xskb/xskb_list.do` | 一键刷新直接回课表页（未登录时会跳登录页，正常） |

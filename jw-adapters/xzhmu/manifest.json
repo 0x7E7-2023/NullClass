@@ -3,7 +3,7 @@
   "key": "xzhmu",
   "name": "徐州医科大学（研究生）",
   "version": "1.0.0",
-  "author": "上游 星河欲转（MIT）；移植 0x7E-2023",
+  "author": "上游 星河欲转（MIT）；移植 0x7E7-2023",
   "homepage": "https://github.com/XingHeYuZhuan/shiguang_warehouse",
   "loginUrl": "https://authserver.xzhmu.edu.cn/authserver/login?service=https%3A%2F%2Fehall.xzhmu.edu.cn%2Flogin",
   "scheduleUrlHint": "https://ehall.xzhmu.edu.cn/",

@@ -3,7 +3,7 @@
   "key": "cqcivc",
   "name": "重庆化工职业学院",
   "version": "1.0.0",
-  "author": "上游 星河欲转（MIT）；移植 0x7E-2023",
+  "author": "上游 星河欲转（MIT）；移植 0x7E7-2023",
   "homepage": "https://github.com/XingHeYuZhuan/shiguang_warehouse",
   "loginUrl": "http://dc.cqcivc.cn/cas/login?service=http://jwxt.cqcivc.edu.cn/sso/zllogin",
   "scheduleUrlHint": "http://jwxt.cqcivc.edu.cn/jwglxt/kbcx/xskbcx_cxXskbcxIndex.html?gnmkdm=N2151&layout=default",

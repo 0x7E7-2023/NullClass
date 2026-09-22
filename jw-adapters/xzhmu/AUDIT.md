@@ -8,7 +8,7 @@
 同目录 `adapters.yaml` 里 `adapter_id: XZHMU_01`、`adapter_name: 徐州医科大学研究生教务`、
 `category: POSTGRADUATE`、`maintainer: 星河欲转`。
 
-移植者：**0x7E-2023**　日期：**2026-09-13**
+移植者：**0x7E7-2023**　日期：**2026-09-13**
 
 ## 结论
 

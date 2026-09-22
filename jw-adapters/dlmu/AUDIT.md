@@ -4,7 +4,7 @@
 `shiguang_warehouse` 的 `DLMU/dlmu_01.js`（快照 commit `e62554a4034386b893bcd6813c7b2b64f8c730a3`，
 2026-09-12，MIT，上游作者 `whynusn`）。
 
-- 移植者：`0x7E-2023`
+- 移植者：`0x7E7-2023`
 - 移植日期：2026-09-16
 - 适配器 key：`dlmu`
 
@@ -392,5 +392,5 @@ function readIndex(expr, unitCount) {
 ## 9. 签名
 
 - 上游作者：`whynusn`（shiguang_warehouse，MIT）
-- 移植：`0x7E-2023`
+- 移植：`0x7E7-2023`
 - 日期：2026-09-16

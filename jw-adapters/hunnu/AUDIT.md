@@ -7,7 +7,7 @@
 平台：**树维 EAMS**（路径 `/eams/`，上海树维信息科技有限公司 SupWisdom，新开普子公司）。
 **不是强智**——上游脚本自称树维，`loginUrl` 也是 `/eams/courseTableForStd.action`。
 
-审计人：0x7E-2023（移植者）　日期：2026-09-17
+审计人：0x7E7-2023（移植者）　日期：2026-09-17
 
 ## 结论
 
@@ -224,7 +224,7 @@ grep -nE "click\(|\.submit\(|innerHTML\s*=|appendChild|createElement|localStorag
 
 ## 十、签名
 
-移植者：**0x7E-2023**
+移植者：**0x7E7-2023**
 日期：**2026-09-17**
 本审计的每一条声明都与 `extract.js` / `parse.js` 的实际代码一致；上面所有 grep 命令与输出
 都是在本仓库工作区里实跑得到的。

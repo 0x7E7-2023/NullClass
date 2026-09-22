@@ -3,7 +3,7 @@
   "key": "taru",
   "name": "塔里木大学",
   "version": "1.0.0",
-  "author": "上游 星河欲转（MIT）；移植 0x7E-2023",
+  "author": "上游 星河欲转（MIT）；移植 0x7E7-2023",
   "homepage": "https://github.com/XingHeYuZhuan/shiguang_warehouse",
   "loginUrl": "https://auth.taru.edu.cn/cas/login?service=https%3A%2F%2Fhall.taru.edu.cn%2FserviceHall",
   "scheduleUrlHint": "https://jwgl.taru.edu.cn/jwglxt/kbcx/xskbcx_cxXskbcxIndex.html?gnmkdm=N2151&layout=default",

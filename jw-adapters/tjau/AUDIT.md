@@ -4,7 +4,7 @@
 `shiguang_warehouse` 的 `TJAU/tjau.js`（快照 commit `e62554a4034386b893bcd6813c7b2b64f8c730a3`，
 2026-09-12，MIT，上游 `resources/TJAU/adapters.yaml` 的 maintainer 是 `星河欲转`）。
 
-- 移植者：`0x7E-2023`
+- 移植者：`0x7E7-2023`
 - 移植日期：2026-09-16（批次四，树维 EAMS 整族）
 - 适配器 key：`tjau`
 - 上游标注：`adapter_name: 天津农学院树维教务`，`import_url: http://jwxt.tjau.edu.cn/eams/homeExt.action`
@@ -284,7 +284,7 @@ VALID edge-units（载荷过校验：warnings 8 条，最长 83 字）
 - 上游出处：`shiguang_warehouse` → `resources/TJAU/tjau.js`
   （commit `e62554a4034386b893bcd6813c7b2b64f8c730a3`，2026-09-12，MIT）
 - 上游作者 / maintainer：`星河欲转`（`resources/TJAU/adapters.yaml`）
-- 移植者：`0x7E-2023`
+- 移植者：`0x7E7-2023`
 - 移植日期：2026-09-16
 - 本件的安全结论：**可以进内置库**（§2 八条全过、§3 十二条逐条落实）
 - 本件的开放风险：位图基准（§4.1）与作息时间（§8 第 2 条）**没有真机依据**，

@@ -1,7 +1,7 @@
 # 安全审计：`stcnchu`（南昌航空大学科技学院）
 
 - **适配器**：`jw-adapters/stcnchu/`（`manifest.json` / `extract.js` / `parse.js` / `fixtures/`）
-- **移植者**：`0x7E-2023`
+- **移植者**：`0x7E7-2023`
 - **移植日期**：2026-09-13
 - **审计对象**：上游 `STCNCHU/stcnchu.js` 全文 + 本适配器 `extract.js` / `parse.js` 全文
 - **结论**：**通过**。只请求本校教务服务器上的一个课表接口（同源相对路径），不碰凭据、
@@ -98,7 +98,7 @@ jx0404id=&cj0701id=&zc=&demo=&xnxq01id=2026-2027-1
 | `key` | `stcnchu` | 上游目录名小写 |
 | `name` | `南昌航空大学科技学院` | 上游 yaml 的 `adapter_name` 去掉平台后缀（与 `cqrk`/`hniu` 同一处理） |
 | `version` | `1.0.0` | 首版 |
-| `author` | `上游 星河欲转（MIT）；移植 0x7E-2023` | 移植手册 §3 第 6 步 |
+| `author` | `上游 星河欲转（MIT）；移植 0x7E7-2023` | 移植手册 §3 第 6 步 |
 | `loginUrl` | `http://qzjwxt.stcnchu.edu.cn:800/jsxsd/` | 上游 yaml `import_url` |
 | `scheduleUrlHint` | `…:800/jsxsd/xskb/xskb_list.do` | 上游请求的那一页 |
 | `minAppVersionCode` | `11` | 移植手册 §5.1：本件只用可加字段（`warnings`）与内置能力，没用 `kind:"boxes"/"image"`，写 11 —— 老版本忽略未知字段、导入照样成功 |
@@ -272,7 +272,7 @@ M1 还做过一次**就地**改坏 → 跑门变红 → 还原 → `diff`/`cmp` 
 
 ## 12. 签名
 
-移植与审计：**0x7E-2023**　日期：**2026-09-13**
+移植与审计：**0x7E7-2023**　日期：**2026-09-13**
 
 上游为 MIT，本移植遵守其社区公约保留贡献者记录（文件头 + `manifest.author` 均写明
 「上游 星河欲转」与快照 commit）。

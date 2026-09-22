@@ -3,7 +3,7 @@
 - 上游：`shiguang_warehouse` 的 `HBLGXY/hblgxy_01.js`（MIT，作者 **星河欲转**），快照 2026-09-12 的副本
   （同目录 `adapters.yaml`：`adapter_id: HBLGXY_01`、`import_url: https://a.hblgxy.edu.cn:5111/jsxsd/`、
   `maintainer: 星河欲转`）。
-- 移植者：NullClass（0x7E-2023）　日期：**2026-09-12**
+- 移植者：NullClass（0x7E7-2023）　日期：**2026-09-12**
 - 平台：**强智科技「高校综合管理教务系统」（湖南强智科技）学生端 `/jsxsd/`**，不是正方。
   依据：上游 `import_url` 的路径是 `/jsxsd/`，脚本请求 `/jsxsd/xskb/xskb_list.do` —— 这两个都是
   强智学生端的路径（正方新版是 `/jwglxt/`，课表接口 `xskbcx_cxXsKb.html`）。上游自称「强智适配」是对的。

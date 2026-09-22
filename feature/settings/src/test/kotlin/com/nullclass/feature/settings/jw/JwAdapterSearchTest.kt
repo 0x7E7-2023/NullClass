@@ -41,7 +41,7 @@ class JwAdapterSearchTest {
         name = "大连工程学院（原大连理工大学城市学院）",
         loginUrl = "https://jw.dlutci.edu.cn/",
         author = "NullClass",
-        homepage = "https://github.com/0x7E-2023/NullClass",
+        homepage = "https://github.com/0x7E7-2023/NullClass",
     )
     private val ustc = adapter(
         key = "ustc",

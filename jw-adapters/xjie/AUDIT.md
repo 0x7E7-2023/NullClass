@@ -3,7 +3,7 @@
 - 上游：`shiguang_warehouse` 的 `XJIE/xjie_01.js`（MIT，作者 **星河欲转**），快照 2026-09-12 的副本
   （`/tmp/sgw/resources/XJIE/`，8416 字节；同目录 `adapters.yaml` 的 `adapter_id` 是 `XJIE_01`，
   `maintainer` 是「星河欲转」，`import_url` 是 CAS 登录地址）。
-- 移植者：NullClass（0x7E-2023）　日期：**2026-09-12**
+- 移植者：NullClass（0x7E7-2023）　日期：**2026-09-12**
 - 平台：**强智科技「高校综合管理教务系统」（湖南强智科技）学生端 `/jsxsd/`**，不是正方。
   依据：上游请求 `/jsxsd/xskb/xskb_list.do` + `#timetable` + `div.kbcontent` +
   `font[title=教师|周次(节次)|教室]`；同平台的 `hynu`（已移植、已人工审计）用同一套结构与同一条接口路径。

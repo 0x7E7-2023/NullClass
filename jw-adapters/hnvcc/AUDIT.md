@@ -5,7 +5,7 @@
 | 上游 | [shiguang_warehouse](https://github.com/XingHeYuZhuan/shiguang_warehouse) `HNVCC/HNVCC_01.js`（MIT，上游作者 **星河欲转**，见同目录 `adapters.yaml` 的 `maintainer`），快照 `e62554a4034386b893bcd6813c7b2b64f8c730a3`（2026-09-12 12:50:29 +0800） |
 | 上游入口 | `adapters.yaml` 的 `import_url` = `http://jwxt.hnvcc.edu.cn/`、`adapter_name` = 「湖南商务职业技术学院强智适配」 |
 | 平台 | **湖南强智科技「高校综合管理教务系统」学生端 `/jsxsd/`**。依据是脚本**实际请求的接口路径**与选择器：`/jsxsd/framework/mainV_index_loadkb.htmlx`（学生端首页的课表面板片段）、`#timetable` 里 `.item-box` 的 `直接子 <p>` + `.tch-name` + 带 `item1.png` 图标的 div、`#li_showWeek`、`xnxqid` 这个学年学期编号命名 —— 与已落地的 `upc`/`hynu`/`cqrk` 同一族（不是正方：正方新版是 `/jwglxt/` + `xskbcx_cxXsKb.html`，老版 `jsxsd` 的课表页是 `/jsxsd/xskb/xskb_list.do`，本件两者都不是）。**上游注释里没有写平台名，这里的判断只来自路径与选择器。** |
-| 移植者 | **0x7E-2023**　日期 **2026-09-13** |
+| 移植者 | **0x7E7-2023**　日期 **2026-09-13** |
 | 结论 | **通过**：不碰凭据、不外发、只读课表、单一自有域、无埋点、不写页面。逐条留证见下。 |
 
 ## 1. 脚本实际请求了哪些域
@@ -235,4 +235,4 @@ http://jwxt.hnvcc.edu.cn/jsxsd/framework/mainV_index_loadkb.htmlx?rq=all&xnxqid=
    由学校自己的部署决定，不是适配器能改变的；适配器本身不接触凭据。
 8. **没有账号做过真机抽验**（测试方案 §4 的第 ③ 层）：本适配器与上游一样，正确性靠用户反馈迭代。
 
-签名：**0x7E-2023**　日期 **2026-09-13**
+签名：**0x7E7-2023**　日期 **2026-09-13**

@@ -4,7 +4,7 @@
 `shiguang_warehouse` 的 `UESTC/uestc.js`
 （快照 commit `e62554a4034386b893bcd6813c7b2b64f8c730a3`，2026-09-12，MIT，上游作者 `CorunLing`）。
 
-- 移植者：`0x7E-2023`
+- 移植者：`0x7E7-2023`
 - 移植日期：2026-09-16 ~ 2026-09-17
 - 适配器 key：`uestc`
 - 平台：树维 EAMS（`/eams/`，上海树维信息科技有限公司 SupWisdom，新开普子公司）。
@@ -284,5 +284,5 @@ grep -nE "=>|`|\blet |\bconst " jw-adapters/uestc/*.js     # ES5 闸门（CI 同
 ## 8. 签名
 
 - 上游作者：`CorunLing`（shiguang_warehouse，MIT）
-- 移植：`0x7E-2023`
+- 移植：`0x7E7-2023`
 - 日期：2026-09-16 ~ 2026-09-17

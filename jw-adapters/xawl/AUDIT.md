@@ -243,5 +243,5 @@
 
 - 上游：`shiguang_warehouse` 的 `XAWL/xawl_01.js`，作者 / maintainer `星河欲转`（MIT），
   快照 commit `e62554a4034386b893bcd6813c7b2b64f8c730a3`（2026-09-12）
-- 移植：`0x7E-2023`
+- 移植：`0x7E7-2023`
 - 日期：2026-09-13

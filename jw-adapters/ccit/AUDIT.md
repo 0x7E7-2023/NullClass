@@ -7,7 +7,7 @@
   commit `e62554a4034386b893bcd6813c7b2b64f8c730a3`（2026-09-12 12:50:29 +0800），MIT，作者 **星河欲转**。
   同目录 `resources/CCIT/adapters.yaml`：`adapter_name: 长春工程学院强智教务`、`maintainer: 星河欲转`、
   `import_url: https://webvpn.ccit.edu.cn/auth/login`。
-- **移植者**：0x7E-2023　**日期**：2026-09-13
+- **移植者**：0x7E7-2023　**日期**：2026-09-13
 - **取数方式**：DOM 抓取（强智课表页返回服务端渲染的 HTML，不是 JSON）。两级：
   ① 当前页面就有课表表格（`#kbtable` 里有 `.kbcontent`）→ 直接用，**一个请求都不发**；
   ② 否则同源请求 `/jsxsd/xskb/xskb_list.do`（POST 带 `xnxq01id`，或 GET 让教务用自己的默认学期）。
@@ -337,4 +337,4 @@ sha256(parse.js) AFTER  = a8b28bbc816dc13f9e621a12354e2b7c5c14cc7b4dc7b40371cf7b
   上游社区公约要求保留贡献者记录 —— `manifest.json` 的 `author` 与两份脚本的文件头都写了出处。
 - 本适配器的全部逻辑由我逐行读过并重写为 ES5 两段式；`extract.js` 只取数（不碰 DOM 之外的任何
   页面状态、不发第二个请求），`parse.js` 是纯函数（无网络、无 DOM、无全局读写）。
-- 移植者：**0x7E-2023**　日期：**2026-09-13**
+- 移植者：**0x7E7-2023**　日期：**2026-09-13**

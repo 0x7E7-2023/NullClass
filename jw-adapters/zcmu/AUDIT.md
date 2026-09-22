@@ -178,5 +178,5 @@ MB1–MB4 是在**本文件最终版**上重跑的一遍（先在修复版上跑
 
 - 上游作者：`Daoguan-king`（shiguang_warehouse，MIT）
 - 上游文件：`resources/ZCMU/zcmu.js`，快照 commit `e62554a4034386b893bcd6813c7b2b64f8c730a3`（2026-09-12）
-- 移植：`0x7E-2023`
+- 移植：`0x7E7-2023`
 - 日期：2026-09-13

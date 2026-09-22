@@ -5,7 +5,7 @@
 （快照 commit `e62554a4034386b893bcd6813c7b2b64f8c730a3`，2026-09-12，MIT，
 上游 `resources/ZUA/adapters.yaml` 的 `maintainer` 是 `xBefore`）。
 
-- 移植者：`0x7E-2023`
+- 移植者：`0x7E7-2023`
 - 移植日期：2026-09-17
 - 适配器 key：`zua`
 - 平台：**上海树维信息科技有限公司（SupWisdom，新开普子公司）的综合教务系统**（路径带 `/eams/`）
@@ -401,7 +401,7 @@ grep -oE 'https?://[A-Za-z0-9.:-]+' jw-adapters/zua/*.js | sort -u
 ## 10. 签名
 
 - 上游作者：`xBefore`（shiguang_warehouse，MIT；见上游 `resources/ZUA/adapters.yaml` 的 `maintainer`）
-- 移植：`0x7E-2023`
+- 移植：`0x7E7-2023`
 - 日期：2026-09-17
 - 文件指纹（审计时）：`extract.js` sha256 `e9594d9ad38fc6e8ab7a57d5cad648f7b67183f2024c5255893c8c21eff3df14`（318 行）、
   `parse.js` sha256 `e0d0b95d73bc20095495458cf16e45e1799fcd5b792698357208a12be7798a19`（933 行）
