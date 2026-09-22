@@ -1,6 +1,5 @@
 package com.nullclass.feature.schedule
 
-import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -255,7 +254,7 @@ private fun TodayHeader(snapshot: TodaySnapshot, nowMinute: Int) {
 }
 
 /**
- * 上课中卡片：置顶实时展示正在上的课——课程色描边、已上进度条、「还剩 X 分钟」倒计时。
+ * 上课中卡片：置顶实时展示正在上的课——已上进度条、「还剩 X 分钟」倒计时。
  * [rememberNowMinute] 每 30 秒一拍，倒计时与进度随之下走。
  */
 @Composable
@@ -273,7 +272,6 @@ private fun InClassCard(
             .clickable(onClick = onClick),
         shape = MaterialTheme.shapes.medium,
         color = MaterialTheme.colorScheme.secondaryContainer,
-        border = BorderStroke(1.dp, color.content.copy(alpha = 0.45f)),
     ) {
         Column(Modifier.padding(horizontal = 16.dp, vertical = 12.dp)) {
             Row(modifier = Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
