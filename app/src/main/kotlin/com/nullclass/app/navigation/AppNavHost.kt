@@ -196,6 +196,7 @@ fun AppNavHost() {
     val gateViewModel: AppGateViewModel = hiltViewModel()
     val gateOverviews = gateViewModel.overviews.collectAsState().value
     val gated = gateOverviews == null || gateOverviews.isEmpty()
+    val showExamTab by gateViewModel.showExamTab.collectAsState()
 
     // 「用其他应用打开」.nullclass → 直达导入页。被首启引导闸住时**先不导航**：
     // 闸门期间 NavHost 没被组合、graph 未设，navigate 会直接抛异常当场崩溃；
@@ -289,11 +290,13 @@ fun AppNavHost() {
             }
         }
     }
+    // 「考试」标签页可在设置里关掉；其余标签始终常驻。
+    val visibleTabs = if (showExamTab) TopTabs else TopTabs.filterNot { it.route == Routes.EXAMS }
     val tabBar: @Composable (Modifier) -> Unit = { modifier ->
         if (useRail) {
             // 量宽度：外层给内容预留的是 start padding
             NavigationRail(modifier.onSizeChanged { bottomBarHeightPx = it.width }) {
-                TopTabs.forEach { tab ->
+                visibleTabs.forEach { tab ->
                     NavigationRailItem(
                         selected = selectedRoute == tab.route,
                         onClick = { onTabClick(tab) },
@@ -304,7 +307,7 @@ fun AppNavHost() {
             }
         } else {
             NavigationBar(modifier.onSizeChanged { bottomBarHeightPx = it.height }) {
-                TopTabs.forEach { tab ->
+                visibleTabs.forEach { tab ->
                     NavigationBarItem(
                         selected = selectedRoute == tab.route,
                         onClick = { onTabClick(tab) },

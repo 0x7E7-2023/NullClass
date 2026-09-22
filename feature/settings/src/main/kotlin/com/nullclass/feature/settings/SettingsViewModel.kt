@@ -64,8 +64,16 @@ class SettingsViewModel @Inject constructor(
     val themeMode: StateFlow<ThemeMode> = userPreferences.themeMode
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), ThemeMode.DYNAMIC)
 
+    /** 底部导航是否显示「考试」标签页。 */
+    val showExamTab: StateFlow<Boolean> = userPreferences.showExamTab
+        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), true)
+
     fun setThemeMode(value: ThemeMode) {
         viewModelScope.launch { userPreferences.setThemeMode(value) }
+    }
+
+    fun setShowExamTab(value: Boolean) {
+        viewModelScope.launch { userPreferences.setShowExamTab(value) }
     }
 
     fun setShowOtherWeekCourses(value: Boolean) {

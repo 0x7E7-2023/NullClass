@@ -2,6 +2,7 @@ package com.nullclass.app.navigation
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.nullclass.core.data.prefs.UserPreferencesRepository
 import com.nullclass.core.data.repository.TimetableRepository
 import com.nullclass.core.data.repository.TimetableOverview
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -18,6 +19,7 @@ import javax.inject.Inject
 @HiltViewModel
 class AppGateViewModel @Inject constructor(
     timetableRepository: TimetableRepository,
+    userPreferences: UserPreferencesRepository,
 ) : ViewModel() {
 
     /** null = 首帧还没读到（画背景色，不闪引导页）；空列表 = 全新安装，进引导。 */
@@ -25,4 +27,9 @@ class AppGateViewModel @Inject constructor(
         timetableRepository.observeOverviews()
             .map<List<TimetableOverview>, List<TimetableOverview>?> { it }
             .stateIn(viewModelScope, SharingStarted.Eagerly, null)
+
+    /** 底部导航是否显示「考试」标签页。默认显示。 */
+    val showExamTab: StateFlow<Boolean> =
+        userPreferences.showExamTab
+            .stateIn(viewModelScope, SharingStarted.Eagerly, true)
 }

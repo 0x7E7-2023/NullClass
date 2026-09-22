@@ -42,6 +42,7 @@ class UserPreferencesRepository @Inject constructor(
         val SHOW_NOW_LINE = booleanPreferencesKey("show_now_line")
         val SHOW_GRID_LINES = booleanPreferencesKey("show_grid_lines")
         val SHOW_OTHER_WEEK_COURSES = booleanPreferencesKey("show_other_week_courses")
+        val SHOW_EXAM_TAB = booleanPreferencesKey("show_exam_tab")
         val WIDGET_FONT_SIZE = stringPreferencesKey("widget_font_size")
         val THEME_MODE = stringPreferencesKey("theme_mode")
         val SENT_REMINDER_KEYS = stringSetPreferencesKey("sent_reminder_keys")
@@ -132,6 +133,14 @@ class UserPreferencesRepository @Inject constructor(
 
     suspend fun setShowOtherWeekCourses(value: Boolean) {
         context.userPrefs.edit { it[Keys.SHOW_OTHER_WEEK_COURSES] = value }
+    }
+
+    /** 底部导航是否显示「考试」标签页。默认显示。 */
+    val showExamTab: Flow<Boolean> =
+        context.userPrefs.data.map { it[Keys.SHOW_EXAM_TAB] ?: true }
+
+    suspend fun setShowExamTab(value: Boolean) {
+        context.userPrefs.edit { it[Keys.SHOW_EXAM_TAB] = value }
     }
 
     /** 桌面小组件字号档。默认标准；未知值回落标准。 */

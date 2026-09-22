@@ -71,6 +71,7 @@ fun SettingsScreen(
     val widgetFontSize by viewModel.widgetFontSize.collectAsState()
     val showOtherWeekCourses by viewModel.showOtherWeekCourses.collectAsState()
     val themeMode by viewModel.themeMode.collectAsState()
+    val showExamTab by viewModel.showExamTab.collectAsState()
 
     val context = LocalContext.current
 
@@ -276,6 +277,26 @@ fun SettingsScreen(
                 Switch(
                     checked = showOtherWeekCourses,
                     onCheckedChange = viewModel::setShowOtherWeekCourses,
+                )
+            }
+
+            HorizontalDivider(modifier = Modifier.padding(vertical = 8.dp))
+
+            // ---- 底部导航 ----
+            Text("底部导航", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold)
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .clickable { viewModel.setShowExamTab(!showExamTab) },
+                horizontalArrangement = Arrangement.spacedBy(12.dp),
+                verticalAlignment = Alignment.CenterVertically,
+            ) {
+                Column(Modifier.weight(1f)) {
+                    Text("显示「考试」标签页")
+                }
+                Switch(
+                    checked = showExamTab,
+                    onCheckedChange = viewModel::setShowExamTab,
                 )
             }
         }
