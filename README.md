@@ -13,9 +13,10 @@ An open-source class schedule app for Android universities. Local-first: no acco
 
 - 📅 周视图课表（滑动切周、当前周高亮、默认开启的纵横分割线、单双周/连堂支持）
 - 🗂️ 多课表管理（一张应用装多张课表，课程与节次时间各自独立；新装先建课表，随时切换）
-- 🎓 上课中
-  - 🗂️ 今日课表：底部四 Tab（今日 / 课表 / 考试 / 我的），按上午/下午/晚上分组；正在上的课置顶实时卡片（进度条 + 还剩 X 分钟倒计时）
+- 🎓 日常使用
+  - 🗂️ 今日课表：底部 Tab（今日 / 课表 / 考试 / 我的，不用考试可在设置里隐藏「考试」），按上午/下午/晚上分组；正在上的课置顶实时卡片（进度条 + 还剩 X 分钟倒计时）
   - 📝 考试安排：考试挂在对应课程下，支持按日期查看、手动新增/编辑/删除及考试地点、座位和备注
+  - 🗓️ 日程安排：课表页右上角进入，月历 + 个人日程（全天或定时），每条可单独开提醒；不依赖学期，仅存本机
   - 🧩 桌面小组件：Jetpack Glance（今日课程 / 下节课），课程卡片支持上下按钮分页、独立页码与更新时间，上课中状态带分钟级倒计时，随课节边界自动刷新
 - 🔔 提醒（「通知与提醒」页集中管理）：课前提醒提前量可配；可选精确闹钟（到点准时，默认关）；
   授权后可勿扰下响铃；权限状态一站式引导（通知/自启动/电池/精确闹钟/勿扰）
@@ -23,12 +24,14 @@ An open-source class schedule app for Android universities. Local-first: no acco
   仅拉公开假日数据、不含任何个人信息），跳过日的课前提醒自动静音；也可手动添加跳过日期
 - 🔁 调课（串课）：调休时把某一天设成上另一天的课（「周六上周五的课」），
   周视图点星期表头即可设置；今日页、周视图、小组件与课前提醒一起跟着改
+- ✂️ 快速删课：「我的 → 快捷操作」里按周次或某一天筛出课，勾选批量删除
 - 📤 课表导入导出（`.nullclass` 文件 + 二维码扫码分享）
 - 📥 WakeUp 课表一键迁移（`.wakeup_schedule`，连堂/单双周/节次时间/颜色全保留）
 - 📥 拾光课程表一键迁移（导出的 `shiguangschedule_*.json`，课程/单双周/作息表/开学日期全带过来）
-- 🏫 教务系统导入（WebView 手工登录 + 社区适配器包；课表是图片的学校也能识别）
+- 🏫 教务系统导入（WebView 手工登录 + 社区适配器包；已内置 47 所学校 + 通用适配器，课表是图片的学校也能识别）
 - 🔄 WebDAV 同步（坚果云/NextCloud 自建，端到端属于你；支持定时自动同步）
-- 🎨 Material 3 + 动态取色（Material You）
+- 🎨 Material 3 + 动态取色（Material You），可选跟随取色 / 浅色 / 深色
+- 📱 平板与横屏适配：宽屏下「我的」「考试」左右双栏，手机横屏改用侧边导航，课表行高随屏幕自适应
 - 💚 纯本地存储（Room），隐私干净：无账号、无云端、无埋点
 
 ## 技术栈 / Tech Stack
@@ -53,6 +56,7 @@ An open-source class schedule app for Android universities. Local-first: no acco
 - 从 WakeUp 课表迁移：WakeUp 内备份出 `.wakeup_schedule` 文件 → 空课「导入/导出 → 从 WakeUp 迁移」
 - 从拾光课程表迁移：拾光「我的 → 高级功能 → 课表导入/导出」导出课程文件 → 空课「导入/导出 → 从拾光课程表迁移」（直接点开那个 json 也认）
 - 多设备同步：设置里填 WebDAV（推荐坚果云等支持 HTTPS 的服务）
+- 日程安排、调课和跳过日期只保存在本机，暂不参与同步与导入导出
 
 ### 求你的学校适配 / Request your school
 
@@ -77,8 +81,9 @@ jw-adapters/<school-key>/
 - **自己导入**：把目录打成 zip，在应用里「导入适配器包」——这类适配器**不经过审计**，
   安装界面会明确提示它会读取你已登录的教务页面内容，并支持查看脚本全文。
 
-规范见 [`docs/jw-adapter-spec.md`](docs/jw-adapter-spec.md)，现成例子见 [`jw-adapters/ustc`](jw-adapters/ustc)
-与 [`jw-adapters/dlutci`](jw-adapters/dlutci)；没有适配器的学校用内置的 **通用适配器**
+规范见 [`docs/jw-adapter-spec.md`](docs/jw-adapter-spec.md)（移植与测试见 [`docs/jw-adapter-porting.md`](docs/jw-adapter-porting.md)、
+[`docs/jw-adapter-testing.md`](docs/jw-adapter-testing.md)），已内置的学校见 [`jw-adapters/index.json`](jw-adapters/index.json)，
+现成例子如 [`jw-adapters/ustc`](jw-adapters/ustc) 与 [`jw-adapters/dlutci`](jw-adapters/dlutci)；没有适配器的学校用内置的 **通用适配器**
 （自己填教务地址，应用读页面文字自己还原表格，课表是图片的走离线 OCR）。
 [提交适配请求](../../issues/new?template=jw-adapter-request.md)，附上课表页脱敏 HTML 或脚本输出。
 
@@ -89,7 +94,7 @@ jw-adapters/<school-key>/
 :core:model        纯 Kotlin 领域模型
 :core:data         Room 数据库 + Repository + DataStore
 :core:ui           主题与通用 Compose 组件
-:feature:schedule  课表主界面（周视图 + 今日页）
+:feature:schedule  课表主界面（周视图 + 今日页 + 日程安排）
 :feature:exam      考试安排（课程下的考试与独立考试 Tab）
 :feature:edit      课程/学期编辑
 :feature:settings  设置与「我的」页、导入导出界面、教务导入 WebView 宿主
@@ -122,6 +127,7 @@ jw-adapters/<school-key>/
 - [x] M5 教务系统导入框架（WebView + 逐校适配，示例适配器已就绪，真实学校逐步接入）
 - [x] M6 适配器平台化（包规范 + 社区库 + 用户导入 + 图片课表 OCR）
 - [x] M7 首个真实学校适配器 + 交互持续打磨（大连工程学院已内置；上课中实时状态落地）
+- [x] M8 适配器批量接入（已内置 47 所学校）+ 平板/横屏适配 + 日程安排
 
 ## 许可证 / License
 
