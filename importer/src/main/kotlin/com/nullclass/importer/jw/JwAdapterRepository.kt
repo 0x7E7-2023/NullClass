@@ -7,16 +7,38 @@ package com.nullclass.importer.jw
  * 伪造一个同名名校的适配器是最省事的社会工程入口，宁可让用户改 key 或提 PR。
  */
 class JwAdapterRepository(
-    val builtin: List<JwAdapter>,
+    builtin: JwLibraryBundle,
     private val store: JwUserAdapterStore,
 ) {
 
-    private val builtinKeys: Set<String> = builtin.map { it.key }.toSet()
+    /** 官方库（随包内置，或热更新下载的更新版本）。整体替换，读方拿到的永远是一致快照。 */
+    @Volatile
+    private var library: JwLibraryBundle = builtin
+    private val builtinKeys: Set<String> get() = library.adapters.mapTo(HashSet()) { it.key }
 
-    fun userLibrary(): JwUserLibrary = store.list()
+    val builtin: List<JwAdapter> get() = library.adapters
 
-    /** 内置 + 用户添加（key 不冲突，无需覆盖语义）。 */
-    fun all(): List<JwAdapter> = builtin + store.list().adapters
+    /** 当前官方库版本（旧 APK 内置的库可能没有版本号）。 */
+    val builtinVersion: String? get() = library.version
+
+    /**
+     * 热更新：换上新的官方库（调用方保证已验签）。读盘，放 IO 线程。
+     * @return 被新官方库遮住的用户适配器 key（同名时官方优先，需要告知用户）
+     */
+    fun replaceBuiltin(bundle: JwLibraryBundle): List<String> {
+        val shadowed = store.list().adapters.map { it.key }.filter { key -> bundle.adapters.any { it.key == key } }
+        library = bundle
+        return shadowed
+    }
+
+    /** 用户库；官方库热更新后新占用的 key 会遮住同名用户适配器（与「内置不可覆盖」一致）。 */
+    fun userLibrary(): JwUserLibrary = store.list().let { lib ->
+        val keys = builtinKeys
+        lib.copy(adapters = lib.adapters.filter { it.key !in keys })
+    }
+
+    /** 内置 + 用户添加。 */
+    fun all(): List<JwAdapter> = builtin + userLibrary().adapters
 
     fun byKey(key: String): JwAdapter? =
         builtin.firstOrNull { it.key == key } ?: store.find(key)

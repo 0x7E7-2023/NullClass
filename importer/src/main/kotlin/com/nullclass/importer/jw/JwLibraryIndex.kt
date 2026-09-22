@@ -14,6 +14,8 @@ import java.net.URI
 data class JwLibraryIndex(
     val specVersion: Int = 1,
     val name: String? = null,
+    /** 整库版本（官方库发 release 用，形如 `2026.09.22` 或 `2026.09.22.1`）；第三方库可不填。 */
+    val version: String? = null,
     val homepage: String? = null,
     val adapters: List<JwLibraryEntry> = emptyList(),
 )

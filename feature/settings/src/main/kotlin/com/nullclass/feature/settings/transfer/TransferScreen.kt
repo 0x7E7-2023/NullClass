@@ -198,6 +198,8 @@ fun TransferScreen(
                 enabled = !state.busy,
                 modifier = Modifier.fillMaxWidth(),
             ) { Text("选择学校并登录提取") }
+            com.nullclass.feature.settings.jw.JwLibraryUpdateSection()
+
             SectionFeedback(state, TransferSection.JW)
 
             HorizontalDivider(modifier = Modifier.padding(vertical = 8.dp))

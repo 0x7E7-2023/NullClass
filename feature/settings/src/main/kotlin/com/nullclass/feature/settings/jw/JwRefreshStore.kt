@@ -3,6 +3,7 @@ package com.nullclass.feature.settings.jw
 import android.content.Context
 import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.edit
+import androidx.datastore.preferences.core.longPreferencesKey
 import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
 import dagger.hilt.android.qualifiers.ApplicationContext
@@ -27,6 +28,7 @@ class JwRefreshStore @Inject constructor(
         val LAST_ADAPTER = stringPreferencesKey("last_adapter_key")
         val LAST_SCHEDULE_URL = stringPreferencesKey("last_schedule_url")
         val AUTO_EXTRACT = booleanPreferencesKey("auto_extract")
+        val OFFICIAL_LAST_CHECK = longPreferencesKey("official_last_check")
     }
 
     val lastAdapterKey: Flow<String?> = context.jwPrefs.data.map { it[Keys.LAST_ADAPTER] }
@@ -49,5 +51,12 @@ class JwRefreshStore @Inject constructor(
 
     suspend fun setAutoExtract(value: Boolean) {
         context.jwPrefs.edit { it[Keys.AUTO_EXTRACT] = value }
+    }
+
+    /** 官方适配器库上次检查更新的时间（epoch 毫秒）。 */
+    val officialLastCheck: Flow<Long?> = context.jwPrefs.data.map { it[Keys.OFFICIAL_LAST_CHECK] }
+
+    suspend fun setOfficialLastCheck(epochMillis: Long) {
+        context.jwPrefs.edit { it[Keys.OFFICIAL_LAST_CHECK] = epochMillis }
     }
 }

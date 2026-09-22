@@ -16,10 +16,12 @@ class OkHttpJwRemoteFetcher(
         OkHttpClient.Builder()
             .connectTimeout(JwRemoteFetcher.TIMEOUT_MS.toLong(), TimeUnit.MILLISECONDS)
             .readTimeout(JwRemoteFetcher.TIMEOUT_MS.toLong(), TimeUnit.MILLISECONDS)
+            // readTimeout 只管单次读空闲；慢速/恶意反代能一点点吐字节无限拖住，必须有总时限
+            .callTimeout(CALL_TIMEOUT_MS, TimeUnit.MILLISECONDS)
             .build()
     }
 
-    override fun fetchText(url: String, maxBytes: Int): String {
+    override fun fetchBytes(url: String, maxBytes: Int): ByteArray {
         val request = Request.Builder()
             .url(url)
             .header("User-Agent", USER_AGENT)
@@ -47,11 +49,12 @@ class OkHttpJwRemoteFetcher(
                 }
                 out.toByteArray()
             }
-            return bytes.toString(Charsets.UTF_8)
+            return bytes
         }
     }
 
     private companion object {
         const val USER_AGENT = "NullClass"
+        const val CALL_TIMEOUT_MS = 60_000L
     }
 }

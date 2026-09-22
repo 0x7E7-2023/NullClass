@@ -102,7 +102,7 @@ class JwUserAdapterStoreTest {
     fun `仓库层拒绝覆盖内置 key`() {
         val store = JwUserAdapterStore(tempDir, appVersionCode = 11)
         val builtin = adapter("builtin-univ").copy(source = JwAdapterSource.BUILTIN)
-        val repository = JwAdapterRepository(builtin = listOf(builtin), store = store)
+        val repository = JwAdapterRepository(builtin = JwLibraryBundle(null, listOf(builtin)), store = store)
 
         assertTrue(repository.isBuiltinKey("builtin-univ"))
         val error = runCatching {
@@ -117,7 +117,7 @@ class JwUserAdapterStoreTest {
     fun `仓库层合并内置与用户适配器`() {
         val store = JwUserAdapterStore(tempDir, appVersionCode = 11)
         val builtin = adapter("builtin-univ").copy(source = JwAdapterSource.BUILTIN)
-        val repository = JwAdapterRepository(builtin = listOf(builtin), store = store)
+        val repository = JwAdapterRepository(builtin = JwLibraryBundle(null, listOf(builtin)), store = store)
         repository.install(JwPackage(listOf(adapter("user-univ"))), installedAt = 1L)
 
         assertEquals(setOf("builtin-univ", "user-univ"), repository.all().map { it.key }.toSet())

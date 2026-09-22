@@ -5,7 +5,11 @@ interface JwRemoteFetcher {
     /**
      * @param maxBytes 超过上限应抛 [JwRemoteException]，不要静默截断
      */
-    fun fetchText(url: String, maxBytes: Int = DEFAULT_MAX_BYTES): String
+    fun fetchText(url: String, maxBytes: Int = DEFAULT_MAX_BYTES): String =
+        fetchBytes(url, maxBytes).toString(Charsets.UTF_8)
+
+    /** 取原始字节（热更新下载整库 zip 用）。超限同样抛 [JwRemoteException]。 */
+    fun fetchBytes(url: String, maxBytes: Int = DEFAULT_MAX_BYTES): ByteArray
 
     companion object {
         const val DEFAULT_MAX_BYTES = 256 * 1024

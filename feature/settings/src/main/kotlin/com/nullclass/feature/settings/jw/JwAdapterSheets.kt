@@ -183,7 +183,7 @@ fun AdapterDetailsDialog(
             ) {
                 Text("key：${adapter.key}")
                 Text("版本：v${adapter.manifest.version}")
-                Text("来源：${if (adapter.source == JwAdapterSource.BUILTIN) "内置（随应用发布）" else "用户添加"}")
+                Text("来源：${if (adapter.source == JwAdapterSource.BUILTIN) "官方（随应用发布或官方更新）" else "用户添加"}")
                 adapter.manifest.author?.let { Text("作者：$it") }
                 adapter.manifest.homepage?.let { Text("主页：$it") }
                 Text("登录页：${adapter.manifest.loginUrl}")
