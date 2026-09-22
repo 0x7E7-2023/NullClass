@@ -6,6 +6,13 @@
 
 ## [Unreleased]
 
+### 变更
+
+- **日程提醒**：改为「提醒」开关 + 下拉选提前量；全天日程只保留开/关（当天 8:00 提醒）。
+- 今日页「上课中」卡片去掉描边。
+- **适配器库拆为独立仓库** [NullClass-adapters](https://github.com/0x7E7-2023/NullClass-adapters)，本仓库以 git submodule 挂在 `jw-adapters/`，
+  构建方式不变（clone 需加 `--recursive`）。「提交适配请求」入口改到适配器仓库。
+
 ## [0.9.95] - 2026-09-22
 
 ### 新增

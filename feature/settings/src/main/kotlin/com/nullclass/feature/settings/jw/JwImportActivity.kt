@@ -65,7 +65,7 @@ import javax.inject.Inject
 
 /** 「提交我的学校适配」issue 入口。 */
 private const val ADAPTER_REQUEST_URL =
-    "https://github.com/0x7E7-2023/NullClass/issues/new?template=jw-adapter-request.md"
+    "https://github.com/0x7E7-2023/NullClass-adapters/issues/new?template=jw-adapter-request.md"
 
 /**
  * 教务导入宿主：选学校 → WebView 手工登录 → 提取 → 回传课表文档 JSON。

@@ -17,15 +17,21 @@ java {
 }
 
 /**
- * 教务适配器库（仓库根 `jw-adapters/`）是**唯一事实来源**：
+ * 教务适配器库（仓库根 `jw-adapters/`，git submodule → NullClass-adapters）是**唯一事实来源**：
  * - 构建时同步进资源 → 成为 APK 里的「内置适配器」（见 JwBuiltinLibrary）
- * - 同一个目录也能直接托管成第三方库（含 index.json）
+ * - 同一个仓库也直接托管成第三方库（含 index.json）
  */
 val jwLibraryDir: File = rootProject.layout.projectDirectory.dir("jw-adapters").asFile
 val syncJwLibrary = tasks.register<Sync>("syncJwLibrary") {
     from(jwLibraryDir)
     into(layout.buildDirectory.dir("generated/jwLibrary/jw-adapters"))
-    exclude("**/.DS_Store", "**/.git/**")
+    exclude("**/.DS_Store", "**/.git", "**/.git/**", "**/.github/**", "LICENSE")
+    val indexFile = jwLibraryDir.resolve("index.json")
+    doFirst {
+        check(indexFile.isFile) {
+            "jw-adapters/ 为空：适配器库是 git submodule，请运行 git submodule update --init"
+        }
+    }
 }
 
 sourceSets {

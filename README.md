@@ -75,17 +75,17 @@ jw-adapters/<school-key>/
 
 三种用法：
 
-- **合并进主线**：往本仓库 `jw-adapters/` 加一个目录 + 在 `index.json` 加一条，提 PR。
-  维护者会逐个人工审计脚本；合并后随版本内置。
+- **合并进主线**：适配器在独立仓库 [NullClass-adapters](https://github.com/0x7E7-2023/NullClass-adapters)（本仓库以 submodule 挂在 `jw-adapters/`），
+  往那里加一个目录 + 在 `index.json` 加一条，提 PR。维护者会逐个人工审计脚本；合并后随版本内置。
 - **自己维护一个库**：fork 这个目录结构托管到你的仓库，别人在应用里粘你的 `index.json` 链接即可安装。
 - **自己导入**：把目录打成 zip，在应用里「导入适配器包」——这类适配器**不经过审计**，
   安装界面会明确提示它会读取你已登录的教务页面内容，并支持查看脚本全文。
 
 规范见 [`docs/jw-adapter-spec.md`](docs/jw-adapter-spec.md)（移植与测试见 [`docs/jw-adapter-porting.md`](docs/jw-adapter-porting.md)、
-[`docs/jw-adapter-testing.md`](docs/jw-adapter-testing.md)），已内置的学校见 [`jw-adapters/index.json`](jw-adapters/index.json)，
-现成例子如 [`jw-adapters/ustc`](jw-adapters/ustc) 与 [`jw-adapters/dlutci`](jw-adapters/dlutci)；没有适配器的学校用内置的 **通用适配器**
+[`docs/jw-adapter-testing.md`](docs/jw-adapter-testing.md)），已内置的学校见 [`index.json`](https://github.com/0x7E7-2023/NullClass-adapters/blob/main/index.json)，
+现成例子如 [`ustc`](https://github.com/0x7E7-2023/NullClass-adapters/tree/main/ustc) 与 [`dlutci`](https://github.com/0x7E7-2023/NullClass-adapters/tree/main/dlutci)；没有适配器的学校用内置的 **通用适配器**
 （自己填教务地址，应用读页面文字自己还原表格，课表是图片的走离线 OCR）。
-[提交适配请求](../../issues/new?template=jw-adapter-request.md)，附上课表页脱敏 HTML 或脚本输出。
+[提交适配请求](https://github.com/0x7E7-2023/NullClass-adapters/issues/new?template=jw-adapter-request.md)，附上课表页脱敏 HTML 或脚本输出。
 
 ## 模块结构 / Modules
 
@@ -106,9 +106,11 @@ jw-adapters/<school-key>/
 
 ## 构建 / Build
 
-需要 JDK 17+ 与 Android SDK（compileSdk 37）。
+需要 JDK 17+ 与 Android SDK（compileSdk 37）。适配器库是 git submodule，clone 时带上 `--recursive`
+（已 clone 的运行 `git submodule update --init`）。
 
 ```bash
+git clone --recursive https://github.com/0x7E7-2023/NullClass.git
 ./gradlew :app:assembleDebug
 ```
 

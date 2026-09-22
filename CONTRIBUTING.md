@@ -30,10 +30,13 @@ chore: 构建/工具链
 
 ## 贡献教务适配器
 
-适配器不需要写 Kotlin：往 `jw-adapters/` 加一个目录（`manifest.json` + `extract.js` + `parse.js` + fixtures），
-在 `index.json` 里加一条，然后提 PR。完整规范见 [`docs/jw-adapter-spec.md`](docs/jw-adapter-spec.md)。
+适配器在独立仓库 [NullClass-adapters](https://github.com/0x7E7-2023/NullClass-adapters)，本仓库以 git submodule 挂在 `jw-adapters/`
+（clone 时加 `--recursive`，已 clone 的运行 `git submodule update --init`）。
+适配器不需要写 Kotlin：往适配器仓库加一个目录（`manifest.json` + `extract.js` + `parse.js` + fixtures），
+在 `index.json` 里加一条，然后**向适配器仓库**提 PR。完整规范见 [`docs/jw-adapter-spec.md`](docs/jw-adapter-spec.md)。
 
-- CI 会用 Rhino **真实执行**你的 `parse.js` 并与 fixtures 比对，所以本地先跑 `./gradlew :importer:test`
+- CI 会用 Rhino **真实执行**你的 `parse.js` 并与 fixtures 比对，所以本地先在本仓库根目录跑 `./gradlew :importer:test`
+- 适配器合并后，维护者在本仓库更新 submodule 指针（`git submodule update --remote jw-adapters` 后提交），随下个版本内置
 - 合并前维护者会**逐个人工审计**脚本全文与请求目标（内置适配器的信任来源）
 - fixtures 必须脱敏（删掉姓名、学号、身份证号）
 
