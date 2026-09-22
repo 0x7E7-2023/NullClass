@@ -61,6 +61,7 @@ import com.nullclass.feature.edit.TimetableCreateScreen
 import com.nullclass.feature.edit.TimetableListScreen
 import com.nullclass.feature.exam.ExamEditScreen
 import com.nullclass.feature.exam.ExamScreen
+import com.nullclass.feature.schedule.EventScreen
 import com.nullclass.feature.schedule.ScheduleScreen
 import com.nullclass.feature.schedule.TodayScreen
 import com.nullclass.feature.settings.AboutScreen
@@ -92,6 +93,7 @@ object Routes {
     const val ABOUT = "about"
     const val TRANSFER = "transfer"
     const val EXAM_EDIT = "exam_edit?examId={examId}&courseId={courseId}"
+    const val EVENTS = "events"
 
     fun courseEdit(courseId: String? = null): String = "course_edit?courseId=${courseId ?: ""}"
 
@@ -357,6 +359,7 @@ fun AppNavHost() {
                     onAddExam = { courseId -> navController.navigate(Routes.examEdit(courseId = courseId)) },
                     onEditExam = { examId -> navController.navigate(Routes.examEdit(examId = examId)) },
                     onEditTerm = { termId -> navController.navigate(Routes.termEdit(termId)) },
+                    onOpenEvents = { navController.navigate(Routes.EVENTS) { launchSingleTop = true } },
                 )
             }
             screen(Routes.EXAMS, bottomBar = pageBottomBar, bottomBarHeight = bottomBarHeight, railMode = { useRail }) {
@@ -461,6 +464,9 @@ fun AppNavHost() {
             }
             screen(Routes.COURSE_CLEANUP) {
                 CourseCleanupScreen(onBack = ::back)
+            }
+            screen(Routes.EVENTS) {
+                EventScreen(onBack = ::back)
             }
             screen(Routes.ABOUT) {
                 AboutScreen(onBack = ::back)

@@ -101,3 +101,23 @@ val MIGRATION_5_6 = object : Migration(5, 6) {
         )
     }
 }
+
+/**
+ * v6 → v7：加入日程安排表（个人事件 + 提醒，纯本地、不同步）。
+ * 纯新增表，无存量数据迁移。
+ */
+val MIGRATION_6_7 = object : Migration(6, 7) {
+
+    override fun migrate(db: SupportSQLiteDatabase) {
+        db.execSQL(
+            "CREATE TABLE IF NOT EXISTS `calendar_events` (" +
+                "`id` TEXT NOT NULL, `title` TEXT NOT NULL, `dateEpochDay` INTEGER NOT NULL, " +
+                "`startMinuteOfDay` INTEGER, `note` TEXT, `remindLeadMinutes` INTEGER, " +
+                "`updatedAt` INTEGER NOT NULL, PRIMARY KEY(`id`))",
+        )
+        db.execSQL(
+            "CREATE INDEX IF NOT EXISTS `index_calendar_events_dateEpochDay` " +
+                "ON `calendar_events` (`dateEpochDay`)",
+        )
+    }
+}

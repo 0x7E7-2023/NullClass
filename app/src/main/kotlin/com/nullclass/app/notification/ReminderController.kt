@@ -2,6 +2,7 @@ package com.nullclass.app.notification
 
 import android.content.Context
 import com.nullclass.core.data.prefs.UserPreferencesRepository
+import com.nullclass.core.data.repository.CalendarEventRepository
 import com.nullclass.core.data.repository.CourseRepository
 import com.nullclass.core.data.repository.DayOverrideRepository
 import com.nullclass.core.data.repository.ExamRepository
@@ -19,7 +20,7 @@ import javax.inject.Inject
 import javax.inject.Singleton
 
 /**
- * 提醒控制器：Application 常驻，观察课表/考试/学期/偏好/跳过日期/串课变化 → 防抖 → 全量重排。
+ * 提醒控制器：Application 常驻，观察课表/考试/日程/学期/偏好/跳过日期/串课变化 → 防抖 → 全量重排。
  * 另观察「勿扰下响铃」偏好，变化时同步通知渠道的 bypassDnd。
  */
 @Singleton
@@ -31,6 +32,7 @@ class ReminderController @Inject constructor(
     private val examRepository: ExamRepository,
     private val holidayRepository: HolidayRepository,
     private val dayOverrideRepository: DayOverrideRepository,
+    private val eventRepository: CalendarEventRepository,
     private val userPrefs: UserPreferencesRepository,
 ) {
 
@@ -42,7 +44,9 @@ class ReminderController @Inject constructor(
                 userPrefs.examReminderLeadMinutes,
                 // 精确提醒开关切换要重排（两条路径互切时先清对方再排自己）
                 userPrefs.exactReminder,
-            ) { term, _, _, _ -> term }
+                // 日程不挂学期，放在外层：没有学期也要排
+                eventRepository.events,
+            ) { term, _, _, _, _ -> term }
                 .flatMapLatest { term ->
                     if (term == null) {
                         flowOf(Unit)

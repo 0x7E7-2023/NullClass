@@ -8,6 +8,7 @@ import android.content.Context
 object NotificationChannels {
     const val CLASS_REMINDER = "class_reminder"
     const val EXAM_REMINDER = "exam_reminder"
+    const val EVENT_REMINDER = "event_reminder"
 
     /** 渠道定义集中一处：ensureCreated 与 applyBypassDnd 重建渠道时保持文案一致。 */
     private data class ChannelSpec(
@@ -19,6 +20,7 @@ object NotificationChannels {
     private val channels = listOf(
         ChannelSpec(CLASS_REMINDER, "课前提醒", "课程开始前的提醒通知"),
         ChannelSpec(EXAM_REMINDER, "考试提醒", "考试开始前的提醒通知"),
+        ChannelSpec(EVENT_REMINDER, "日程提醒", "日程安排的提醒通知"),
     )
 
     fun ensureCreated(context: Context) {

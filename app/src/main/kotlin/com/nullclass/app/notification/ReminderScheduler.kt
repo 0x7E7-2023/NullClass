@@ -43,9 +43,23 @@ class ReminderScheduler @Inject constructor(
     private val dayOverrideRepository: DayOverrideRepository,
     private val exactAlarmScheduler: ExactAlarmScheduler,
     private val examReminderScheduler: ExamReminderScheduler,
+    private val eventReminderScheduler: EventReminderScheduler,
 ) {
 
+    /**
+     * 日程提醒放在 finally：课程/考试那段抛错（WorkManager/Room 瞬时故障）时日程照排，
+     * 原异常照样抛给调用方（每日维护据此 retry）。
+     */
     suspend fun reschedule() {
+        try {
+            rescheduleClassesAndExams()
+        } finally {
+            // 日程提醒每条自带提前量、不挂学期，同样搭这套触发点
+            eventReminderScheduler.reschedule()
+        }
+    }
+
+    private suspend fun rescheduleClassesAndExams() {
         val wm = WorkManager.getInstance(context)
         val leadMinutes = userPrefs.reminderLeadMinutes.first()
         val term = termRepository.getCurrent()

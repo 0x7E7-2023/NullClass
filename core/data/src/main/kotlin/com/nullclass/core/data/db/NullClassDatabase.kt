@@ -2,6 +2,7 @@ package com.nullclass.core.data.db
 
 import androidx.room.Database
 import androidx.room.RoomDatabase
+import com.nullclass.core.data.db.dao.CalendarEventDao
 import com.nullclass.core.data.db.dao.CourseDao
 import com.nullclass.core.data.db.dao.DayOverrideDao
 import com.nullclass.core.data.db.dao.ExamDao
@@ -10,6 +11,7 @@ import com.nullclass.core.data.db.dao.SkipDateDao
 import com.nullclass.core.data.db.dao.SyncStateDao
 import com.nullclass.core.data.db.dao.TermDao
 import com.nullclass.core.data.db.dao.TimetableDao
+import com.nullclass.core.data.db.entity.CalendarEventEntity
 import com.nullclass.core.data.db.entity.CourseEntity
 import com.nullclass.core.data.db.entity.DayOverrideEntity
 import com.nullclass.core.data.db.entity.ExamEntity
@@ -28,6 +30,7 @@ import com.nullclass.core.data.db.entity.TimetableEntity
  *  v4 — exams 表；考试通过 courseId 归属具体课程
  *  v5 — skip_dates 表（跳过日期：手动 + 节假日同步，纯本地）
  *  v6 — day_overrides 表（串课：某天改上另一天的课，纯本地）
+ *  v7 — calendar_events 表（日程安排：个人事件 + 提醒，纯本地）
  * v1→v2 无存量用户走破坏性迁移；v2 起任何改表必须提供 Migration + 测试（v3 的迁移见 [MIGRATION_2_3]）。
  */
 @Database(
@@ -41,8 +44,9 @@ import com.nullclass.core.data.db.entity.TimetableEntity
         SyncStateEntity::class,
         SkipDateEntity::class,
         DayOverrideEntity::class,
+        CalendarEventEntity::class,
     ],
-    version = 6,
+    version = 7,
     exportSchema = true,
 )
 abstract class NullClassDatabase : RoomDatabase() {
@@ -54,6 +58,7 @@ abstract class NullClassDatabase : RoomDatabase() {
     abstract fun syncStateDao(): SyncStateDao
     abstract fun skipDateDao(): SkipDateDao
     abstract fun dayOverrideDao(): DayOverrideDao
+    abstract fun calendarEventDao(): CalendarEventDao
 
     companion object {
         const val NAME = "nullclass.db"

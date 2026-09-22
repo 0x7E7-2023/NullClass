@@ -25,6 +25,7 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.DateRange
+import androidx.compose.material.icons.filled.Notifications
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
@@ -69,6 +70,7 @@ import com.nullclass.core.ui.theme.courseColor
  * @param onCreateCourse FAB 进新建课程
  * @param onEditCourse 编辑已有课程
  * @param onEditTerm 学期设置（无学期时引导创建）
+ * @param onOpenEvents 右上角进日程安排页
  */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -78,6 +80,7 @@ fun ScheduleScreen(
     onAddExam: (courseId: String) -> Unit,
     onEditExam: (examId: String) -> Unit,
     onEditTerm: (termId: String?) -> Unit,
+    onOpenEvents: () -> Unit,
     viewModel: ScheduleViewModel = hiltViewModel(),
 ) {
     val state by viewModel.uiState.collectAsState()
@@ -130,6 +133,10 @@ fun ScheduleScreen(
                         IconButton(onClick = { showQuickSettings = true }) {
                             Icon(Icons.Default.Settings, contentDescription = "显示设置")
                         }
+                    }
+                    // 日程不依赖学期，无学期时也给入口
+                    IconButton(onClick = onOpenEvents) {
+                        Icon(Icons.Default.Notifications, contentDescription = "日程安排")
                     }
                 },
                 colors = TopAppBarDefaults.topAppBarColors(

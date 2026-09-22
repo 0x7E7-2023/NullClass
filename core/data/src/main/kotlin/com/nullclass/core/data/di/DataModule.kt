@@ -7,6 +7,8 @@ import com.nullclass.core.data.db.MIGRATION_2_3
 import com.nullclass.core.data.db.MIGRATION_3_4
 import com.nullclass.core.data.db.MIGRATION_4_5
 import com.nullclass.core.data.db.MIGRATION_5_6
+import com.nullclass.core.data.db.MIGRATION_6_7
+import com.nullclass.core.data.db.dao.CalendarEventDao
 import com.nullclass.core.data.db.dao.CourseDao
 import com.nullclass.core.data.db.dao.DayOverrideDao
 import com.nullclass.core.data.db.dao.ExamDao
@@ -49,6 +51,7 @@ internal object DataModule {
             .addMigrations(MIGRATION_3_4)
             .addMigrations(MIGRATION_4_5)
             .addMigrations(MIGRATION_5_6)
+            .addMigrations(MIGRATION_6_7)
             .build()
 
     @Provides
@@ -74,6 +77,9 @@ internal object DataModule {
 
     @Provides
     fun provideDayOverrideDao(db: NullClassDatabase): DayOverrideDao = db.dayOverrideDao()
+
+    @Provides
+    fun provideCalendarEventDao(db: NullClassDatabase): CalendarEventDao = db.calendarEventDao()
 }
 
 @Module
