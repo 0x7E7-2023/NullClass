@@ -6,7 +6,6 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.WindowInsets
@@ -33,7 +32,8 @@ import androidx.compose.material3.DatePicker
 import androidx.compose.material3.DatePickerDialog
 import androidx.compose.material3.DisplayMode
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.FilterChip
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -80,8 +80,8 @@ import java.util.UUID
 
 private val WeekdayLabels = listOf("一", "二", "三", "四", "五", "六", "日")
 
-/** 提醒档位：null = 不提醒。 */
-private val LeadOptions = listOf(null, 0, 5, 15, 30, 60, 24 * 60)
+/** 定时日程的提醒提前量（分钟）；全天日程只有开/关，开 = 当天 8:00。 */
+private val LeadOptions = listOf(0, 5, 15, 30, 60, 24 * 60)
 
 /**
  * 日程安排（课表页右上角进入）：月历 + 选中日的日程 + 近期日程；
@@ -387,7 +387,10 @@ private fun EventEditorDialog(
     var allDay by rememberSaveable { mutableStateOf(initial.startMinuteOfDay == null) }
     var startMinute by rememberSaveable { mutableStateOf(initial.startMinuteOfDay ?: 9 * 60) }
     var note by rememberSaveable { mutableStateOf(initial.note.orEmpty()) }
-    var lead by rememberSaveable { mutableStateOf(initial.remindLeadMinutes) }
+    var remind by rememberSaveable { mutableStateOf(initial.remindLeadMinutes != null) }
+    // 全天存 0，切回定时后默认给 15 分钟
+    var lead by rememberSaveable { mutableStateOf(initial.remindLeadMinutes?.takeIf { it > 0 || initial.startMinuteOfDay != null } ?: 15) }
+    var showLeadMenu by remember { mutableStateOf(false) }
     var showDatePicker by remember { mutableStateOf(false) }
     var showTimePicker by remember { mutableStateOf(false) }
 
@@ -418,14 +421,23 @@ private fun EventEditorDialog(
                         Text("开始时间 ${ScheduleFormat.minuteLabel(startMinute)}")
                     }
                 }
-                Text("提醒", style = MaterialTheme.typography.labelLarge)
-                FlowRow(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                    LeadOptions.forEach { option ->
-                        FilterChip(
-                            selected = lead == option,
-                            onClick = { lead = option },
-                            label = { Text(leadLabel(option, allDay)) },
-                        )
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    Text(if (allDay && remind) "提醒（当天 8:00）" else "提醒", modifier = Modifier.weight(1f))
+                    Switch(checked = remind, onCheckedChange = { remind = it })
+                }
+                if (remind && !allDay) {
+                    Box {
+                        OutlinedButton(onClick = { showLeadMenu = true }, modifier = Modifier.fillMaxWidth()) {
+                            Text(leadLabel(lead, allDay = false))
+                        }
+                        DropdownMenu(expanded = showLeadMenu, onDismissRequest = { showLeadMenu = false }) {
+                            LeadOptions.forEach { option ->
+                                DropdownMenuItem(
+                                    text = { Text(leadLabel(option, allDay = false)) },
+                                    onClick = { lead = option; showLeadMenu = false },
+                                )
+                            }
+                        }
                     }
                 }
                 OutlinedTextField(
@@ -446,7 +458,11 @@ private fun EventEditorDialog(
                             dateEpochDay = day,
                             startMinuteOfDay = if (allDay) null else startMinute,
                             note = note.trim().takeIf { it.isNotEmpty() },
-                            remindLeadMinutes = lead,
+                            remindLeadMinutes = when {
+                                !remind -> null
+                                allDay -> 0
+                                else -> lead
+                            },
                         ),
                     )
                 },
