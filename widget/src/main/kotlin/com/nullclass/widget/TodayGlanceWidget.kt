@@ -5,6 +5,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.produceState
+import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
 import androidx.datastore.preferences.core.Preferences
 import androidx.glance.GlanceId
@@ -53,7 +54,13 @@ import kotlin.math.roundToInt
 
 /** 今日课程：自适应容量的纵向列表，按钮分页，不再截断后续课程。 */
 class TodayGlanceWidget : GlanceAppWidget() {
-    override val sizeMode = SizeMode.Exact
+    // Exact 只给横竖两份按上报尺寸算的布局，上报有误差时桌面会挑到比实际大的那份（分页按钮位置乱跳）。
+    // Responsive 下桌面总挑「放得下的最大一档」；最小档 = 最小尺寸，保证总有一档放得下。
+    // 宽度两档对应 compact 判定；RemoteViews 尺寸表上限 16。
+    // ponytail: 档间高度差最多浪费一行空间，嫌空就在 HEIGHTS 里加密。
+    override val sizeMode = SizeMode.Responsive(
+        listOf(180, 280).flatMap { w -> HEIGHTS.map { h -> DpSize(w.dp, h.dp) } }.toSet(),
+    )
     override val stateDefinition = PreferencesGlanceStateDefinition
 
     override suspend fun provideGlance(context: Context, id: GlanceId) {
@@ -85,6 +92,11 @@ class TodayGlanceWidget : GlanceAppWidget() {
             )
         }
     }
+
+    private companion object {
+        /** 110 = minResizeHeight；180 = 分页按钮从标题栏移到底栏的分界。 */
+        val HEIGHTS = listOf(110, 140, 180, 220, 270, 330, 410)
+    }
 }
 
 @Composable
@@ -101,7 +113,7 @@ internal fun TodayWidgetContent(
     )
     val upcoming = buildWidgetAgenda(snapshot, nowMinuteOfDay, Int.MAX_VALUE).rows
     // 日期或课程集合变了就回到第一页；分钟倒计时不会把用户正在看的页翻走。
-    // 不含每页行数：Exact 模式下各尺寸布局共用页码，桌面换用哪份布局都不能让点击失效。
+    // 不含每页行数：各尺寸档布局共用页码，桌面换用哪一档都不能让点击失效。
     val pageKey = buildString {
         append(LocalDate.now()).append('|').append(snapshot.termName)
         upcoming.forEach {
