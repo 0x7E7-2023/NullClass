@@ -2,7 +2,6 @@ package com.nullclass.feature.settings.jw
 
 import android.content.Context
 import android.content.Intent
-import android.net.Uri
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.BackHandler
@@ -12,13 +11,9 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.ColumnScope
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
@@ -26,13 +21,10 @@ import androidx.compose.material.icons.filled.Clear
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -50,22 +42,16 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import com.nullclass.core.data.prefs.UserPreferencesRepository
-import com.nullclass.core.ui.layout.LocalWindowSize
 import com.nullclass.core.ui.theme.NullClassTheme
 import com.nullclass.importer.jw.JwAdapter
 import com.nullclass.importer.jw.JwAdapterSource
 import com.nullclass.importer.jw.JwManifest
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
-
-/** 「提交我的学校适配」issue 入口。 */
-private const val ADAPTER_REQUEST_URL =
-    "https://github.com/0x7E7-2023/NullClass-adapters/issues/new?template=jw-adapter-request.md"
 
 /**
  * 教务导入宿主：选学校 → WebView 手工登录 → 提取 → 回传课表文档 JSON。
@@ -184,7 +170,8 @@ private fun JwImportScreen(
     Scaffold(
         modifier = Modifier.nestedScroll(appBarScrollBehavior.nestedScrollConnection),
         topBar = {
-            TopAppBar(
+            // 选学校时由 SchoolPicker 自带的搜索栏兼任顶栏
+            if (selectedKey != null) TopAppBar(
                 title = { Text(selected?.displayName ?: "教务导入") },
                 navigationIcon = {
                     IconButton(onClick = { if (selectedKey == null) onCancel() else selectedKey = null }) {
@@ -209,6 +196,7 @@ private fun JwImportScreen(
             } else {
                 SchoolPicker(
                     state = state,
+                    onBack = onCancel,
                     onPick = { pick(it, askAddress = true) },
                     onRefresh = { pick(it, askAddress = false) },
                     onImportZip = { zipLauncher.launch(arrayOf("application/zip", "application/octet-stream", "*/*")) },
@@ -294,184 +282,6 @@ private fun JwImportScreen(
     }
 }
 
-/** 学校选择：内置 / 用户添加 + 导入入口 + 一键刷新。 */
-@Composable
-private fun SchoolPicker(
-    state: JwUiState,
-    onPick: (JwAdapter) -> Unit,
-    onRefresh: (JwAdapter) -> Unit,
-    onImportZip: () -> Unit,
-    onLoadLibrary: (String) -> Unit,
-    onShowDetails: (JwAdapter) -> Unit,
-    onDelete: (JwAdapter) -> Unit,
-    modifier: Modifier = Modifier,
-) {
-    val context = LocalContext.current
-    var linkDialog by remember { mutableStateOf(false) }
-    var query by rememberSaveable { mutableStateOf("") }
-    val lastAdapter = state.lastAdapterKey?.let { key ->
-        state.builtin.firstOrNull { it.key == key } ?: state.user.firstOrNull { it.key == key }
-    }
-
-    // 与匹配函数同一套判据：只有分隔符的那种查询不算搜索态，否则会收起说明文案却一条不筛
-    val searching = hasQueryTerms(query)
-    val fallbackAdapters = state.builtin.filter { it.isFallback }
-    val schools = state.builtin.filter { !it.isFallback }.filter { it.matchesQuery(query) }
-    val matchedFallbacks = fallbackAdapters.filter { it.matchesQuery(query) }
-    val userAdapters = state.user.filter { it.matchesQuery(query) }
-    val brokenAdapters = state.broken.filter { it.matchesQuery(query) }
-    val hits = schools.size + matchedFallbacks.size + userAdapters.size + brokenAdapters.size
-    val noHits = searching && hits == 0
-    // 搜不到任何东西时，兜底适配器照样端上来 —— 「搜不到我的学校」正是它存在的理由。
-    // 平时它只在命中查询时出现（搜「通用」/「univ」能找到它，其余时候不占地方）。
-    val fallbackRows = if (noHits) fallbackAdapters else matchedFallbacks
-
-    // 手机横屏可用高度约 400dp，而这一页的固定 chrome（标题 + 开场白 + 搜索框 +
-    // 一键刷新 + 分隔线 + 底部三个入口 + 上下 padding + 间距）累计也在 400dp 上下，
-    // weight(1f) 的学校列表会被挤到接近 0——点进搜索框弹出键盘后一条学校都看不见。
-    // 矮屏下：标题让位给 TopAppBar（那里已经写着「教务导入」）、说明文字一律收起、
-    // 底部入口挪进列表末尾跟着滚，把高度尽数让给列表本身。
-    val compact = LocalWindowSize.current.isCompactHeight
-
-    val bottomActions: @Composable ColumnScope.() -> Unit = {
-        HorizontalDivider()
-        Row(horizontalArrangement = Arrangement.spacedBy(12.dp), modifier = Modifier.fillMaxWidth()) {
-            OutlinedButton(onClick = onImportZip, modifier = Modifier.weight(1f)) { Text("导入适配器包") }
-            OutlinedButton(onClick = { linkDialog = true }, modifier = Modifier.weight(1f)) { Text("从链接添加") }
-        }
-        TextButton(onClick = {
-            context.startActivity(
-                Intent(Intent.ACTION_VIEW, Uri.parse(ADAPTER_REQUEST_URL)),
-            )
-        }) { Text("没有我的学校？提交适配请求") }
-    }
-
-    Column(
-        modifier = modifier
-            .fillMaxSize()
-            .padding(if (compact) 12.dp else 16.dp),
-        verticalArrangement = Arrangement.spacedBy(if (compact) 8.dp else 12.dp),
-    ) {
-        if (!compact) {
-            Text("从教务系统导入课表", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold)
-        }
-        // 搜索时把开场白收起来，结果多留几行；矮屏一律收起
-        if (!searching && !compact) {
-            Text(
-                "登录由你在下方网页里手工完成（验证码/扫码/短信都自己操作），空课不会碰你的教务账号密码；" +
-                    "登录后进入课表页面，点「提取课表」即可。",
-                style = MaterialTheme.typography.bodySmall,
-                color = MaterialTheme.colorScheme.onSurfaceVariant,
-            )
-        }
-
-        AdapterSearchField(query = query, onQueryChange = { query = it })
-
-        if (lastAdapter != null) {
-            Button(onClick = { onRefresh(lastAdapter) }, modifier = Modifier.fillMaxWidth()) {
-                Text("一键刷新：${lastAdapter.displayName}")
-            }
-            if (!searching && !compact) {
-                Text(
-                    "复用上次的登录状态重新提取（学校改了课表时用）。",
-                    style = MaterialTheme.typography.bodySmall,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant,
-                )
-            }
-        }
-
-        LazyColumn(
-            modifier = Modifier.weight(1f),
-            verticalArrangement = Arrangement.spacedBy(8.dp),
-        ) {
-            if (noHits) {
-                item {
-                    Text(
-                        "没找到匹配「${query.trimQuery()}」的适配器。",
-                        style = MaterialTheme.typography.bodySmall,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant,
-                    )
-                }
-            }
-            if (schools.isNotEmpty()) {
-                item { SectionLabel("内置适配器") }
-                items(schools, key = { "b-${it.key}" }) { adapter ->
-                    AdapterRow(adapter, badge = null, onPick = onPick, onDetails = onShowDetails)
-                }
-            }
-            if (!searching) {
-                item { SectionLabel("用户添加") }
-                if (state.user.isEmpty() && state.broken.isEmpty()) {
-                    item {
-                        Text(
-                            "还没有添加过适配器。可以用下面的按钮导入别人做好的适配器包，或直接从适配器库添加。",
-                            style = MaterialTheme.typography.bodySmall,
-                            color = MaterialTheme.colorScheme.onSurfaceVariant,
-                        )
-                    }
-                }
-            } else if (userAdapters.isNotEmpty() || brokenAdapters.isNotEmpty()) {
-                item { SectionLabel("用户添加") }
-            }
-            items(userAdapters, key = { "u-${it.key}" }) { adapter ->
-                AdapterRow(adapter, badge = "用户添加", onPick = onPick, onDetails = onShowDetails)
-            }
-            items(brokenAdapters, key = { "x-${it.key}" }) { broken ->
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    verticalAlignment = Alignment.CenterVertically,
-                ) {
-                    Column(Modifier.weight(1f)) {
-                        Text("⚠ ${broken.key}", style = MaterialTheme.typography.bodyMedium)
-                        Text(
-                            broken.reason,
-                            style = MaterialTheme.typography.bodySmall,
-                            color = MaterialTheme.colorScheme.error,
-                        )
-                    }
-                    TextButton(onClick = { onDelete(JwAdapterPlaceholder.of(broken.key)) }) { Text("删除") }
-                }
-            }
-            // 兜底适配器平时置底：找得到学校的人不该被它分散注意力。
-            // 搜不到东西时它就是答案，改由上面那行「没找到匹配…」起头，不再重复小标题。
-            if (fallbackRows.isNotEmpty()) {
-                if (!noHits) item { SectionLabel("找不到你的学校？") }
-                item {
-                    Text(
-                        "通用适配器不认学校：填上你的教务地址，登录后由空课读页面文字自己还原出表格" +
-                            "（课表是图片/画布画的则走离线 OCR）。结果会先给你核对，确认后才导入。",
-                        style = MaterialTheme.typography.bodySmall,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant,
-                    )
-                }
-                items(fallbackRows, key = { "f-${it.key}" }) { adapter ->
-                    AdapterRow(adapter, badge = "通用", onPick = onPick, onDetails = onShowDetails)
-                }
-            }
-            // 矮屏把底部入口收进列表末尾跟着滚，固定区腾出来给学校列表
-            if (compact) {
-                item {
-                    Column(verticalArrangement = Arrangement.spacedBy(8.dp)) { bottomActions() }
-                }
-            }
-        }
-
-        if (!compact) {
-            bottomActions()
-        }
-    }
-
-    if (linkDialog) {
-        LinkDialog(
-            onSubmit = {
-                linkDialog = false
-                onLoadLibrary(it)
-            },
-            onDismiss = { linkDialog = false },
-        )
-    }
-}
-
 /**
  * 适配器搜索框。学校名、key、教务域名、作者都参与匹配 ——
  * `dlutci`、`ustc.edu.cn`、`大连 工程` 都找得到（见 [matchesQuery]）。
@@ -497,43 +307,6 @@ internal fun AdapterSearchField(query: String, onQueryChange: (String) -> Unit) 
         },
         keyboardOptions = KeyboardOptions(imeAction = ImeAction.Search),
     )
-}
-
-@Composable
-private fun SectionLabel(text: String) {
-    Text(
-        text,
-        style = MaterialTheme.typography.labelLarge,
-        color = MaterialTheme.colorScheme.primary,
-        modifier = Modifier.padding(top = 8.dp),
-    )
-}
-
-@Composable
-private fun AdapterRow(
-    adapter: JwAdapter,
-    badge: String?,
-    onPick: (JwAdapter) -> Unit,
-    onDetails: (JwAdapter) -> Unit,
-) {
-    Row(modifier = Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
-        OutlinedButton(onClick = { onPick(adapter) }, modifier = Modifier.weight(1f)) {
-            Column(Modifier.fillMaxWidth()) {
-                Text(adapter.displayName)
-                val subtitle = buildString {
-                    if (badge != null) append(badge).append(" · ")
-                    append("v").append(adapter.manifest.version)
-                    if (adapter.manifest.loginUrl.startsWith("http://")) append(" · 不安全连接")
-                }
-                Text(
-                    subtitle,
-                    style = MaterialTheme.typography.bodySmall,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant,
-                )
-            }
-        }
-        TextButton(onClick = { onDetails(adapter) }) { Text("详情") }
-    }
 }
 
 /**
@@ -601,7 +374,7 @@ private fun normalizeStartUrl(raw: String): String? {
 }
 
 @Composable
-private fun LinkDialog(onSubmit: (String) -> Unit, onDismiss: () -> Unit) {
+internal fun LinkDialog(onSubmit: (String) -> Unit, onDismiss: () -> Unit) {
     // rememberSaveable：旋转会重建 Activity，粘进来的链接不该被清空
     var url by rememberSaveable { mutableStateOf("") }
     AlertDialog(
@@ -629,7 +402,7 @@ private fun LinkDialog(onSubmit: (String) -> Unit, onDismiss: () -> Unit) {
 }
 
 /** 已损坏的用户目录没有 JwAdapter 实体，这里只借它携带 key 用于删除。 */
-private object JwAdapterPlaceholder {
+internal object JwAdapterPlaceholder {
     fun of(key: String): JwAdapter = JwAdapter(
         manifest = JwManifest(key = key, name = key, version = "0.0.0", loginUrl = "https://example.invalid/"),
         source = JwAdapterSource.USER,
