@@ -1,6 +1,7 @@
 package com.nullclass.widget
 
 import android.content.Context
+import android.util.Log
 import androidx.datastore.preferences.core.intPreferencesKey
 import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.glance.GlanceId
@@ -25,7 +26,6 @@ class WidgetPageAction : ActionCallback {
         val count = parameters[PageCount] ?: return
         val enabled = parameters[PageActionEnabled] ?: return
         if (!enabled) return
-        var changed = false
         updateAppWidgetState(context, glanceId) { prefs ->
             val next = resolveWidgetPageRequest(
                 storedPage = prefs[AgendaPage] ?: 0,
@@ -35,11 +35,15 @@ class WidgetPageAction : ActionCallback {
                 pageCount = count,
                 requestKey = key,
                 enabled = enabled,
-            ) ?: return@updateAppWidgetState
+            )
+            if (next == null) {
+                Log.i("WidgetPageAction", "stale tap ignored: source=$source target=$page stored=${prefs[AgendaPage]} keyMatch=${prefs[AgendaPageKey] == key}")
+                return@updateAppWidgetState
+            }
             prefs[AgendaPage] = next
             prefs[AgendaPageKey] = key
-            changed = true
         }
-        if (changed) TodayGlanceWidget().update(context, glanceId)
+        // 被判为过期的点击也重画：画面若与已存页码脱节，不重画就会一直按不动。
+        TodayGlanceWidget().update(context, glanceId)
     }
 }

@@ -36,6 +36,15 @@ class WidgetPageRequestTest {
     }
 
     @Test
+    fun `另一尺寸布局存下的更大页码按本布局末页续翻`() {
+        // 横屏布局翻到第 4 页（共 4 页），竖屏布局只有 2 页、显示在末页
+        assertEquals(0, resolveWidgetPageRequest(3, "today", 1, 0, 2, "today", true))
+        assertNull(resolveWidgetPageRequest(3, "today", 0, 1, 2, "today", true))
+        // 竖屏布局翻到第 2 页后，横屏布局从第 2 页继续
+        assertEquals(2, resolveWidgetPageRequest(1, "today", 1, 2, 4, "today", true))
+    }
+
+    @Test
     fun `日期或容量变化后从显示的第一页开始翻页`() {
         assertEquals(1, resolveWidgetPageRequest(5, "yesterday", 0, 1, 3, "today", true))
         assertNull(resolveWidgetPageRequest(5, "yesterday", 1, 2, 3, "today", true))

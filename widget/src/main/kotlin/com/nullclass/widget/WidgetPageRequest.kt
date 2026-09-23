@@ -13,6 +13,7 @@ internal fun resolveWidgetPageRequest(
     if (!enabled || pageCount < 1) return null
     if (sourcePage !in 0 until pageCount || targetPage !in 0 until pageCount) return null
     if (kotlin.math.abs(targetPage.toLong() - sourcePage) != 1L) return null
-    val currentPage = if (storedKey == requestKey) storedPage else 0
+    // 横竖屏各一份布局、每页行数不同，却共用同一份页码；与 paginateWidgetAgenda 一样按本布局页数收敛。
+    val currentPage = (if (storedKey == requestKey) storedPage else 0).coerceIn(0, pageCount - 1)
     return targetPage.takeIf { currentPage == sourcePage }
 }

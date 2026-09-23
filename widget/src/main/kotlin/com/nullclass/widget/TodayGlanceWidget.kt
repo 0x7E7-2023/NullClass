@@ -100,9 +100,10 @@ internal fun TodayWidgetContent(
         LocalContext.current.resources.configuration.fontScale,
     )
     val upcoming = buildWidgetAgenda(snapshot, nowMinuteOfDay, Int.MAX_VALUE).rows
-    // 日期、课程集合或容量变了就回到第一页；分钟倒计时不会把用户正在看的页翻走。
+    // 日期或课程集合变了就回到第一页；分钟倒计时不会把用户正在看的页翻走。
+    // 不含每页行数：Exact 模式下各尺寸布局共用页码，桌面换用哪份布局都不能让点击失效。
     val pageKey = buildString {
-        append(LocalDate.now()).append('|').append(snapshot.termName).append('|').append(layout.rowsPerPage)
+        append(LocalDate.now()).append('|').append(snapshot.termName)
         upcoming.forEach {
             append('|').append(it.placed.course.id).append(':').append(it.placed.block.id)
             append(':').append(it.startMinuteOfDay).append('-').append(it.endMinuteOfDay)
