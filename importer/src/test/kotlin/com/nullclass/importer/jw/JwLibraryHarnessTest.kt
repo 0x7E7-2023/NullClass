@@ -42,6 +42,8 @@ class JwLibraryHarnessTest {
             val pkg = JwPackageReader.readDirectory(dir, JwAdapterSource.BUILTIN, appVersionCode = Int.MAX_VALUE)
             val adapter = pkg.adapters.single()
             assertEquals(dir.name, adapter.key, "目录名应与 manifest 的 key 一致")
+            // 学校列表按它分组；多音字地名（长春、厦门）自动推断会分错，官方库一律手填
+            assertTrue(adapter.manifest.initial != null, "适配器 ${adapter.key} 缺少首字母 initial")
             adapter.key
         }
         assertEquals(keys.size, keys.toSet().size, "适配器 key 重复：$keys")

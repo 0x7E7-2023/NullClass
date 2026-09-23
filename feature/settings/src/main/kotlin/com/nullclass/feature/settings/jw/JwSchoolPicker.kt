@@ -2,6 +2,7 @@ package com.nullclass.feature.settings.jw
 
 import android.content.Intent
 import android.icu.text.AlphabeticIndex
+import android.icu.text.Collator
 import android.net.Uri
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
@@ -514,22 +515,29 @@ private fun LetterIndexBar(letters: List<String>, onSelect: (Int) -> Unit, modif
 }
 
 /**
- * 按拼音首字母分组，组内按拼音排序。交给系统 ICU 的中文索引，不另带拼音库。
+ * 按首字母分组，组内按拼音排序。
  *
- * ICU 对多音字只认最常用的读音（「重」= zhòng），地名常常读错，所以先过一遍 [PLACE_NAME_READINGS]。
+ * 首字母优先用清单里手填的 `initial`（官方库全都填了）；没填的（第三方适配器）才交给系统 ICU 的
+ * 中文索引推断，不另带拼音库。
  */
 private fun groupByInitial(adapters: List<JwAdapter>): List<Pair<String, List<JwAdapter>>> {
-    val index = AlphabeticIndex<JwAdapter>(Locale.SIMPLIFIED_CHINESE)
-    adapters.forEach { index.addRecord(sortName(it.displayName), it) }
-    return index.filter { it.size() > 0 }.map { bucket -> bucket.label to bucket.map { it.data } }
+    val index = AlphabeticIndex<JwAdapter>(Locale.SIMPLIFIED_CHINESE).buildImmutableIndex()
+    val collator = Collator.getInstance(Locale.SIMPLIFIED_CHINESE)
+    return adapters
+        .groupBy { it.manifest.initial ?: index.getBucket(index.getBucketIndex(sortName(it.displayName))).label }
+        // A-Z 在前，ICU 的溢出桶（非字母开头的名字）垫底
+        .toSortedMap(compareBy<String>({ it.length != 1 || it[0] !in 'A'..'Z' }, { it }))
+        .map { (label, list) -> label to list.sortedWith(compareBy(collator) { sortName(it.displayName) }) }
 }
 
 /**
- * 地名里的多音字 → 同音且只有一个读音的字，只用来排序/分组，不影响显示。
+ * 地名里的多音字 → 同音且只有一个读音的字，只用来排序和推断首字母，不影响显示。
+ * ICU 对多音字只认最常用的读音（「长」= zhǎng），没填 `initial` 的适配器靠这张表兜底。
  * 学校名的多音字几乎都出在地名上；发现哪个学校分错了组，往这里加一行即可。
+ * 已用 ICU 58（Android 8）与 77 对照拾光课程表适配库的 221 所学校核过：加上这张表后全部分对。
+ * 「重庆」ICU 自己就认得 chóng，不用收。
  */
 private val PLACE_NAME_READINGS = mapOf(
-    "重庆" to "崇庆", // chóng；新版 ICU 自己认得，Android 8 自带的旧 ICU 未必
     "长春" to "常春", // cháng，否则按 zhǎng 落进 Z
     "长沙" to "常沙",
     "长江" to "常江",

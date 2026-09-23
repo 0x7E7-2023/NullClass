@@ -14,6 +14,11 @@ data class JwManifest(
     val specVersion: Int = SPEC_VERSION,
     val key: String,
     val name: String,
+    /**
+     * 学校名拼音首字母（`A`-`Z`），学校列表按它分组。中文名的多音字（长春、厦门）自动转拼音靠不住，
+     * 所以官方库的适配器必须手填；缺省时应用按学校名自动推断。
+     */
+    val initial: String? = null,
     val version: String,
     val author: String? = null,
     val homepage: String? = null,
@@ -63,6 +68,7 @@ object JwManifestCodec {
 
     private val KEY_REGEX = Regex("^[a-z0-9][a-z0-9-]{1,39}$")
     private val VERSION_REGEX = Regex("^\\d+\\.\\d+\\.\\d+$")
+    private val INITIAL_REGEX = Regex("^[A-Z]$")
 
     fun decode(raw: String): JwManifest = try {
         json.decodeFromString<JwManifest>(raw)
@@ -93,6 +99,9 @@ object JwManifestCodec {
         if (manifest.name.isBlank()) throw JwManifestException("适配器缺少学校名称 name")
         if (manifest.name.length > JwManifest.MAX_NAME_LENGTH) {
             throw JwManifestException("适配器名称过长（最多 ${JwManifest.MAX_NAME_LENGTH} 字）")
+        }
+        manifest.initial?.let {
+            if (!INITIAL_REGEX.matches(it)) throw JwManifestException("首字母 initial「$it」不合法（应为单个大写字母 A-Z）")
         }
         if (!VERSION_REGEX.matches(manifest.version)) {
             throw JwManifestException("适配器版本「${manifest.version}」不合法（应为 x.y.z）")

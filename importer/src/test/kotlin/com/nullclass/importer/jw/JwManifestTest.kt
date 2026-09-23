@@ -18,6 +18,7 @@ class JwManifestTest {
         allowHosts: List<String> = emptyList(),
         startUrlPrompt: Boolean = false,
         fallback: Boolean = false,
+        initial: String? = null,
     ) = JwManifest(
         specVersion = specVersion,
         key = key,
@@ -30,6 +31,7 @@ class JwManifestTest {
         allowHosts = allowHosts,
         startUrlPrompt = startUrlPrompt,
         fallback = fallback,
+        initial = initial,
     )
 
     @Test
@@ -45,6 +47,18 @@ class JwManifestTest {
         """.trimIndent()
         val decoded = JwManifestCodec.decode(raw)
         assertEquals("demo-univ", decoded.key)
+    }
+
+    @Test
+    fun `首字母只接受单个大写字母 缺省也合法`() {
+        JwManifestCodec.validate(manifest(initial = null), 11)
+        JwManifestCodec.validate(manifest(initial = "C"), 11)
+        listOf("c", "CQ", "", "重", "1").forEach { bad ->
+            val error = assertFailsWith<JwManifestException> {
+                JwManifestCodec.validate(manifest(initial = bad), 11)
+            }
+            assertTrue(error.message!!.contains("initial"), error.message)
+        }
     }
 
     @Test
