@@ -4,7 +4,11 @@ import java.io.File
 import java.security.MessageDigest
 
 /** 用户库里的一个坏目录（manifest 损坏等），UI 需要能显示并删除它。 */
-data class JwBrokenAdapter(val key: String, val reason: String)
+/**
+ * 读不出来的用户适配器。[reason] 是中文原文（搜索、日志用）；界面显示时优先按 [error] 取词条，
+ * 因为其中有些原因（要求升级应用）是普通用户能处理的。
+ */
+data class JwBrokenAdapter(val key: String, val reason: String, val error: Throwable? = null)
 
 data class JwUserLibrary(
     val adapters: List<JwAdapter> = emptyList(),
@@ -36,7 +40,7 @@ class JwUserAdapterStore(
             }
             loaded.fold(
                 onSuccess = { adapters += it.copy(rootDir = dir, installInfo = readInstallInfo(dir)) },
-                onFailure = { broken += JwBrokenAdapter(dir.name, it.message ?: "读取失败") },
+                onFailure = { broken += JwBrokenAdapter(dir.name, it.message ?: "读取失败", it) },
             )
         }
         return JwUserLibrary(adapters, broken)

@@ -1,5 +1,6 @@
 package com.nullclass.feature.settings.transfer
 
+import androidx.compose.ui.res.pluralStringResource
 import android.Manifest
 import android.content.Intent
 import android.content.pm.PackageManager
@@ -147,6 +148,10 @@ fun TransferScreen(
             val adapterName = data.getStringExtra(
                 com.nullclass.feature.settings.jw.JwImportActivity.EXTRA_ADAPTER_NAME,
             )
+            val ocrAssisted = data.getBooleanExtra(
+                com.nullclass.feature.settings.jw.JwImportActivity.EXTRA_DOCUMENT_OCR_ASSISTED,
+                false,
+            )
             viewModel.parseExtractedDocument(
                 json,
                 source = if (adapterName.isNullOrBlank()) {
@@ -155,6 +160,7 @@ fun TransferScreen(
                     UiText.Res(R.string.settings_transfer_jw_running, adapterName)
                 },
                 adapterNotes = notes,
+                ocrAssisted = ocrAssisted,
             )
         }
     }
@@ -527,18 +533,19 @@ private fun ImportPreviewDialog(
                         stringResource(
                             R.string.settings_transfer_preview_term,
                             term.name,
-                            term.totalWeeks,
-                            term.courseCount,
-                            term.blockCount,
-                            term.examCount,
+                            pluralStringResource(R.plurals.settings_count_weeks, term.totalWeeks, term.totalWeeks),
+                            pluralStringResource(R.plurals.settings_count_courses, term.courseCount, term.courseCount),
+                            pluralStringResource(R.plurals.settings_count_blocks, term.blockCount, term.blockCount),
+                            pluralStringResource(R.plurals.settings_count_exams, term.examCount, term.examCount),
                         ),
                         style = MaterialTheme.typography.bodyMedium,
                     )
                 }
                 if (preview.pendingDeletions > 0) {
                     Text(
-                        stringResource(
-                            R.string.settings_transfer_preview_deletions,
+                        pluralStringResource(
+                            R.plurals.settings_transfer_preview_deletions,
+                            preview.pendingDeletions,
                             preview.pendingDeletions,
                         ),
                         style = MaterialTheme.typography.bodySmall,

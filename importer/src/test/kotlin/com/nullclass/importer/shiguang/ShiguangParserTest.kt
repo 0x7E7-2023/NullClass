@@ -10,6 +10,7 @@ import java.time.LocalDate
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
+import kotlin.test.assertFalse
 import kotlin.test.assertNotNull
 import kotlin.test.assertNull
 import kotlin.test.assertTrue
@@ -229,6 +230,20 @@ class ShiguangParserTest {
         assertEquals(listOf("乙"), result.courses.map { it.name })
         assertTrue(result.warnings.has(ImportNotice.SHIGUANG_ROW_BAD_DAY))
         assertEquals(listOf<Any>("甲", "9"), result.warnings.argsOf(ImportNotice.SHIGUANG_ROW_BAD_DAY))
+    }
+
+    @Test
+    fun `容错 - 缺 day 的课单独提示，不再显示成「day= 」`() {
+        val raw = """
+            {"courses":[
+              {"name":"甲","startSection":1,"endSection":1,"weeks":[1]},
+              {"name":"乙","day":2,"startSection":1,"endSection":1,"weeks":[1]}
+            ]}
+        """.trimIndent()
+        val result = ShiguangParser.parse(raw)
+        assertEquals(listOf("乙"), result.courses.map { it.name })
+        assertEquals(listOf<Any>("甲"), result.warnings.argsOf(ImportNotice.SHIGUANG_ROW_NO_DAY))
+        assertFalse(result.warnings.has(ImportNotice.SHIGUANG_ROW_BAD_DAY))
     }
 
     @Test

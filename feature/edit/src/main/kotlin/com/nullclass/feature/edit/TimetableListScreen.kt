@@ -1,5 +1,6 @@
 package com.nullclass.feature.edit
 
+import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -154,8 +155,9 @@ fun TimetableListScreen(
                 title = { Text(stringResource(R.string.edit_timetable_delete)) },
                 text = {
                     Text(
-                        stringResource(
-                            R.string.edit_timetable_delete_confirm,
+                        pluralStringResource(
+                            R.plurals.edit_timetable_delete_confirm,
+                            item.termCount,
                             item.timetable.name,
                             item.termCount,
                         ),
@@ -243,7 +245,7 @@ private fun TimetableRow(
                     fontWeight = FontWeight.Bold,
                 )
                 Text(
-                    stringResource(R.string.edit_timetable_term_count, item.termCount),
+                    pluralStringResource(R.plurals.edit_timetable_term_count, item.termCount, item.termCount),
                     style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                 )

@@ -1,5 +1,6 @@
 package com.nullclass.feature.schedule
 
+import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -257,9 +258,9 @@ private fun leadLabel(lead: Int?, allDay: Boolean): String = when {
     lead == 0 -> stringResource(
         if (allDay) R.string.schedule_event_lead_all_day else R.string.schedule_event_lead_on_time,
     )
-    lead % (24 * 60) == 0 -> stringResource(R.string.schedule_event_lead_days, lead / (24 * 60))
-    lead % 60 == 0 -> stringResource(R.string.schedule_event_lead_hours, lead / 60)
-    else -> stringResource(R.string.schedule_event_lead_minutes, lead)
+    lead % (24 * 60) == 0 -> (lead / (24 * 60)).let { pluralStringResource(R.plurals.schedule_event_lead_days, it, it) }
+    lead % 60 == 0 -> (lead / 60).let { pluralStringResource(R.plurals.schedule_event_lead_hours, it, it) }
+    else -> pluralStringResource(R.plurals.schedule_event_lead_minutes, lead, lead)
 }
 
 @Composable

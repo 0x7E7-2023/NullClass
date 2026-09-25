@@ -54,6 +54,7 @@ import com.nullclass.feature.settings.R
 import com.nullclass.core.ui.i18n.resolve
 import com.nullclass.importer.jw.JwAdapterSource
 import com.nullclass.importer.jw.JwManifest
+import com.nullclass.core.data.locale.AppLocale
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 
@@ -68,6 +69,11 @@ class JwImportActivity : ComponentActivity() {
 
     @Inject lateinit var userPreferences: UserPreferencesRepository
 
+    /** 与 MainActivity 相同：12 及以下由应用自行切语言，13+ 原样返回。 */
+    override fun attachBaseContext(newBase: Context) {
+        super.attachBaseContext(AppLocale.wrap(newBase))
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         // 同步读上次的主题，首帧就是用户选的深浅色
@@ -78,7 +84,7 @@ class JwImportActivity : ComponentActivity() {
                 val viewModel: JwImportViewModel = hiltViewModel()
                 JwImportScreen(
                     viewModel = viewModel,
-                    onFinishWithDocument = { json, notes, adapterName ->
+                    onFinishWithDocument = { json, notes, ocrAssisted, adapterName ->
                         setResult(
                             RESULT_OK,
                             Intent()
@@ -86,6 +92,8 @@ class JwImportActivity : ComponentActivity() {
                                 // 适配器要用户重点核对的话（开学日是推算的、识别可能错位…）
                                 // 一路带到导入预览去，不能在这一跳丢掉
                                 .putStringArrayListExtra(EXTRA_DOCUMENT_NOTES, ArrayList(notes))
+                                // 图片识别出来的：预览里由空课补一句自己的核对提示（按预览时的语言取）
+                                .putExtra(EXTRA_DOCUMENT_OCR_ASSISTED, ocrAssisted)
                                 // 名字也带上：预览里那一段第三方说明必须写清是谁说的
                                 .putExtra(EXTRA_ADAPTER_NAME, adapterName),
                         )
@@ -100,6 +108,7 @@ class JwImportActivity : ComponentActivity() {
     companion object {
         const val EXTRA_DOCUMENT_JSON = "documentJson"
         const val EXTRA_DOCUMENT_NOTES = "documentNotes"
+        const val EXTRA_DOCUMENT_OCR_ASSISTED = "documentOcrAssisted"
         const val EXTRA_ADAPTER_NAME = "adapterName"
 
         fun intent(context: Context): Intent = Intent(context, JwImportActivity::class.java)
@@ -110,7 +119,7 @@ class JwImportActivity : ComponentActivity() {
 @Composable
 private fun JwImportScreen(
     viewModel: JwImportViewModel,
-    onFinishWithDocument: (documentJson: String, notes: List<String>, adapterName: String) -> Unit,
+    onFinishWithDocument: (documentJson: String, notes: List<String>, ocrAssisted: Boolean, adapterName: String) -> Unit,
     onCancel: () -> Unit,
 ) {
     val state by viewModel.state.collectAsState()
@@ -232,9 +241,9 @@ private fun JwImportScreen(
                     adapter.key == state.lastAdapterKey -> state.lastScheduleUrl
                     else -> null
                 },
-                onExtracted = { documentJson, loadedUrl, notes ->
+                onExtracted = { documentJson, loadedUrl, notes, ocrAssisted ->
                     viewModel.rememberRefresh(adapter.key, loadedUrl)
-                    onFinishWithDocument(documentJson, notes, adapter.displayName)
+                    onFinishWithDocument(documentJson, notes, ocrAssisted, adapter.displayName)
                 },
                 modifier = Modifier.padding(padding),
             )

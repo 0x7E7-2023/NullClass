@@ -141,7 +141,7 @@ fun AboutScreen(onBack: () -> Unit) {
             }
 
             Text(
-                stringResource(R.string.settings_about_contributors, Contributors.joinToString(" · ")),
+                stringResource(R.string.settings_about_contributors, Contributors.joinToString(stringResource(CoreR.string.common_separator))),
                 style = MaterialTheme.typography.bodySmall,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
                 modifier = Modifier.padding(top = 32.dp),

@@ -272,8 +272,8 @@ class TermEditViewModel @Inject constructor(
                 it.copy(
                     quickNotice = UiText.Res(
                         R.string.edit_term_quick_overflow,
-                        lesson,
-                        breakMinutes,
+                        UiText.Plural(R.plurals.edit_minutes, lesson),
+                        UiText.Plural(R.plurals.edit_minutes, breakMinutes),
                         result.section,
                         minuteLabel(result.endMinuteOfDay),
                         minuteLabel(result.nextStartMinuteOfDay),
@@ -285,8 +285,8 @@ class TermEditViewModel @Inject constructor(
                 it.copy(
                     quickNotice = UiText.Res(
                         R.string.edit_term_quick_out_of_day,
-                        lesson,
-                        breakMinutes,
+                        UiText.Plural(R.plurals.edit_minutes, lesson),
+                        UiText.Plural(R.plurals.edit_minutes, breakMinutes),
                         result.section,
                         minuteLabel(result.endMinuteOfDay),
                     ),

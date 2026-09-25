@@ -37,7 +37,9 @@
     <string name="edit_course_error_save_failed">保存失败，请重试。</string>
     <string name="edit_course_conflict_header">时间冲突，请调整后再保存：</string>
     <string name="edit_course_conflict_line">与《%1$s》冲突：%2$s</string>
-    <string name="edit_course_conflict_more">另有 %1$d 处冲突</string>
+    <plurals name="edit_course_conflict_more">
+        <item quantity="other">另有 %1$d 处冲突</item>
+    </plurals>
 
     <!-- 学期编辑 -->
     <string name="edit_term_title_new">创建学期</string>
@@ -66,7 +68,14 @@
     <string name="edit_term_quick_hint">课间休息指一个大节内两节课之间的休息，默认模板为 10 分钟；大节与大节之间的休息不在此范围内。套用时仅按各大节现有的开课时刻重排其内部节次。</string>
     <string name="edit_term_quick_apply">套用</string>
     <string name="edit_term_quick_invalid">单节课请填 %1$d~%2$d 分钟，课间休息请填 %3$d~%4$d 分钟。</string>
-    <string name="edit_term_periods">节次时间（%1$d 节 = %2$d 大节）</string>
+    <string name="edit_term_periods">节次时间（%1$s = %2$s）</string>
+    <!-- edit_term_periods 的两段 -->
+    <plurals name="edit_term_period_count">
+        <item quantity="other">%1$d 节</item>
+    </plurals>
+    <plurals name="edit_term_section_count">
+        <item quantity="other">%1$d 大节</item>
+    </plurals>
     <string name="edit_term_reset_periods">恢复默认模板</string>
     <string name="edit_term_add_period">添加节次</string>
     <string name="edit_term_period_index">第%1$d节</string>
@@ -80,7 +89,9 @@
     <string name="edit_term_clearing">正在清空…</string>
     <string name="edit_term_clear_empty">本学期没有课程</string>
     <string name="edit_term_clear">清空本学期课程</string>
-    <string name="edit_term_clear_confirm">将删除本学期的全部 %1$d 门课程，学期与节次时间保留。删除会同步到其他设备。</string>
+    <plurals name="edit_term_clear_confirm">
+        <item quantity="other">将删除本学期的全部 %1$d 门课程，学期与节次时间保留。删除会同步到其他设备。</item>
+    </plurals>
     <string name="edit_term_clear_action">清空</string>
 
     <!-- 学期编辑：错误 -->
@@ -89,8 +100,12 @@
     <string name="edit_term_error_keep_one_period">请至少保留一个节次。</string>
     <string name="edit_term_error_invalid_input">输入内容不合法。</string>
     <string name="edit_term_quick_period_invalid">第 %1$d 节的时间不是有效的 HH:mm（开始须早于结束），请先修正后再使用快速设定。</string>
-    <string name="edit_term_quick_overflow">按每节 %1$d 分钟、课间 %2$d 分钟排列，第 %3$d 大节将持续到 %4$s，而下一大节 %5$s 即开始。请减小单节时长或课间休息。</string>
-    <string name="edit_term_quick_out_of_day">按每节 %1$d 分钟、课间 %2$d 分钟排列，第 %3$d 大节将持续到 %4$s，已跨入次日。该大节开始过晚，请减小单节时长或课间休息。</string>
+    <string name="edit_term_quick_overflow">按每节 %1$s、课间 %2$s排列，第 %3$d 大节将持续到 %4$s，而下一大节 %5$s 即开始。请减小单节时长或课间休息。</string>
+    <string name="edit_term_quick_out_of_day">按每节 %1$s、课间 %2$s排列，第 %3$d 大节将持续到 %4$s，已跨入次日。该大节开始过晚，请减小单节时长或课间休息。</string>
+    <!-- 快速排节提示里的时长，如「45 分钟」 -->
+    <plurals name="edit_minutes">
+        <item quantity="other">%1$d 分钟</item>
+    </plurals>
     <string name="edit_term_error_period_format">第 %1$d 节的时间格式应为 HH:mm。</string>
     <string name="edit_term_error_period_order">第 %1$d 节的开始时间须早于结束时间。</string>
 
@@ -101,8 +116,8 @@
     <string name="edit_term_list_create">创建学期</string>
     <string name="edit_term_list_current">当前</string>
     <string name="edit_term_list_owner">所属课表：%1$s</string>
-    <string name="edit_term_list_week">第 %1$d 周 · 共 %2$d 周</string>
-    <string name="edit_term_list_out_of_term">不在学期内 · 共 %1$d 周</string>
+    <string name="edit_term_list_week">第 %1$d 周 · %2$s</string>
+    <string name="edit_term_list_out_of_term">不在学期内 · %1$s</string>
     <string name="edit_term_list_edit">编辑学期</string>
     <string name="edit_term_list_delete">删除学期</string>
     <string name="edit_term_list_delete_confirm">将删除「%1$s」及其全部课程与考试。该操作会同步到其他设备。</string>
@@ -113,9 +128,13 @@
     <string name="edit_timetable_list_empty_desc">创建课表后即可开始排课。</string>
     <string name="edit_timetable_list_create">创建课表</string>
     <string name="edit_timetable_list_current">当前</string>
-    <string name="edit_timetable_term_count">%1$d 个学期</string>
+    <plurals name="edit_timetable_term_count">
+        <item quantity="other">%1$d 个学期</item>
+    </plurals>
     <string name="edit_timetable_delete">删除课表</string>
-    <string name="edit_timetable_delete_confirm">将删除「%1$s」及其全部学期、课程与考试。该操作会同步到其他设备。</string>
+    <plurals name="edit_timetable_delete_confirm">
+        <item quantity="other">将删除「%1$s」及其 %2$d 个学期，以及其中的全部课程与考试。该操作会同步到其他设备。</item>
+    </plurals>
     <string name="edit_timetable_delete_blocked_title">无法删除</string>
     <string name="edit_timetable_delete_blocked_desc">请至少保留一张课表。如需清空内容，请在学期管理中删除其中的学期。</string>
     <string name="edit_timetable_rename">重命名课表</string>

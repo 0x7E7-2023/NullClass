@@ -16,6 +16,13 @@ android {
         sourceCompatibility = JavaVersion.VERSION_17
         targetCompatibility = JavaVersion.VERSION_17
     }
+
+    // AppLocale 要在不同系统版本（12 及以下 / 13+）的 Robolectric 沙箱里验证
+    testOptions {
+        unitTests.isIncludeAndroidResources = true
+        // Robolectric 在 SDK 36 沙箱里要反射 FileDescriptor 内部，新版 JDK 默认不导出
+        unitTests.all { it.jvmArgs("--add-exports=java.base/jdk.internal.access=ALL-UNNAMED") }
+    }
 }
 
 // Room schema 历史版本入库，便于迁移审查
@@ -41,4 +48,5 @@ dependencies {
 
     testImplementation(libs.junit)
     testImplementation(libs.kotlin.test)
+    testImplementation(libs.robolectric)
 }

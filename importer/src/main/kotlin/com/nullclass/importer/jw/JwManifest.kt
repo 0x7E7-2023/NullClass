@@ -55,8 +55,12 @@ data class JwManifest(
 @Serializable
 data class JwFixture(val name: String, val extracted: String, val expected: String)
 
-/** manifest 不合法（消息面向用户，可直接展示）。 */
-class JwManifestException(message: String) : IllegalArgumentException(message)
+/** manifest 不合法。消息是中文原文；「请先升级」这类用户能处理的带 [code]（见 [JwCodedError]）。 */
+class JwManifestException(
+    message: String,
+    override val code: JwErrorCode? = null,
+    override val codeArgs: List<Any> = emptyList(),
+) : IllegalArgumentException(message), JwCodedError
 
 object JwManifestCodec {
 
@@ -88,6 +92,8 @@ object JwManifestCodec {
         if (manifest.specVersion > JwManifest.SPEC_VERSION) {
             throw JwManifestException(
                 "适配器规范版本 v${manifest.specVersion} 高于本应用支持的 v${JwManifest.SPEC_VERSION}，请先升级空课",
+                JwErrorCode.SPEC_TOO_NEW,
+                listOf(manifest.specVersion, JwManifest.SPEC_VERSION),
             )
         }
         if (manifest.specVersion < 1) {
@@ -117,6 +123,8 @@ object JwManifestCodec {
         if (manifest.minAppVersionCode > appVersionCode) {
             throw JwManifestException(
                 "此适配器需要 versionCode ≥ ${manifest.minAppVersionCode} 的空课（当前 $appVersionCode），请先升级应用",
+                JwErrorCode.APP_TOO_OLD,
+                listOf(manifest.minAppVersionCode, appVersionCode),
             )
         }
         requireScriptPath(manifest.extract, "extract")

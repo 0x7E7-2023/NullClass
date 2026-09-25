@@ -11,11 +11,18 @@ import com.nullclass.core.model.WeekType
 import java.time.Instant
 import java.time.LocalDate
 import java.time.ZoneId
+import org.junit.runner.RunWith
+import org.robolectric.RobolectricTestRunner
+import org.robolectric.RuntimeEnvironment
+import org.robolectric.annotation.Config
 import kotlin.test.Test
 import kotlin.test.assertContains
 import kotlin.test.assertEquals
 import kotlin.test.assertTrue
 
+/** 文案取真实 strings.xml（经 Robolectric），模板写坏会在这里暴露。 */
+@RunWith(RobolectricTestRunner::class)
+@Config(sdk = [36])
 class IcsCalendarTest {
 
     private val term = Term(
@@ -60,7 +67,7 @@ class IcsCalendarTest {
         )
 
         val result = IcsCalendar.build(
-            text = TestIcsText,
+            text = IcsText.from(RuntimeEnvironment.getApplication()),
             term = term,
             schedule = listOf(CourseWithBlocks(course, listOf(block))),
             periodTimes = periodTimes,
@@ -105,7 +112,7 @@ class IcsCalendarTest {
         )
 
         val result = IcsCalendar.build(
-            text = TestIcsText,
+            text = IcsText.from(RuntimeEnvironment.getApplication()),
             term = term,
             schedule = listOf(CourseWithBlocks(course, listOf(odd, even))),
             periodTimes = periodTimes,
@@ -133,7 +140,7 @@ class IcsCalendarTest {
         )
 
         val result = IcsCalendar.build(
-            text = TestIcsText,
+            text = IcsText.from(RuntimeEnvironment.getApplication()),
             term = term,
             schedule = listOf(CourseWithBlocks(course, listOf(block))),
             periodTimes = periodTimes.take(1),
@@ -161,7 +168,7 @@ class IcsCalendarTest {
         )
 
         val result = IcsCalendar.build(
-            text = TestIcsText,
+            text = IcsText.from(RuntimeEnvironment.getApplication()),
             term = term,
             schedule = emptyList(),
             periodTimes = emptyList(),
@@ -191,7 +198,7 @@ class IcsCalendarTest {
         )
 
         val result = IcsCalendar.build(
-            text = TestIcsText,
+            text = IcsText.from(RuntimeEnvironment.getApplication()),
             term = term,
             schedule = emptyList(),
             periodTimes = emptyList(),
@@ -202,20 +209,3 @@ class IcsCalendarTest {
         assertContains(result.content, "DTEND;VALUE=DATE:20260929\r\n")
     }
 }
-
-/**
- * 单元测试用的固定文案，与 `values/strings.xml` 的简体中文一致。
- * 测试关心的是 .ics 的结构与转义，文案只需稳定可预期。
- */
-private val TestIcsText = IcsText(
-    calendarName = "空课 · %1\$s",
-    term = "学期：%1\$s",
-    teacher = "教师：%1\$s",
-    note = "备注：%1\$s",
-    course = "课程：%1\$s",
-    exam = "考试：%1\$s",
-    time = "时间：%1\$s",
-    location = "考场：%1\$s",
-    seat = "座位：%1\$s",
-    blockSummary = { block -> "周${block.dayOfWeek} · 第${block.startPeriod}-${block.endPeriod}节" },
-)

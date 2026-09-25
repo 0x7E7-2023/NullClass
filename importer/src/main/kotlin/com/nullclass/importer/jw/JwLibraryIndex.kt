@@ -67,21 +67,28 @@ object JwLibraryUrl {
      */
     fun normalize(input: String, allowInsecure: Boolean = false): String {
         val trimmed = input.trim()
-        if (trimmed.isEmpty()) throw JwPackageException("库地址为空")
+        // 这几条是用户自己填的地址出错，带原因码，界面按码取词条
+        if (trimmed.isEmpty()) throw JwPackageException("库地址为空", JwErrorCode.LIBRARY_URL_EMPTY)
         val uri = runCatching { URI(trimmed) }.getOrNull()
-            ?: throw JwPackageException("库地址不是合法 URL：$trimmed")
+            ?: throw JwPackageException("库地址不是合法 URL：$trimmed", JwErrorCode.LIBRARY_URL_INVALID, listOf(trimmed))
         val scheme = uri.scheme?.lowercase()
         if (scheme != "http" && scheme != "https") {
-            throw JwPackageException("库地址必须是 http(s) 链接：$trimmed")
+            throw JwPackageException("库地址必须是 http(s) 链接：$trimmed", JwErrorCode.LIBRARY_URL_NOT_HTTP, listOf(trimmed))
         }
         if (scheme == "http" && !allowInsecure) {
-            throw JwPackageException("只允许 https 的适配器库地址（当前是 http，传输途中可能被替换）")
+            throw JwPackageException(
+                "只允许 https 的适配器库地址（当前是 http，传输途中可能被替换）",
+                JwErrorCode.LIBRARY_URL_INSECURE,
+            )
         }
-        val host = uri.host?.lowercase() ?: throw JwPackageException("库地址缺少主机名：$trimmed")
+        val host = uri.host?.lowercase()
+            ?: throw JwPackageException("库地址缺少主机名：$trimmed", JwErrorCode.LIBRARY_URL_NO_HOST, listOf(trimmed))
 
         if (host == "github.com" || host == "www.github.com") {
             val segments = uri.path.trim('/').split('/').filter { it.isNotEmpty() }
-            if (segments.size < 2) throw JwPackageException("GitHub 地址需要形如 github.com/用户名/仓库名")
+            if (segments.size < 2) {
+                throw JwPackageException("GitHub 地址需要形如 github.com/用户名/仓库名", JwErrorCode.LIBRARY_URL_GITHUB_SHAPE)
+            }
             val owner = segments[0]
             val repo = segments[1].removeSuffix(".git")
             val branch: String

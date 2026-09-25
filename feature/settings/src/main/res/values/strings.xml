@@ -34,7 +34,9 @@
     <string name="settings_webdav_merge_desc">同步说明：整库快照按记录合并，同一条记录以修改时间较新者为准，删除会传播到所有设备。</string>
     <string name="settings_webdav_saved">配置已保存</string>
     <string name="settings_webdav_connected">连接成功</string>
-    <string name="settings_webdav_sync_done">同步完成，采纳 %1$d 条远端记录</string>
+    <plurals name="settings_webdav_sync_done">
+        <item quantity="other">同步完成，采纳 %1$d 条远端记录</item>
+    </plurals>
     <string name="settings_auto_sync">自动同步</string>
     <string name="settings_auto_sync_desc">在后台按固定周期执行上述同步，需先配置 WebDAV。</string>
 
@@ -56,11 +58,13 @@
     <string name="settings_profile_timetable">课表 · %1$s</string>
     <string name="settings_profile_no_term_title">尚未创建学期</string>
     <string name="settings_profile_no_term_desc">创建学期后即可开始排课。</string>
-    <string name="settings_profile_week">第 %1$d 周 · 共 %2$d 周</string>
-    <string name="settings_profile_out_of_term">不在学期内 · 共 %1$d 周</string>
+    <string name="settings_profile_week">第 %1$d 周 · %2$s</string>
+    <string name="settings_profile_out_of_term">不在学期内 · %1$s</string>
     <string name="settings_profile_quick_actions">快捷操作</string>
     <string name="settings_profile_quick_actions_desc">调课、快速删课</string>
-    <string name="settings_profile_quick_actions_desc_with_count">调课、快速删课 · 今天及以后有 %1$d 条调课</string>
+    <plurals name="settings_profile_quick_actions_desc_with_count">
+        <item quantity="other">调课、快速删课 · 今天及以后有 %1$d 条调课</item>
+    </plurals>
     <string name="settings_profile_timetables">课表管理</string>
     <string name="settings_profile_timetables_desc">当前：%1$s · 切换、新建、重命名</string>
     <string name="settings_profile_terms">学期管理</string>
@@ -88,7 +92,9 @@
     <!-- 快捷操作 -->
     <string name="settings_quick_actions_title">快捷操作</string>
     <string name="settings_quick_actions_swap_desc">调休时将某一天设为上另一天的课</string>
-    <string name="settings_quick_actions_swap_desc_with_count">调休时将某一天设为上另一天的课 · 今天及以后有 %1$d 条</string>
+    <plurals name="settings_quick_actions_swap_desc_with_count">
+        <item quantity="other">调休时将某一天设为上另一天的课 · 今天及以后有 %1$d 条</item>
+    </plurals>
     <string name="settings_quick_actions_cleanup">快速删课</string>
     <string name="settings_quick_actions_cleanup_desc">按周次或日期筛选课程，勾选后批量删除</string>
 
@@ -104,7 +110,9 @@
     <string name="settings_ics_seat">座位：%1$s</string>
 
     <!-- 节假日同步 -->
-    <string name="settings_holiday_synced">已从 %1$s 同步 %2$d 个节假日</string>
+    <plurals name="settings_holiday_synced">
+        <item quantity="other">已从 %1$s 同步 %2$d 个节假日</item>
+    </plurals>
     <string name="settings_holiday_skipped">本次已跳过，未到同步间隔</string>
     <string name="settings_holiday_failed">节假日同步失败（%1$s 不可用），已保留上次结果</string>
     <string name="settings_holiday_no_source">节假日同步失败（无可用数据源），已保留上次结果</string>
@@ -136,7 +144,9 @@
 
     <!-- 快速删课 -->
     <string name="settings_cleanup_title">快速删课</string>
-    <string name="settings_cleanup_selected">已选 %1$d 门课</string>
+    <plurals name="settings_cleanup_selected">
+        <item quantity="other">已选 %1$d 门课</item>
+    </plurals>
     <string name="settings_cleanup_no_term">请先创建学期，然后再删除课程。</string>
     <string name="settings_cleanup_hint">删除的是整门课程：它在其他周次、其他星期的安排以及关联的考试会一并删除。</string>
     <string name="settings_cleanup_hint_alt">如果只是某一天不上课，请使用「通知与提醒 → 跳过日期」。</string>
@@ -148,9 +158,13 @@
     <string name="settings_cleanup_swapped">这一天已调课：上 %1$s 的课。</string>
     <string name="settings_cleanup_week_empty">第%1$d周没有课程。</string>
     <string name="settings_cleanup_day_empty">这一天没有课程。</string>
-    <string name="settings_cleanup_confirm_title">删除 %1$d 门课程</string>
+    <plurals name="settings_cleanup_confirm_title">
+        <item quantity="other">删除 %1$d 门课程</item>
+    </plurals>
     <string name="settings_cleanup_confirm_desc">将连同它们的全部时间安排与关联考试一并删除，而不仅是当前筛选的这一周或这一天。删除会同步到其他设备。</string>
-    <string name="settings_cleanup_other_blocks">另有 %1$d 条安排在其他日期，删除时一并删除</string>
+    <plurals name="settings_cleanup_other_blocks">
+        <item quantity="other">另有 %1$d 条安排在其他日期，删除时一并删除</item>
+    </plurals>
 
     <!-- 关于 -->
     <string name="settings_about_title">关于</string>
@@ -160,7 +174,7 @@
     <string name="settings_about_feedback">反馈问题</string>
     <string name="settings_about_license">开源许可</string>
     <string name="settings_about_upstream">致谢 · 拾光课程表</string>
-    <string name="settings_about_contributors">鸣谢  %1$s</string>
+    <string name="settings_about_contributors">鸣谢 %1$s</string>
     <string name="settings_about_upstream_desc">内置教务适配器绝大多数移植自拾光课程表社区的适配库 shiguang_warehouse（MIT），「从拾光课程表迁移」也基于拾光公开的导出格式。感谢拾光课程表及其社区。</string>
     <string name="settings_about_version">空课版本</string>
     <string name="settings_about_version_copied">已复制 %1$s</string>
@@ -198,9 +212,15 @@
     <string name="settings_permission_dnd">勿扰模式权限</string>
 
     <!-- 提醒提前量 -->
-    <string name="settings_reminder_minutes">%1$d 分钟</string>
-    <string name="settings_reminder_hours">%1$d 小时</string>
-    <string name="settings_reminder_days">%1$d 天</string>
+    <plurals name="settings_reminder_minutes">
+        <item quantity="other">%1$d 分钟</item>
+    </plurals>
+    <plurals name="settings_reminder_hours">
+        <item quantity="other">%1$d 小时</item>
+    </plurals>
+    <plurals name="settings_reminder_days">
+        <item quantity="other">%1$d 天</item>
+    </plurals>
 
     <!-- 节假日与跳过日期 -->
     <string name="settings_holiday_section">节假日与跳过日期</string>
@@ -213,7 +233,9 @@
     <string name="settings_holiday_sync_now">立即同步</string>
     <string name="settings_holiday_add_skip">添加跳过日期</string>
     <string name="settings_holiday_no_skips">今天及以后暂无跳过日期</string>
-    <string name="settings_holiday_skip_count">今天及以后（%1$d 条，往前的已隐藏）</string>
+    <plurals name="settings_holiday_skip_count">
+        <item quantity="other">今天及以后（%1$d 条，往前的已隐藏）</item>
+    </plurals>
     <string name="settings_holiday_type_holiday">节假日</string>
     <string name="settings_holiday_type_workday">调休补班（仅提示，不生成课程）</string>
     <string name="settings_holiday_type_manual">手动跳过</string>
@@ -253,8 +275,23 @@
     <string name="settings_transfer_preview_activate">导入后设为当前学期，今日 / 课表 / 桌面小组件会立即切换过去。</string>
     <string name="settings_transfer_preview_adapter_notes">以下说明由适配器（第三方脚本）提供，不是空课官方的判断：</string>
     <string name="settings_transfer_preview_confirm">合并导入</string>
-    <string name="settings_transfer_preview_term">学期「%1$s」· %2$d 周 · %3$d 门课 · %4$d 条安排 · %5$d 场考试</string>
-    <string name="settings_transfer_preview_deletions">⚠ 注意：该文件会对本地 %1$d 条现有记录产生删除效果（合并按修改时间裁决，删除会传播）。请确认文件来源可信。</string>
+    <string name="settings_transfer_preview_term">学期「%1$s」· %2$s · %3$s · %4$s · %5$s</string>
+    <!-- 导入预览、日历导出、识别核对里的计数 -->
+    <plurals name="settings_count_weeks">
+        <item quantity="other">%1$d 周</item>
+    </plurals>
+    <plurals name="settings_count_courses">
+        <item quantity="other">%1$d 门课</item>
+    </plurals>
+    <plurals name="settings_count_blocks">
+        <item quantity="other">%1$d 条安排</item>
+    </plurals>
+    <plurals name="settings_count_exams">
+        <item quantity="other">%1$d 场考试</item>
+    </plurals>
+    <plurals name="settings_transfer_preview_deletions">
+        <item quantity="other">⚠ 注意：该文件会对本地 %1$d 条现有记录产生删除效果（合并按修改时间裁决，删除会传播）。请确认文件来源可信。</item>
+    </plurals>
     <string name="settings_transfer_preview_merge_note">与本地数据合并后生效。</string>
     <string name="settings_transfer_share_failed">分享失败：%1$s</string>
     <string name="settings_transfer_ics_failed_to_open">无法打开导出目标：%1$s</string>
@@ -263,8 +300,13 @@
     <!-- 导入 / 导出的操作结果 -->
     <string name="settings_transfer_export_done">已导出</string>
     <string name="settings_transfer_export_failed">导出失败：%1$s</string>
-    <string name="settings_transfer_ics_export_done">已导出日历文件：%1$d 个课程安排、%2$d 场考试%3$s</string>
-    <string name="settings_transfer_ics_skipped">，跳过 %1$d 条缺少完整节次时间的安排</string>
+    <string name="settings_transfer_ics_export_done">已导出日历文件：%1$s、%2$s。</string>
+    <plurals name="settings_transfer_ics_block_count">
+        <item quantity="other">%1$d 个课程安排</item>
+    </plurals>
+    <plurals name="settings_transfer_ics_skipped">
+        <item quantity="other">有 %1$d 条安排缺少完整节次时间，已跳过。</item>
+    </plurals>
     <string name="settings_transfer_ics_export_failed">日历导出失败：%1$s</string>
     <string name="settings_transfer_no_term">当前没有学期</string>
     <string name="settings_transfer_cannot_open_target">无法打开目标文件</string>
@@ -274,20 +316,26 @@
     <string name="settings_transfer_qr_not_nullclass">这不是空课的二维码。</string>
     <string name="settings_transfer_qr_source">二维码</string>
     <string name="settings_transfer_file_source">文件 %1$s</string>
-    <string name="settings_transfer_wakeup_source">WakeUp 课表</string>
+    <string name="settings_transfer_wakeup_source">WakeUp %1$s</string>
     <string name="settings_transfer_shiguang_source">拾光课程表 %1$s</string>
     <string name="settings_transfer_read_failed">读取失败：%1$s</string>
     <!-- 结尾的 %2$s / %1$s 是「新增课表…」那句（或空串），由调用方拼好 -->
-    <string name="settings_transfer_import_done">已导入：采纳 %1$d 条记录%2$s</string>
-    <string name="settings_transfer_import_up_to_date">已导入（本地数据已是最新）%1$s</string>
+    <plurals name="settings_transfer_import_done">
+        <item quantity="other">已导入：采纳 %1$d 条记录。</item>
+    </plurals>
+    <string name="settings_transfer_import_up_to_date">已导入（本地数据已是最新）。</string>
     <string name="settings_transfer_cannot_read_file">无法读取文件。</string>
     <string name="settings_transfer_wakeup_generic">课表</string>
     <string name="settings_transfer_shiguang_generic">导出文件</string>
     <string name="settings_transfer_import_failed">导入失败：%1$s</string>
+    <!-- 教务导入：载荷标了 ocrAssisted 时，空课自己补的固定核对提示 -->
+    <string name="settings_transfer_ocr_review_note">该课表由图片识别生成，请重点核对课程名、周次与节次</string>
     <string name="settings_transfer_no_terms_in_file">文件里没有有效的学期数据。</string>
     <string name="settings_transfer_parse_failed">解析失败：%1$s</string>
-    <string name="settings_transfer_new_timetable_one">，新增课表「%1$s」（我的 → 课表管理切换）</string>
-    <string name="settings_transfer_new_timetable_many">，新增 %1$d 张课表（我的 → 课表管理切换）</string>
+    <string name="settings_transfer_new_timetable_one">新增课表「%1$s」，可在「我的 → 课表管理」切换。</string>
+    <plurals name="settings_transfer_new_timetable_many">
+        <item quantity="other">新增 %1$d 张课表，可在「我的 → 课表管理」切换。</item>
+    </plurals>
 
     <!-- 二维码分享 / 扫码 -->
     <string name="settings_qr_render_failed">二维码绘制失败</string>
@@ -311,6 +359,7 @@
     <!-- 导入预览里的提示（:importer 的 ImportNotice） -->
     <string name="settings_notice_shiguang_row_not_object">第 %1$d 门课不是对象，已跳过</string>
     <string name="settings_notice_shiguang_row_no_name">第 %1$d 门课没有课程名，已跳过</string>
+    <string name="settings_notice_shiguang_row_no_day">「%1$s」没有 day（星期几），已跳过</string>
     <string name="settings_notice_shiguang_row_bad_day">「%1$s」的 day=%2$s 不是 1~7，已跳过</string>
     <string name="settings_notice_shiguang_weeks_truncated">学期周数 %1$d 超出上限，已截断为 %2$d 周（超出的周次会被丢弃）</string>
     <string name="settings_notice_shiguang_weeks_exceed_declared">课程里出现了第 %1$d 周，超过导出文件声明的 %2$d 周，已按 %1$d 周导入</string>
@@ -324,7 +373,9 @@
     <string name="settings_notice_shiguang_course_no_time">「%1$s」既没有节次也没有可用的自定义时间，已跳过</string>
     <string name="settings_notice_shiguang_custom_time_no_nearest">「%1$s」只有自定义时间 %2$s，作息表里找不到接近的节次，已跳过</string>
     <string name="settings_notice_shiguang_custom_time_nearest">「%1$s」是自定义时间 %2$s，已按最接近的第 %3$d 节放入</string>
-    <string name="settings_notice_shiguang_custom_time_dropped">有 %1$d 条课程安排在拾光里设了自定义上下课时间，空课按节次导入，自定义时间未保留</string>
+    <plurals name="settings_notice_shiguang_custom_time_dropped">
+        <item quantity="other">有 %1$d 条课程安排在拾光里设了自定义上下课时间，空课按节次导入，自定义时间未保留</item>
+    </plurals>
     <string name="settings_notice_shiguang_periods_extended">课程用到第 %1$d 节，作息表只有 %2$d 节，已按每节 %3$d 分钟、课间 %4$d 分钟补齐，请在学期管理里核对</string>
     <string name="settings_notice_shiguang_weeks_overflow_dropped">「%1$s」有周次超过 %2$d 周，超出部分已丢弃</string>
     <string name="settings_notice_shiguang_weeks_missing">「%1$s」没有周次信息，已按整学期 1~%2$d 周导入</string>
@@ -343,15 +394,23 @@
     <!-- 教务：图片 OCR / 页面文字还原表格（:importer 的 ImportNotice.OCR_*）。行号、列号从 1 起 -->
     <string name="settings_notice_ocr_no_text">图片里没有识别到任何文字</string>
     <string name="settings_notice_ocr_no_day_header">没有找到星期表头行，无法确定课表列</string>
-    <string name="settings_notice_ocr_day_columns_out_of_range">识别到 %1$d 个星期列（期望 5-7 个），表头可能不完整</string>
+    <plurals name="settings_notice_ocr_day_columns_out_of_range">
+        <item quantity="other">识别到 %1$d 个星期列（期望 5-7 个），表头可能不完整</item>
+    </plurals>
     <string name="settings_notice_ocr_day_columns_mismatch">星期列数与预期不符（识别 %1$d，预期 %2$d）</string>
     <string name="settings_notice_ocr_day_order_odd">星期表头顺序异常，请重点核对</string>
     <string name="settings_notice_ocr_periods_by_time">节次列是按上课时间认的，节次号按行序推断，请重点核对</string>
-    <string name="settings_notice_ocr_no_period_column">没有找到节次列（识别到 %1$d 行），无法确定课表行</string>
+    <plurals name="settings_notice_ocr_no_period_column">
+        <item quantity="other">没有找到节次列（识别到 %1$d 行），无法确定课表行</item>
+    </plurals>
     <string name="settings_notice_ocr_period_rows_mismatch">节次行数与预期不符（识别 %1$d，预期 %2$d）</string>
-    <string name="settings_notice_ocr_unassigned_boxes">有 %1$d 个文本块没能归入网格（占 %2$d%%）</string>
+    <plurals name="settings_notice_ocr_unassigned_boxes">
+        <item quantity="other">有 %1$d 个文本块没能归入网格（占 %2$d%%）</item>
+    </plurals>
     <string name="settings_notice_ocr_no_week_info">格子里没有周次信息，已逐格还原课表，请核对</string>
-    <string name="settings_notice_ocr_column_lines_skipped">第 %1$d 列：有 %2$d 行文字没归到任何课程上，已跳过</string>
+    <plurals name="settings_notice_ocr_column_lines_skipped">
+        <item quantity="other">第 %1$d 列：有 %2$d 行文字没归到任何课程上，已跳过</item>
+    </plurals>
     <string name="settings_notice_ocr_cell_no_grid">第 %1$d 行第 %2$d 列：网格坐标缺失</string>
     <string name="settings_notice_ocr_cell_no_weeks">第 %1$d 行第 %2$d 列「%3$s」：没识别出周次，已按整学期处理，请核对</string>
     <string name="settings_notice_ocr_no_courses">整张表没有识别出任何课程</string>
@@ -367,7 +426,9 @@
     <string name="settings_jw_import_zip">导入适配器包</string>
 
     <!-- 教务导入：库热更新 -->
-    <string name="settings_jw_library_version">适配器库版本：%1$s（%2$d 个）</string>
+    <plurals name="settings_jw_library_version">
+        <item quantity="other">适配器库版本：%1$s（%2$d 个）</item>
+    </plurals>
     <string name="settings_jw_library_builtin">内置</string>
     <string name="settings_jw_library_last_check">上次检查更新：%1$s</string>
     <string name="settings_jw_library_never_checked">从未</string>
@@ -378,8 +439,8 @@
     <string name="settings_jw_library_check_failed">检查失败：所有更新源都连不上，请稍后再试。</string>
     <string name="settings_jw_library_found">发现新版本 v%1$s</string>
     <string name="settings_jw_library_latest">已是最新版本</string>
-    <string name="settings_jw_library_updated">适配器库已更新到 v%1$s%2$s</string>
-    <string name="settings_jw_library_shadowed">；官方已收录 %1$s，同名的自添加适配器将改用官方版</string>
+    <string name="settings_jw_library_updated">适配器库已更新到 v%1$s。</string>
+    <string name="settings_jw_library_shadowed">官方已收录 %1$s，同名的自添加适配器将改用官方版。</string>
     <string name="settings_jw_library_update_failed">更新失败：%1$s</string>
 
     <!-- 教务导入：WebView 步骤 -->
@@ -415,7 +476,10 @@
 
     <!-- 教务导入：识别结果核对 -->
     <string name="settings_jw_review_title">核对识别结果</string>
-    <string name="settings_jw_review_count">识别到 %1$d 门课程、%2$d 条安排。</string>
+    <string name="settings_jw_review_count">识别到 %1$s、%2$s。</string>
+    <plurals name="settings_jw_review_course_count">
+        <item quantity="other">%1$d 门课程</item>
+    </plurals>
     <string name="settings_jw_review_defaults">学期名与开学日期用的是默认值（页面标题 / 本周周一），导入后可在学期编辑里改。</string>
     <string name="settings_jw_review_warn">⚠ 以下内容需要你重点核对：</string>
     <string name="settings_jw_review_hint">识别是按格子的位置还原的，可能整行错位。导入后请到课表里抽查几门课的位置。</string>
@@ -429,6 +493,28 @@
     <string name="settings_jw_unknown_error">未知错误</string>
     <string name="settings_jw_package_read_failed">适配器包读取失败</string>
     <string name="settings_jw_cannot_read_file">无法读取文件</string>
+    <!-- 教务：用户会碰到的失败原因（:importer 的 JwErrorCode） -->
+    <string name="settings_jw_err_network_failed">网络请求失败：%1$s</string>
+    <string name="settings_jw_err_http_status">服务器返回 HTTP %1$d</string>
+    <string name="settings_jw_err_insecure_redirect">被重定向到非 https 地址：%1$s</string>
+    <string name="settings_jw_err_empty_response">服务器响应为空</string>
+    <string name="settings_jw_err_response_too_large">响应超过 %1$dKB 上限</string>
+    <string name="settings_jw_err_no_newer_version">没有比当前更新的版本</string>
+    <string name="settings_jw_err_index_unreadable">无法读取适配器库索引：%1$s</string>
+    <string name="settings_jw_err_adapter_file_unreadable">无法读取 %1$s 的 %2$s：%3$s</string>
+    <string name="settings_jw_err_library_url_empty">库地址为空</string>
+    <string name="settings_jw_err_library_url_invalid">库地址不是合法 URL：%1$s</string>
+    <string name="settings_jw_err_library_url_not_http">库地址必须是 http(s) 链接：%1$s</string>
+    <string name="settings_jw_err_library_url_insecure">只允许 https 的适配器库地址（当前是 http，传输途中可能被替换）</string>
+    <string name="settings_jw_err_library_url_no_host">库地址缺少主机名：%1$s</string>
+    <string name="settings_jw_err_library_url_github_shape">GitHub 地址需要形如 github.com/用户名/仓库名</string>
+    <string name="settings_jw_err_spec_too_new">适配器规范版本 v%1$d 高于本应用支持的 v%2$d，请先升级空课</string>
+    <string name="settings_jw_err_app_too_old">此适配器需要 versionCode ≥ %1$d 的空课（当前 %2$d），请先升级应用</string>
+    <string name="settings_jw_broken_unreadable">读取失败</string>
+    <!-- 宿主给适配器脚本设的限额 -->
+    <string name="settings_jw_script_timeout">脚本执行超时（%1$d 秒）</string>
+    <string name="settings_jw_wait_timeout">等待回答超时（%1$d 秒）</string>
+    <string name="settings_jw_result_too_large">提取结果过大（%1$dK 字符），请向适配器作者反馈</string>
     <string name="settings_jw_library_read_failed">适配器库读取失败</string>
     <string name="settings_jw_download_failed">适配器下载失败</string>
     <string name="settings_jw_install_failed">安装失败</string>
@@ -454,7 +540,9 @@
     <string name="settings_jw_picker_link_read">读取</string>
 
     <!-- 教务导入：安装确认 / 库列表 / 详情 -->
-    <string name="settings_jw_install_title_many">安装 %1$d 个适配器？</string>
+    <plurals name="settings_jw_install_title_many">
+        <item quantity="other">安装 %1$d 个适配器？</item>
+    </plurals>
     <string name="settings_jw_install_title_one">添加这个适配器？</string>
     <string name="settings_jw_adapter_line">%1$s（%2$s v%3$s）</string>
     <string name="settings_jw_adapter_login_url">登录页：%1$s</string>
@@ -484,7 +572,9 @@
     <string name="settings_jw_recent_used">最近使用</string>
     <string name="settings_jw_recent_refresh_hint">一键刷新：复用上次的登录状态重新提取</string>
     <string name="settings_jw_no_school_match">没找到匹配「%1$s」的学校。</string>
-    <string name="settings_jw_mine_hits">「我添加的」里有 %1$d 个结果</string>
+    <plurals name="settings_jw_mine_hits">
+        <item quantity="other">「我添加的」里有 %1$d 个结果</item>
+    </plurals>
     <string name="settings_jw_try_generic">可以试试通用适配器：填上你的教务地址，登录后由空课读页面自己还原课表。</string>
     <string name="settings_jw_badge_generic">通用</string>
     <string name="settings_jw_no_your_school">没有你的学校？</string>

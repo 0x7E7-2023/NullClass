@@ -22,6 +22,13 @@ android {
     buildFeatures {
         compose = true
     }
+
+    // 文案走真实资源：单测经 Robolectric 取 strings.xml
+    testOptions {
+        unitTests.isIncludeAndroidResources = true
+        // Robolectric 在 SDK 36 沙箱里要反射 FileDescriptor 内部，新版 JDK 默认不导出
+        unitTests.all { it.jvmArgs("--add-exports=java.base/jdk.internal.access=ALL-UNNAMED") }
+    }
 }
 
 dependencies {
@@ -66,6 +73,7 @@ dependencies {
     // 适配器搜索的匹配规则是纯函数，用 JVM 单测锁住（见 JwAdapterSearchTest）
     testImplementation(libs.junit)
     testImplementation(libs.kotlin.test)
+    testImplementation(libs.robolectric)
     androidTestImplementation(libs.androidx.test.junit)
     androidTestImplementation(libs.androidx.test.runner)
 }

@@ -19,6 +19,13 @@ android {
     buildFeatures {
         compose = true
     }
+
+    // 文案走真实资源：单测经 Robolectric 取 strings.xml
+    testOptions {
+        unitTests.isIncludeAndroidResources = true
+        // Robolectric 在 SDK 36 沙箱里要反射 FileDescriptor 内部，新版 JDK 默认不导出
+        unitTests.all { it.jvmArgs("--add-exports=java.base/jdk.internal.access=ALL-UNNAMED") }
+    }
 }
 
 dependencies {
@@ -33,4 +40,8 @@ dependencies {
     implementation(libs.androidx.activity.compose)
     debugImplementation(libs.compose.ui.tooling)
     debugImplementation(libs.compose.ui.tooling.preview)
+
+    testImplementation(libs.junit)
+    testImplementation(libs.kotlin.test)
+    testImplementation(libs.robolectric)
 }

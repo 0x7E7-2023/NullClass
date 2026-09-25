@@ -1,5 +1,6 @@
 package com.nullclass.feature.edit
 
+import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -273,8 +274,8 @@ fun TermEditScreen(
                 Text(
                     stringResource(
                         R.string.edit_term_periods,
-                        state.periods.size,
-                        state.periods.size / 2,
+                        pluralStringResource(R.plurals.edit_term_period_count, state.periods.size, state.periods.size),
+                        (state.periods.size / 2).let { pluralStringResource(R.plurals.edit_term_section_count, it, it) },
                     ),
                     style = MaterialTheme.typography.labelLarge,
                 )
@@ -378,7 +379,7 @@ fun TermEditScreen(
             onDismissRequest = { showClearConfirm = false },
             title = { Text(stringResource(R.string.edit_term_clear)) },
             text = {
-                Text(stringResource(R.string.edit_term_clear_confirm, state.courseCount))
+                Text(pluralStringResource(R.plurals.edit_term_clear_confirm, state.courseCount, state.courseCount))
             },
             confirmButton = {
                 TextButton(

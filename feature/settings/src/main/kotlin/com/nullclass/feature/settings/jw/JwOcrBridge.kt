@@ -1,5 +1,6 @@
 package com.nullclass.feature.settings.jw
 
+import com.nullclass.feature.settings.R
 import android.content.Context
 import com.nullclass.feature.settings.toUiText
 import com.nullclass.importer.jw.JwScriptContract
@@ -48,10 +49,8 @@ class JwOcrBridge(
         } catch (e: TimeoutCancellationException) {
             throw JwScriptException("识别超时")
         } catch (e: JwImageOcr.JwImageUnreadableException) {
-            throw JwScriptException(
-                "图片无法读取或不在白名单内（只允许 https/http 且域名在适配器声明范围内），" +
-                    "也可能只是图片损坏——建议用原始截图，不要用微信转发后的压缩图",
-            )
+            // 这句是给用户的建议（换原图），脚本多半原样转给用户看：按当前界面语言取
+            throw JwScriptException(context.getString(R.string.settings_jw_image_unreadable))
         }
         return if (type == TYPE_OCR) ocrPayload(page) else gridPayload(page)
     }

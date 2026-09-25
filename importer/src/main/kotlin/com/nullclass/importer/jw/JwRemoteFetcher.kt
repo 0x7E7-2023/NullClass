@@ -17,7 +17,13 @@ interface JwRemoteFetcher {
     }
 }
 
-class JwRemoteException(message: String, cause: Throwable? = null) : Exception(message, cause)
+/** 远端读取失败。消息是中文原文；原因码见 [JwCodedError]。 */
+class JwRemoteException(
+    message: String,
+    cause: Throwable? = null,
+    override val code: JwErrorCode? = null,
+    override val codeArgs: List<Any> = emptyList(),
+) : Exception(message, cause), JwCodedError
 
 /**
  * 适配器库客户端：把「用户粘的一个 URL」变成可安装的适配器。
@@ -38,7 +44,7 @@ class JwLibraryClient(
         val raw = try {
             fetcher.fetchText(url)
         } catch (e: JwRemoteException) {
-            throw JwRemoteException("无法读取适配器库索引：${e.message}", e)
+            throw JwRemoteException("无法读取适配器库索引：${e.message}", e, JwErrorCode.INDEX_UNREADABLE, listOf(e))
         }
         return JwLibrarySnapshot(url, JwLibraryIndexCodec.decode(raw))
     }
@@ -57,7 +63,12 @@ class JwLibraryClient(
             val text = try {
                 fetcher.fetchText(url)
             } catch (e: JwRemoteException) {
-                throw JwRemoteException("无法读取 ${entry.key} 的 $relative：${e.message}", e)
+                throw JwRemoteException(
+                    "无法读取 ${entry.key} 的 $relative：${e.message}",
+                    e,
+                    JwErrorCode.ADAPTER_FILE_UNREADABLE,
+                    listOf(entry.key, relative, e),
+                )
             }
             val bytes = text.toByteArray(Charsets.UTF_8)
             totalBytes += bytes.size

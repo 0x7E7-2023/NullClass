@@ -60,7 +60,9 @@
     <string name="schedule_day_swap_reset">恢复原课表</string>
 
     <!-- 课程详情 -->
-    <string name="schedule_course_block_count">共 %1$d 项安排</string>
+    <plurals name="schedule_course_block_count">
+        <item quantity="other">共 %1$d 项安排</item>
+    </plurals>
     <string name="schedule_course_exams">考试安排</string>
     <string name="schedule_course_add_exam">添加考试</string>
     <string name="schedule_course_no_exam">尚未设置考试</string>
@@ -95,9 +97,15 @@
     <string name="schedule_event_lead_none">不提醒</string>
     <string name="schedule_event_lead_all_day">当天 8:00</string>
     <string name="schedule_event_lead_on_time">准时</string>
-    <string name="schedule_event_lead_days">提前 %1$d 天</string>
-    <string name="schedule_event_lead_hours">提前 %1$d 小时</string>
-    <string name="schedule_event_lead_minutes">提前 %1$d 分钟</string>
+    <plurals name="schedule_event_lead_days">
+        <item quantity="other">提前 %1$d 天</item>
+    </plurals>
+    <plurals name="schedule_event_lead_hours">
+        <item quantity="other">提前 %1$d 小时</item>
+    </plurals>
+    <plurals name="schedule_event_lead_minutes">
+        <item quantity="other">提前 %1$d 分钟</item>
+    </plurals>
 
     <!-- 日程：错误 -->
     <string name="schedule_event_save_failed">保存失败，请重试。</string>

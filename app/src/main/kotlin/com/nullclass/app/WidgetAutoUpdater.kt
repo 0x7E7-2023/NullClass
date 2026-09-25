@@ -48,6 +48,7 @@ class WidgetAutoUpdater @Inject constructor(
     private val courseRepository: CourseRepository,
     private val dayOverrideRepository: DayOverrideRepository,
     private val userPreferences: UserPreferencesRepository,
+    private val localeChanges: LocaleChanges,
 ) {
 
     private val todayWidget = TodayGlanceWidget()
@@ -96,6 +97,19 @@ class WidgetAutoUpdater @Inject constructor(
                     throw e
                 } catch (e: Exception) {
                     Log.e(TAG, "font track died, restarting", e)
+                    delay(RESTART_BACKOFF_MS)
+                }
+            }
+        }
+        // 界面语言：小组件上的文字是推送时取的，换语言要重画。跳过首帧，理由同字号档。
+        scope.launch(Dispatchers.Default) {
+            while (true) {
+                try {
+                    localeChanges.version.drop(1).collect { pushBoth() }
+                } catch (e: CancellationException) {
+                    throw e
+                } catch (e: Exception) {
+                    Log.e(TAG, "locale track died, restarting", e)
                     delay(RESTART_BACKOFF_MS)
                 }
             }

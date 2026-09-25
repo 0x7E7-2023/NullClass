@@ -252,7 +252,8 @@ private fun List<CourseConflict>.toConflictMessage(context: Context): UiText {
         append(shown.joinToString(LINE_BREAK))
         if (lines.size > shown.size) {
             append(LINE_BREAK)
-            append(context.getString(R.string.edit_course_conflict_more, lines.size - shown.size))
+            val more = lines.size - shown.size
+            append(context.resources.getQuantityString(R.plurals.edit_course_conflict_more, more, more))
         }
     }
     return UiText.Dynamic(text)

@@ -21,8 +21,9 @@ class PpOcrEngine(private val context: Context) : OcrEngine {
     @Volatile
     private var pipeline: PpOcrPipeline? = null
 
+    /** 模型加载失败的原始原因（系统给的，不翻）。说明文字取用时再按当前语言拼，不缓存成品。 */
     @Volatile
-    private var failure: String? = null
+    private var failureDetail: String? = null
 
     override val available: Boolean
         get() = ensurePipeline() != null
@@ -30,13 +31,13 @@ class PpOcrEngine(private val context: Context) : OcrEngine {
     override val unavailableReason: String?
         get() {
             ensurePipeline()
-            return failure
+            return failureDetail?.let { context.getString(R.string.ocr_model_load_failed, it) }
         }
 
     override suspend fun recognize(bitmap: Bitmap): OcrPage = withContext(Dispatchers.Default) {
         val engine = ensurePipeline()
             ?: throw OcrUnavailableException(
-                failure ?: context.getString(R.string.ocr_engine_unavailable),
+                unavailableReason ?: context.getString(R.string.ocr_engine_unavailable),
             )
         engine.recognize(OcrImage.fromBitmap(bitmap))
     }
@@ -45,7 +46,7 @@ class PpOcrEngine(private val context: Context) : OcrEngine {
         pipeline?.let { return it }
         synchronized(lock) {
             pipeline?.let { return it }
-            if (failure != null) return null
+            if (failureDetail != null) return null
             return try {
                 val environment = OrtEnvironment.getEnvironment()
                 val options = OrtSession.SessionOptions().apply {
@@ -56,10 +57,7 @@ class PpOcrEngine(private val context: Context) : OcrEngine {
                 val rec = environment.createSession(readAsset(REC_MODEL), options)
                 PpOcrPipeline(environment, det, rec, readDictionary()).also { pipeline = it }
             } catch (e: Throwable) {
-                failure = context.getString(
-                    R.string.ocr_model_load_failed,
-                    e.message ?: e.javaClass.simpleName,
-                )
+                failureDetail = e.message ?: e.javaClass.simpleName
                 null
             }
         }

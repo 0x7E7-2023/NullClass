@@ -1,5 +1,6 @@
 package com.nullclass.feature.settings
 
+import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -140,7 +141,7 @@ fun CourseCleanupScreen(
                         verticalAlignment = Alignment.CenterVertically,
                     ) {
                         Text(
-                            stringResource(R.string.settings_cleanup_selected, selectedRows.size),
+                            pluralStringResource(R.plurals.settings_cleanup_selected, selectedRows.size, selectedRows.size),
                             style = MaterialTheme.typography.bodyMedium,
                             modifier = Modifier.weight(1f),
                         )
@@ -348,7 +349,7 @@ fun CourseCleanupScreen(
         val doomed = selectedRows
         AlertDialog(
             onDismissRequest = { confirming = false },
-            title = { Text(stringResource(R.string.settings_cleanup_confirm_title, doomed.size)) },
+            title = { Text(pluralStringResource(R.plurals.settings_cleanup_confirm_title, doomed.size, doomed.size)) },
             text = {
                 Text(
                     doomed.joinToString(stringResource(CoreR.string.common_list_separator)) { it.course.name } + "\n\n" +
@@ -420,10 +421,9 @@ private fun CleanupCourseRow(
                 }
                 if (row.totalBlocks > row.matched.size) {
                     Text(
-                        stringResource(
-                            R.string.settings_cleanup_other_blocks,
-                            row.totalBlocks - row.matched.size,
-                        ),
+                        (row.totalBlocks - row.matched.size).let { others ->
+                            pluralStringResource(R.plurals.settings_cleanup_other_blocks, others, others)
+                        },
                         style = MaterialTheme.typography.labelSmall,
                         color = MaterialTheme.colorScheme.error,
                     )

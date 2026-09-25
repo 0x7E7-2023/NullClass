@@ -198,7 +198,7 @@ class JwOfficialUpdater(
 
     /** 下载比 [currentVersion] 新的最高可用版本；都失败抛最后一个错误。 */
     fun download(check: JwOfficialCheck, currentVersion: String?): JwOfficialDownload {
-        var lastError: Exception = JwRemoteException("没有比当前更新的版本")
+        var lastError: Exception = JwRemoteException("没有比当前更新的版本", code = JwErrorCode.NO_NEWER_VERSION)
         check.versions
             .filter { JwOfficialLibrary.compareVersions(it.first, currentVersion) > 0 }
             .forEach { (version, reporters) ->

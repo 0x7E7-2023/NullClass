@@ -65,18 +65,7 @@ data class JwSchedulePayload(
         /** 单条 [JwSchedulePayload.warnings] 的长度上限。 */
         const val MAX_WARNING_TEXT = 200
     }
-
-    /**
-     * 真正要显示给用户的核对提示：图片识别那条固定说明 + 适配器自己写的。
-     *
-     * `ocrAssisted` 的语义就落在这里一处，不让每个调用方各写一遍。
-     */
-    val reviewNotes: List<String>
-        get() = (if (ocrAssisted) listOf(OCR_REVIEW_NOTE) else emptyList()) + warnings
 }
-
-/** `ocrAssisted` 对应的固定提示（规范 §4）。 */
-const val OCR_REVIEW_NOTE = "该课表由图片识别生成，请重点核对课程名、周次与节次"
 
 /** 一个页面文本块：坐标与尺寸都是 CSS 像素。 */
 @Serializable

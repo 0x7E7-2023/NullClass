@@ -1,5 +1,6 @@
 package com.nullclass.feature.settings.jw
 
+import androidx.compose.ui.res.pluralStringResource
 import android.annotation.SuppressLint
 import android.content.ClipData
 import android.content.ClipboardManager
@@ -151,7 +152,8 @@ fun JwWebViewStep(
     adapter: JwAdapter,
     autoExtract: Boolean,
     preferredUrl: String?,
-    onExtracted: (documentJson: String, loadedUrl: String, notes: List<String>) -> Unit,
+    /** [notes] 是适配器写的核对提示（原文）；[ocrAssisted] 为 true 时导入预览另补空课自己的核对提示。 */
+    onExtracted: (documentJson: String, loadedUrl: String, notes: List<String>, ocrAssisted: Boolean) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     val context = LocalContext.current
@@ -325,7 +327,7 @@ fun JwWebViewStep(
                         status = UiText.Res(R.string.settings_jw_extract_done)
                         lastErrorLog = null
                         JwExtractLog.i("提取成功 key=${adapter.key} terms=${document.terms.size}") // i18n-exempt: 开发者日志
-                        onExtracted(NullClassCodec.encode(document), rememberableUrl(), payload.reviewNotes)
+                        onExtracted(NullClassCodec.encode(document), rememberableUrl(), payload.warnings, payload.ocrAssisted)
                     }
                 }
             } catch (e: JwStructureNotFoundException) {
@@ -362,10 +364,10 @@ fun JwWebViewStep(
                     ),
                 )
             } catch (e: Exception) {
-                // 异常详情不翻（系统/服务器给的原始信息），只翻结论
+                // 空课自己设的限额取词条；其余详情不翻（脚本、系统、服务器给的原文），只翻结论
                 status = UiText.Res(
                     R.string.settings_jw_extract_failed,
-                    e.message ?: e.javaClass.simpleName,
+                    (e as? JwScriptLimitException)?.toUiText() ?: e.message ?: e.javaClass.simpleName,
                 )
                 persistError(
                     buildErrorLog(
@@ -634,7 +636,12 @@ fun JwWebViewStep(
                     now = System.currentTimeMillis(),
                 )
                 ocrReview = null
-                onExtracted(NullClassCodec.encode(document), rememberableUrl(), review.payload.reviewNotes)
+                onExtracted(
+                    NullClassCodec.encode(document),
+                    rememberableUrl(),
+                    review.payload.warnings,
+                    review.payload.ocrAssisted,
+                )
             },
             onDismiss = {
                 ocrReview = null
@@ -723,7 +730,11 @@ private fun OcrReviewDialog(
                 verticalArrangement = Arrangement.spacedBy(8.dp),
             ) {
                 Text(
-                    stringResource(R.string.settings_jw_review_count, courseCount, blockCount),
+                    stringResource(
+                        R.string.settings_jw_review_count,
+                        pluralStringResource(R.plurals.settings_jw_review_course_count, courseCount, courseCount),
+                        pluralStringResource(R.plurals.settings_count_blocks, blockCount, blockCount),
+                    ),
                     fontWeight = FontWeight.Bold,
                 )
                 Text(

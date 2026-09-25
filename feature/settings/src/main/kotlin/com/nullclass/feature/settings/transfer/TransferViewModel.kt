@@ -155,24 +155,21 @@ class TransferViewModel @Inject constructor(
                         out.write(result.content.toByteArray(Charsets.UTF_8))
                     } ?: throw CannotOpenTargetException()
                 }
-                // 这一小句是嵌进上一句的，本身也是一条可翻译词条（UiText 支持嵌套代入）
-                val skipped: Any = if (result.skippedBlockCount == 0) {
-                    ""
+                val done = UiText.Res(
+                    R.string.settings_transfer_ics_export_done,
+                    UiText.Plural(R.plurals.settings_transfer_ics_block_count, result.courseEventCount),
+                    UiText.Plural(R.plurals.settings_count_exams, result.examEventCount),
+                )
+                // 跳过了多少另起一句：嵌成半句的话，别的语言没法调整语序
+                val message = if (result.skippedBlockCount == 0) {
+                    done
                 } else {
-                    UiText.Res(R.string.settings_transfer_ics_skipped, result.skippedBlockCount)
-                }
-                _state.update {
-                    it.copy(
-                        busy = false,
-                        message = UiText.Res(
-                            R.string.settings_transfer_ics_export_done,
-                            result.courseEventCount,
-                            result.examEventCount,
-                            skipped,
-                        ),
-                        messageIsError = false,
+                    UiText.Joined(
+                        listOf(done, UiText.Plural(R.plurals.settings_transfer_ics_skipped, result.skippedBlockCount)),
+                        CoreR.string.common_sentence_separator,
                     )
                 }
+                _state.update { it.copy(busy = false, message = message, messageIsError = false) }
             } catch (e: Exception) {
                 _state.update {
                     it.copy(
@@ -320,11 +317,18 @@ class TransferViewModel @Inject constructor(
      * 「设为当前学期」不在这里决定：合并时 [com.nullclass.sync.ImportAligner] 按来源
      * （教务 = 开始用新学期；备份 / v1 v2 旧扫码 = 不动）处理。
      */
-    fun parseExtractedDocument(json: String, source: UiText, adapterNotes: List<String> = emptyList()) {
+    fun parseExtractedDocument(
+        json: String,
+        source: UiText,
+        adapterNotes: List<String> = emptyList(),
+        ocrAssisted: Boolean = false,
+    ) {
         parseRaw(
             { NullClassCodec.decode(json) },
             source = source,
             section = TransferSection.JW,
+            // 图片识别来的：空课自己的核对提示放在空课的提示里，不和适配器写的混在一起
+            warnings = if (ocrAssisted) listOf(UiText.Res(R.string.settings_transfer_ocr_review_note)) else emptyList(),
             adapterNotes = adapterNotes,
         )
     }
@@ -530,27 +534,25 @@ class TransferViewModel @Inject constructor(
                 }
                 _state.update {
                     val newTimetables = result.newTimetableNames
-                    val suffix = when {
-                        newTimetables.isEmpty() -> ""
-                        // 后缀嵌进上面那句的结果里，所以用字符串资源而不是 UiText：留空串代表没有
+                    // 「新增了课表」另起一句：嵌成半句的话，别的语言没法调整语序
+                    val newTimetableNote: UiText? = when {
+                        newTimetables.isEmpty() -> null
                         newTimetables.size == 1 ->
-                            appContext.getString(
-                                R.string.settings_transfer_new_timetable_one,
-                                newTimetables.single(),
-                            )
-                        else ->
-                            appContext.getString(
-                                R.string.settings_transfer_new_timetable_many,
-                                newTimetables.size,
-                            )
+                            UiText.Res(R.string.settings_transfer_new_timetable_one, newTimetables.single())
+                        else -> UiText.Plural(R.plurals.settings_transfer_new_timetable_many, newTimetables.size)
+                    }
+                    val done = if (result.adopted > 0) {
+                        UiText.Plural(R.plurals.settings_transfer_import_done, result.adopted)
+                    } else {
+                        UiText.Res(R.string.settings_transfer_import_up_to_date)
                     }
                     it.copy(
                         busy = false,
                         preview = null,
-                        message = if (result.adopted > 0) {
-                            UiText.Res(R.string.settings_transfer_import_done, result.adopted, suffix)
+                        message = if (newTimetableNote == null) {
+                            done
                         } else {
-                            UiText.Res(R.string.settings_transfer_import_up_to_date, suffix)
+                            UiText.Joined(listOf(done, newTimetableNote), CoreR.string.common_sentence_separator)
                         },
                         messageIsError = false,
                     )
@@ -577,6 +579,7 @@ class TransferViewModel @Inject constructor(
         parser: () -> ScheduleDocument,
         source: UiText,
         section: TransferSection,
+        warnings: List<UiText> = emptyList(),
         adapterNotes: List<String> = emptyList(),
         /** 合并后要设为当前学期的学期名（重铸 ID 的来源按名激活——对齐可能换 id）。 */
         activateTermName: (ScheduleDocument) -> String? = { null },
@@ -621,7 +624,7 @@ class TransferViewModel @Inject constructor(
                             section = section,
                             document = document,
                             termSummaries = summaries,
-                            warnings = emptyList(),
+                            warnings = warnings,
                             adapterNotes = adapterNotes,
                             activateTermName = activateTermName(document),
                             pendingDeletions = deletions,

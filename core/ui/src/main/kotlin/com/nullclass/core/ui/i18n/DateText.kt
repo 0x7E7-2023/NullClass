@@ -34,7 +34,9 @@ object DateText {
             ExamRelativeDay.Tomorrow -> context.getString(R.string.fmt_exam_relative_tomorrow)
             ExamRelativeDay.Yesterday -> context.getString(R.string.fmt_exam_relative_yesterday)
             ExamRelativeDay.Past -> context.getString(R.string.fmt_exam_relative_past)
-            is ExamRelativeDay.InDays -> context.getString(R.string.fmt_exam_relative_in_days, relative.days)
+            is ExamRelativeDay.InDays -> relative.days.toInt().let { days ->
+                context.resources.getQuantityString(R.plurals.fmt_exam_relative_in_days, days, days)
+            }
         }
 }
 

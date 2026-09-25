@@ -123,10 +123,9 @@ internal fun NextClassWidgetContent(
             Spacer(GlanceModifier.height(if (compact) 2.dp else 8.dp))
             Text(
                 when {
-                    inProgress -> context.getString(
-                        R.string.widget_next_remaining,
-                        snapshot.remainingMinutes(next, nowMinuteOfDay),
-                    )
+                    inProgress -> snapshot.remainingMinutes(next, nowMinuteOfDay).let { minutes ->
+                        context.resources.getQuantityString(R.plurals.widget_next_remaining, minutes, minutes)
+                    }
                     compact -> next.startTime
                     else -> context.getString(
                         R.string.widget_next_time_range,

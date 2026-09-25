@@ -186,10 +186,7 @@ class SettingsViewModel @Inject constructor(
                 is SyncResult.Success -> _state.update {
                     it.copy(
                         busy = false,
-                        message = UiText.Res(
-                            R.string.settings_webdav_sync_done,
-                            result.adoptedFromRemote,
-                        ),
+                        message = UiText.Plural(R.plurals.settings_webdav_sync_done, result.adoptedFromRemote),
                         messageIsError = false,
                     )
                 }

@@ -1,5 +1,6 @@
 package com.nullclass.feature.settings.jw
 
+import androidx.compose.ui.res.pluralStringResource
 import com.nullclass.feature.settings.R
 import android.widget.Toast
 import androidx.compose.foundation.layout.Arrangement
@@ -30,8 +31,9 @@ fun JwLibraryUpdateSection(viewModel: JwLibraryUpdateViewModel = hiltViewModel()
     }
     Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
         Text(
-            stringResource(
-                R.string.settings_jw_library_version,
+            pluralStringResource(
+                R.plurals.settings_jw_library_version,
+                state.adapterCount,
                 state.version?.let { "v$it" } ?: stringResource(R.string.settings_jw_library_builtin),
                 state.adapterCount,
             ),

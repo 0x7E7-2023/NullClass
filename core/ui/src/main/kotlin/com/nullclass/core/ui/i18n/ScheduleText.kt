@@ -77,11 +77,21 @@ object ScheduleText {
         val hours = minutes / 60
         val mins = minutes % 60
         return when {
-            hours == 0 -> context.getString(R.string.fmt_remaining_minutes, mins)
-            mins == 0 -> context.getString(R.string.fmt_remaining_hours, hours)
-            else -> context.getString(R.string.fmt_remaining_hours_minutes, hours, mins)
+            hours == 0 -> minutes(context, mins)
+            mins == 0 -> hours(context, hours)
+            else -> context.getString(R.string.fmt_remaining_hours_minutes, hours(context, hours), minutes(context, mins))
         }
     }
+
+    private fun minutes(context: Context, count: Int): String =
+        context.resources.getQuantityString(R.plurals.fmt_remaining_minutes, count, count)
+
+    private fun hours(context: Context, count: Int): String =
+        context.resources.getQuantityString(R.plurals.fmt_remaining_hours, count, count)
+
+    /** 学期总周数：「共 18 周」。 */
+    fun totalWeeks(context: Context, weeks: Int): String =
+        context.resources.getQuantityString(R.plurals.fmt_total_weeks, weeks, weeks)
 
     /** 完整一行：「第1-16周 · 单周 · 周二 · 3-4节 · A101」。 */
     fun blockSummary(context: Context, block: ScheduleBlock): String = buildList {
@@ -113,6 +123,9 @@ fun periodRangeLabel(block: ScheduleBlock): String = ScheduleText.periodRange(Lo
 
 @Composable
 fun remainingLabel(minutes: Int): String = ScheduleText.remaining(LocalContext.current, minutes)
+
+@Composable
+fun totalWeeksLabel(weeks: Int): String = ScheduleText.totalWeeks(LocalContext.current, weeks)
 
 @Composable
 fun blockSummaryLabel(block: ScheduleBlock): String = ScheduleText.blockSummary(LocalContext.current, block)

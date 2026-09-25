@@ -1,5 +1,6 @@
 package com.nullclass.feature.settings
 
+import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -82,7 +83,7 @@ fun QuickActionsScreen(
                 icon = Icons.Default.Refresh,
                 title = stringResource(R.string.settings_day_swap_title),
                 subtitle = if (upcomingSwaps > 0) {
-                    stringResource(R.string.settings_quick_actions_swap_desc_with_count, upcomingSwaps)
+                    pluralStringResource(R.plurals.settings_quick_actions_swap_desc_with_count, upcomingSwaps, upcomingSwaps)
                 } else {
                     stringResource(R.string.settings_quick_actions_swap_desc)
                 },

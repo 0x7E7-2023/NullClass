@@ -1,5 +1,6 @@
 package com.nullclass.feature.schedule
 
+import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -108,7 +109,7 @@ internal fun CourseDetailSheet(
                     Text(it, style = MaterialTheme.typography.bodyMedium, color = MaterialTheme.colorScheme.onSurfaceVariant)
                 }
                 Text(
-                    stringResource(R.string.schedule_course_block_count, courseWithBlocks.blocks.size),
+                    pluralStringResource(R.plurals.schedule_course_block_count, courseWithBlocks.blocks.size, courseWithBlocks.blocks.size),
                     style = MaterialTheme.typography.bodyMedium,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                 )

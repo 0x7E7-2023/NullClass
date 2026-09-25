@@ -1,5 +1,7 @@
 package com.nullclass.feature.settings.jw
 
+import com.nullclass.core.ui.i18n.resolve
+import androidx.compose.ui.res.pluralStringResource
 import android.content.Intent
 import android.icu.text.AlphabeticIndex
 import android.icu.text.Collator
@@ -231,7 +233,7 @@ private fun SchoolsTab(
                         )
                         if (mineHits > 0) {
                             TextButton(onClick = { onGoTab(PickerTab.MINE) }) {
-                                Text(stringResource(R.string.settings_jw_mine_hits, mineHits))
+                                Text(pluralStringResource(R.plurals.settings_jw_mine_hits, mineHits, mineHits))
                             }
                         }
                         Text(
@@ -355,7 +357,10 @@ private fun MineTab(
                 ) {
                     Column(Modifier.weight(1f)) {
                         Text("⚠ ${broken.key}", style = MaterialTheme.typography.bodyLarge)
-                        Text(broken.reason, style = MaterialTheme.typography.bodySmall)
+                        Text(
+                            broken.error?.toJwUiText(R.string.settings_jw_broken_unreadable)?.resolve() ?: broken.reason,
+                            style = MaterialTheme.typography.bodySmall,
+                        )
                     }
                     TextButton(onClick = { onDelete(JwAdapterPlaceholder.of(broken.key)) }) {
                         Text(stringResource(R.string.settings_jw_adapter_delete))

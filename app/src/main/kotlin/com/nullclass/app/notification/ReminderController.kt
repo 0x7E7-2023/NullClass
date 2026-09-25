@@ -1,6 +1,7 @@
 package com.nullclass.app.notification
 
 import android.content.Context
+import com.nullclass.app.LocaleChanges
 import com.nullclass.core.data.prefs.UserPreferencesRepository
 import com.nullclass.core.data.repository.CalendarEventRepository
 import com.nullclass.core.data.repository.CourseRepository
@@ -8,6 +9,7 @@ import com.nullclass.core.data.repository.DayOverrideRepository
 import com.nullclass.core.data.repository.ExamRepository
 import com.nullclass.core.data.repository.HolidayRepository
 import com.nullclass.core.data.repository.TermRepository
+import com.nullclass.core.model.Term
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -34,6 +36,7 @@ class ReminderController @Inject constructor(
     private val dayOverrideRepository: DayOverrideRepository,
     private val eventRepository: CalendarEventRepository,
     private val userPrefs: UserPreferencesRepository,
+    private val localeChanges: LocaleChanges,
 ) {
 
     fun start(scope: CoroutineScope) {
@@ -46,7 +49,9 @@ class ReminderController @Inject constructor(
                 userPrefs.exactReminder,
                 // 日程不挂学期，放在外层：没有学期也要排
                 eventRepository.events,
-            ) { term, _, _, _, _ -> term }
+                // 提醒的标题正文在排期时就渲染好了，换语言要重排才会跟上
+                localeChanges.version,
+            ) { values -> values[0] as Term? }
                 .flatMapLatest { term ->
                     if (term == null) {
                         flowOf(Unit)

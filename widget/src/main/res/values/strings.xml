@@ -15,7 +15,9 @@
     <string name="widget_app_name">空课</string>
     <string name="widget_today_week">第%1$d周 · %2$s</string>
     <string name="widget_updated_at">更新于 %1$s</string>
-    <string name="widget_today_remaining_count">待上 %1$d 门</string>
+    <plurals name="widget_today_remaining_count">
+        <item quantity="other">待上 %1$d 门</item>
+    </plurals>
     <string name="widget_today_footer">空课 · 今天</string>
 
     <!-- 空状态 -->
@@ -45,7 +47,9 @@
     <string name="widget_next_empty_finished">今日课程已结束</string>
     <string name="widget_next_in_class">正在上课</string>
     <string name="widget_next_upcoming">接下来</string>
-    <string name="widget_next_remaining">还剩 %1$d 分钟</string>
+    <plurals name="widget_next_remaining">
+        <item quantity="other">还剩 %1$d 分钟</item>
+    </plurals>
     <string name="widget_next_time_range">%1$s — %2$s</string>
     <string name="widget_next_location_unknown">教室待定</string>
 

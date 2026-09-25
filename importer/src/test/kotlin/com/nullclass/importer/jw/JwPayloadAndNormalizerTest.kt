@@ -4,6 +4,7 @@ import com.nullclass.core.model.CourseColorKeywords
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
+import kotlin.test.assertFalse
 import kotlin.test.assertNull
 import kotlin.test.assertTrue
 
@@ -99,12 +100,12 @@ class JwPayloadAndNormalizerTest {
             """.trimIndent(),
         )
         assertEquals(2, payload.warnings.size)
-        assertEquals(payload.warnings, payload.reviewNotes, "没有 ocrAssisted 时提示就是适配器写的那几条")
+        assertFalse(payload.ocrAssisted, "没写 ocrAssisted 时不该被当成图片识别")
     }
 
     @Test
-    fun `ocrAssisted 会真的变成一条提示`() {
-        // 这条曾经只是文档里的承诺：字段解析得出来、传得下去，但没有任何界面读它。
+    fun `ocrAssisted 与适配器提示都解析得出来`() {
+        // 固定的那句核对提示由导入预览按 ocrAssisted 补上（按界面语言取词条），这里只管标记传得下去
         val payload = JwPayloadCodec.decode(
             """
             {"specVersion":1,"kind":"schedule","ocrAssisted":true,
@@ -112,13 +113,15 @@ class JwPayloadAndNormalizerTest {
              "terms":[{"name":"t","firstDay":"2026-09-07","courses":[]}]}
             """.trimIndent(),
         )
-        assertEquals(listOf(OCR_REVIEW_NOTE, "周次是从图片里认的"), payload.reviewNotes)
-        assertTrue(OCR_REVIEW_NOTE.isNotBlank())
+        assertTrue(payload.ocrAssisted)
+        assertEquals(listOf("周次是从图片里认的"), payload.warnings)
     }
 
     @Test
     fun `不给提示时没有任何核对条目`() {
-        assertTrue(JwPayloadCodec.decode(validPayload).reviewNotes.isEmpty())
+        val payload = JwPayloadCodec.decode(validPayload)
+        assertTrue(payload.warnings.isEmpty())
+        assertFalse(payload.ocrAssisted)
     }
 
     @Test

@@ -99,7 +99,7 @@ class NotificationSettingsViewModel @Inject constructor(
                 is HolidayRepository.RefreshResult.Success ->
                     _holidayMessage.update {
                         HolidayMessage(
-                            UiText.Res(R.string.settings_holiday_synced, result.source, result.holidayCount),
+                            UiText.Plural(R.plurals.settings_holiday_synced, result.holidayCount, result.source, result.holidayCount),
                             false,
                         )
                     }

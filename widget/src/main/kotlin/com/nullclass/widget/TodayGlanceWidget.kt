@@ -205,7 +205,7 @@ internal fun TodayWidgetContent(
                 } else {
                     Text(
                         if (page.totalRows > 0) {
-                            context.getString(R.string.widget_today_remaining_count, page.totalRows)
+                            context.resources.getQuantityString(R.plurals.widget_today_remaining_count, page.totalRows, page.totalRows)
                         } else {
                             context.getString(R.string.widget_today_footer)
                         },

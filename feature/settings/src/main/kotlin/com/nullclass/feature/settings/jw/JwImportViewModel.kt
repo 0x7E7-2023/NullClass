@@ -15,7 +15,6 @@ import com.nullclass.importer.jw.JwPackage
 import com.nullclass.core.ui.R as CoreR
 import com.nullclass.core.ui.i18n.UiText
 import com.nullclass.core.ui.i18n.UiTextException
-import com.nullclass.core.ui.i18n.toUiText
 import com.nullclass.importer.jw.JwPackageReader
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
@@ -138,7 +137,7 @@ class JwImportViewModel @Inject constructor(
                 _state.update {
                     it.copy(
                         busy = false,
-                        message = e.toUiText(R.string.settings_jw_package_read_failed),
+                        message = e.toJwUiText(R.string.settings_jw_package_read_failed),
                         messageIsError = true,
                     )
                 }
@@ -158,7 +157,7 @@ class JwImportViewModel @Inject constructor(
                 _state.update {
                     it.copy(
                         busy = false,
-                        message = e.toUiText(R.string.settings_jw_library_read_failed),
+                        message = e.toJwUiText(R.string.settings_jw_library_read_failed),
                         messageIsError = true,
                     )
                 }
@@ -185,7 +184,7 @@ class JwImportViewModel @Inject constructor(
                 _state.update {
                     it.copy(
                         busy = false,
-                        message = e.toUiText(R.string.settings_jw_download_failed),
+                        message = e.toJwUiText(R.string.settings_jw_download_failed),
                         messageIsError = true,
                     )
                 }
@@ -227,7 +226,7 @@ class JwImportViewModel @Inject constructor(
                 _state.update {
                     it.copy(
                         busy = false,
-                        message = e.toUiText(R.string.settings_jw_install_failed),
+                        message = e.toJwUiText(R.string.settings_jw_install_failed),
                         messageIsError = true,
                     )
                 }

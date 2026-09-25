@@ -70,5 +70,12 @@ data class JwAdapter(
 /** 一个 zip / 目录解析出的内容：可能含多个适配器（整个库的压缩包）。 */
 data class JwPackage(val adapters: List<JwAdapter>, val libraryName: String? = null)
 
-/** 适配器包不合法（消息面向用户）。 */
-class JwPackageException(message: String) : IllegalArgumentException(message)
+/**
+ * 适配器包或适配器库不合法。消息是中文原文（日志、适配器作者看）；
+ * 用户会碰到的几类带 [code]，界面按码取词条（见 [JwCodedError]）。
+ */
+class JwPackageException(
+    message: String,
+    override val code: JwErrorCode? = null,
+    override val codeArgs: List<Any> = emptyList(),
+) : IllegalArgumentException(message), JwCodedError

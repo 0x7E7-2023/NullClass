@@ -1,5 +1,6 @@
 package com.nullclass.feature.edit
 
+import com.nullclass.core.ui.i18n.totalWeeksLabel
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -191,12 +192,12 @@ private fun TermRow(
                     when (val week = item.currentWeek) {
                         null -> stringResource(
                             R.string.edit_term_list_out_of_term,
-                            item.term.totalWeeks,
+                            totalWeeksLabel(item.term.totalWeeks),
                         )
                         else -> stringResource(
                             R.string.edit_term_list_week,
                             week,
-                            item.term.totalWeeks,
+                            totalWeeksLabel(item.term.totalWeeks),
                         )
                     },
                     style = MaterialTheme.typography.bodySmall,

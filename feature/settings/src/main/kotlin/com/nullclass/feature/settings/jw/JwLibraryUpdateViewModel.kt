@@ -90,19 +90,23 @@ class JwLibraryUpdateViewModel @Inject constructor(
                 }
                 _state.update { snapshot().copy(lastCheck = it.lastCheck) }
                 _toasts.send(
-                    UiText.Res(
-                        R.string.settings_jw_library_updated,
-                        download.version,
-                        // 有被官方收录的同名适配器时补一句前缀；UiText 支持嵌套代入
+                    UiText.Res(R.string.settings_jw_library_updated, download.version).let { updated ->
+                        // 有被官方收录的同名适配器时另起一句说明
                         if (shadowed.isEmpty()) {
-                            ""
+                            updated
                         } else {
-                            UiText.Res(
-                                R.string.settings_jw_library_shadowed,
-                                UiText.Joined(shadowed, CoreR.string.common_list_separator),
+                            UiText.Joined(
+                                listOf(
+                                    updated,
+                                    UiText.Res(
+                                        R.string.settings_jw_library_shadowed,
+                                        UiText.Joined(shadowed, CoreR.string.common_list_separator),
+                                    ),
+                                ),
+                                CoreR.string.common_sentence_separator,
                             )
-                        },
-                    ),
+                        }
+                    },
                 )
             } catch (e: kotlinx.coroutines.CancellationException) {
                 throw e
@@ -111,9 +115,8 @@ class JwLibraryUpdateViewModel @Inject constructor(
                 _toasts.send(
                     UiText.Res(
                         R.string.settings_jw_library_update_failed,
-                        // 有异常原文就用原文（不翻），没有就退回一条可翻译的通用词条
-                        e.message?.takeIf { it.isNotBlank() }?.let { UiText.Dynamic(it) }
-                            ?: UiText.Res(R.string.settings_jw_unknown_error),
+                        // 网络失败、没有新版本等用户能看懂的原因取词条；其余照录原文，没有原文用通用词条
+                        e.toJwUiText(R.string.settings_jw_unknown_error),
                     ),
                 )
             }

@@ -1,5 +1,6 @@
 package com.nullclass.feature.settings.jw
 
+import com.nullclass.importer.jw.JwErrorCode
 import com.nullclass.importer.jw.JwRemoteException
 import com.nullclass.importer.jw.JwRemoteFetcher
 import okhttp3.OkHttpClient
@@ -29,15 +30,22 @@ class OkHttpJwRemoteFetcher(
         val response = try {
             http.newCall(request).execute()
         } catch (e: Exception) {
-            throw JwRemoteException("网络请求失败：${e.message}", e)
+            val detail = e.message ?: e.javaClass.simpleName
+            throw JwRemoteException("网络请求失败：$detail", e, JwErrorCode.NETWORK_FAILED, listOf(detail))
         }
         response.use {
-            if (!response.isSuccessful) throw JwRemoteException("HTTP ${response.code}")
+            if (!response.isSuccessful) {
+                throw JwRemoteException("HTTP ${response.code}", code = JwErrorCode.HTTP_STATUS, codeArgs = listOf(response.code))
+            }
             val finalUrl = response.request.url
             if (!allowInsecure && finalUrl.scheme != "https") {
-                throw JwRemoteException("被重定向到非 https 地址：$finalUrl")
+                throw JwRemoteException(
+                    "被重定向到非 https 地址：$finalUrl",
+                    code = JwErrorCode.INSECURE_REDIRECT,
+                    codeArgs = listOf(finalUrl.toString()),
+                )
             }
-            val body = response.body ?: throw JwRemoteException("响应为空")
+            val body = response.body ?: throw JwRemoteException("响应为空", code = JwErrorCode.EMPTY_RESPONSE)
             val bytes = body.byteStream().use { input ->
                 val out = ByteArrayOutputStream()
                 val buffer = ByteArray(8 * 1024)
@@ -45,7 +53,13 @@ class OkHttpJwRemoteFetcher(
                     val read = input.read(buffer)
                     if (read < 0) break
                     out.write(buffer, 0, read)
-                    if (out.size() > maxBytes) throw JwRemoteException("响应超过 ${maxBytes / 1024}KB 上限")
+                    if (out.size() > maxBytes) {
+                        throw JwRemoteException(
+                            "响应超过 ${maxBytes / 1024}KB 上限",
+                            code = JwErrorCode.RESPONSE_TOO_LARGE,
+                            codeArgs = listOf(maxBytes / 1024),
+                        )
+                    }
                 }
                 out.toByteArray()
             }

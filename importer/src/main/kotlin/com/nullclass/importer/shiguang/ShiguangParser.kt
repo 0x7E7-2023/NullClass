@@ -161,13 +161,12 @@ object ShiguangParser {
                 return@forEachIndexed
             }
             val day = obj.int("day")
-            if (day == null || day !in 1..7) {
-                warnings.add(
-                    ImportNoticeEntry(
-                        ImportNotice.SHIGUANG_ROW_BAD_DAY,
-                        listOf(name, day?.toString().orEmpty()),
-                    ),
-                )
+            if (day == null) {
+                warnings.add(ImportNoticeEntry(ImportNotice.SHIGUANG_ROW_NO_DAY, listOf(name)))
+                return@forEachIndexed
+            }
+            if (day !in 1..7) {
+                warnings.add(ImportNoticeEntry(ImportNotice.SHIGUANG_ROW_BAD_DAY, listOf(name, day.toString())))
                 return@forEachIndexed
             }
             val weeks = (obj["weeks"] as? kotlinx.serialization.json.JsonArray)
@@ -380,7 +379,8 @@ object ShiguangParser {
                                 ImportNotice.SHIGUANG_WEEKS_ALL_OUT_OF_RANGE,
                                 listOf(
                                     item.row.name,
-                                    declared.joinToString("、"),
+                                    // 原样交出去，由界面层按当前语言的分隔符连起来
+                                    declared,
                                     totalWeeks,
                                 ),
                             ),

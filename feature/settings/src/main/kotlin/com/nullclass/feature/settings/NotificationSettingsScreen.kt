@@ -1,5 +1,6 @@
 package com.nullclass.feature.settings
 
+import androidx.compose.ui.res.pluralStringResource
 import android.Manifest
 import android.app.AlarmManager
 import android.content.Context
@@ -282,7 +283,7 @@ fun NotificationSettingsScreen(
                 )
             } else {
                 Text(
-                    stringResource(R.string.settings_holiday_skip_count, upcoming.size),
+                    pluralStringResource(R.plurals.settings_holiday_skip_count, upcoming.size, upcoming.size),
                     style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                 )
@@ -567,7 +568,7 @@ private fun ReminderLeadSelector(selected: Int, onSelect: (Int) -> Unit) {
                     if (minutes == 0) {
                         stringResource(CoreR.string.common_off)
                     } else {
-                        stringResource(R.string.settings_reminder_minutes, minutes)
+                        pluralStringResource(R.plurals.settings_reminder_minutes, minutes, minutes)
                     },
                     fontSize = 13.sp,
                 )
@@ -594,9 +595,9 @@ private fun ExamReminderLeadSelector(selected: Int, onSelect: (Int) -> Unit) {
 @Composable
 private fun examReminderLabel(minutes: Int): String = when {
     minutes == 0 -> stringResource(CoreR.string.common_off)
-    minutes % (24 * 60) == 0 -> stringResource(R.string.settings_reminder_days, minutes / (24 * 60))
-    minutes % 60 == 0 -> stringResource(R.string.settings_reminder_hours, minutes / 60)
-    else -> stringResource(R.string.settings_reminder_minutes, minutes)
+    minutes % (24 * 60) == 0 -> (minutes / (24 * 60)).let { pluralStringResource(R.plurals.settings_reminder_days, it, it) }
+    minutes % 60 == 0 -> (minutes / 60).let { pluralStringResource(R.plurals.settings_reminder_hours, it, it) }
+    else -> pluralStringResource(R.plurals.settings_reminder_minutes, minutes, minutes)
 }
 
 private fun isNotificationGranted(context: Context): Boolean =

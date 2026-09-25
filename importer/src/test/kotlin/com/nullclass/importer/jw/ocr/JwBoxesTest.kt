@@ -3,7 +3,6 @@ package com.nullclass.importer.jw.ocr
 import com.nullclass.importer.jw.JwPayloadCodec
 import com.nullclass.importer.jw.JwScheduleNormalizer
 import com.nullclass.importer.jw.JwSchedulePayload
-import com.nullclass.importer.jw.OCR_REVIEW_NOTE
 import java.io.File
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -115,7 +114,6 @@ class JwBoxesTest {
             warnings = notes,
         )
         assertEquals(notes, withNotes.payload.warnings, "重建后的载荷必须带着适配器说的话")
-        assertEquals(notes, withNotes.payload.reviewNotes)
         // 文本块是量出来的，不该被标成图片识别
         assertFalse(withNotes.payload.ocrAssisted)
 
@@ -127,7 +125,7 @@ class JwBoxesTest {
             ocrAssisted = true,
         )
         assertTrue(withoutNotes.payload.warnings.isEmpty())
-        assertEquals(listOf(OCR_REVIEW_NOTE), withoutNotes.payload.reviewNotes, "OCR 那条固定提示照旧")
+        assertTrue(withoutNotes.payload.ocrAssisted, "OCR 那条固定提示由导入预览按这个标记补上")
     }
 
     @Test

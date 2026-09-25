@@ -62,3 +62,32 @@ checker 归零后逐条复查，补了 checker 看不到的几类：
 - **零散**：`:feature:settings` 清单里 `JwImportActivity` 的 `android:label`；课程编辑步进器「−」
   补读屏名（`edit_stepper_decrease` 原本定义了却没接上）；页面文字还原的缺省学期名改走词条，
   与图片识别那条路一致；删掉两条已无引用的词条。
+
+## 两轮审查后的修复（2026-09-26）
+
+Sonnet 审查 + Opus 对抗审查（逐条推翻 Sonnet 的结论、补漏）合并后，除 Opus 驳回的一条
+（换课选择器用长格式星期：中文显示与旧版一致，控件是可换行的 `FlowRow`）外全部修复。
+
+**中文界面当时就会出错的回归**
+
+- Android 8–12 冷启动崩溃：`Application.attachBaseContext` 里 `AppLocale` 经 `applicationContext`
+  读镜像，而那时它还是 null。改为直接用传入的 Context。
+- `common_separator` 的首尾空格被 aapt 去掉，所有「第1-16周 · 周二」变成「第1-16周·周二」。改为加引号。
+- WakeUp 导入预览丢了文件名、删除课表确认框丢了「N 个学期」、拾光导入 `day` 缺失时显示成「day= 」。
+
+**用户可见文案藏在豁免里**：官方库更新失败原因、库地址校验、「请先升级空课」、脚本超时、
+OCR 换图建议、OCR 固定核对提示。前三类改为 `JwErrorCode`，脚本限额改为 `JwScriptLimitException`，
+OCR 固定提示移到导入预览按 `ocrAssisted` 标记补上（与适配器写的提示分开显示）。
+
+**加译文前必须有的结构**：计数词条改为 `<plurals>`；三处半句拼接改为整句；
+`:importer` 里预先用「、」拼好的周次列表改为原样交给界面层；语言自称标 `translatable="false"`。
+
+**运行期切换语言**：12 及以下切换后同步更新 Application 资源；通知渠道、已排期提醒、小组件
+随 `LocaleChanges` 刷新；`JwImportActivity` 补上包装；13+ 以 `LocaleManager` 为准回写偏好，
+并在升级到 13 后迁移一次旧选择。
+
+**守门与测试**：`check_hardcoded_text.py` 补上模板嵌套字符串、字符字面量、清单与 layout 属性三处盲区，
+豁免只认注释；新增 `check_string_args.py` 核对参数与占位符（在修复前的代码上能报出上面两处丢参数）。
+`core/ui` 的 ScheduleText / DateText / UiText、`AppLocale`（API 28 / 33）、`IcsCalendar`、
+`JwErrorText` 改用真实资源的 Robolectric 测试；AppLocale 与分隔符两条测试已用「撤回修复」验证能失败。
+

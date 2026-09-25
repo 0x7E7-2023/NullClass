@@ -1,5 +1,7 @@
 package com.nullclass.feature.settings
 
+import com.nullclass.core.ui.i18n.totalWeeksLabel
+import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -102,9 +104,9 @@ fun ProfileScreen(
                             currentWeek != null -> stringResource(
                                 R.string.settings_profile_week,
                                 currentWeek,
-                                term.totalWeeks,
+                                totalWeeksLabel(term.totalWeeks),
                             )
-                            else -> stringResource(R.string.settings_profile_out_of_term, term.totalWeeks)
+                            else -> stringResource(R.string.settings_profile_out_of_term, totalWeeksLabel(term.totalWeeks))
                         },
                         style = MaterialTheme.typography.bodySmall,
                         color = MaterialTheme.colorScheme.onPrimaryContainer.copy(alpha = 0.75f),
@@ -124,8 +126,9 @@ fun ProfileScreen(
                     icon = Icons.Default.Refresh,
                     title = stringResource(R.string.settings_profile_quick_actions),
                     subtitle = if (state.upcomingDaySwaps > 0) {
-                        stringResource(
-                            R.string.settings_profile_quick_actions_desc_with_count,
+                        pluralStringResource(
+                            R.plurals.settings_profile_quick_actions_desc_with_count,
+                            state.upcomingDaySwaps,
                             state.upcomingDaySwaps,
                         )
                     } else {

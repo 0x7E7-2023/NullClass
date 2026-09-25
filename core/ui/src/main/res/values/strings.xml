@@ -40,8 +40,9 @@
 
     <!-- 界面语言（AppLanguage） -->
     <string name="enum_app_language_system">跟随系统</string>
-    <string name="enum_app_language_zh_hans">简体中文</string>
-    <string name="enum_app_language_en">English</string>
+    <!-- 语言自称：始终以该语言自身书写，不随界面语言翻译（见 docs/i18n.md 第五节） -->
+    <string name="enum_app_language_zh_hans" translatable="false">简体中文</string>
+    <string name="enum_app_language_en" translatable="false">English</string>
 
     <!-- 课表共用文案（ScheduleText）。课表网格与桌面小组件的格子极窄，
          这些紧凑标签不按常规在数字与中文之间留空格。 -->
@@ -79,16 +80,28 @@
     <string name="fmt_period_single">%1$d节</string>
     <string name="fmt_period_range">%1$d-%2$d节</string>
 
-    <string name="fmt_remaining_minutes">%1$d 分钟</string>
-    <string name="fmt_remaining_hours">%1$d 小时</string>
-    <string name="fmt_remaining_hours_minutes">%1$d 小时 %2$d 分钟</string>
+    <plurals name="fmt_remaining_minutes">
+        <item quantity="other">%1$d 分钟</item>
+    </plurals>
+    <plurals name="fmt_remaining_hours">
+        <item quantity="other">%1$d 小时</item>
+    </plurals>
+    <!-- 「1 小时 20 分钟」：%1$s 是 fmt_remaining_hours，%2$s 是 fmt_remaining_minutes -->
+    <string name="fmt_remaining_hours_minutes">%1$s %2$s</string>
+    <!-- 学期总周数，如「第 3 周 · 共 18 周」的后半 -->
+    <plurals name="fmt_total_weeks">
+        <item quantity="other">共 %1$d 周</item>
+    </plurals>
 
-    <!-- 并列信息之间的分隔符，如「第1-16周 · 周二 · 3-4节 · A101」 -->
-    <string name="common_separator"> · </string>
+    <!-- 并列信息之间的分隔符，如「第1-16周 · 周二 · 3-4节 · A101」。
+         两侧空格有意义：必须用引号包住，否则 aapt 会去掉首尾空白 -->
+    <string name="common_separator">" · "</string>
     <!-- 列举同类名词时的分隔符，如「甲、乙、丙」；英文一般是 ", " -->
     <string name="common_list_separator">、</string>
     <!-- 并列几句话之间的分隔符，如「表头顺序异常；节次号是推断的」；英文一般是 "; " -->
     <string name="common_clause_separator">；</string>
+    <!-- 两个完整句子之间的分隔符。中文句末已有「。」，不需要再加；英文一般是 " "（记得加引号） -->
+    <string name="common_sentence_separator"></string>
 
     <!-- 日期共用文案（DateText） -->
     <string name="fmt_date">%1$d年%2$d月%3$d日</string>
@@ -97,7 +110,9 @@
     <string name="fmt_exam_relative_tomorrow">明天</string>
     <string name="fmt_exam_relative_yesterday">昨天</string>
     <string name="fmt_exam_relative_past">已结束</string>
-    <string name="fmt_exam_relative_in_days">%1$d 天后</string>
+    <plurals name="fmt_exam_relative_in_days">
+        <item quantity="other">%1$d 天后</item>
+    </plurals>
 
     <!-- 数据层错误（DataError）。任何模块捕获到 DataException 都用这组文案。 -->
     <string name="error_data_course_not_found">所属课程已不存在，请重新选择。</string>

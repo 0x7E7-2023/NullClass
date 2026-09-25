@@ -20,6 +20,9 @@ enum class ImportNotice {
     /** 课程行没有课名。 */
     SHIGUANG_ROW_NO_NAME,
 
+    /** 课程行没有 day。 */
+    SHIGUANG_ROW_NO_DAY,
+
     /** 课程行的 day 不是 1..7。 */
     SHIGUANG_ROW_BAD_DAY,
 
@@ -154,7 +157,12 @@ enum class ImportNotice {
     OCR_NO_COURSES,
 }
 
-/** 一条提示 + 它的占位符参数（顺序与文案里的 `%1$s` / `%2$d` 一致）。 */
+/**
+ * 一条提示 + 它的占位符参数（顺序与文案里的 `%1$s` / `%2$d` 一致）。
+ *
+ * 参数只放数据：数字、名称，或一串数据（`List`）—— 列表由界面层用当前语言的分隔符连起来，
+ * 这里不能先拼成「1、2、3」。
+ */
 data class ImportNoticeEntry(val notice: ImportNotice, val args: List<Any> = emptyList())
 
 /**

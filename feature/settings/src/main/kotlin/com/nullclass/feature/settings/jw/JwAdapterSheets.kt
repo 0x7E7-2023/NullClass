@@ -1,5 +1,6 @@
 package com.nullclass.feature.settings.jw
 
+import androidx.compose.ui.res.pluralStringResource
 import com.nullclass.feature.settings.R
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -49,7 +50,7 @@ fun InstallConfirmDialog(
         title = {
             Text(
                 if (adapters.size > 1) {
-                    stringResource(R.string.settings_jw_install_title_many, adapters.size)
+                    pluralStringResource(R.plurals.settings_jw_install_title_many, adapters.size, adapters.size)
                 } else {
                     stringResource(R.string.settings_jw_install_title_one)
                 },
