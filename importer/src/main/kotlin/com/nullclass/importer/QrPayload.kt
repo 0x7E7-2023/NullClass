@@ -37,8 +37,9 @@ object QrPayload {
     /** QR 码可承载的负载上限（Version 40, 字节模式, 纠错 L）。 */
     const val MAX_PAYLOAD_BYTES = 2953
 
-    class PayloadTooLargeException(val size: Int) :
-        IllegalArgumentException("课表过大无法生成二维码（$size B > $MAX_PAYLOAD_BYTES B），请用文件分享")
+    /** 负载超过二维码容量上限。只带尺寸，文案由界面层按当前语言取。 */
+    class PayloadTooLargeException(val size: Int, val limit: Int = MAX_PAYLOAD_BYTES) :
+        IllegalArgumentException("PayloadTooLarge($size > $limit)")
 
     /**
      * 二维码专用：省略 null 字段（teacher/note/deletedAt/location…），但保留
@@ -69,7 +70,7 @@ object QrPayload {
         payload.startsWith(PREFIX_V3) -> decodeV3(payload.removePrefix(PREFIX_V3))
         payload.startsWith(PREFIX_V2) -> decodeV2(payload.removePrefix(PREFIX_V2))
         payload.startsWith(PREFIX_V1) -> decodeV1(payload.removePrefix(PREFIX_V1))
-        else -> throw IllegalArgumentException("不是空课二维码（缺少协议头）")
+        else -> throw ScheduleFileException(ScheduleFileError.QR_NOT_NULLCLASS)
     }
 
     /** 供 UI 在弹扫码结果前快速判断是否为空课二维码。 */
@@ -82,7 +83,7 @@ object QrPayload {
      */
     fun sliceForShare(document: ScheduleDocument, termId: String): ScheduleDocument {
         val term = document.terms.firstOrNull { it.id == termId && it.deletedAt == null }
-            ?: throw IllegalArgumentException("找不到可分享的学期")
+            ?: throw ScheduleFileException(ScheduleFileError.QR_NO_SHAREABLE_TERM)
         val timetable = term.timetableId.takeIf { it.isNotEmpty() }?.let { id ->
             document.timetables.firstOrNull { it.id == id && it.deletedAt == null }
         }
@@ -117,7 +118,7 @@ object QrPayload {
         val envelope = try {
             compactJson.decodeFromString(QrEnvelope.serializer(), json)
         } catch (e: Exception) {
-            throw IllegalArgumentException("二维码内容损坏", e)
+            throw ScheduleFileException(ScheduleFileError.QR_CORRUPT)
         }
         val table = envelope.ids.map { unpackUuid(it) }
         return applyIds(envelope.doc) { id ->
@@ -129,12 +130,12 @@ object QrPayload {
         val gz = try {
             Base64.getUrlDecoder().decode(body)
         } catch (e: IllegalArgumentException) {
-            throw IllegalArgumentException("二维码内容损坏", e)
+            throw ScheduleFileException(ScheduleFileError.QR_CORRUPT)
         }
         val json = try {
             gunzip(gz)
         } catch (e: java.io.IOException) {
-            throw IllegalArgumentException("二维码数据无法解压", e)
+            throw ScheduleFileException(ScheduleFileError.QR_GUNZIP_FAILED)
         }.toString(Charsets.UTF_8)
         return NullClassCodec.decode(json)
     }
@@ -144,7 +145,7 @@ object QrPayload {
         return try {
             compactJson.decodeFromString(ScheduleDocument.serializer(), json)
         } catch (e: Exception) {
-            throw IllegalArgumentException("二维码内容损坏", e)
+            throw ScheduleFileException(ScheduleFileError.QR_CORRUPT)
         }
     }
 
@@ -153,7 +154,7 @@ object QrPayload {
         return try {
             gunzip(raw)
         } catch (e: java.io.IOException) {
-            throw IllegalArgumentException("二维码数据无法解压", e)
+            throw ScheduleFileException(ScheduleFileError.QR_GUNZIP_FAILED)
         }
     }
 

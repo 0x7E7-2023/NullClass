@@ -1,5 +1,6 @@
 package com.nullclass.feature.settings.jw
 
+import com.nullclass.feature.settings.R
 import android.content.Context
 import android.net.Uri
 import androidx.lifecycle.ViewModel
@@ -11,6 +12,10 @@ import com.nullclass.importer.jw.JwLibraryClient
 import com.nullclass.importer.jw.JwLibraryEntry
 import com.nullclass.importer.jw.JwLibrarySnapshot
 import com.nullclass.importer.jw.JwPackage
+import com.nullclass.core.ui.R as CoreR
+import com.nullclass.core.ui.i18n.UiText
+import com.nullclass.core.ui.i18n.UiTextException
+import com.nullclass.core.ui.i18n.toUiText
 import com.nullclass.importer.jw.JwPackageReader
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
@@ -28,7 +33,8 @@ data class JwUiState(
     val user: List<JwAdapter> = emptyList(),
     val broken: List<JwBrokenAdapter> = emptyList(),
     val busy: Boolean = false,
-    val message: String? = null,
+    /** 非界面层不持有文字：随语言切换的内容一律走 [UiText]。 */
+    val message: UiText? = null,
     val messageIsError: Boolean = false,
     /** 从链接拉取到的库索引（非 null 时展示候选列表）。 */
     val library: JwLibrarySnapshot? = null,
@@ -43,6 +49,10 @@ data class JwUiState(
     val lastScheduleUrl: String? = null,
     val autoExtract: Boolean = true,
 )
+
+/** SAF 源读不出内容。 */
+private class CannotReadAdapterFileException :
+    UiTextException(UiText.Res(R.string.settings_jw_cannot_read_file), "cannot read adapter file")
 
 /**
  * 教务适配器管理：内置 / 用户添加 / 从链接拉取 / 一键刷新状态。
@@ -107,7 +117,7 @@ class JwImportViewModel @Inject constructor(
             try {
                 val bytes = withContext(Dispatchers.IO) {
                     context.contentResolver.openInputStream(uri)?.use { it.readBytes() }
-                        ?: error("无法读取文件")
+                        ?: throw CannotReadAdapterFileException()
                 }
                 val pkg = withContext(Dispatchers.Default) {
                     JwPackageReader.readZip(
@@ -125,7 +135,13 @@ class JwImportViewModel @Inject constructor(
                     )
                 }
             } catch (e: Exception) {
-                _state.update { it.copy(busy = false, message = e.message ?: "适配器包读取失败", messageIsError = true) }
+                _state.update {
+                    it.copy(
+                        busy = false,
+                        message = e.toUiText(R.string.settings_jw_package_read_failed),
+                        messageIsError = true,
+                    )
+                }
             }
         }
     }
@@ -139,7 +155,13 @@ class JwImportViewModel @Inject constructor(
                 val snapshot = withContext(Dispatchers.IO) { libraryClient.loadIndex(url) }
                 _state.update { it.copy(busy = false, library = snapshot) }
             } catch (e: Exception) {
-                _state.update { it.copy(busy = false, message = e.message ?: "适配器库读取失败", messageIsError = true) }
+                _state.update {
+                    it.copy(
+                        busy = false,
+                        message = e.toUiText(R.string.settings_jw_library_read_failed),
+                        messageIsError = true,
+                    )
+                }
             }
         }
     }
@@ -160,7 +182,13 @@ class JwImportViewModel @Inject constructor(
                     )
                 }
             } catch (e: Exception) {
-                _state.update { it.copy(busy = false, message = e.message ?: "适配器下载失败", messageIsError = true) }
+                _state.update {
+                    it.copy(
+                        busy = false,
+                        message = e.toUiText(R.string.settings_jw_download_failed),
+                        messageIsError = true,
+                    )
+                }
             }
         }
     }
@@ -187,13 +215,22 @@ class JwImportViewModel @Inject constructor(
                         pendingInstall = emptyList(),
                         pendingSourceUrl = null,
                         pendingFileName = null,
-                        message = "已添加：${installed.joinToString("、") { adapter -> adapter.displayName }}",
+                        message = UiText.Res(
+                            R.string.settings_jw_installed,
+                            UiText.Joined(installed.map { adapter -> adapter.displayName }, CoreR.string.common_list_separator),
+                        ),
                         messageIsError = false,
                     )
                 }
                 refresh()
             } catch (e: Exception) {
-                _state.update { it.copy(busy = false, message = e.message ?: "安装失败", messageIsError = true) }
+                _state.update {
+                    it.copy(
+                        busy = false,
+                        message = e.toUiText(R.string.settings_jw_install_failed),
+                        messageIsError = true,
+                    )
+                }
             }
         }
     }
@@ -204,7 +241,11 @@ class JwImportViewModel @Inject constructor(
             _state.update {
                 it.copy(
                     viewing = null,
-                    message = if (ok) "已删除「${adapter.displayName}」" else "内置适配器不能删除",
+                    message = if (ok) {
+                        UiText.Res(R.string.settings_jw_deleted, adapter.displayName)
+                    } else {
+                        UiText.Res(R.string.settings_jw_delete_builtin_denied)
+                    },
                     messageIsError = !ok,
                 )
             }

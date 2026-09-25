@@ -6,7 +6,11 @@ import com.nullclass.core.model.MAX_TOTAL_WEEKS
 import com.nullclass.core.model.MINUTES_PER_DAY
 import com.nullclass.importer.BlockDto
 import com.nullclass.importer.CourseDto
+import com.nullclass.importer.ImportNotice
+import com.nullclass.importer.ImportNoticeEntry
 import com.nullclass.importer.ImportProvenance
+import com.nullclass.importer.ScheduleFileError
+import com.nullclass.importer.ScheduleFileException
 import com.nullclass.importer.PeriodTimeDto
 import com.nullclass.importer.ScheduleDocument
 import com.nullclass.importer.TermDto
@@ -65,7 +69,12 @@ object ShiguangParser {
     /** 作息表第 1 节就缺失时的起点（08:00）。 */
     private const val FIRST_PERIOD_START = 8 * 60
 
-    /** 导出文件没有课表名，用它当学期名的前缀。 */
+    /**
+     * 导出文件没有课表名，用它当学期名的前缀。
+     *
+     * 这是**写进数据库的数据**（学期名会同步到其他设备、也是合并时的对齐键），
+     * 不是界面文案，因此保留中文字面量、不随界面语言变化。
+     */
     const val DEFAULT_TERM_NAME = "拾光课表"
 
     /**
@@ -84,7 +93,8 @@ object ShiguangParser {
         val courses: List<CourseDto>,
         val blocks: List<BlockDto>,
         val periodTimes: List<PeriodTimeDto>,
-        val warnings: List<String>,
+        /** 跳过了什么、替成了什么。只带标识与参数，文案由界面层按当前语言取。 */
+        val warnings: List<ImportNoticeEntry>,
     )
 
     /** 解析中间态：一行导出课程（还没定学期总周数，所以先不切段）。 */
@@ -118,39 +128,46 @@ object ShiguangParser {
         today: LocalDate = LocalDate.now(),
         now: Long = System.currentTimeMillis(),
     ): ShiguangResult {
-        val warnings = mutableListOf<String>()
+        val warnings = mutableListOf<ImportNoticeEntry>()
         val json = Json { ignoreUnknownKeys = true; isLenient = true }
 
         val root = try {
             json.parseToJsonElement(raw)
         } catch (e: kotlinx.serialization.SerializationException) {
-            throw IllegalArgumentException("不是合法的 JSON 文件")
+            throw ScheduleFileException(ScheduleFileError.SHIGUANG_BAD_JSON)
         }
-        if (root !is JsonObject) throw IllegalArgumentException("不是有效的拾光课程表导出文件（顶层不是对象）")
+        if (root !is JsonObject) {
+            throw ScheduleFileException(ScheduleFileError.SHIGUANG_NOT_OBJECT)
+        }
 
         val courseArray = (root["courses"] as? kotlinx.serialization.json.JsonArray)
-            ?: throw IllegalArgumentException("不是有效的拾光课程表导出文件（缺少 courses）")
-        if (courseArray.isEmpty()) throw IllegalArgumentException("拾光导出文件里没有任何课程")
+            ?: throw ScheduleFileException(ScheduleFileError.SHIGUANG_NO_COURSES)
+        if (courseArray.isEmpty()) throw ScheduleFileException(ScheduleFileError.SHIGUANG_EMPTY_COURSES)
 
         val config = root["config"] as? JsonObject
 
         // ---- 课程行（先收集，总周数要看完全部周次才能定）----
         val rows = mutableListOf<Row>()
         courseArray.forEachIndexed { i, element ->
-            val at = "第 ${i + 1} 门课"
+            val at = i + 1
             val obj = element as? JsonObject
             if (obj == null) {
-                warnings.add("$at 不是对象，已跳过")
+                warnings.add(ImportNoticeEntry(ImportNotice.SHIGUANG_ROW_NOT_OBJECT, listOf(at)))
                 return@forEachIndexed
             }
             val name = obj.str("name")?.trim()
             if (name.isNullOrEmpty()) {
-                warnings.add("$at 没有课程名，已跳过")
+                warnings.add(ImportNoticeEntry(ImportNotice.SHIGUANG_ROW_NO_NAME, listOf(at)))
                 return@forEachIndexed
             }
             val day = obj.int("day")
             if (day == null || day !in 1..7) {
-                warnings.add("「$name」的 day=${day ?: "空"} 不是 1..7，已跳过")
+                warnings.add(
+                    ImportNoticeEntry(
+                        ImportNotice.SHIGUANG_ROW_BAD_DAY,
+                        listOf(name, day?.toString().orEmpty()),
+                    ),
+                )
                 return@forEachIndexed
             }
             val weeks = (obj["weeks"] as? kotlinx.serialization.json.JsonArray)
@@ -176,7 +193,7 @@ object ShiguangParser {
                 ),
             )
         }
-        if (rows.isEmpty()) throw IllegalArgumentException("拾光导出文件里没有可用的课程数据")
+        if (rows.isEmpty()) throw ScheduleFileException(ScheduleFileError.SHIGUANG_NO_ROWS)
 
         // ---- 学期 ----
         // §4.5：上游把 semesterTotalWeeks 写成 totalWeeks 的情况真实存在，两个都认
@@ -186,9 +203,19 @@ object ShiguangParser {
         val rawTotalWeeks = maxOf(declaredWeeks ?: 0, maxWeekInData).takeIf { it > 0 } ?: 20
         val totalWeeks = rawTotalWeeks.coerceIn(1, MAX_TOTAL_WEEKS)
         if (totalWeeks != rawTotalWeeks) {
-            warnings.add("学期周数 $rawTotalWeeks 超出上限，已截断为 $totalWeeks（超出的周次会被丢弃）")
+            warnings.add(
+                ImportNoticeEntry(
+                    ImportNotice.SHIGUANG_WEEKS_TRUNCATED,
+                    listOf(rawTotalWeeks, totalWeeks),
+                ),
+            )
         } else if (declaredWeeks != null && declaredWeeks in 1..MAX_TOTAL_WEEKS && totalWeeks > declaredWeeks) {
-            warnings.add("课程里出现了第 $totalWeeks 周，超过导出文件声明的 $declaredWeeks 周，已按 $totalWeeks 周导入")
+            warnings.add(
+                ImportNoticeEntry(
+                    ImportNotice.SHIGUANG_WEEKS_EXCEED_DECLARED,
+                    listOf(totalWeeks, declaredWeeks),
+                ),
+            )
         }
 
         val firstDayOfWeek = config?.int("firstDayOfWeek")?.takeIf { it in 1..7 } ?: 1
@@ -197,9 +224,9 @@ object ShiguangParser {
         if (startDate == null) {
             warnings.add(
                 if (startDateText.isNullOrBlank()) {
-                    "导出文件里没有开学日期，已按本周推算，请在学期管理里核对"
+                    ImportNoticeEntry(ImportNotice.SHIGUANG_NO_START_DATE)
                 } else {
-                    "开学日期「$startDateText」无法识别，已按本周推算，请在学期管理里核对"
+                    ImportNoticeEntry(ImportNotice.SHIGUANG_START_DATE_UNREADABLE, listOf(startDateText))
                 },
             )
         }
@@ -222,7 +249,7 @@ object ShiguangParser {
         val breakDuration = config?.int("defaultBreakDuration")?.takeIf { it in 0..600 } ?: DEFAULT_BREAK_DURATION
         val slots = parseTimeSlots(root["timeSlots"], warnings)
         val periods = if (slots.isEmpty()) {
-            warnings.add("导出文件里没有作息表，已使用默认节次时间，请在学期管理里核对")
+            warnings.add(ImportNoticeEntry(ImportNotice.SHIGUANG_NO_PERIOD_TABLE))
             DefaultPeriodTimes.create(termId).map {
                 PeriodTimeDto(termId, it.periodIndex, it.startMinuteOfDay, it.endMinuteOfDay, it.session, now)
             }
@@ -240,7 +267,12 @@ object ShiguangParser {
             val end = row.endSection ?: row.startSection
             if (start != null && end != null && start >= 1 && end >= start) {
                 if (end > MAX_PERIOD_INDEX) {
-                    warnings.add("「${row.name}」排到了第 $end 节，超过一天 $MAX_PERIOD_INDEX 节的上限，已跳过")
+                    warnings.add(
+                        ImportNoticeEntry(
+                            ImportNotice.SHIGUANG_COURSE_BEYOND_LAST_PERIOD,
+                            listOf(row.name, end, MAX_PERIOD_INDEX),
+                        ),
+                    )
                     return@mapNotNull null
                 }
                 if (row.isCustomTime) customTimeDropped++ // §4.4：节次优先，自定义时间只是附加信息
@@ -249,29 +281,45 @@ object ShiguangParser {
             // §4.4：只有自定义时间 → 找最接近的一节
             val customStart = row.customStartTime
             if (customStart == null) {
-                warnings.add("「${row.name}」既没有节次也没有可用的自定义时间，已跳过")
+                warnings.add(
+                    ImportNoticeEntry(ImportNotice.SHIGUANG_COURSE_NO_TIME, listOf(row.name)),
+                )
                 return@mapNotNull null
             }
             val nearest = periodStarts.minByOrNull { kotlin.math.abs(it.value - customStart) }
             if (nearest == null || kotlin.math.abs(nearest.value - customStart) > NEAREST_PERIOD_TOLERANCE) {
-                warnings.add("「${row.name}」只有自定义时间 ${formatHm(customStart)}，作息表里找不到接近的节次，已跳过")
+                warnings.add(
+                    ImportNoticeEntry(
+                        ImportNotice.SHIGUANG_CUSTOM_TIME_NO_NEAREST,
+                        listOf(row.name, formatHm(customStart)),
+                    ),
+                )
                 return@mapNotNull null
             }
-            warnings.add("「${row.name}」是自定义时间 ${formatHm(customStart)}，已按最接近的第 ${nearest.key} 节放入")
+            warnings.add(
+                ImportNoticeEntry(
+                    ImportNotice.SHIGUANG_CUSTOM_TIME_NEAREST,
+                    listOf(row.name, formatHm(customStart), nearest.key),
+                ),
+            )
             Placed(row, nearest.key, nearest.key)
         }
         if (customTimeDropped > 0) {
-            warnings.add("有 $customTimeDropped 条课程安排在拾光里设了自定义上下课时间，空课按节次导入，自定义时间未保留")
+            warnings.add(
+                ImportNoticeEntry(ImportNotice.SHIGUANG_CUSTOM_TIME_DROPPED, listOf(customTimeDropped)),
+            )
         }
-        if (placed.isEmpty()) throw IllegalArgumentException("拾光导出文件里没有可以放进课表的课程")
+        if (placed.isEmpty()) throw ScheduleFileException(ScheduleFileError.SHIGUANG_NO_PLACEABLE)
 
         // 作息表短于实际节次：按默认课长/课间顺延补齐，否则课块会落在没有时间的节上
         val maxPeriod = placed.maxOf { it.endPeriod }
         val periodTimes = extendPeriods(periods, maxPeriod, classDuration, breakDuration, termId, now)
         if (periodTimes.size > periods.size) {
             warnings.add(
-                "课程用到第 $maxPeriod 节，作息表只有 ${periods.size} 节，" +
-                    "已按每节 $classDuration 分钟、课间 $breakDuration 分钟补齐，请在学期管理里核对",
+                ImportNoticeEntry(
+                    ImportNotice.SHIGUANG_PERIODS_EXTENDED,
+                    listOf(maxPeriod, periods.size, classDuration, breakDuration),
+                ),
             )
         }
 
@@ -303,21 +351,40 @@ object ShiguangParser {
                 val weeks = when {
                     kept.isNotEmpty() -> {
                         if (kept.size < declared.size) {
-                            warnings.add("「${item.row.name}」有周次超过 $totalWeeks 周，超出部分已丢弃")
+                            warnings.add(
+                                ImportNoticeEntry(
+                                    ImportNotice.SHIGUANG_WEEKS_OVERFLOW_DROPPED,
+                                    listOf(item.row.name, totalWeeks),
+                                ),
+                            )
                         }
                         kept
                     }
 
                     declared.isEmpty() -> {
                         // 上游总会写 weeks，空的是「这条数据缺了信息」，按整学期导入比丢课强
-                        warnings.add("「${item.row.name}」没有周次信息，已按整学期 1-$totalWeeks 周导入")
+                        warnings.add(
+                            ImportNoticeEntry(
+                                ImportNotice.SHIGUANG_WEEKS_MISSING,
+                                listOf(item.row.name, totalWeeks),
+                            ),
+                        )
                         (1..totalWeeks).toList()
                     }
 
                     else -> {
                         // 周次全在学期之外（上限截断的尾巴）。**不能**铺成整学期：
                         // 只在第 35 周上一次的课会变成 1-30 周每周都有
-                        warnings.add("「${item.row.name}」的周次（第 ${declared.joinToString("、")} 周）都超出了 $totalWeeks 周，已跳过")
+                        warnings.add(
+                            ImportNoticeEntry(
+                                ImportNotice.SHIGUANG_WEEKS_ALL_OUT_OF_RANGE,
+                                listOf(
+                                    item.row.name,
+                                    declared.joinToString("、"),
+                                    totalWeeks,
+                                ),
+                            ),
+                        )
                         return@forEach
                     }
                 }
@@ -344,7 +411,9 @@ object ShiguangParser {
 
         // 周次全在学期之外的行被丢掉后，可能有课一条安排都不剩——别留下空壳课程
         val usedCourseIds = blocks.map { it.courseId }.toSet()
-        if (usedCourseIds.isEmpty()) throw IllegalArgumentException("拾光导出文件里的课程周次都不在学期范围内")
+        if (usedCourseIds.isEmpty()) {
+            throw ScheduleFileException(ScheduleFileError.SHIGUANG_WEEKS_OUT_OF_RANGE)
+        }
 
         return ShiguangResult(
             term = term,
@@ -445,7 +514,7 @@ object ShiguangParser {
     /** `timeSlots` → (节次, 开始分钟, 结束分钟)，按节次排序去重。 */
     private fun parseTimeSlots(
         element: kotlinx.serialization.json.JsonElement?,
-        warnings: MutableList<String>,
+        warnings: MutableList<ImportNoticeEntry>,
     ): List<Triple<Int, Int, Int>> {
         val array = element as? kotlinx.serialization.json.JsonArray ?: return emptyList()
         val result = linkedMapOf<Int, Triple<Int, Int, Int>>()
@@ -455,17 +524,26 @@ object ShiguangParser {
             val start = parseHm(obj?.str("startTime"))
             val end = parseHm(obj?.str("endTime"))
             if (obj == null || number == null || number < 1 || start == null || end == null) {
-                warnings.add("作息表第 ${i + 1} 条格式非法，已跳过")
+                warnings.add(
+                    ImportNoticeEntry(ImportNotice.SHIGUANG_PERIOD_ROW_INVALID, listOf(i + 1)),
+                )
                 return@forEachIndexed
             }
             // 作息表要补齐到最大节次，节次号本身就是放大系数：一条 number: 999999
             // 就能让我们造出上百万条节次记录（解析跑在主线程），这里和课程节次卡同一个上限
             if (number > MAX_PERIOD_INDEX) {
-                warnings.add("作息表第 $number 节超过一天 $MAX_PERIOD_INDEX 节的上限，已跳过")
+                warnings.add(
+                    ImportNoticeEntry(
+                        ImportNotice.SHIGUANG_PERIOD_OUT_OF_RANGE,
+                        listOf(number, MAX_PERIOD_INDEX),
+                    ),
+                )
                 return@forEachIndexed
             }
             if (end <= start) {
-                warnings.add("作息表第 $number 节的结束时间不晚于开始时间，已跳过")
+                warnings.add(
+                    ImportNoticeEntry(ImportNotice.SHIGUANG_PERIOD_TIME_INVALID, listOf(number)),
+                )
                 return@forEachIndexed
             }
             result[number] = Triple(number, start, end)

@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  译文已就绪的语言清单，供 Android 13+ 的系统「应用语言」设置页读取。
+  新增语言时，在此登记的同时也要更新 AppLanguage.TRANSLATED，两处必须一致。
+-->
+<locale-config xmlns:android="http://schemas.android.com/apk/res/android">
+    <locale android:name="zh-Hans" />
+</locale-config>

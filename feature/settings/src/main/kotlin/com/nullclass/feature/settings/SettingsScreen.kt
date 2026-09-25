@@ -42,14 +42,19 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
+import com.nullclass.core.model.AppLanguage
 import com.nullclass.core.model.ThemeMode
 import com.nullclass.core.model.WidgetFontSize
+import com.nullclass.core.ui.i18n.labelRes
+import com.nullclass.core.ui.i18n.resolve
 import com.nullclass.core.ui.layout.AdaptiveColumn
+import com.nullclass.core.ui.R as CoreR
 import com.nullclass.sync.AutoSyncInterval
 import com.nullclass.widget.NextClassWidgetReceiver
 import com.nullclass.widget.TodayWidgetReceiver
@@ -72,6 +77,7 @@ fun SettingsScreen(
     val showOtherWeekCourses by viewModel.showOtherWeekCourses.collectAsState()
     val themeMode by viewModel.themeMode.collectAsState()
     val showExamTab by viewModel.showExamTab.collectAsState()
+    val appLanguage by viewModel.appLanguage.collectAsState()
 
     val context = LocalContext.current
 
@@ -80,14 +86,19 @@ fun SettingsScreen(
         modifier = Modifier.nestedScroll(appBarScrollBehavior.nestedScrollConnection),
         topBar = {
             TopAppBar(
-                title = { Text("设置") },
+                title = { Text(stringResource(R.string.settings_title)) },
                 navigationIcon = {
                     IconButton(onClick = onBack) {
-                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "返回")
+                        Icon(
+                            Icons.AutoMirrored.Filled.ArrowBack,
+                            contentDescription = stringResource(CoreR.string.common_back),
+                        )
                     }
                 },
                 actions = {
-                    TextButton(onClick = onOpenTransfer) { Text("导入 / 导出") }
+                    TextButton(onClick = onOpenTransfer) {
+                        Text(stringResource(R.string.settings_transfer_entry))
+                    }
                 },
                 scrollBehavior = appBarScrollBehavior,
             )
@@ -105,29 +116,61 @@ fun SettingsScreen(
             verticalArrangement = Arrangement.spacedBy(12.dp),
         ) {
             // ---- 外观 ----
-            Text("外观", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold)
             Text(
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-                    "Material 取色跟随壁纸配色与系统深浅色；浅色 / 深色固定使用内置配色。桌面小组件始终跟随系统。"
-                } else {
-                    "当前系统不支持壁纸取色，Material 取色将使用内置配色并跟随系统深浅色。桌面小组件始终跟随系统。"
-                },
+                stringResource(R.string.settings_appearance),
+                style = MaterialTheme.typography.titleMedium,
+                fontWeight = FontWeight.Bold,
+            )
+            Text(
+                stringResource(
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+                        R.string.settings_appearance_desc
+                    } else {
+                        R.string.settings_appearance_desc_unsupported
+                    },
+                ),
                 style = MaterialTheme.typography.bodySmall,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
             )
             SegmentedSelector(
                 options = ThemeMode.entries,
                 selected = themeMode,
-                label = { it.label },
+                label = { stringResource(it.labelRes) },
                 onSelect = viewModel::setThemeMode,
             )
 
+            // 语言入口只有在第二种译文就绪后才出现 —— 只有一种译文时，
+            // 「跟随系统」与该语言效果完全相同，展示选择项没有意义。见 docs/i18n.md。
+            if (AppLanguage.isSelectionMeaningful) {
+                HorizontalDivider(modifier = Modifier.padding(vertical = 8.dp))
+                Text(
+                    stringResource(R.string.settings_language),
+                    style = MaterialTheme.typography.titleMedium,
+                    fontWeight = FontWeight.Bold,
+                )
+                Text(
+                    stringResource(R.string.settings_language_desc),
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                )
+                SegmentedSelector(
+                    options = AppLanguage.selectable,
+                    selected = appLanguage,
+                    label = { stringResource(it.labelRes) },
+                    onSelect = viewModel::setAppLanguage,
+                )
+            }
+
             HorizontalDivider(modifier = Modifier.padding(vertical = 8.dp))
 
-            Text("WebDAV 同步", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold)
             Text(
-                "课表通过你自己的 WebDAV 服务器（坚果云、NextCloud 等）在设备间同步。" +
-                    "凭证以明文存储在本机，请务必使用 HTTPS。",
+                stringResource(R.string.settings_webdav),
+                style = MaterialTheme.typography.titleMedium,
+                fontWeight = FontWeight.Bold,
+            )
+            Text(
+                stringResource(R.string.settings_webdav_desc) + " " +
+                    stringResource(R.string.settings_webdav_warning),
                 style = MaterialTheme.typography.bodySmall,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
             )
@@ -135,7 +178,7 @@ fun SettingsScreen(
             OutlinedTextField(
                 value = state.url,
                 onValueChange = viewModel::setUrl,
-                label = { Text("服务器地址") },
+                label = { Text(stringResource(R.string.settings_webdav_server)) },
                 placeholder = { Text("https://dav.jianguoyun.com/dav/") },
                 singleLine = true,
                 modifier = Modifier.fillMaxWidth(),
@@ -143,14 +186,14 @@ fun SettingsScreen(
             OutlinedTextField(
                 value = state.username,
                 onValueChange = viewModel::setUsername,
-                label = { Text("用户名") },
+                label = { Text(stringResource(R.string.settings_webdav_username)) },
                 singleLine = true,
                 modifier = Modifier.fillMaxWidth(),
             )
             OutlinedTextField(
                 value = state.password,
                 onValueChange = viewModel::setPassword,
-                label = { Text("密码 / 应用密码") },
+                label = { Text(stringResource(R.string.settings_webdav_password)) },
                 singleLine = true,
                 visualTransformation = PasswordVisualTransformation(),
                 modifier = Modifier.fillMaxWidth(),
@@ -158,14 +201,14 @@ fun SettingsScreen(
 
             Row(horizontalArrangement = Arrangement.spacedBy(12.dp), modifier = Modifier.fillMaxWidth()) {
                 OutlinedButton(onClick = viewModel::saveConfig, modifier = Modifier.weight(1f)) {
-                    Text("保存配置")
+                    Text(stringResource(R.string.settings_webdav_save))
                 }
                 OutlinedButton(
                     onClick = viewModel::testConnection,
                     enabled = state.configured && !state.busy,
                     modifier = Modifier.weight(1f),
                 ) {
-                    Text("测试连接")
+                    Text(stringResource(R.string.settings_webdav_test))
                 }
             }
 
@@ -176,14 +219,22 @@ fun SettingsScreen(
                 enabled = state.configured && !state.busy,
                 modifier = Modifier.fillMaxWidth(),
             ) {
-                Text(if (state.busy) "同步中…" else "立即同步")
+                Text(
+                    stringResource(
+                        if (state.busy) {
+                            R.string.settings_webdav_syncing
+                        } else {
+                            R.string.settings_webdav_sync_now
+                        },
+                    ),
+                )
             }
 
             lastSyncAt?.let { at ->
                 val time = Instant.ofEpochMilli(at).atZone(ZoneId.systemDefault())
                     .format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm"))
                 Text(
-                    "上次同步：$time",
+                    stringResource(R.string.settings_webdav_last_sync, time),
                     fontSize = 12.sp,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                 )
@@ -193,7 +244,7 @@ fun SettingsScreen(
                 Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                     if (state.busy) CircularProgressIndicator(modifier = Modifier.padding(4.dp))
                     Text(
-                        message,
+                        message.resolve(),
                         color = if (state.messageIsError) {
                             MaterialTheme.colorScheme.error
                         } else {
@@ -205,7 +256,7 @@ fun SettingsScreen(
             }
 
             Text(
-                "同步说明：整库快照按记录合并，同一条修改时间新者胜，删除会传播到所有设备。",
+                stringResource(R.string.settings_webdav_merge_desc),
                 style = MaterialTheme.typography.bodySmall,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
             )
@@ -213,38 +264,44 @@ fun SettingsScreen(
             HorizontalDivider(modifier = Modifier.padding(vertical = 8.dp))
 
             // ---- 自动同步 ----
-            Text("自动同步", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold)
             Text(
-                "在后台按周期自动执行上面的手动同步（需已配置 WebDAV）。",
+                stringResource(R.string.settings_auto_sync),
+                style = MaterialTheme.typography.titleMedium,
+                fontWeight = FontWeight.Bold,
+            )
+            Text(
+                stringResource(R.string.settings_auto_sync_desc),
                 style = MaterialTheme.typography.bodySmall,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
             )
             SegmentedSelector(
                 options = AutoSyncInterval.entries,
                 selected = autoSyncInterval,
-                label = { it.label },
+                label = { stringResource(it.labelRes) },
                 onSelect = viewModel::setAutoSyncInterval,
             )
 
             HorizontalDivider(modifier = Modifier.padding(vertical = 8.dp))
 
             // ---- 桌面小组件 ----
-            Text("桌面小组件", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold)
+            Text(
+                stringResource(R.string.settings_widget),
+                style = MaterialTheme.typography.titleMedium,
+                fontWeight = FontWeight.Bold,
+            )
             val widgetManager = remember { context.getSystemService(AppWidgetManager::class.java) }
             val pinSupported = remember { widgetManager?.isRequestPinAppWidgetSupported == true }
             Text(
-                if (pinSupported) {
-                    "点按后系统弹出添加确认，一键把课表钉到桌面，不用去小部件列表里翻找。"
-                } else {
-                    "当前桌面不支持一键添加，请长按桌面空白处，从「添加小工具」中手动添加。"
-                },
+                stringResource(
+                    if (pinSupported) R.string.settings_widget_desc else R.string.settings_widget_unsupported,
+                ),
                 style = MaterialTheme.typography.bodySmall,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
             )
             SegmentedSelector(
                 options = WidgetFontSize.entries,
                 selected = widgetFontSize,
-                label = { it.label },
+                label = { stringResource(it.labelRes) },
                 onSelect = viewModel::setWidgetFontSize,
             )
             Row(horizontalArrangement = Arrangement.spacedBy(12.dp), modifier = Modifier.fillMaxWidth()) {
@@ -252,18 +309,22 @@ fun SettingsScreen(
                     onClick = { requestPinWidget(context, TodayWidgetReceiver::class.java) },
                     enabled = pinSupported,
                     modifier = Modifier.weight(1f),
-                ) { Text("今日课程 3×2") }
+                ) { Text(stringResource(R.string.settings_widget_today)) }
                 OutlinedButton(
                     onClick = { requestPinWidget(context, NextClassWidgetReceiver::class.java) },
                     enabled = pinSupported,
                     modifier = Modifier.weight(1f),
-                ) { Text("下节课 2×1") }
+                ) { Text(stringResource(R.string.settings_widget_next)) }
             }
 
             HorizontalDivider(modifier = Modifier.padding(vertical = 8.dp))
 
             // ---- 课表显示 ----
-            Text("课表显示", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold)
+            Text(
+                stringResource(R.string.settings_schedule_display),
+                style = MaterialTheme.typography.titleMedium,
+                fontWeight = FontWeight.Bold,
+            )
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -272,7 +333,7 @@ fun SettingsScreen(
                 verticalAlignment = Alignment.CenterVertically,
             ) {
                 Column(Modifier.weight(1f)) {
-                    Text("显示非本周课程")
+                    Text(stringResource(R.string.settings_show_other_week))
                 }
                 Switch(
                     checked = showOtherWeekCourses,
@@ -283,7 +344,11 @@ fun SettingsScreen(
             HorizontalDivider(modifier = Modifier.padding(vertical = 8.dp))
 
             // ---- 底部导航 ----
-            Text("底部导航", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold)
+            Text(
+                stringResource(R.string.settings_bottom_nav),
+                style = MaterialTheme.typography.titleMedium,
+                fontWeight = FontWeight.Bold,
+            )
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -292,7 +357,7 @@ fun SettingsScreen(
                 verticalAlignment = Alignment.CenterVertically,
             ) {
                 Column(Modifier.weight(1f)) {
-                    Text("显示「考试」标签页")
+                    Text(stringResource(R.string.settings_show_exam_tab))
                 }
                 Switch(
                     checked = showExamTab,
@@ -307,7 +372,7 @@ fun SettingsScreen(
 private fun <T> SegmentedSelector(
     options: List<T>,
     selected: T,
-    label: (T) -> String,
+    label: @Composable (T) -> String,
     onSelect: (T) -> Unit,
 ) {
     SingleChoiceSegmentedButtonRow(modifier = Modifier.fillMaxWidth()) {

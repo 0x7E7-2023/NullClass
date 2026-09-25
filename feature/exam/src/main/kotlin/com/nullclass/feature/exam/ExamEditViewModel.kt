@@ -1,5 +1,6 @@
 package com.nullclass.feature.exam
 
+import android.content.Context
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -8,7 +9,10 @@ import com.nullclass.core.data.repository.ExamRepository
 import com.nullclass.core.data.repository.TermRepository
 import com.nullclass.core.model.Course
 import com.nullclass.core.model.Exam
+import com.nullclass.core.ui.i18n.UiText
+import com.nullclass.core.ui.i18n.toUiText
 import dagger.hilt.android.lifecycle.HiltViewModel
+import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -26,19 +30,20 @@ data class ExamEditUiState(
     val termId: String = "",
     val courses: List<Course> = emptyList(),
     val courseId: String = "",
-    val title: String = "期末考试",
+    val title: String = "",
     val dateText: String = LocalDate.now().toString(),
     val startText: String = "",
     val endText: String = "",
     val location: String = "",
     val seat: String = "",
     val note: String = "",
-    val error: String? = null,
+    val error: UiText? = null,
     val saving: Boolean = false,
 )
 
 @HiltViewModel
 class ExamEditViewModel @Inject constructor(
+    @ApplicationContext private val context: Context,
     savedStateHandle: SavedStateHandle,
     private val termRepository: TermRepository,
     private val courseRepository: CourseRepository,
@@ -78,7 +83,8 @@ class ExamEditViewModel @Inject constructor(
                     courseId = selectedCourseId,
                     noCourses = courses.isEmpty(),
                     isNew = existing == null,
-                    title = existing?.exam?.title ?: "期末考试",
+                    // 新建时给一个默认名，按当前界面语言取 —— 它会作为内容存进库里
+                    title = existing?.exam?.title ?: context.getString(R.string.exam_edit_default_title),
                     dateText = existing?.exam?.dateEpochDay?.let { day -> LocalDate.ofEpochDay(day).toString() }
                         ?: LocalDate.now().toString(),
                     startText = existing?.exam?.startMinuteOfDay?.let(::minuteText).orEmpty(),
@@ -118,15 +124,15 @@ class ExamEditViewModel @Inject constructor(
         val end = parseMinute(s.endText)
         val timeError = when {
             s.startText.isBlank() && s.endText.isBlank() -> null
-            start == null || end == null -> "时间请填写为 HH:mm，例如 09:00"
-            end <= start -> "结束时间要晚于开始时间"
+            start == null || end == null -> UiText.Res(R.string.exam_edit_error_time_format)
+            end <= start -> UiText.Res(R.string.exam_edit_error_time_order)
             else -> null
         }
 
         when {
-            s.courseId.isBlank() -> showError("请选择所属课程")
-            s.title.isBlank() -> showError("考试名称不能为空")
-            date == null -> showError("日期请填写为 yyyy-MM-dd，例如 2026-12-20")
+            s.courseId.isBlank() -> showError(UiText.Res(R.string.exam_edit_error_no_course))
+            s.title.isBlank() -> showError(UiText.Res(R.string.exam_edit_error_no_name))
+            date == null -> showError(UiText.Res(R.string.exam_edit_error_date_format))
             timeError != null -> showError(timeError)
             else -> viewModelScope.launch {
                 _state.update { it.copy(saving = true) }
@@ -148,13 +154,15 @@ class ExamEditViewModel @Inject constructor(
                 } catch (e: CancellationException) {
                     throw e
                 } catch (e: Exception) {
-                    _state.update { it.copy(saving = false, error = e.message ?: "保存失败，请重试") }
+                    _state.update {
+                        it.copy(saving = false, error = e.toUiText(R.string.exam_edit_error_save_failed))
+                    }
                 }
             }
         }
     }
 
-    private fun showError(message: String) = _state.update { it.copy(error = message) }
+    private fun showError(message: UiText) = _state.update { it.copy(error = message) }
 }
 
 private fun parseMinute(value: String): Int? {

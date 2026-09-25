@@ -10,25 +10,25 @@ class ExamFormatTest {
     private val day = LocalDate.of(2026, 12, 20).toEpochDay()
 
     @Test
-    fun `日期和时间文案`() {
+    fun `时间段只在起止都有时成立`() {
         val exam = Exam(
             dateEpochDay = day,
             startMinuteOfDay = 9 * 60,
             endMinuteOfDay = 11 * 60,
         )
 
-        assertEquals("2026年12月20日", ExamFormat.dateLabel(day))
-        assertEquals("12月20日", ExamFormat.monthDayLabel(day))
         assertEquals("9:00-11:00", ExamFormat.timeRange(exam))
         assertNull(ExamFormat.timeRange(exam.copy(endMinuteOfDay = null)))
+        assertNull(ExamFormat.timeRange(exam.copy(startMinuteOfDay = null)))
     }
 
     @Test
-    fun `相对日期文案`() {
-        assertEquals("今天", ExamFormat.relativeLabel(day, day))
-        assertEquals("明天", ExamFormat.relativeLabel(day + 1, day))
-        assertEquals("昨天", ExamFormat.relativeLabel(day - 1, day))
-        assertEquals("已结束", ExamFormat.relativeLabel(day - 2, day))
-        assertEquals("3 天后", ExamFormat.relativeLabel(day + 3, day))
+    fun `相对日期分档`() {
+        assertEquals(ExamRelativeDay.Today, ExamRelativeDay.of(day, day))
+        assertEquals(ExamRelativeDay.Tomorrow, ExamRelativeDay.of(day + 1, day))
+        assertEquals(ExamRelativeDay.Yesterday, ExamRelativeDay.of(day - 1, day))
+        assertEquals(ExamRelativeDay.Past, ExamRelativeDay.of(day - 2, day))
+        assertEquals(ExamRelativeDay.Past, ExamRelativeDay.of(day - 30, day))
+        assertEquals(ExamRelativeDay.InDays(3), ExamRelativeDay.of(day + 3, day))
     }
 }

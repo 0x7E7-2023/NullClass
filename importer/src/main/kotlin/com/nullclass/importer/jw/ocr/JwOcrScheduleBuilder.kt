@@ -1,5 +1,8 @@
 package com.nullclass.importer.jw.ocr
 
+import com.nullclass.importer.ImportNotice
+import com.nullclass.importer.ImportNoticeEntry
+
 import com.nullclass.importer.jw.JwBlock
 import com.nullclass.importer.jw.JwCourse
 import com.nullclass.importer.jw.JwSchedulePayload
@@ -13,7 +16,8 @@ import com.nullclass.importer.jw.JwTerm
  */
 data class JwOcrBuildResult(
     val payload: JwSchedulePayload,
-    val issues: List<String>,
+    /** 要用户核对的提示。只产出标识，文案由界面层取（见 [ImportNotice] 的注释）。 */
+    val issues: List<ImportNoticeEntry>,
 )
 
 object JwOcrScheduleBuilder {
@@ -66,7 +70,7 @@ object JwOcrScheduleBuilder {
     ): JwOcrBuildResult {
         // 结构层要求用户核对的话（表头顺序异常、节次号是推断的……）一并带到校对页上，
         // 不然它们只留在 warnings 里，用户根本看不到。
-        val issues = table.warnings.filter { "核对" in it }.toMutableList()
+        val issues = table.warnings.filter { it.notice in JwTableAligner.REVIEW_NOTICES }.toMutableList()
         val byName = LinkedHashMap<String, MutableList<JwBlock>>()
         val teachers = mutableMapOf<String, String>()
 
@@ -82,7 +86,7 @@ object JwOcrScheduleBuilder {
         val weekAnchored = table.cells.any { row ->
             row.any { cell -> cell.split('\n').any { isWeekLine(it, totalWeeks) } }
         }
-        if (!weekAnchored) issues += "格子里没有周次信息，已逐格还原课表，请核对"
+        if (!weekAnchored) issues += ImportNoticeEntry(ImportNotice.OCR_NO_WEEK_INFO)
 
         table.colDays.forEachIndexed { colIndex, columnDay ->
             val entries: List<List<CellLine>> = if (weekAnchored) {
@@ -111,7 +115,10 @@ object JwOcrScheduleBuilder {
                     val host = lastName.takeIf { weekAnchored }
                     if (host == null) {
                         if (parsed.isNotEmpty()) {
-                            issues += "第 ${colIndex + 1} 列：有 ${entry.size} 行文字没归到任何课程上，已跳过"
+                            issues += ImportNoticeEntry(
+                                ImportNotice.OCR_COLUMN_LINES_SKIPPED,
+                                listOf(colIndex + 1, entry.size),
+                            )
                         }
                         return@forEach
                     }
@@ -137,12 +144,12 @@ object JwOcrScheduleBuilder {
                 // 一行周次都没认出来：按整学期兜底，并让用户核对
                 val range = rowRange(table, first.row)
                 if (range == null) {
-                    issues += "第 ${first.row + 1} 行第 ${colIndex + 1} 列：网格坐标缺失"
+                    issues += ImportNoticeEntry(ImportNotice.OCR_CELL_NO_GRID, listOf(first.row + 1, colIndex + 1))
                     return@forEach
                 }
                 val fallback = JwBlock(day, range.first, range.second, 1, totalWeeks, "ALL", location)
                 if (freshBlocks(byName, name, listOf(fallback)).isEmpty()) return@forEach
-                issues += "第 ${first.row + 1} 行第 ${colIndex + 1} 列「$name」：没识别出周次，已按整学期处理，请核对"
+                issues += ImportNoticeEntry(ImportNotice.OCR_CELL_NO_WEEKS, listOf(first.row + 1, colIndex + 1, name))
                 addBlocks(byName, name, listOf(fallback))
                 lastName = name
             }
@@ -150,7 +157,7 @@ object JwOcrScheduleBuilder {
 
         val named = byName
         if (named.isEmpty()) {
-            issues += "整张表没有识别出任何课程"
+            issues += ImportNoticeEntry(ImportNotice.OCR_NO_COURSES)
         }
 
         val courses = named.map { (name, blocks) ->

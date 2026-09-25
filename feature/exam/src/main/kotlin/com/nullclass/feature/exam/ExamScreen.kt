@@ -44,13 +44,18 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.input.nestedscroll.nestedScroll
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import com.nullclass.core.model.ExamFormat
 import com.nullclass.core.model.ExamWithCourse
+import com.nullclass.core.ui.i18n.dateLabel
+import com.nullclass.core.ui.i18n.examRelativeLabel
+import com.nullclass.core.ui.i18n.resolve
 import com.nullclass.core.ui.layout.AdaptiveWidthWrapper
 import com.nullclass.core.ui.theme.courseColor
+import com.nullclass.core.ui.R as CoreR
 
 /** 当前学期考试汇总页；考试数据仍通过 courseId 归属于课程。 */
 @OptIn(ExperimentalMaterial3Api::class)
@@ -70,11 +75,11 @@ fun ExamScreen(
         modifier = Modifier.nestedScroll(appBarScrollBehavior.nestedScrollConnection),
         topBar = {
             TopAppBar(
-                title = { Text("考试") },
+                title = { Text(stringResource(R.string.exam_title)) },
                 actions = {
                     if (state is ExamUiState.Ready) {
                         IconButton(onClick = onAddExam) {
-                            Icon(Icons.Default.Add, contentDescription = "添加考试")
+                            Icon(Icons.Default.Add, contentDescription = stringResource(R.string.exam_add))
                         }
                     }
                 },
@@ -105,13 +110,13 @@ fun ExamScreen(
                     horizontalAlignment = Alignment.CenterHorizontally,
                     verticalArrangement = Arrangement.spacedBy(12.dp),
                 ) {
-                    Text("还没有学期", style = MaterialTheme.typography.titleMedium)
+                    Text(stringResource(R.string.exam_no_term_title), style = MaterialTheme.typography.titleMedium)
                     Text(
-                        "创建一个学期后再添加考试",
+                        stringResource(R.string.exam_no_term_desc),
                         style = MaterialTheme.typography.bodyMedium,
                         color = MaterialTheme.colorScheme.onSurfaceVariant,
                     )
-                    Button(onClick = { onEditTerm(null) }) { Text("创建学期") }
+                    Button(onClick = { onEditTerm(null) }) { Text(stringResource(R.string.exam_create_term)) }
                 }
             }
 
@@ -132,7 +137,11 @@ fun ExamScreen(
                         Column(verticalArrangement = Arrangement.spacedBy(2.dp)) {
                             Text(s.term.name, style = MaterialTheme.typography.headlineSmall, fontWeight = FontWeight.Bold)
                             Text(
-                                if (s.exams.isEmpty()) "无考试" else "共 ${s.exams.size} 场考试",
+                                if (s.exams.isEmpty()) {
+                                    stringResource(R.string.exam_summary_empty)
+                                } else {
+                                    stringResource(R.string.exam_summary_count, s.exams.size)
+                                },
                                 style = MaterialTheme.typography.bodySmall,
                                 color = MaterialTheme.colorScheme.onSurfaceVariant,
                             )
@@ -144,7 +153,7 @@ fun ExamScreen(
                     } else if (s.exams.isNotEmpty()) {
                         item {
                             Text(
-                                "近期没有待考考试",
+                                stringResource(R.string.exam_no_upcoming),
                                 style = MaterialTheme.typography.bodyMedium,
                                 color = MaterialTheme.colorScheme.onSurfaceVariant,
                             )
@@ -152,7 +161,7 @@ fun ExamScreen(
                     }
 
                     if (upcomingGroups.isNotEmpty()) {
-                        item { SectionTitle("考试安排") }
+                        item { SectionTitle(stringResource(R.string.exam_section_upcoming)) }
                         items(
                             items = upcomingGroups.entries.toList(),
                             key = { "upcoming-${it.key}" },
@@ -168,7 +177,7 @@ fun ExamScreen(
                     }
 
                     if (pastGroups.isNotEmpty()) {
-                        item { SectionTitle("已结束") }
+                        item { SectionTitle(stringResource(R.string.exam_section_past)) }
                         items(
                             items = pastGroups.entries.toList(),
                             key = { "past-${it.key}" },
@@ -191,26 +200,32 @@ fun ExamScreen(
     deleteTarget?.let { target ->
         AlertDialog(
             onDismissRequest = { deleteTarget = null },
-            title = { Text("删除考试") },
-            text = { Text("确定删除「${target.course.name} · ${target.exam.title}」吗？") },
+            title = { Text(stringResource(R.string.exam_delete)) },
+            text = {
+                Text(stringResource(R.string.exam_delete_confirm, target.course.name, target.exam.title))
+            },
             confirmButton = {
                 TextButton(
                     onClick = {
                         viewModel.deleteExam(target.exam.id)
                         deleteTarget = null
                     },
-                ) { Text("删除", color = MaterialTheme.colorScheme.error) }
+                ) { Text(stringResource(CoreR.string.common_delete), color = MaterialTheme.colorScheme.error) }
             },
-            dismissButton = { TextButton(onClick = { deleteTarget = null }) { Text("取消") } },
+            dismissButton = {
+                TextButton(onClick = { deleteTarget = null }) { Text(stringResource(CoreR.string.common_cancel)) }
+            },
         )
     }
 
     message?.let {
         AlertDialog(
             onDismissRequest = viewModel::dismissMessage,
-            title = { Text("操作失败") },
-            text = { Text(it) },
-            confirmButton = { TextButton(onClick = viewModel::dismissMessage) { Text("知道了") } },
+            title = { Text(stringResource(CoreR.string.common_failed)) },
+            text = { Text(it.resolve()) },
+            confirmButton = {
+                TextButton(onClick = viewModel::dismissMessage) { Text(stringResource(CoreR.string.common_got_it)) }
+            },
         )
     }
 }
@@ -236,13 +251,15 @@ private fun NextExamCard(next: ExamWithCourse, todayEpochDay: Long) {
                     .background(color.content),
             )
             Column(modifier = Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(3.dp)) {
-                Text("下一场考试", style = MaterialTheme.typography.labelMedium)
+                Text(stringResource(R.string.exam_next), style = MaterialTheme.typography.labelMedium)
                 Text(next.course.name, style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.Bold)
                 Text(next.exam.title, style = MaterialTheme.typography.bodyMedium)
                 Text(
-                    "${ExamFormat.dateLabel(next.exam.dateEpochDay)} · " +
-                        (ExamFormat.timeRange(next.exam) ?: "时间待定") +
-                        " · ${ExamFormat.relativeLabel(next.exam.dateEpochDay, todayEpochDay)}",
+                    listOf(
+                        dateLabel(next.exam.dateEpochDay),
+                        ExamFormat.timeRange(next.exam) ?: stringResource(R.string.exam_time_undecided),
+                        examRelativeLabel(next.exam.dateEpochDay, todayEpochDay),
+                    ).joinToString(stringResource(CoreR.string.common_separator)),
                     style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.onPrimaryContainer.copy(alpha = 0.75f),
                 )
@@ -275,9 +292,9 @@ private fun ExamDateGroup(
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically,
         ) {
-            Text(ExamFormat.dateLabel(dateEpochDay), style = MaterialTheme.typography.labelLarge)
+            Text(dateLabel(dateEpochDay), style = MaterialTheme.typography.labelLarge)
             Text(
-                ExamFormat.relativeLabel(dateEpochDay, todayEpochDay),
+                examRelativeLabel(dateEpochDay, todayEpochDay),
                 style = MaterialTheme.typography.labelMedium,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
             )
@@ -328,8 +345,10 @@ private fun ExamCard(
                     buildList {
                         ExamFormat.timeRange(item.exam)?.let { add(it) }
                         item.exam.location?.takeIf { it.isNotBlank() }?.let { add(it) }
-                        item.exam.seat?.takeIf { it.isNotBlank() }?.let { add("座位 $it") }
-                    }.ifEmpty { listOf("详情待补充") }.joinToString(" · "),
+                        item.exam.seat?.takeIf { it.isNotBlank() }
+                            ?.let { add(stringResource(R.string.exam_seat, it)) }
+                    }.ifEmpty { listOf(stringResource(R.string.exam_detail_empty)) }
+                        .joinToString(stringResource(CoreR.string.common_separator)),
                     style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                 )
@@ -337,7 +356,7 @@ private fun ExamCard(
             IconButton(onClick = onDelete) {
                 Icon(
                     Icons.Default.Delete,
-                    contentDescription = "删除考试",
+                    contentDescription = stringResource(R.string.exam_delete),
                     tint = MaterialTheme.colorScheme.onSurfaceVariant,
                 )
             }

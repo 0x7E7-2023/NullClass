@@ -18,9 +18,11 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
+import com.nullclass.app.R
 import com.nullclass.feature.settings.AboutScreen
 import com.nullclass.feature.settings.NotificationSettingsScreen
 import com.nullclass.feature.settings.ProfileScreen
@@ -113,8 +115,8 @@ internal fun ProfileTwoPane(navController: NavHostController) {
 @Composable
 private fun EmptyDetailHint() {
     DetailPanePlaceholder(
-        title = "从左边选一项",
-        subtitle = "设置、导入导出、关于都会显示在这里",
+        title = stringResource(R.string.app_detail_placeholder_profile_title),
+        subtitle = stringResource(R.string.app_detail_placeholder_profile_desc),
     )
 }
 
@@ -122,8 +124,8 @@ private fun EmptyDetailHint() {
 @Composable
 internal fun ExamEmptyDetailHint() {
     DetailPanePlaceholder(
-        title = "选一场考试",
-        subtitle = "在左边点考试可以编辑，或点右上角添加",
+        title = stringResource(R.string.app_detail_placeholder_exam_title),
+        subtitle = stringResource(R.string.app_detail_placeholder_exam_desc),
     )
 }
 

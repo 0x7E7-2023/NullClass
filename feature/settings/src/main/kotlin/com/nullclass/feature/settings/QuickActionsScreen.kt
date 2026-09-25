@@ -24,9 +24,11 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
+import com.nullclass.core.ui.R as CoreR
 import com.nullclass.core.ui.layout.AdaptiveColumn
 import java.time.LocalDate
 
@@ -55,10 +57,13 @@ fun QuickActionsScreen(
         modifier = Modifier.nestedScroll(appBarScrollBehavior.nestedScrollConnection),
         topBar = {
             TopAppBar(
-                title = { Text("快捷操作") },
+                title = { Text(stringResource(R.string.settings_quick_actions_title)) },
                 navigationIcon = {
                     IconButton(onClick = onBack) {
-                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "返回")
+                        Icon(
+                            Icons.AutoMirrored.Filled.ArrowBack,
+                            contentDescription = stringResource(CoreR.string.common_back),
+                        )
                     }
                 },
                 scrollBehavior = appBarScrollBehavior,
@@ -75,18 +80,18 @@ fun QuickActionsScreen(
         ) {
             EntryRow(
                 icon = Icons.Default.Refresh,
-                title = "调课（串课）",
+                title = stringResource(R.string.settings_day_swap_title),
                 subtitle = if (upcomingSwaps > 0) {
-                    "调休时把某一天设成上另一天的课 · 今天及以后有 $upcomingSwaps 条"
+                    stringResource(R.string.settings_quick_actions_swap_desc_with_count, upcomingSwaps)
                 } else {
-                    "调休时把某一天设成上另一天的课"
+                    stringResource(R.string.settings_quick_actions_swap_desc)
                 },
                 onClick = onOpenDaySwap,
             )
             EntryRow(
                 icon = Icons.Default.Delete,
-                title = "快速删课",
-                subtitle = "按周次或某一天筛出课，勾选批量删除",
+                title = stringResource(R.string.settings_quick_actions_cleanup),
+                subtitle = stringResource(R.string.settings_quick_actions_cleanup_desc),
                 onClick = onOpenCourseCleanup,
             )
         }

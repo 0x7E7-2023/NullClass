@@ -12,7 +12,10 @@ import com.nullclass.core.data.repository.DayOverrideRepository
 import com.nullclass.core.data.repository.HolidayRepository
 import com.nullclass.core.data.repository.TermRepository
 import com.nullclass.core.model.ReminderPlanner
+import com.nullclass.app.R
 import com.nullclass.core.model.ScheduleFormat
+import com.nullclass.core.ui.i18n.ScheduleText
+import com.nullclass.core.ui.R as CoreR
 import com.nullclass.core.model.UpcomingClass
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.first
@@ -124,7 +127,8 @@ class ReminderScheduler @Inject constructor(
                                 workDataOf(
                                     ClassStartWorker.KEY_COURSE_NAME to upcoming.course.name,
                                     ClassStartWorker.KEY_LOCATION to (upcoming.block.location ?: ""),
-                                    ClassStartWorker.KEY_PERIOD_LABEL to ScheduleFormat.periodRange(upcoming.block),
+                                    ClassStartWorker.KEY_PERIOD_LABEL to
+                                        ScheduleText.periodRange(context, upcoming.block),
                                     ClassStartWorker.KEY_START_TIME_LABEL to ScheduleFormat.minuteLabel(startMinuteOfDay),
                                     ClassStartWorker.KEY_BLOCK_ID to upcoming.block.id,
                                     ClassStartWorker.KEY_START_AT to upcoming.startAtMillis,
@@ -171,10 +175,12 @@ class ReminderScheduler @Inject constructor(
         if (!ReminderPlanner.shouldSendLate(upcoming, now, sentKeys)) return
         val tag = ReminderPlanner.reminderTag(upcoming)
         val text = listOf(
-            ScheduleFormat.periodRange(upcoming.block),
+            ScheduleText.periodRange(context, upcoming.block),
             upcoming.block.location ?: "",
-        ).filter { it.isNotBlank() }.joinToString(" · ")
-        if (ReminderNotifier.post(context, tag, "已开始 · ${upcoming.course.name}", text)) {
+        ).filter { it.isNotBlank() }
+            .joinToString(context.getString(CoreR.string.common_separator))
+        val title = context.getString(R.string.app_class_started, upcoming.course.name)
+        if (ReminderNotifier.post(context, tag, title, text)) {
             userPrefs.markRemindersSent(listOf(tag))
         }
     }
@@ -183,14 +189,15 @@ class ReminderScheduler @Inject constructor(
     private fun UpcomingClass.toExactReminder(leadMinutes: Int, zone: ZoneId): ExactReminder {
         val startMinuteOfDay = Instant.ofEpochMilli(startAtMillis)
             .atZone(zone).toLocalTime().let { it.hour * 60 + it.minute }
+        val separator = context.getString(CoreR.string.common_separator)
         return ExactReminder(
             tag = ReminderPlanner.reminderTag(this),
             remindAtMillis = startAtMillis - leadMinutes * 60_000L,
-            title = "${ScheduleFormat.minuteLabel(startMinuteOfDay)} · ${course.name}",
+            title = "${ScheduleFormat.minuteLabel(startMinuteOfDay)}$separator${course.name}",
             text = listOf(
-                ScheduleFormat.periodRange(block),
+                ScheduleText.periodRange(context, block),
                 block.location ?: "",
-            ).filter { it.isNotBlank() }.joinToString(" · "),
+            ).filter { it.isNotBlank() }.joinToString(separator),
         )
     }
 

@@ -1,11 +1,14 @@
 package com.nullclass.feature.settings.transfer
 
+import com.nullclass.feature.settings.R
 import android.content.Context
 import android.net.Uri
 import com.google.mlkit.vision.barcode.BarcodeScannerOptions
 import com.google.mlkit.vision.barcode.BarcodeScanning
 import com.google.mlkit.vision.barcode.common.Barcode
 import com.google.mlkit.vision.common.InputImage
+import com.nullclass.core.ui.i18n.UiText
+import com.nullclass.core.ui.i18n.UiTextException
 import com.nullclass.importer.QrPayload
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.suspendCancellableCoroutine
@@ -33,7 +36,9 @@ internal suspend fun readQrImage(context: Context, uri: Uri): String {
                     val payloads = barcodes.mapNotNull(::payloadFrom).filter { it.isNotEmpty() }
                     val payload = payloads.firstOrNull(QrPayload::isNullClassPayload) ?: payloads.firstOrNull()
                     if (payload == null) {
-                        continuation.resumeWithException(IllegalArgumentException("图片中未找到二维码，请选择清晰、完整的二维码图片"))
+                        continuation.resumeWithException(
+                            UiTextException(UiText.Res(R.string.settings_qr_image_not_found), "no qr code in image"),
+                        )
                     } else {
                         continuation.resume(payload)
                     }

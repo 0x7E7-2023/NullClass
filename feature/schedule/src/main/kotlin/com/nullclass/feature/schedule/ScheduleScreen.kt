@@ -59,6 +59,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -66,6 +67,7 @@ import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import com.nullclass.core.model.PlacedBlock
 import com.nullclass.core.model.WeekLayout
 import com.nullclass.core.ui.theme.courseColor
+import com.nullclass.core.ui.R as CoreR
 
 /**
  * 课表主界面（中间 Tab）。
@@ -126,16 +128,21 @@ fun ScheduleScreen(
                     Column {
                         val title = when (val s = state) {
                             is ScheduleUiState.Ready -> s.term.name
-                            else -> "空课"
+                            else -> stringResource(R.string.schedule_title_default)
                         }
                         Text(title, style = MaterialTheme.typography.titleMedium)
                         if (state is ScheduleUiState.Ready) {
                             val ready = state as ScheduleUiState.Ready
                             // 多课表时前缀课表名（单课表用户界面零变化）
-                            val prefix = ready.timetableName?.let { "$it · " } ?: ""
+                            val week = if (ready.selectedWeek == ready.todayWeek) {
+                                stringResource(R.string.schedule_week_number_current, ready.selectedWeek)
+                            } else {
+                                stringResource(R.string.schedule_week_number, ready.selectedWeek)
+                            }
                             Text(
-                                text = prefix + "第 ${ready.selectedWeek} 周" +
-                                    if (ready.selectedWeek == ready.todayWeek) " · 本周" else "",
+                                text = ready.timetableName?.let {
+                                    stringResource(R.string.schedule_subtitle_with_timetable, it, week)
+                                } ?: week,
                                 style = MaterialTheme.typography.labelSmall,
                                 color = MaterialTheme.colorScheme.onSurfaceVariant,
                             )
@@ -147,22 +154,31 @@ fun ScheduleScreen(
                     // 今天不在学期内时没有「本周」可回（回也是回第 1 周），按钮不显示
                     if (ready != null && ready.todayWeek != null && ready.selectedWeek != ready.todayWeek) {
                         TextButton(onClick = { viewModel.backToCurrentWeek() }) {
-                            Text("回本周")
+                            Text(stringResource(R.string.schedule_back_to_current_week))
                         }
                     }
                     if (ready != null) {
                         IconButton(onClick = { showWeekPicker = true }) {
-                            Icon(Icons.Default.DateRange, contentDescription = "选择周次")
+                            Icon(
+                                Icons.Default.DateRange,
+                                contentDescription = stringResource(R.string.schedule_pick_week),
+                            )
                         }
                     }
                     if (ready != null) {
                         IconButton(onClick = { showQuickSettings = true }) {
-                            Icon(Icons.Default.Settings, contentDescription = "显示设置")
+                            Icon(
+                                Icons.Default.Settings,
+                                contentDescription = stringResource(R.string.schedule_display_settings),
+                            )
                         }
                     }
                     // 日程不依赖学期，无学期时也给入口
                     IconButton(onClick = onOpenEvents) {
-                        Icon(Icons.Default.Notifications, contentDescription = "日程安排")
+                        Icon(
+                            Icons.Default.Notifications,
+                            contentDescription = stringResource(R.string.schedule_event_title),
+                        )
                     }
                 },
                 colors = TopAppBarDefaults.topAppBarColors(
@@ -174,7 +190,7 @@ fun ScheduleScreen(
         floatingActionButton = {
             if (state is ScheduleUiState.Ready) {
                 FloatingActionButton(onClick = onCreateCourse) {
-                    Icon(Icons.Default.Add, contentDescription = "添加课程")
+                    Icon(Icons.Default.Add, contentDescription = stringResource(R.string.schedule_add_course))
                 }
             }
         },
@@ -201,13 +217,18 @@ fun ScheduleScreen(
                 contentAlignment = Alignment.Center,
             ) {
                 Column(horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.spacedBy(12.dp)) {
-                    Text("还没有学期", style = MaterialTheme.typography.titleMedium)
                     Text(
-                        "创建一个学期开始排课",
+                        stringResource(R.string.schedule_no_term_title),
+                        style = MaterialTheme.typography.titleMedium,
+                    )
+                    Text(
+                        stringResource(R.string.schedule_no_term_desc),
                         style = MaterialTheme.typography.bodyMedium,
                         color = MaterialTheme.colorScheme.onSurfaceVariant,
                     )
-                    Button(onClick = { onEditTerm(null) }) { Text("创建学期") }
+                    Button(onClick = { onEditTerm(null) }) {
+                        Text(stringResource(R.string.schedule_create_term))
+                    }
                 }
             }
 
@@ -380,7 +401,7 @@ fun ScheduleScreen(
                 if (showQuickSettings) {
                     AlertDialog(
                         onDismissRequest = { showQuickSettings = false },
-                        title = { Text("显示设置") },
+                        title = { Text(stringResource(R.string.schedule_display_settings)) },
                         text = {
                             Column {
                                 Row(
@@ -390,7 +411,7 @@ fun ScheduleScreen(
                                     horizontalArrangement = Arrangement.SpaceBetween,
                                     verticalAlignment = Alignment.CenterVertically,
                                 ) {
-                                    Text("显示时间线")
+                                    Text(stringResource(R.string.schedule_show_now_line))
                                     Checkbox(
                                         checked = ready.showNowLine,
                                         onCheckedChange = { viewModel.setShowNowLine(it) },
@@ -403,7 +424,7 @@ fun ScheduleScreen(
                                     horizontalArrangement = Arrangement.SpaceBetween,
                                     verticalAlignment = Alignment.CenterVertically,
                                 ) {
-                                    Text("显示周末")
+                                    Text(stringResource(R.string.schedule_show_weekend))
                                     Checkbox(
                                         checked = ready.showWeekend,
                                         onCheckedChange = { viewModel.setShowWeekend(it) },
@@ -416,7 +437,7 @@ fun ScheduleScreen(
                                     horizontalArrangement = Arrangement.SpaceBetween,
                                     verticalAlignment = Alignment.CenterVertically,
                                 ) {
-                                    Text("显示网格线")
+                                    Text(stringResource(R.string.schedule_show_grid_lines))
                                     Checkbox(
                                         checked = ready.showGridLines,
                                         onCheckedChange = { viewModel.setShowGridLines(it) },
@@ -429,7 +450,7 @@ fun ScheduleScreen(
                                     horizontalArrangement = Arrangement.SpaceBetween,
                                     verticalAlignment = Alignment.CenterVertically,
                                 ) {
-                                    Text("起止时间标在课块上")
+                                    Text(stringResource(R.string.schedule_show_time_in_cards))
                                     Switch(
                                         checked = ready.showTimeInCards,
                                         onCheckedChange = { viewModel.setShowTimeInCards(it) },
@@ -442,7 +463,10 @@ fun ScheduleScreen(
                                     horizontalArrangement = Arrangement.SpaceBetween,
                                     verticalAlignment = Alignment.CenterVertically,
                                 ) {
-                                    Text("显示非本周课程", modifier = Modifier.weight(1f))
+                                    Text(
+                                        stringResource(R.string.schedule_show_other_week),
+                                        modifier = Modifier.weight(1f),
+                                    )
                                     Switch(
                                         checked = ready.showOtherWeek,
                                         onCheckedChange = { viewModel.setShowOtherWeek(it) },
@@ -451,7 +475,9 @@ fun ScheduleScreen(
                             }
                         },
                         confirmButton = {
-                            TextButton(onClick = { showQuickSettings = false }) { Text("完成") }
+                            TextButton(onClick = { showQuickSettings = false }) {
+                                Text(stringResource(CoreR.string.common_done))
+                            }
                         },
                     )
                 }
@@ -476,7 +502,7 @@ private fun WeekPickerDialog(
         .coerceIn(180.dp, 420.dp)
     AlertDialog(
         onDismissRequest = onDismiss,
-        title = { Text("选择周次") },
+        title = { Text(stringResource(R.string.schedule_pick_week)) },
         text = {
             // verticalScroll + heightIn(max)：内容不满封顶值时按内容收缩，
             // 溢出时容器停在封顶值、内部滚动——这是「收缩包裹但封顶」的唯一
@@ -506,7 +532,7 @@ private fun WeekPickerDialog(
             }
         },
         confirmButton = {
-            TextButton(onClick = onDismiss) { Text("取消") }
+            TextButton(onClick = onDismiss) { Text(stringResource(CoreR.string.common_cancel)) }
         },
     )
 }

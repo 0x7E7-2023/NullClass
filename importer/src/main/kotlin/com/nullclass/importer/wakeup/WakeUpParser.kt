@@ -2,7 +2,11 @@ package com.nullclass.importer.wakeup
 
 import com.nullclass.core.model.MAX_TOTAL_WEEKS
 import com.nullclass.importer.BlockDto
+import com.nullclass.importer.ImportNotice
+import com.nullclass.importer.ImportNoticeEntry
 import com.nullclass.importer.ImportProvenance
+import com.nullclass.importer.ScheduleFileError
+import com.nullclass.importer.ScheduleFileException
 import com.nullclass.importer.CourseDto
 import com.nullclass.importer.PeriodTimeDto
 import com.nullclass.importer.TermDto
@@ -49,12 +53,13 @@ object WakeUpParser {
         val courses: List<CourseDto>,
         val blocks: List<BlockDto>,
         val periodTimes: List<PeriodTimeDto>,
-        val warnings: List<String>,
+        /** 跳过了什么、替成了什么。只带标识与参数，文案由界面层按当前语言取。 */
+        val warnings: List<ImportNoticeEntry>,
     )
 
     /** @throws IllegalArgumentException 带用户可读 message */
     fun parse(raw: String): WakeUpResult {
-        val warnings = mutableListOf<String>()
+        val warnings = mutableListOf<ImportNoticeEntry>()
         val json = Json { ignoreUnknownKeys = true }
 
         var settings: JsonObject? = null
@@ -67,7 +72,9 @@ object WakeUpParser {
             val element: JsonElement = try {
                 json.parseToJsonElement(line)
             } catch (e: kotlinx.serialization.SerializationException) {
-                warnings.add("第 ${index + 1} 行无法解析，已跳过")
+                warnings.add(
+                    ImportNoticeEntry(ImportNotice.WAKEUP_LINE_UNPARSABLE, listOf(index + 1)),
+                )
                 continue
             }
             when (element) {
@@ -79,7 +86,9 @@ object WakeUpParser {
                     ) {
                         settings = element
                     } else {
-                        warnings.add("第 ${index + 1} 行是无法识别的对象，已跳过")
+                        warnings.add(
+                            ImportNoticeEntry(ImportNotice.WAKEUP_LINE_NOT_OBJECT, listOf(index + 1)),
+                        )
                     }
 
                 is JsonArray -> when {
@@ -95,29 +104,39 @@ object WakeUpParser {
                             objects.any { it.containsKey("node") && it.containsKey("startTime") } ->
                                 periodRows = (periodRows ?: emptyList()) + objects
 
-                            else -> warnings.add("第 ${index + 1} 行是无法识别的数组，已跳过")
+                            else -> warnings.add(
+                                ImportNoticeEntry(ImportNotice.WAKEUP_LINE_NOT_ARRAY, listOf(index + 1)),
+                            )
                         }
                     }
 
-                    else -> warnings.add("第 ${index + 1} 行是无法识别的数组，已跳过")
+                    else -> warnings.add(
+                        ImportNoticeEntry(ImportNotice.WAKEUP_LINE_NOT_ARRAY, listOf(index + 1)),
+                    )
                 }
             }
         }
 
         if (courseRows == null) {
-            throw IllegalArgumentException("不是有效的 WakeUp 课表文件（未找到课程时间安排数据）")
+            throw ScheduleFileException(ScheduleFileError.WAKEUP_NO_SCHEDULE)
         }
         if (courseInfoRows == null) {
-            throw IllegalArgumentException("WakeUp 文件缺少课程信息（courseName 列表）")
+            throw ScheduleFileException(ScheduleFileError.WAKEUP_NO_COURSES)
         }
 
         // ---- 学期 ----
         val settingsObj = settings
+        // 兜底学期名是**写进数据库的数据**（会同步到其他设备、也是合并的对齐键），
+        // 不是界面文案，所以保留中文字面量、不随界面语言变化
         val termName = settingsObj?.get("courseTableName")?.jsonPrimitive?.contentOrNull?.takeIf { it.isNotBlank() }
             ?: "导入的课表"
         val rawWeeks = settingsObj?.get("maxWeek")?.jsonPrimitive?.intOrNull ?: 20
         val totalWeeks = rawWeeks.coerceIn(1, MAX_TOTAL_WEEKS)
-        if (totalWeeks != rawWeeks) warnings.add("学期周数 $rawWeeks 超出范围，已截断为 $totalWeeks")
+        if (totalWeeks != rawWeeks) {
+            warnings.add(
+                ImportNoticeEntry(ImportNotice.WAKEUP_WEEKS_TRUNCATED, listOf(rawWeeks, totalWeeks)),
+            )
+        }
         val firstDayEpochDay = parseFirstDay(settingsObj?.get("startTime")?.jsonPrimitive?.contentOrNull)
         val now = 0L // 导入文档统一 0 时间戳：merge 时同 id 不存在冲突，语义为"来自外部"
         val termId = UUID.randomUUID().toString()
@@ -133,7 +152,10 @@ object WakeUpParser {
                 val start = parseHm(row["startTime"]?.jsonPrimitive?.contentOrNull)
                 val end = parseHm(row["endTime"]?.jsonPrimitive?.contentOrNull)
                 if (index == null || start == null || end == null) {
-                    warnings.add("节次时间第 ${i + 1} 条格式非法，已跳过") // B8：不再静默丢弃
+                    // B8：不再静默丢弃
+                    warnings.add(
+                        ImportNoticeEntry(ImportNotice.WAKEUP_PERIOD_ROW_INVALID, listOf(i + 1)),
+                    )
                     return@mapIndexedNotNull null
                 }
                 PeriodTimeDto(
@@ -145,7 +167,7 @@ object WakeUpParser {
             ?.sortedBy { it.periodIndex }
             ?.takeIf { it.isNotEmpty() }
             ?: run {
-                warnings.add("WakeUp 文件无节次时间表，已使用默认模板")
+                warnings.add(ImportNoticeEntry(ImportNotice.WAKEUP_NO_PERIOD_TABLE))
                 buildDefaultPeriods(termId, requiredPeriods(courseRows, settingsObj))
             }
 
@@ -158,13 +180,16 @@ object WakeUpParser {
             val colorIndex = nearestColor(row["color"]?.jsonPrimitive?.contentOrNull)
             nameById[id] = name to colorIndex
         }
-        if (nameById.isEmpty()) throw IllegalArgumentException("WakeUp 文件课程信息为空")
+        if (nameById.isEmpty()) throw ScheduleFileException(ScheduleFileError.WAKEUP_EMPTY_COURSES)
 
         // Course 行里出现但 CourseInfo 没有的 id → 生成占位课名
         courseRows.forEach { row ->
             val id = row["id"]?.jsonPrimitive?.intOrNull ?: return@forEach
             if (id !in nameById) {
-                warnings.add("课程 id=$id 缺少课名信息，已按「课程 $id」导入")
+                warnings.add(
+                    ImportNoticeEntry(ImportNotice.WAKEUP_COURSE_NO_NAME, listOf(id)),
+                )
+                // 同上：补出来的课名会进数据库，属数据不属文案
                 nameById[id] = "课程 $id" to id.mod(PaletteRgb.size)
             }
         }
@@ -188,23 +213,38 @@ object WakeUpParser {
             val day = row["day"]?.jsonPrimitive?.intOrNull
             val startNode = row["startNode"]?.jsonPrimitive?.intOrNull
             if (wakeupId == null || day == null || startNode == null) {
-                warnings.add("第 ${i + 1} 条安排缺少 id/day/startNode，已跳过") // B8：不再静默丢弃
+                // B8：不再静默丢弃
+                warnings.add(
+                    ImportNoticeEntry(ImportNotice.WAKEUP_BLOCK_MISSING_FIELD, listOf(i + 1)),
+                )
                 return@mapIndexedNotNull null
             }
             val rawStep = row["step"]?.jsonPrimitive?.intOrNull ?: 1
             if (rawStep < 1) {
                 // step=0/负数会让 endPeriod = startNode+step-1 倒挂，按 1 节保留该课（B8）
-                warnings.add("第 ${i + 1} 条安排 step=$rawStep 非法，已按 1 节处理")
+                warnings.add(
+                    ImportNoticeEntry(
+                        ImportNotice.WAKEUP_BLOCK_BAD_STEP,
+                        listOf(i + 1, rawStep.toString()),
+                    ),
+                )
             }
             val step = rawStep.coerceAtLeast(1)
             val startWeek = (row["startWeek"]?.jsonPrimitive?.intOrNull ?: 1).coerceIn(1, totalWeeks)
             val endWeek = (row["endWeek"]?.jsonPrimitive?.intOrNull ?: totalWeeks).coerceIn(1, totalWeeks)
             if (day !in 1..7) {
-                warnings.add("第 ${i + 1} 条安排 day=$day 非法，已跳过")
+                warnings.add(
+                    ImportNoticeEntry(ImportNotice.WAKEUP_BLOCK_BAD_DAY, listOf(i + 1, day.toString())),
+                )
                 return@mapIndexedNotNull null
             }
             if (startNode < 1) {
-                warnings.add("第 ${i + 1} 条安排 startNode=$startNode 非法，已跳过")
+                warnings.add(
+                    ImportNoticeEntry(
+                        ImportNotice.WAKEUP_BLOCK_BAD_START,
+                        listOf(i + 1, startNode.toString()),
+                    ),
+                )
                 return@mapIndexedNotNull null
             }
             BlockDto(

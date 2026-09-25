@@ -36,10 +36,12 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import com.nullclass.core.ui.layout.AdaptiveWidthWrapper
+import com.nullclass.core.ui.R as CoreR
 
 /**
  * 课表管理：列表切换当前课表、重命名、删除、新建。
@@ -67,14 +69,19 @@ fun TimetableListScreen(
         modifier = Modifier.nestedScroll(appBarScrollBehavior.nestedScrollConnection),
         topBar = {
             TopAppBar(
-                title = { Text("课表管理") },
+                title = { Text(stringResource(R.string.edit_timetable_list_title)) },
                 navigationIcon = {
                     IconButton(onClick = onBack) {
-                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "返回")
+                        Icon(
+                            Icons.AutoMirrored.Filled.ArrowBack,
+                            contentDescription = stringResource(CoreR.string.common_back),
+                        )
                     }
                 },
                 actions = {
-                    TextButton(onClick = onCreateTimetable) { Text("新建") }
+                    TextButton(onClick = onCreateTimetable) {
+                        Text(stringResource(CoreR.string.common_create))
+                    }
                 },
                 scrollBehavior = appBarScrollBehavior,
             )
@@ -92,13 +99,18 @@ fun TimetableListScreen(
                     horizontalAlignment = Alignment.CenterHorizontally,
                     verticalArrangement = Arrangement.spacedBy(12.dp),
                 ) {
-                    Text("还没有课表", style = MaterialTheme.typography.titleMedium)
                     Text(
-                        "新建一张开始排课",
+                        stringResource(R.string.edit_timetable_list_empty_title),
+                        style = MaterialTheme.typography.titleMedium,
+                    )
+                    Text(
+                        stringResource(R.string.edit_timetable_list_empty_desc),
                         style = MaterialTheme.typography.bodyMedium,
                         color = MaterialTheme.colorScheme.onSurfaceVariant,
                     )
-                    Button(onClick = onCreateTimetable) { Text("创建课表") }
+                    Button(onClick = onCreateTimetable) {
+                        Text(stringResource(R.string.edit_timetable_list_create))
+                    }
                 }
             }
         } else {
@@ -128,20 +140,25 @@ fun TimetableListScreen(
         if (state.items.size <= 1) {
             AlertDialog(
                 onDismissRequest = { pendingDelete = null },
-                title = { Text("无法删除") },
-                text = { Text("至少保留一张课表。要清空内容，用学期管理删除里面的学期。") },
+                title = { Text(stringResource(R.string.edit_timetable_delete_blocked_title)) },
+                text = { Text(stringResource(R.string.edit_timetable_delete_blocked_desc)) },
                 confirmButton = {
-                    TextButton(onClick = { pendingDelete = null }) { Text("知道了") }
+                    TextButton(onClick = { pendingDelete = null }) {
+                        Text(stringResource(CoreR.string.common_got_it))
+                    }
                 },
             )
         } else {
             AlertDialog(
                 onDismissRequest = { pendingDelete = null },
-                title = { Text("删除课表") },
+                title = { Text(stringResource(R.string.edit_timetable_delete)) },
                 text = {
                     Text(
-                        "将删除课表「${item.timetable.name}」及其 ${item.termCount} 个学期和全部课程。" +
-                            "删除会同步到其他设备。",
+                        stringResource(
+                            R.string.edit_timetable_delete_confirm,
+                            item.timetable.name,
+                            item.termCount,
+                        ),
                     )
                 },
                 confirmButton = {
@@ -150,10 +167,17 @@ fun TimetableListScreen(
                             pendingDelete = null
                             viewModel.delete(item.timetable.id)
                         },
-                    ) { Text("删除", color = MaterialTheme.colorScheme.error) }
+                    ) {
+                        Text(
+                            stringResource(CoreR.string.common_delete),
+                            color = MaterialTheme.colorScheme.error,
+                        )
+                    }
                 },
                 dismissButton = {
-                    TextButton(onClick = { pendingDelete = null }) { Text("取消") }
+                    TextButton(onClick = { pendingDelete = null }) {
+                        Text(stringResource(CoreR.string.common_cancel))
+                    }
                 },
             )
         }
@@ -164,13 +188,13 @@ fun TimetableListScreen(
         var name by rememberSaveable(item.timetable.id) { mutableStateOf(item.timetable.name) }
         AlertDialog(
             onDismissRequest = { pendingRenameId = null },
-            title = { Text("重命名课表") },
+            title = { Text(stringResource(R.string.edit_timetable_rename)) },
             text = {
                 OutlinedTextField(
                     value = name,
                     onValueChange = { name = it },
                     singleLine = true,
-                    label = { Text("课表名称") },
+                    label = { Text(stringResource(R.string.edit_timetable_name)) },
                 )
             },
             confirmButton = {
@@ -180,10 +204,12 @@ fun TimetableListScreen(
                         pendingRenameId = null
                         if (trimmed.isNotEmpty()) viewModel.rename(item.timetable.id, trimmed)
                     },
-                ) { Text("保存") }
+                ) { Text(stringResource(CoreR.string.common_save)) }
             },
             dismissButton = {
-                TextButton(onClick = { pendingRenameId = null }) { Text("取消") }
+                TextButton(onClick = { pendingRenameId = null }) {
+                    Text(stringResource(CoreR.string.common_cancel))
+                }
             },
         )
     }
@@ -217,14 +243,14 @@ private fun TimetableRow(
                     fontWeight = FontWeight.Bold,
                 )
                 Text(
-                    "${item.termCount} 个学期",
+                    stringResource(R.string.edit_timetable_term_count, item.termCount),
                     style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                 )
             }
             if (item.isActive) {
                 Text(
-                    "当前",
+                    stringResource(R.string.edit_timetable_list_current),
                     style = MaterialTheme.typography.labelLarge,
                     color = MaterialTheme.colorScheme.primary,
                     fontWeight = FontWeight.Bold,
@@ -234,14 +260,14 @@ private fun TimetableRow(
             IconButton(onClick = onRename) {
                 Icon(
                     Icons.Default.Edit,
-                    contentDescription = "重命名课表",
+                    contentDescription = stringResource(R.string.edit_timetable_rename),
                     tint = MaterialTheme.colorScheme.onSurfaceVariant,
                 )
             }
             IconButton(onClick = onDelete) {
                 Icon(
                     Icons.Default.Delete,
-                    contentDescription = "删除课表",
+                    contentDescription = stringResource(R.string.edit_timetable_delete),
                     tint = MaterialTheme.colorScheme.error,
                 )
             }

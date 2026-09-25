@@ -19,10 +19,13 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import com.nullclass.core.model.ScheduleFormat
 import com.nullclass.core.model.Term
+import com.nullclass.core.ui.i18n.dayOfWeekLabel
+import com.nullclass.core.ui.i18n.monthDayLabel
 import com.nullclass.core.ui.layout.LocalWindowSize
+import com.nullclass.core.ui.R as CoreR
 import java.time.LocalDate
 
 /** DatePicker 的毫秒口径是 UTC 零点，与 epochDay 的换算只在这一处出现。 */
@@ -53,24 +56,35 @@ internal fun DaySwapDialog(
     AlertDialog(
         onDismissRequest = onDismiss,
         title = {
-            Text("调课 · ${date.monthValue}月${date.dayOfMonth}日 ${ScheduleFormat.dayOfWeekLabel(date.dayOfWeek.value)}")
+            Text(
+                stringResource(
+                    R.string.schedule_day_swap_title,
+                    monthDayLabel(epochDay),
+                    dayOfWeekLabel(date.dayOfWeek.value),
+                ),
+            )
         },
         text = {
             Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
                 Text(
                     text = if (sourceEpochDay == null) {
-                        "这天按课表原样上课。调休时可以把它设成上另一天的课——今日页、" +
-                            "周视图、小组件和课前提醒会一起跟着改，上课时间仍按这天的作息。"
+                        stringResource(R.string.schedule_day_swap_desc_none)
                     } else {
                         val source = LocalDate.ofEpochDay(sourceEpochDay)
-                        "当前：这天上 ${source.monthValue}月${source.dayOfMonth}日" +
-                            "（${ScheduleFormat.dayOfWeekLabel(source.dayOfWeek.value)}）的课。"
+                        stringResource(
+                            R.string.schedule_day_swap_desc_current,
+                            monthDayLabel(sourceEpochDay),
+                            dayOfWeekLabel(source.dayOfWeek.value),
+                        )
                     },
                     style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                 )
                 if (week != null) {
-                    Text("上本周哪天的课", style = MaterialTheme.typography.labelMedium)
+                    Text(
+                        stringResource(R.string.schedule_day_swap_pick_in_week),
+                        style = MaterialTheme.typography.labelMedium,
+                    )
                     FlowRow(
                         horizontalArrangement = Arrangement.spacedBy(8.dp),
                         verticalArrangement = Arrangement.spacedBy(4.dp),
@@ -83,11 +97,12 @@ internal fun DaySwapDialog(
                                 selected = if (isSelf) sourceEpochDay == null else candidate == sourceEpochDay,
                                 onClick = { onSelect(candidate) },
                                 label = {
+                                    val label = dayOfWeekLabel(day)
                                     Text(
                                         if (isSelf) {
-                                            "周${ScheduleFormat.dayOfWeekShortLabel(day)}(本身)"
+                                            stringResource(R.string.schedule_day_swap_self, label)
                                         } else {
-                                            "周${ScheduleFormat.dayOfWeekShortLabel(day)}"
+                                            label
                                         },
                                     )
                                 },
@@ -95,19 +110,21 @@ internal fun DaySwapDialog(
                         }
                     }
                 }
-                TextButton(onClick = { showDatePicker = true }) { Text("上其它日期的课…") }
+                TextButton(onClick = { showDatePicker = true }) {
+                    Text(stringResource(R.string.schedule_day_swap_other_date))
+                }
             }
         },
         confirmButton = {
             if (sourceEpochDay != null) {
-                TextButton(onClick = onClear) { Text("恢复原课表") }
+                TextButton(onClick = onClear) { Text(stringResource(R.string.schedule_day_swap_reset)) }
             } else {
-                TextButton(onClick = onDismiss) { Text("完成") }
+                TextButton(onClick = onDismiss) { Text(stringResource(CoreR.string.common_done)) }
             }
         },
         dismissButton = {
             if (sourceEpochDay != null) {
-                TextButton(onClick = onDismiss) { Text("完成") }
+                TextButton(onClick = onDismiss) { Text(stringResource(CoreR.string.common_done)) }
             }
         },
     )
@@ -133,10 +150,12 @@ internal fun DaySwapDialog(
                         onSelect(Math.floorDiv(millis, MILLIS_PER_DAY))
                     }
                     showDatePicker = false
-                }) { Text("确定") }
+                }) { Text(stringResource(CoreR.string.common_confirm)) }
             },
             dismissButton = {
-                TextButton(onClick = { showDatePicker = false }) { Text("取消") }
+                TextButton(onClick = { showDatePicker = false }) {
+                    Text(stringResource(CoreR.string.common_cancel))
+                }
             },
         ) {
             DatePicker(state = pickerState)

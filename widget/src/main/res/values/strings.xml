@@ -1,8 +1,52 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!-- :widget 的桌面小组件文案。资源名统一以 widget_ 开头，风格见 docs/ux-writing.md。
+     小组件格子极窄，这里的紧凑标签不按常规在数字与中文之间留空格。 -->
 <resources>
+
+    <!-- 小组件选择器中的名称与说明（API 31+） -->
     <string name="widget_today_label">空课 · 今日课程</string>
     <string name="widget_next_label">空课 · 下节课</string>
-    <!-- 小组件选择器里的一句话说明（API 31+） -->
-    <string name="widget_today_description">今天剩下的课，按时间顺序排列</string>
-    <string name="widget_next_description">下一节课的时间与地点</string>
+    <string name="widget_today_description">按时间顺序显示今天剩余的课程。</string>
+    <string name="widget_next_description">显示下一节课的时间与地点。</string>
+
+    <!-- 今日课程 -->
+    <string name="widget_today_title">今日课程</string>
+    <string name="widget_today_title_short">今日</string>
+    <string name="widget_app_name">空课</string>
+    <string name="widget_today_week">第%1$d周 · %2$s</string>
+    <string name="widget_updated_at">更新于 %1$s</string>
+    <string name="widget_today_remaining_count">待上 %1$d 门</string>
+    <string name="widget_today_footer">空课 · 今天</string>
+
+    <!-- 空状态 -->
+    <string name="widget_empty_no_timetable">尚未创建课表</string>
+    <string name="widget_empty_no_timetable_desc">点击此处创建学期</string>
+    <string name="widget_empty_no_class">今天没有课程安排</string>
+    <string name="widget_empty_no_class_desc">可在应用内查看其他日期</string>
+    <string name="widget_empty_finished">今天的课程已全部结束</string>
+    <string name="widget_empty_finished_desc">明天的安排可在应用内查看</string>
+
+    <!-- 翻页 -->
+    <string name="widget_page_prev">↑ 上页</string>
+    <string name="widget_page_prev_short">↑</string>
+    <string name="widget_page_prev_desc">上一页</string>
+    <string name="widget_page_next">↓ 下页</string>
+    <string name="widget_page_next_short">↓</string>
+    <string name="widget_page_next_desc">下一页</string>
+    <string name="widget_page_indicator_desc">第 %1$d 页，共 %2$d 页</string>
+    <string name="widget_action_unavailable">%1$s，不可用</string>
+
+    <!-- 课程行 -->
+    <string name="widget_row_in_class">上课中 · 剩%1$d分</string>
+    <string name="widget_row_next">下一节 · %1$s</string>
+    <string name="widget_row_period_range">第%1$d–%2$d节</string>
+
+    <!-- 下节课 -->
+    <string name="widget_next_empty_finished">今日课程已结束</string>
+    <string name="widget_next_in_class">正在上课</string>
+    <string name="widget_next_upcoming">接下来</string>
+    <string name="widget_next_remaining">还剩 %1$d 分钟</string>
+    <string name="widget_next_time_range">%1$s — %2$s</string>
+    <string name="widget_next_location_unknown">教室待定</string>
+
 </resources>

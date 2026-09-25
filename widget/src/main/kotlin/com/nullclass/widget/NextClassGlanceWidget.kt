@@ -7,6 +7,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.unit.dp
 import androidx.glance.GlanceId
 import androidx.glance.GlanceModifier
+import androidx.glance.LocalContext
 import androidx.glance.LocalSize
 import androidx.glance.action.clickable
 import androidx.glance.appwidget.GlanceAppWidget
@@ -61,6 +62,7 @@ internal fun NextClassWidgetContent(
     nowMinuteOfDay: Int,
     fontSize: WidgetFontSize = WidgetFontSize.STANDARD,
 ) {
+    val context = LocalContext.current
     val next = snapshot.nextUp(nowMinuteOfDay)
     val compact = LocalSize.current.height < 110.dp || LocalSize.current.width < 140.dp
     val tiny = LocalSize.current.height < 72.dp
@@ -72,18 +74,26 @@ internal fun NextClassWidgetContent(
     ) {
         if (next == null) {
             Text(
-                when {
-                    snapshot.termName.isEmpty() -> "还没有课表"
-                    snapshot.blocks.isEmpty() -> "今天没有课"
-                    else -> "今日已完成"
-                },
+                context.getString(
+                    when {
+                        snapshot.termName.isEmpty() -> R.string.widget_empty_no_timetable
+                        snapshot.blocks.isEmpty() -> R.string.widget_empty_no_class
+                        else -> R.string.widget_next_empty_finished
+                    },
+                ),
                 style = TextStyle(color = WidgetOnBackground, fontSize = fontSize.sp(if (tiny) 11 else 13), fontWeight = FontWeight.Bold),
                 maxLines = if (compact) 1 else 2,
             )
             if (!compact) {
                 Spacer(GlanceModifier.height(6.dp))
                 Text(
-                    if (snapshot.termName.isEmpty()) "点此创建学期" else "留一点时间给自己",
+                    context.getString(
+                        if (snapshot.termName.isEmpty()) {
+                            R.string.widget_empty_no_timetable_desc
+                        } else {
+                            R.string.widget_empty_no_class_desc
+                        },
+                    ),
                     style = TextStyle(color = WidgetOnBackgroundVariant, fontSize = fontSize.sp(11)),
                     maxLines = 2,
                 )
@@ -96,7 +106,9 @@ internal fun NextClassWidgetContent(
                         .background(courseColor(next.placed.course.colorIndex).content).cornerRadius(2.dp)) {}
                     Spacer(GlanceModifier.width(6.dp))
                     Text(
-                        if (inProgress) "正在上课" else "接下来",
+                        context.getString(
+                            if (inProgress) R.string.widget_next_in_class else R.string.widget_next_upcoming,
+                        ),
                         style = TextStyle(color = WidgetAccent, fontSize = fontSize.sp(10), fontWeight = FontWeight.Medium),
                         maxLines = 1,
                     )
@@ -110,15 +122,26 @@ internal fun NextClassWidgetContent(
             )
             Spacer(GlanceModifier.height(if (compact) 2.dp else 8.dp))
             Text(
-                if (inProgress) "还剩 ${snapshot.remainingMinutes(next, nowMinuteOfDay)} 分钟"
-                else if (compact) next.startTime else "${next.startTime} — ${next.endTime}",
+                when {
+                    inProgress -> context.getString(
+                        R.string.widget_next_remaining,
+                        snapshot.remainingMinutes(next, nowMinuteOfDay),
+                    )
+                    compact -> next.startTime
+                    else -> context.getString(
+                        R.string.widget_next_time_range,
+                        next.startTime,
+                        next.endTime,
+                    )
+                },
                 style = TextStyle(color = WidgetAccent, fontSize = fontSize.sp(if (compact) 10 else 12), fontWeight = FontWeight.Medium),
                 maxLines = 1,
             )
             if (!compact) {
                 Spacer(GlanceModifier.height(6.dp))
                 Text(
-                    next.placed.block.location?.takeIf { it.isNotBlank() } ?: "教室待定",
+                    next.placed.block.location?.takeIf { it.isNotBlank() }
+                        ?: context.getString(R.string.widget_next_location_unknown),
                     style = TextStyle(color = WidgetOnBackgroundVariant, fontSize = fontSize.sp(11)),
                     maxLines = 1,
                 )

@@ -38,15 +38,20 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import com.nullclass.core.model.PlacedBlock
-import com.nullclass.core.model.ScheduleFormat
 import com.nullclass.core.model.Session
 import com.nullclass.core.model.TodaySnapshot
+import com.nullclass.core.ui.i18n.dayOfWeekLabel
+import com.nullclass.core.ui.i18n.monthDayLabel
+import com.nullclass.core.ui.i18n.periodRangeLabel
+import com.nullclass.core.ui.i18n.remainingLabel
 import com.nullclass.core.ui.layout.AdaptiveColumn
 import com.nullclass.core.ui.theme.courseColor
+import com.nullclass.core.ui.R as CoreR
 
 /**
  * 今日 Tab：当天课程的时间轴列表。
@@ -90,13 +95,18 @@ fun TodayScreen(
                 contentAlignment = Alignment.Center,
             ) {
                 Column(horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.spacedBy(12.dp)) {
-                    Text("还没有学期", style = MaterialTheme.typography.titleMedium)
                     Text(
-                        "创建一个学期开始排课",
+                        stringResource(R.string.schedule_no_term_title),
+                        style = MaterialTheme.typography.titleMedium,
+                    )
+                    Text(
+                        stringResource(R.string.schedule_no_term_desc),
                         style = MaterialTheme.typography.bodyMedium,
                         color = MaterialTheme.colorScheme.onSurfaceVariant,
                     )
-                    Button(onClick = { onEditTerm(null) }) { Text("创建学期") }
+                    Button(onClick = { onEditTerm(null) }) {
+                        Text(stringResource(R.string.schedule_create_term))
+                    }
                 }
             }
 
@@ -125,20 +135,26 @@ fun TodayScreen(
                             ) {
                                 Column(Modifier.weight(1f).padding(vertical = 4.dp)) {
                                     Text(
-                                        "今天调课 · 上 ${source.monthValue}月${source.dayOfMonth}日" +
-                                            "（${ScheduleFormat.dayOfWeekLabel(source.dayOfWeek.value)}）的课",
+                                        stringResource(
+                                            R.string.schedule_today_swap_title,
+                                            monthDayLabel(source.toEpochDay()),
+                                            dayOfWeekLabel(source.dayOfWeek.value),
+                                        ),
                                         style = MaterialTheme.typography.titleSmall,
                                         fontWeight = FontWeight.Bold,
                                         color = MaterialTheme.colorScheme.onTertiaryContainer,
                                     )
                                     Text(
-                                        "上课时间仍按今天的作息；课前提醒已跟着改",
+                                        stringResource(R.string.schedule_today_swap_desc),
                                         style = MaterialTheme.typography.bodySmall,
                                         color = MaterialTheme.colorScheme.onTertiaryContainer.copy(alpha = 0.75f),
                                     )
                                 }
                                 TextButton(onClick = { viewModel.clearTodayOverride() }) {
-                                    Text("撤销", color = MaterialTheme.colorScheme.onTertiaryContainer)
+                                    Text(
+                                        stringResource(CoreR.string.common_undo),
+                                        color = MaterialTheme.colorScheme.onTertiaryContainer,
+                                    )
                                 }
                             }
                         }
@@ -154,13 +170,16 @@ fun TodayScreen(
                         ) {
                             Column(Modifier.padding(horizontal = 16.dp, vertical = 10.dp)) {
                                 Text(
-                                    "今天不上课 · ${skip.label ?: "手动跳过"}",
+                                    stringResource(
+                                        R.string.schedule_today_skip_title,
+                                        skip.label ?: stringResource(R.string.schedule_today_skip_manual),
+                                    ),
                                     style = MaterialTheme.typography.titleSmall,
                                     fontWeight = FontWeight.Bold,
                                     color = MaterialTheme.colorScheme.onSecondaryContainer,
                                 )
                                 Text(
-                                    "课前提醒已跳过；课表内容照常显示（要换成别天的课用「调课」）",
+                                    stringResource(R.string.schedule_today_skip_desc),
                                     style = MaterialTheme.typography.bodySmall,
                                     color = MaterialTheme.colorScheme.onSecondaryContainer.copy(alpha = 0.75f),
                                 )
@@ -225,14 +244,18 @@ private fun TodayHeader(snapshot: TodaySnapshot, nowMinute: Int) {
     val today = java.time.LocalDate.now()
     Column(modifier = Modifier.padding(top = 8.dp, bottom = 4.dp)) {
         Text(
-            "${today.monthValue}月${today.dayOfMonth}日 · ${ScheduleFormat.dayOfWeekLabel(today.dayOfWeek.value)}",
+            stringResource(
+                R.string.schedule_today_date,
+                monthDayLabel(today.toEpochDay()),
+                dayOfWeekLabel(today.dayOfWeek.value),
+            ),
             style = MaterialTheme.typography.headlineSmall,
             fontWeight = FontWeight.Bold,
         )
         Text(
-            when {
-                snapshot.weekNumber == null -> "今天不在学期内"
-                else -> "第 ${snapshot.weekNumber} 周"
+            when (val week = snapshot.weekNumber) {
+                null -> stringResource(R.string.schedule_today_out_of_term)
+                else -> stringResource(R.string.schedule_week_number, week)
             },
             style = MaterialTheme.typography.bodySmall,
             color = MaterialTheme.colorScheme.onSurfaceVariant,
@@ -240,7 +263,9 @@ private fun TodayHeader(snapshot: TodaySnapshot, nowMinute: Int) {
         val status = when {
             nowMinute < 0 || snapshot.blocks.isEmpty() -> null
             snapshot.inProgress(nowMinute) != null -> null // 上课中状态交给 InClassCard，头部不再重复
-            else -> snapshot.nextUp(nowMinute)?.let { "下一节：${it.placed.course.name} · ${it.startTime} 开始" }
+            else -> snapshot.nextUp(nowMinute)?.let {
+                stringResource(R.string.schedule_today_next_up, it.placed.course.name, it.startTime)
+            }
         }
         status?.let {
             Text(
@@ -276,7 +301,7 @@ private fun InClassCard(
         Column(Modifier.padding(horizontal = 16.dp, vertical = 12.dp)) {
             Row(modifier = Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
                 Text(
-                    "上课中",
+                    stringResource(R.string.schedule_today_in_class),
                     style = MaterialTheme.typography.labelSmall,
                     color = MaterialTheme.colorScheme.primary,
                     modifier = Modifier
@@ -288,7 +313,7 @@ private fun InClassCard(
                 )
                 Spacer(Modifier.weight(1f))
                 Text(
-                    "还剩 ${ScheduleFormat.remainingLabel(remaining)}",
+                    stringResource(R.string.schedule_today_remaining, remainingLabel(remaining)),
                     style = MaterialTheme.typography.labelLarge,
                     color = MaterialTheme.colorScheme.primary,
                     fontWeight = FontWeight.Bold,
@@ -302,10 +327,10 @@ private fun InClassCard(
             )
             Text(
                 buildList {
-                    add(ScheduleFormat.periodRange(entry.placed.block))
+                    add(periodRangeLabel(entry.placed.block))
                     entry.placed.block.location?.takeIf { it.isNotBlank() }?.let { add(it) }
                     add("${entry.startTime} - ${entry.endTime}")
-                }.joinToString(" · "),
+                }.joinToString(stringResource(CoreR.string.common_separator)),
                 style = MaterialTheme.typography.bodySmall,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
             )
@@ -319,7 +344,7 @@ private fun InClassCard(
                 trackColor = MaterialTheme.colorScheme.primary.copy(alpha = 0.15f),
             )
             Text(
-                "${entry.endTime} 下课",
+                stringResource(R.string.schedule_today_end_at, entry.endTime),
                 style = MaterialTheme.typography.labelSmall,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
                 modifier = Modifier.padding(top = 4.dp),
@@ -378,16 +403,16 @@ private fun TodayCard(
                 )
                 Text(
                     buildList {
-                        add(ScheduleFormat.periodRange(entry.placed.block))
+                        add(periodRangeLabel(entry.placed.block))
                         entry.placed.block.location?.takeIf { it.isNotBlank() }?.let { add(it) }
-                    }.joinToString(" · "),
+                    }.joinToString(stringResource(CoreR.string.common_separator)),
                     style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                 )
             }
             if (inProgress) {
                 Text(
-                    "进行中",
+                    stringResource(R.string.schedule_today_ongoing),
                     style = MaterialTheme.typography.labelSmall,
                     color = MaterialTheme.colorScheme.primary,
                     modifier = Modifier
@@ -414,11 +439,23 @@ private fun EmptyDay(weekNumber: Int?) {
     ) {
         Column(horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.spacedBy(8.dp)) {
             Text(
-                if (weekNumber == null) "今天不在学期内" else "今天没有课",
+                stringResource(
+                    if (weekNumber == null) {
+                        R.string.schedule_today_out_of_term
+                    } else {
+                        R.string.schedule_today_empty_title
+                    },
+                ),
                 style = MaterialTheme.typography.titleMedium,
             )
             Text(
-                if (weekNumber == null) "到期末再回来看看" else "好好休息",
+                stringResource(
+                    if (weekNumber == null) {
+                        R.string.schedule_today_out_of_term_desc
+                    } else {
+                        R.string.schedule_today_empty_desc
+                    },
+                ),
                 style = MaterialTheme.typography.bodyMedium,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
             )
@@ -426,9 +463,12 @@ private fun EmptyDay(weekNumber: Int?) {
     }
 }
 
-private fun sessionLabel(session: Int): String = when (session) {
-    Session.MORNING -> "上午"
-    Session.AFTERNOON -> "下午"
-    Session.EVENING -> "晚上"
-    else -> "其他"
-}
+@Composable
+private fun sessionLabel(session: Int): String = stringResource(
+    when (session) {
+        Session.MORNING -> R.string.schedule_session_morning
+        Session.AFTERNOON -> R.string.schedule_session_afternoon
+        Session.EVENING -> R.string.schedule_session_evening
+        else -> R.string.schedule_session_other
+    },
+)

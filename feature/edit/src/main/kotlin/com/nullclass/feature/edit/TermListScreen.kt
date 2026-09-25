@@ -34,10 +34,12 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import com.nullclass.core.ui.layout.AdaptiveWidthWrapper
+import com.nullclass.core.ui.R as CoreR
 
 /**
  * 学期管理：列表切换当前学期、编辑（周数 / 第 1 周日期 / 每周起始日 / 节次时间）、删除、新建。
@@ -59,14 +61,17 @@ fun TermListScreen(
         modifier = Modifier.nestedScroll(appBarScrollBehavior.nestedScrollConnection),
         topBar = {
             TopAppBar(
-                title = { Text("学期管理") },
+                title = { Text(stringResource(R.string.edit_term_list_title)) },
                 navigationIcon = {
                     IconButton(onClick = onBack) {
-                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "返回")
+                        Icon(
+                            Icons.AutoMirrored.Filled.ArrowBack,
+                            contentDescription = stringResource(CoreR.string.common_back),
+                        )
                     }
                 },
                 actions = {
-                    TextButton(onClick = onCreateTerm) { Text("新建") }
+                    TextButton(onClick = onCreateTerm) { Text(stringResource(CoreR.string.common_create)) }
                 },
                 scrollBehavior = appBarScrollBehavior,
             )
@@ -84,13 +89,18 @@ fun TermListScreen(
                     horizontalAlignment = Alignment.CenterHorizontally,
                     verticalArrangement = Arrangement.spacedBy(12.dp),
                 ) {
-                    Text("还没有学期", style = MaterialTheme.typography.titleMedium)
                     Text(
-                        "新建一个学期开始排课",
+                        stringResource(R.string.edit_term_list_empty_title),
+                        style = MaterialTheme.typography.titleMedium,
+                    )
+                    Text(
+                        stringResource(R.string.edit_term_list_empty_desc),
                         style = MaterialTheme.typography.bodyMedium,
                         color = MaterialTheme.colorScheme.onSurfaceVariant,
                     )
-                    Button(onClick = onCreateTerm) { Text("创建学期") }
+                    Button(onClick = onCreateTerm) {
+                        Text(stringResource(R.string.edit_term_list_create))
+                    }
                 }
             }
         } else {
@@ -105,7 +115,7 @@ fun TermListScreen(
                 state.timetableName?.let { name ->
                     item(key = "timetable-label") {
                         Text(
-                            "所属课表：$name",
+                            stringResource(R.string.edit_term_list_owner, name),
                             style = MaterialTheme.typography.bodySmall,
                             color = MaterialTheme.colorScheme.onSurfaceVariant,
                         )
@@ -127,9 +137,9 @@ fun TermListScreen(
     pendingDelete?.let { item ->
         AlertDialog(
             onDismissRequest = { pendingDelete = null },
-            title = { Text("删除学期") },
+            title = { Text(stringResource(R.string.edit_term_list_delete)) },
             text = {
-                Text("将删除学期「${item.term.name}」及其全部课程。删除会同步到其他设备。")
+                Text(stringResource(R.string.edit_term_list_delete_confirm, item.term.name))
             },
             confirmButton = {
                 TextButton(
@@ -137,10 +147,14 @@ fun TermListScreen(
                         pendingDelete = null
                         viewModel.deleteTerm(item.term.id)
                     },
-                ) { Text("删除", color = MaterialTheme.colorScheme.error) }
+                ) {
+                    Text(stringResource(CoreR.string.common_delete), color = MaterialTheme.colorScheme.error)
+                }
             },
             dismissButton = {
-                TextButton(onClick = { pendingDelete = null }) { Text("取消") }
+                TextButton(onClick = { pendingDelete = null }) {
+                    Text(stringResource(CoreR.string.common_cancel))
+                }
             },
         )
     }
@@ -174,10 +188,16 @@ private fun TermRow(
                     fontWeight = FontWeight.Bold,
                 )
                 Text(
-                    when {
-                        item.currentWeek != null ->
-                            "第 ${item.currentWeek} 周 · 共 ${item.term.totalWeeks} 周"
-                        else -> "不在学期内 · 共 ${item.term.totalWeeks} 周"
+                    when (val week = item.currentWeek) {
+                        null -> stringResource(
+                            R.string.edit_term_list_out_of_term,
+                            item.term.totalWeeks,
+                        )
+                        else -> stringResource(
+                            R.string.edit_term_list_week,
+                            week,
+                            item.term.totalWeeks,
+                        )
                     },
                     style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
@@ -185,7 +205,7 @@ private fun TermRow(
             }
             if (item.isCurrent) {
                 Text(
-                    "当前",
+                    stringResource(R.string.edit_term_list_current),
                     style = MaterialTheme.typography.labelLarge,
                     color = MaterialTheme.colorScheme.primary,
                     fontWeight = FontWeight.Bold,
@@ -195,14 +215,14 @@ private fun TermRow(
             IconButton(onClick = onEdit) {
                 Icon(
                     Icons.Default.Edit,
-                    contentDescription = "编辑学期",
+                    contentDescription = stringResource(R.string.edit_term_list_edit),
                     tint = MaterialTheme.colorScheme.onSurfaceVariant,
                 )
             }
             IconButton(onClick = onDelete) {
                 Icon(
                     Icons.Default.Delete,
-                    contentDescription = "删除学期",
+                    contentDescription = stringResource(R.string.edit_term_list_delete),
                     tint = MaterialTheme.colorScheme.error,
                 )
             }

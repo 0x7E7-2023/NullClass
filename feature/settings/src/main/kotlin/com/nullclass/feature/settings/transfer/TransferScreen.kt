@@ -47,6 +47,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalView
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.semantics.LiveRegionMode
 import androidx.compose.ui.semantics.liveRegion
@@ -57,6 +58,10 @@ import androidx.compose.ui.window.DialogProperties
 import androidx.core.content.FileProvider
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.core.content.ContextCompat
+import com.nullclass.core.ui.R as CoreR
+import com.nullclass.core.ui.i18n.UiText
+import com.nullclass.core.ui.i18n.resolve
+import com.nullclass.feature.settings.R
 import com.nullclass.core.ui.layout.AdaptiveColumn
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -123,7 +128,11 @@ fun TransferScreen(
     val cameraPermission = rememberLauncherForActivityResult(
         ActivityResultContracts.RequestPermission(),
     ) { granted ->
-        if (granted) scanning = true else viewModel.onScanFailed("需要相机权限才能扫码")
+        if (granted) {
+            scanning = true
+        } else {
+            viewModel.onScanFailed(UiText.Res(R.string.settings_transfer_permission_camera))
+        }
     }
 
     val jwLauncher = rememberLauncherForActivityResult(
@@ -140,7 +149,11 @@ fun TransferScreen(
             )
             viewModel.parseExtractedDocument(
                 json,
-                source = if (adapterName.isNullOrBlank()) "教务导入" else "教务导入 · $adapterName",
+                source = if (adapterName.isNullOrBlank()) {
+                    UiText.Res(R.string.settings_transfer_jw_running_generic)
+                } else {
+                    UiText.Res(R.string.settings_transfer_jw_running, adapterName)
+                },
                 adapterNotes = notes,
             )
         }
@@ -166,10 +179,13 @@ fun TransferScreen(
         modifier = Modifier.nestedScroll(appBarScrollBehavior.nestedScrollConnection),
         topBar = {
             TopAppBar(
-                title = { Text("导入 / 导出") },
+                title = { Text(stringResource(R.string.settings_transfer_title)) },
                 navigationIcon = {
                     IconButton(onClick = onBack) {
-                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "返回")
+                        Icon(
+                            Icons.AutoMirrored.Filled.ArrowBack,
+                            contentDescription = stringResource(CoreR.string.common_back),
+                        )
                     }
                 },
                 scrollBehavior = appBarScrollBehavior,
@@ -185,9 +201,13 @@ fun TransferScreen(
             verticalArrangement = Arrangement.spacedBy(12.dp),
         ) {
             // ---- 教务导入 ----
-            Text("从教务系统导入", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold)
             Text(
-                "在网页里自己登录教务系统（空课不碰你的账号密码），打开课表页后一键提取。",
+                stringResource(R.string.settings_transfer_jw_section),
+                style = MaterialTheme.typography.titleMedium,
+                fontWeight = FontWeight.Bold,
+            )
+            Text(
+                stringResource(R.string.settings_transfer_jw_desc),
                 style = MaterialTheme.typography.bodySmall,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
             )
@@ -197,7 +217,7 @@ fun TransferScreen(
                 },
                 enabled = !state.busy,
                 modifier = Modifier.fillMaxWidth(),
-            ) { Text("选择学校并登录提取") }
+            ) { Text(stringResource(R.string.settings_transfer_jw_pick_school)) }
             com.nullclass.feature.settings.jw.JwLibraryUpdateSection()
 
             SectionFeedback(state, TransferSection.JW)
@@ -205,9 +225,13 @@ fun TransferScreen(
             HorizontalDivider(modifier = Modifier.padding(vertical = 8.dp))
 
             // ---- 导出 ----
-            Text("备份与分享", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold)
             Text(
-                "导出包含全部学期（含回收站记录），可用于备份、换机，或直接发给同学导入。",
+                stringResource(R.string.settings_transfer_backup_section),
+                style = MaterialTheme.typography.titleMedium,
+                fontWeight = FontWeight.Bold,
+            )
+            Text(
+                stringResource(R.string.settings_transfer_backup_desc),
                 style = MaterialTheme.typography.bodySmall,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
             )
@@ -220,13 +244,19 @@ fun TransferScreen(
                             } catch (e: kotlinx.coroutines.CancellationException) {
                                 throw e
                             } catch (e: Exception) {
-                                viewModel.onOperationFailed(TransferSection.BACKUP, "无法导出：${e.message}")
+                                viewModel.onOperationFailed(
+                                    TransferSection.BACKUP,
+                                    UiText.Res(
+                                        R.string.settings_transfer_export_failed,
+                                        e.message ?: e.javaClass.simpleName,
+                                    ),
+                                )
                             }
                         }
                     },
                     enabled = !state.busy,
                     modifier = Modifier.weight(1f),
-                ) { Text("保存到文件") }
+                ) { Text(stringResource(R.string.settings_transfer_save_file)) }
                 OutlinedButton(
                     onClick = {
                         scope.launch {
@@ -240,27 +270,33 @@ fun TransferScreen(
                                             putExtra(Intent.EXTRA_STREAM, uri)
                                             addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
                                         },
-                                        "分享课表文件",
+                                        context.getString(R.string.settings_transfer_share_file),
                                     ),
                                 )
                             } catch (e: kotlinx.coroutines.CancellationException) {
                                 throw e
                             } catch (e: Exception) {
-                                viewModel.onOperationFailed(TransferSection.BACKUP, "分享失败：${e.message}")
+                                viewModel.onOperationFailed(
+                                    TransferSection.BACKUP,
+                                    UiText.Res(
+                                        R.string.settings_transfer_share_failed,
+                                        e.message ?: e.javaClass.simpleName,
+                                    ),
+                                )
                             }
                         }
                     },
                     enabled = !state.busy,
                     modifier = Modifier.weight(1f),
-                ) { Text("分享") }
+                ) { Text(stringResource(R.string.settings_transfer_share)) }
             }
             OutlinedButton(
                 onClick = { viewModel.generateQr() },
                 enabled = !state.busy,
                 modifier = Modifier.fillMaxWidth(),
-            ) { Text("生成二维码") }
+            ) { Text(stringResource(R.string.settings_transfer_qr_generate)) }
             Text(
-                "只含当前学期的有效课程，扫码后并入对方当前课表并切过去；完整备份请用上面的文件。",
+                stringResource(R.string.settings_transfer_qr_desc),
                 style = MaterialTheme.typography.bodySmall,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
             )
@@ -270,10 +306,14 @@ fun TransferScreen(
             HorizontalDivider(modifier = Modifier.padding(vertical = 8.dp))
 
             // ---- 日历导出 ----
-            Text("日历导出", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold)
             Text(
-                "将当前学期的课程和考试导出为标准 .ics 文件，可用手机日历、Google 日历等打开。" +
-                    "这是一次性导出，课程或考试修改后需要重新导出。",
+                stringResource(R.string.settings_transfer_ics_section),
+                style = MaterialTheme.typography.titleMedium,
+                fontWeight = FontWeight.Bold,
+            )
+            Text(
+                stringResource(R.string.settings_transfer_ics_desc) +
+                    stringResource(R.string.settings_transfer_ics_once),
                 style = MaterialTheme.typography.bodySmall,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
             )
@@ -285,23 +325,35 @@ fun TransferScreen(
                         } catch (e: kotlinx.coroutines.CancellationException) {
                             throw e
                         } catch (e: Exception) {
-                            viewModel.onOperationFailed(TransferSection.CALENDAR, "无法导出日历：${e.message}")
+                            viewModel.onOperationFailed(
+                                TransferSection.CALENDAR,
+                                UiText.Res(
+                                    R.string.settings_transfer_ics_failed_to_open,
+                                    e.message ?: e.javaClass.simpleName,
+                                ),
+                            )
                         }
                     }
                 },
                 enabled = !state.busy,
                 modifier = Modifier.fillMaxWidth(),
-            ) { Text("导出当前学期 .ics") }
+            ) { Text(stringResource(R.string.settings_transfer_ics_export)) }
 
             SectionFeedback(state, TransferSection.CALENDAR)
 
             HorizontalDivider(modifier = Modifier.padding(vertical = 8.dp))
 
             // ---- 导入 ----
-            Text("导入", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold)
+            Text(
+                stringResource(R.string.settings_transfer_import_section),
+                style = MaterialTheme.typography.titleMedium,
+                fontWeight = FontWeight.Bold,
+            )
             OutlinedButton(onClick = {
                 openFileLauncher.launch(arrayOf("application/json", "application/x-nullclass", "*/*"))
-            }, enabled = !state.busy, modifier = Modifier.fillMaxWidth()) { Text("从 .nullclass 文件导入") }
+            }, enabled = !state.busy, modifier = Modifier.fillMaxWidth()) {
+                Text(stringResource(R.string.settings_transfer_import_file))
+            }
             SectionFeedback(state, TransferSection.FILE)
             OutlinedButton(onClick = {
                 viewModel.beginScan()
@@ -309,7 +361,9 @@ fun TransferScreen(
                     PackageManager.PERMISSION_GRANTED -> scanning = true
                     else -> cameraPermission.launch(Manifest.permission.CAMERA)
                 }
-            }, enabled = !state.busy, modifier = Modifier.fillMaxWidth()) { Text("扫码导入") }
+            }, enabled = !state.busy, modifier = Modifier.fillMaxWidth()) {
+                Text(stringResource(R.string.settings_transfer_import_qr))
+            }
             OutlinedButton(
                 onClick = {
                     viewModel.beginScan()
@@ -317,41 +371,51 @@ fun TransferScreen(
                 },
                 enabled = !state.busy,
                 modifier = Modifier.fillMaxWidth(),
-            ) { Text("从相册识别二维码") }
+            ) { Text(stringResource(R.string.settings_transfer_import_qr_album)) }
             SectionFeedback(state, TransferSection.QR)
 
             HorizontalDivider(modifier = Modifier.padding(vertical = 8.dp))
 
             // ---- WakeUp ----
-            Text("从 WakeUp 迁移", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold)
             Text(
-                "在 WakeUp 课表里把课表备份为 .wakeup_schedule 文件，选择该文件即可迁移" +
-                    "（连堂、单双周、节次时间与颜色都会保留）。",
+                stringResource(R.string.settings_transfer_wakeup_section),
+                style = MaterialTheme.typography.titleMedium,
+                fontWeight = FontWeight.Bold,
+            )
+            Text(
+                stringResource(R.string.settings_transfer_wakeup_desc),
                 style = MaterialTheme.typography.bodySmall,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
             )
             OutlinedButton(onClick = {
                 openWakeUpLauncher.launch(arrayOf("*/*"))
-            }, enabled = !state.busy, modifier = Modifier.fillMaxWidth()) { Text("选择 .wakeup_schedule 文件") }
+            }, enabled = !state.busy, modifier = Modifier.fillMaxWidth()) {
+                Text(stringResource(R.string.settings_transfer_wakeup_pick))
+            }
             SectionFeedback(state, TransferSection.WAKEUP)
 
             HorizontalDivider(modifier = Modifier.padding(vertical = 8.dp))
 
             // ---- 拾光课程表 ----
-            Text("从拾光课程表迁移", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold)
             Text(
-                "在拾光课程表里「我的 → 高级功能 → 课表导入/导出」导出课程文件，" +
-                    "选择那个 shiguangschedule_*.json 即可迁移（课程、单双周、作息表与开学日期都会带过来）。",
+                stringResource(R.string.settings_transfer_shiguang_section),
+                style = MaterialTheme.typography.titleMedium,
+                fontWeight = FontWeight.Bold,
+            )
+            Text(
+                stringResource(R.string.settings_transfer_shiguang_desc),
                 style = MaterialTheme.typography.bodySmall,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
             )
             OutlinedButton(onClick = {
                 openShiguangLauncher.launch(arrayOf("application/json", "*/*"))
-            }, enabled = !state.busy, modifier = Modifier.fillMaxWidth()) { Text("选择拾光导出的 .json 文件") }
+            }, enabled = !state.busy, modifier = Modifier.fillMaxWidth()) {
+                Text(stringResource(R.string.settings_transfer_shiguang_pick))
+            }
             SectionFeedback(state, TransferSection.SHIGUANG)
 
             Text(
-                "导入采用合并语义：同一记录以修改时间新者胜，不会覆盖更新的本地数据。",
+                stringResource(R.string.settings_transfer_merge_hint),
                 style = MaterialTheme.typography.bodySmall,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
                 modifier = Modifier.padding(bottom = 24.dp),
@@ -418,12 +482,15 @@ private fun SectionFeedback(state: TransferUiState, section: TransferSection) {
         if (state.busy) {
             Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                 CircularProgressIndicator()
-                Text("处理中…", style = MaterialTheme.typography.bodyMedium)
+                Text(
+                    stringResource(R.string.settings_transfer_processing),
+                    style = MaterialTheme.typography.bodyMedium,
+                )
             }
         }
         state.message?.let { message ->
             Text(
-                message,
+                message.resolve(),
                 color = if (state.messageIsError) MaterialTheme.colorScheme.error else MaterialTheme.colorScheme.primary,
                 style = MaterialTheme.typography.bodyMedium,
             )
@@ -440,7 +507,7 @@ private fun ImportPreviewDialog(
 ) {
     AlertDialog(
         onDismissRequest = { if (!busy) onDismiss() },
-        title = { Text("导入预览") },
+        title = { Text(stringResource(R.string.settings_transfer_preview_title)) },
         text = {
             // 弹窗高度封顶 + 可滚动：这些条目里有**第三方脚本**提供的文本，
             // 条数上限（20 条 ×200 字）是给校验用的，不代表屏幕上放得下。
@@ -451,21 +518,29 @@ private fun ImportPreviewDialog(
                 verticalArrangement = Arrangement.spacedBy(8.dp),
             ) {
                 Text(
-                    "来源：${preview.source}",
+                    stringResource(R.string.settings_transfer_preview_source, preview.source.resolve()),
                     style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                 )
                 preview.termSummaries.forEach { term ->
                     Text(
-                        "学期「${term.name}」· ${term.totalWeeks} 周 · ${term.courseCount} 门课 · " +
-                            "${term.blockCount} 条安排 · ${term.examCount} 场考试",
+                        stringResource(
+                            R.string.settings_transfer_preview_term,
+                            term.name,
+                            term.totalWeeks,
+                            term.courseCount,
+                            term.blockCount,
+                            term.examCount,
+                        ),
                         style = MaterialTheme.typography.bodyMedium,
                     )
                 }
                 if (preview.pendingDeletions > 0) {
                     Text(
-                        "⚠ 注意：该文件会对本地 $preview.pendingDeletions 条现有记录产生删除效果" +
-                            "（合并按修改时间裁决，删除会传播）。请确认文件来源可信！",
+                        stringResource(
+                            R.string.settings_transfer_preview_deletions,
+                            preview.pendingDeletions,
+                        ),
                         style = MaterialTheme.typography.bodySmall,
                         color = MaterialTheme.colorScheme.error,
                         fontWeight = FontWeight.Bold,
@@ -473,7 +548,7 @@ private fun ImportPreviewDialog(
                 }
                 if (preview.activateTermName != null) {
                     Text(
-                        "导入后设为当前学期，今日 / 课表 / 小组件立即切到它。",
+                        stringResource(R.string.settings_transfer_preview_activate),
                         style = MaterialTheme.typography.bodySmall,
                     )
                 }
@@ -488,7 +563,7 @@ private fun ImportPreviewDialog(
                     // 来源必须写明白：这些字是适配器脚本写的，脚本可以逐字抄我们上面那句，
                     // 也可以编一句「不会删除任何本地记录」—— 用户得知道该信谁。
                     Text(
-                        "以下说明由适配器（第三方脚本）提供，不是空课官方的判断：",
+                        stringResource(R.string.settings_transfer_preview_adapter_notes),
                         style = MaterialTheme.typography.bodySmall,
                         color = MaterialTheme.colorScheme.onSurfaceVariant,
                         fontWeight = FontWeight.Bold,
@@ -502,17 +577,21 @@ private fun ImportPreviewDialog(
                     }
                 }
                 Text(
-                    "与本地数据合并后生效。",
+                    stringResource(R.string.settings_transfer_preview_merge_note),
                     style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                 )
             }
         },
         confirmButton = {
-            TextButton(onClick = onConfirm, enabled = !busy) { Text("合并导入") }
+            TextButton(onClick = onConfirm, enabled = !busy) {
+                Text(stringResource(R.string.settings_transfer_preview_confirm))
+            }
         },
         dismissButton = {
-            TextButton(onClick = onDismiss, enabled = !busy) { Text("取消") }
+            TextButton(onClick = onDismiss, enabled = !busy) {
+                Text(stringResource(CoreR.string.common_cancel))
+            }
         },
     )
 }

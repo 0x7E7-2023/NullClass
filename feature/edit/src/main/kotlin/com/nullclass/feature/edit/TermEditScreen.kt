@@ -47,15 +47,20 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import com.nullclass.core.model.MAX_TOTAL_WEEKS
-import com.nullclass.core.model.ScheduleFormat
 import com.nullclass.core.model.Session
+import com.nullclass.core.ui.i18n.dateLabel
+import com.nullclass.core.ui.i18n.dayOfWeekLabel
+import com.nullclass.core.ui.i18n.monthDayLabel
+import com.nullclass.core.ui.i18n.resolve
 import com.nullclass.core.ui.layout.AdaptiveColumn
 import com.nullclass.core.ui.layout.LocalWindowSize
+import com.nullclass.core.ui.R as CoreR
 import java.time.LocalDate
 
 /** 学期编辑：基本信息 + 节次时间表 + （新建时）从上学期复制课程 + 清空本学期课程。 */
@@ -75,17 +80,26 @@ fun TermEditScreen(
         modifier = Modifier.nestedScroll(appBarScrollBehavior.nestedScrollConnection),
         topBar = {
             TopAppBar(
-                title = { Text(if (state.isNew) "创建学期" else "编辑学期") },
+                title = {
+                    Text(
+                        stringResource(
+                            if (state.isNew) R.string.edit_term_title_new else R.string.edit_term_title_edit,
+                        ),
+                    )
+                },
                 navigationIcon = {
                     IconButton(onClick = onBack) {
-                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "返回")
+                        Icon(
+                            Icons.AutoMirrored.Filled.ArrowBack,
+                            contentDescription = stringResource(CoreR.string.common_back),
+                        )
                     }
                 },
                 actions = {
                     TextButton(
                         onClick = { viewModel.save(onBack) },
                         enabled = !state.loading && !state.saving && !state.clearing,
-                    ) { Text("保存") }
+                    ) { Text(stringResource(CoreR.string.common_save)) }
                 },
                 scrollBehavior = appBarScrollBehavior,
             )
@@ -107,40 +121,53 @@ fun TermEditScreen(
             OutlinedTextField(
                 value = state.name,
                 onValueChange = viewModel::setName,
-                label = { Text("学期名 *") },
-                placeholder = { Text("如 2026-2027-1") },
+                label = { Text(stringResource(R.string.edit_term_name)) },
+                placeholder = { Text(stringResource(R.string.edit_term_name_hint)) },
                 singleLine = true,
                 modifier = Modifier.fillMaxWidth(),
             )
 
             // 每周起始日：一周从哪天算起 = 第 1 周从哪天开始（同一个值的两种说法）
             val firstDay = LocalDate.ofEpochDay(state.firstDayEpochDay)
-            Text("每周起始日", style = MaterialTheme.typography.labelLarge)
+            Text(
+                stringResource(R.string.edit_term_week_start),
+                style = MaterialTheme.typography.labelLarge,
+            )
             WeekStartDaySelector(
                 selected = firstDay.dayOfWeek.value,
                 onSelect = viewModel::setWeekStartDay,
             )
             if (firstDay.dayOfWeek.value != 1 && firstDay.dayOfWeek.value != 7) {
                 Text(
-                    "当前从${ScheduleFormat.dayOfWeekLabel(firstDay.dayOfWeek.value)}算起，" +
-                        "两个选项都不亮；保持原样就行，点任一个会把它挪到最近的周一 / 周日。",
+                    stringResource(
+                        R.string.edit_term_week_start_custom,
+                        dayOfWeekLabel(firstDay.dayOfWeek.value),
+                    ),
                     style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                 )
             }
 
             OutlinedButton(onClick = { showDatePicker = true }, modifier = Modifier.fillMaxWidth()) {
-                Text("第 1 周第 1 天：${firstDay.year}年${firstDay.monthValue}月${firstDay.dayOfMonth}日")
+                Text(
+                    stringResource(
+                        R.string.edit_term_first_day,
+                        dateLabel(state.firstDayEpochDay),
+                    ),
+                )
             }
 
             Text(
-                "第 1 周：${dateLabel(state.firstDayEpochDay)} – ${dateLabel(state.firstDayEpochDay + 6)}",
+                stringResource(
+                    R.string.edit_term_first_week_range,
+                    dayWithWeekdayLabel(state.firstDayEpochDay),
+                    dayWithWeekdayLabel(state.firstDayEpochDay + 6),
+                ),
                 style = MaterialTheme.typography.bodySmall,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
             )
             Text(
-                "一周从哪天算起，第 1 周就从哪天开始，周视图的列顺序与「第几周」都跟着走。" +
-                    "点上面那排会把日期挪到最近的对应星期几（周一 ↔ 周日 来回切也不会跑偏）。",
+                stringResource(R.string.edit_term_week_start_hint),
                 style = MaterialTheme.typography.bodySmall,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
             )
@@ -149,14 +176,20 @@ fun TermEditScreen(
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.spacedBy(8.dp),
             ) {
-                Text("总周数", style = MaterialTheme.typography.labelLarge)
+                Text(
+                    stringResource(R.string.edit_term_total_weeks),
+                    style = MaterialTheme.typography.labelLarge,
+                )
                 NumberStepper(
                     label = "",
                     value = state.totalWeeks,
                     range = 1..MAX_TOTAL_WEEKS,
                     onChange = viewModel::setTotalWeeks,
                 )
-                Text("周", color = MaterialTheme.colorScheme.onSurfaceVariant)
+                Text(
+                    stringResource(R.string.edit_term_total_weeks_unit),
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                )
             }
 
             // 从上学期复制
@@ -167,9 +200,15 @@ fun TermEditScreen(
                     modifier = Modifier.fillMaxWidth(),
                 ) {
                     Column {
-                        Text("从上学期复制课程", style = MaterialTheme.typography.bodyMedium)
                         Text(
-                            "来源：${state.previousTermName}",
+                            stringResource(R.string.edit_term_copy_previous),
+                            style = MaterialTheme.typography.bodyMedium,
+                        )
+                        Text(
+                            stringResource(
+                                R.string.edit_term_copy_previous_source,
+                                state.previousTermName.orEmpty(),
+                            ),
                             fontSize = 12.sp,
                             color = MaterialTheme.colorScheme.onSurfaceVariant,
                         )
@@ -182,7 +221,10 @@ fun TermEditScreen(
             }
 
             // 快速设定：只按「单节课时长 + 大节内课间」重排，各大节的开课时刻原地不动
-            Text("快速设定", style = MaterialTheme.typography.labelLarge)
+            Text(
+                stringResource(R.string.edit_term_quick_section),
+                style = MaterialTheme.typography.labelLarge,
+            )
             Row(
                 horizontalArrangement = Arrangement.spacedBy(8.dp),
                 modifier = Modifier.fillMaxWidth(),
@@ -190,8 +232,8 @@ fun TermEditScreen(
                 OutlinedTextField(
                     value = state.quickLessonText,
                     onValueChange = viewModel::setQuickLessonText,
-                    label = { Text("单节课") },
-                    suffix = { Text("分钟") },
+                    label = { Text(stringResource(R.string.edit_term_quick_lesson)) },
+                    suffix = { Text(stringResource(R.string.edit_term_quick_minutes)) },
                     singleLine = true,
                     keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
                     modifier = Modifier.weight(1f),
@@ -199,26 +241,24 @@ fun TermEditScreen(
                 OutlinedTextField(
                     value = state.quickBreakText,
                     onValueChange = viewModel::setQuickBreakText,
-                    label = { Text("课间休息") },
-                    suffix = { Text("分钟") },
+                    label = { Text(stringResource(R.string.edit_term_quick_break)) },
+                    suffix = { Text(stringResource(R.string.edit_term_quick_minutes)) },
                     singleLine = true,
                     keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
                     modifier = Modifier.weight(1f),
                 )
             }
             Text(
-                "课间休息指一个大节里两节之间的休息（默认模板是 10 分钟）；大节与大节之间的休息" +
-                    "（上午大课间那种，20 分钟）不归它管 —— 套用时只按每个大节现有的开课时刻重排内部，" +
-                    "所以对着默认模板套 45 + 10 等于没改。",
+                stringResource(R.string.edit_term_quick_hint),
                 style = MaterialTheme.typography.bodySmall,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
             )
             OutlinedButton(onClick = viewModel::applyQuickTimes, modifier = Modifier.fillMaxWidth()) {
-                Text("套用")
+                Text(stringResource(R.string.edit_term_quick_apply))
             }
             state.quickNotice?.let { notice ->
                 Text(
-                    notice,
+                    notice.resolve(),
                     style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.error,
                 )
@@ -230,9 +270,19 @@ fun TermEditScreen(
                 horizontalArrangement = Arrangement.SpaceBetween,
                 modifier = Modifier.fillMaxWidth(),
             ) {
-                Text("节次时间（${state.periods.size} 节 = ${state.periods.size / 2} 大节）", style = MaterialTheme.typography.labelLarge)
+                Text(
+                    stringResource(
+                        R.string.edit_term_periods,
+                        state.periods.size,
+                        state.periods.size / 2,
+                    ),
+                    style = MaterialTheme.typography.labelLarge,
+                )
                 IconButton(onClick = viewModel::resetDefaultPeriods) {
-                    Icon(Icons.Default.Refresh, contentDescription = "恢复默认模板")
+                    Icon(
+                        Icons.Default.Refresh,
+                        contentDescription = stringResource(R.string.edit_term_reset_periods),
+                    )
                 }
             }
 
@@ -245,7 +295,7 @@ fun TermEditScreen(
             }
 
             OutlinedButton(onClick = viewModel::addPeriod, modifier = Modifier.fillMaxWidth()) {
-                Text("添加节次")
+                Text(stringResource(R.string.edit_term_add_period))
             }
 
             Button(
@@ -254,11 +304,17 @@ fun TermEditScreen(
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(vertical = 12.dp),
-            ) { Text(if (state.saving) "保存中…" else "保存") }
+            ) {
+                Text(
+                    stringResource(
+                        if (state.saving) CoreR.string.common_saving else CoreR.string.common_save,
+                    ),
+                )
+            }
 
             if (!state.isNew) {
                 Text(
-                    "清空本学期全部课程，学期和节次时间保留。删除会同步到其他设备。",
+                    stringResource(R.string.edit_term_clear_hint),
                     style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                 )
@@ -271,11 +327,13 @@ fun TermEditScreen(
                     ),
                 ) {
                     Text(
-                        when {
-                            state.clearing -> "清空中…"
-                            state.courseCount == 0 -> "本学期没有课程"
-                            else -> "清空本学期课程"
-                        },
+                        stringResource(
+                            when {
+                                state.clearing -> R.string.edit_term_clearing
+                                state.courseCount == 0 -> R.string.edit_term_clear_empty
+                                else -> R.string.edit_term_clear
+                            },
+                        ),
                     )
                 }
             }
@@ -303,10 +361,12 @@ fun TermEditScreen(
                         viewModel.setFirstDay(millis / 86_400_000L)
                     }
                     showDatePicker = false
-                }) { Text("确定") }
+                }) { Text(stringResource(CoreR.string.common_confirm)) }
             },
             dismissButton = {
-                TextButton(onClick = { showDatePicker = false }) { Text("取消") }
+                TextButton(onClick = { showDatePicker = false }) {
+                    Text(stringResource(CoreR.string.common_cancel))
+                }
             },
         ) {
             DatePicker(state = pickerState)
@@ -316,9 +376,9 @@ fun TermEditScreen(
     if (showClearConfirm) {
         AlertDialog(
             onDismissRequest = { showClearConfirm = false },
-            title = { Text("清空本学期课程") },
+            title = { Text(stringResource(R.string.edit_term_clear)) },
             text = {
-                Text("将删除本学期的全部 ${state.courseCount} 门课，学期和节次时间保留。删除会同步到其他设备。")
+                Text(stringResource(R.string.edit_term_clear_confirm, state.courseCount))
             },
             confirmButton = {
                 TextButton(
@@ -326,10 +386,17 @@ fun TermEditScreen(
                         showClearConfirm = false
                         viewModel.clearCourses()
                     },
-                ) { Text("清空", color = MaterialTheme.colorScheme.error) }
+                ) {
+                    Text(
+                        stringResource(R.string.edit_term_clear_action),
+                        color = MaterialTheme.colorScheme.error,
+                    )
+                }
             },
             dismissButton = {
-                TextButton(onClick = { showClearConfirm = false }) { Text("取消") }
+                TextButton(onClick = { showClearConfirm = false }) {
+                    Text(stringResource(CoreR.string.common_cancel))
+                }
             },
         )
     }
@@ -337,10 +404,12 @@ fun TermEditScreen(
     state.error?.let { message ->
         AlertDialog(
             onDismissRequest = viewModel::dismissError,
-            title = { Text("无法保存") },
-            text = { Text(message) },
+            title = { Text(stringResource(R.string.edit_term_error_title)) },
+            text = { Text(message.resolve()) },
             confirmButton = {
-                TextButton(onClick = viewModel::dismissError) { Text("知道了") }
+                TextButton(onClick = viewModel::dismissError) {
+                    Text(stringResource(CoreR.string.common_got_it))
+                }
             },
         )
     }
@@ -349,7 +418,10 @@ fun TermEditScreen(
 @Composable
 private fun WeekStartDaySelector(selected: Int, onSelect: (Int) -> Unit) {
     // 只给周一 / 周日：学校的教学周几乎只有这两种排法，中间那五天真要改，直接改第 1 周的日期更直接
-    val options = listOf(1 to "周一", 7 to "周日")
+    val options = listOf(
+        1 to stringResource(R.string.edit_term_week_start_monday),
+        7 to stringResource(R.string.edit_term_week_start_sunday),
+    )
     SingleChoiceSegmentedButtonRow(modifier = Modifier.fillMaxWidth()) {
         options.forEachIndexed { index, (dayOfWeek, label) ->
             SegmentedButton(
@@ -363,11 +435,13 @@ private fun WeekStartDaySelector(selected: Int, onSelect: (Int) -> Unit) {
     }
 }
 
-/** "9月7日（周一）"。 */
-private fun dateLabel(epochDay: Long): String {
-    val date = LocalDate.ofEpochDay(epochDay)
-    return "${date.monthValue}月${date.dayOfMonth}日（${ScheduleFormat.dayOfWeekLabel(date.dayOfWeek.value)}）"
-}
+/** 「9月7日（周一）」。 */
+@Composable
+private fun dayWithWeekdayLabel(epochDay: Long): String = stringResource(
+    R.string.edit_term_day_with_weekday,
+    monthDayLabel(epochDay),
+    dayOfWeekLabel(LocalDate.ofEpochDay(epochDay).dayOfWeek.value),
+)
 
 @Composable
 private fun PeriodRow(
@@ -381,7 +455,7 @@ private fun PeriodRow(
         modifier = Modifier.fillMaxWidth(),
     ) {
         Text(
-            "第${period.periodIndex}节",
+            stringResource(R.string.edit_term_period_index, period.periodIndex),
             fontSize = 13.sp,
             modifier = Modifier.width(48.dp),
         )
@@ -392,7 +466,10 @@ private fun PeriodRow(
             modifier = Modifier.weight(1f),
             textStyle = MaterialTheme.typography.bodyMedium,
         )
-        Text("—", color = MaterialTheme.colorScheme.onSurfaceVariant)
+        Text(
+            stringResource(R.string.edit_block_range_separator),
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
+        )
         OutlinedTextField(
             value = period.endText,
             onValueChange = { onUpdate(period.copy(endText = it.take(5))) },
@@ -401,7 +478,11 @@ private fun PeriodRow(
             textStyle = MaterialTheme.typography.bodyMedium,
         )
         // 会话分组
-        val sessions = listOf(Session.MORNING to "上午", Session.AFTERNOON to "下午", Session.EVENING to "晚上")
+        val sessions = listOf(
+            Session.MORNING to stringResource(R.string.edit_term_session_morning),
+            Session.AFTERNOON to stringResource(R.string.edit_term_session_afternoon),
+            Session.EVENING to stringResource(R.string.edit_term_session_evening),
+        )
         sessions.firstOrNull { it.first == period.session }?.let { pair ->
             FilterChip(
                 selected = true,
@@ -413,7 +494,11 @@ private fun PeriodRow(
             )
         }
         IconButton(onClick = onRemove, modifier = Modifier.width(32.dp)) {
-            Icon(Icons.Default.Delete, contentDescription = "删除节次", modifier = Modifier.width(18.dp))
+            Icon(
+                Icons.Default.Delete,
+                contentDescription = stringResource(R.string.edit_term_remove_period),
+                modifier = Modifier.width(18.dp),
+            )
         }
     }
 }

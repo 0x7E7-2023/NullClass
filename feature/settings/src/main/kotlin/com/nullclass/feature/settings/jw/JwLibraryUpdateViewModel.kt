@@ -1,7 +1,10 @@
 package com.nullclass.feature.settings.jw
 
+import com.nullclass.feature.settings.R
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.nullclass.core.ui.R as CoreR
+import com.nullclass.core.ui.i18n.UiText
 import com.nullclass.importer.jw.JwAdapterRepository
 import com.nullclass.importer.jw.JwOfficialCheck
 import com.nullclass.importer.jw.JwOfficialLibrary
@@ -39,7 +42,7 @@ class JwLibraryUpdateViewModel @Inject constructor(
     private val _state = MutableStateFlow(snapshot())
     val state = _state.asStateFlow()
 
-    private val _toasts = Channel<String>(Channel.BUFFERED)
+    private val _toasts = Channel<UiText>(Channel.BUFFERED)
     val toasts = _toasts.receiveAsFlow()
 
     init {
@@ -59,17 +62,17 @@ class JwLibraryUpdateViewModel @Inject constructor(
             val current = repository.builtinVersion
             if (check.versions.isEmpty()) {
                 _state.update { it.copy(busy = false) }
-                _toasts.send("检查失败：所有更新源都连不上，请稍后再试")
+                _toasts.send(UiText.Res(R.string.settings_jw_library_check_failed))
                 return@launch
             }
             refreshStore.setOfficialLastCheck(System.currentTimeMillis())
             val latest = check.latest
             if (JwOfficialLibrary.compareVersions(latest, current) > 0) {
                 _state.update { it.copy(busy = false, available = check) }
-                _toasts.send("检测到新版本 v$latest")
+                _toasts.send(UiText.Res(R.string.settings_jw_library_found, latest.orEmpty()))
             } else {
                 _state.update { it.copy(busy = false, available = null) }
-                _toasts.send("已是最新版本")
+                _toasts.send(UiText.Res(R.string.settings_jw_library_latest))
             }
         }
     }
@@ -87,14 +90,32 @@ class JwLibraryUpdateViewModel @Inject constructor(
                 }
                 _state.update { snapshot().copy(lastCheck = it.lastCheck) }
                 _toasts.send(
-                    "适配器库已更新到 v${download.version}" +
-                        if (shadowed.isEmpty()) "" else "；官方已收录 ${shadowed.joinToString("、")}，同名的自添加适配器将改用官方版",
+                    UiText.Res(
+                        R.string.settings_jw_library_updated,
+                        download.version,
+                        // 有被官方收录的同名适配器时补一句前缀；UiText 支持嵌套代入
+                        if (shadowed.isEmpty()) {
+                            ""
+                        } else {
+                            UiText.Res(
+                                R.string.settings_jw_library_shadowed,
+                                UiText.Joined(shadowed, CoreR.string.common_list_separator),
+                            )
+                        },
+                    ),
                 )
             } catch (e: kotlinx.coroutines.CancellationException) {
                 throw e
             } catch (e: Exception) {
                 _state.update { it.copy(busy = false) }
-                _toasts.send("更新失败：${e.message ?: "未知错误"}")
+                _toasts.send(
+                    UiText.Res(
+                        R.string.settings_jw_library_update_failed,
+                        // 有异常原文就用原文（不翻），没有就退回一条可翻译的通用词条
+                        e.message?.takeIf { it.isNotBlank() }?.let { UiText.Dynamic(it) }
+                            ?: UiText.Res(R.string.settings_jw_unknown_error),
+                    ),
+                )
             }
         }
     }

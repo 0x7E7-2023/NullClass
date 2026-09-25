@@ -1,6 +1,7 @@
 package com.nullclass.app
 
 import android.Manifest
+import android.content.Context
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
@@ -15,8 +16,11 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.core.content.ContextCompat
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import com.nullclass.app.navigation.AppNavHost
+import com.nullclass.core.data.locale.AppLocale
 import com.nullclass.core.data.prefs.UserPreferencesRepository
 import com.nullclass.core.ui.layout.ProvideWindowSize
 import com.nullclass.core.ui.theme.NullClassTheme
@@ -34,9 +38,18 @@ class MainActivity : ComponentActivity() {
     private val notificationPermissionLauncher =
         registerForActivityResult(ActivityResultContracts.RequestPermission()) { /* 拒绝不打扰，设置页保留重试入口 */ }
 
+    /**
+     * 语言必须早于资源加载确定，因此在这里包装 Context。
+     * Android 13+ 由系统负责，[AppLocale.wrap] 原样返回。
+     */
+    override fun attachBaseContext(newBase: Context) {
+        super.attachBaseContext(AppLocale.wrap(newBase))
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
+        observeLanguageChange()
         // 同步读上次的主题，首帧就是用户选的深浅色
         val initialThemeMode = userPreferences.lastThemeMode
         setContent {
@@ -60,6 +73,24 @@ class MainActivity : ComponentActivity() {
         }
         maybeRequestNotificationPermission()
         handleImportIntent(intent)
+    }
+
+    /**
+     * 语言变更后重建界面，让已加载的资源整体换成新语言。
+     *
+     * 仅限 Android 12 及以下：13 起语言由系统的 LocaleManager 管理，系统会自行重建，
+     * 这里再重建一次只会让界面多闪一次。
+     */
+    private fun observeLanguageChange() {
+        if (AppLocale.isSystemManaged) return
+        val applied = AppLocale.current(this)
+        lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                userPreferences.appLanguage.collect { language ->
+                    if (language != applied) recreate()
+                }
+            }
+        }
     }
 
     /** 首启动一次性请求通知权限（API 33+）；拒绝不打扰。 */

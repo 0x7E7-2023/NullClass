@@ -38,11 +38,14 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
-import com.nullclass.core.model.ExamFormat
+import com.nullclass.core.ui.i18n.dateLabel
+import com.nullclass.core.ui.i18n.resolve
 import com.nullclass.core.ui.layout.AdaptiveColumn
 import com.nullclass.core.ui.layout.LocalWindowSize
+import com.nullclass.core.ui.R as CoreR
 import java.time.Instant
 import java.time.LocalDate
 import java.time.ZoneOffset
@@ -63,17 +66,26 @@ fun ExamEditScreen(
         modifier = Modifier.nestedScroll(appBarScrollBehavior.nestedScrollConnection),
         topBar = {
             TopAppBar(
-                title = { Text(if (state.isNew) "添加考试" else "编辑考试") },
+                title = {
+                    Text(
+                        stringResource(
+                            if (state.isNew) R.string.exam_edit_title_new else R.string.exam_edit_title_edit,
+                        ),
+                    )
+                },
                 navigationIcon = {
                     IconButton(onClick = onBack) {
-                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "返回")
+                        Icon(
+                            Icons.AutoMirrored.Filled.ArrowBack,
+                            contentDescription = stringResource(CoreR.string.common_back),
+                        )
                     }
                 },
                 actions = {
                     TextButton(
                         onClick = { viewModel.save(onBack) },
                         enabled = !state.loading && !state.termMissing && !state.noCourses && !state.saving,
-                    ) { Text(if (state.saving) "保存中…" else "保存") }
+                    ) { Text(saveButtonLabel(state.saving)) }
                 },
                 scrollBehavior = appBarScrollBehavior,
             )
@@ -92,7 +104,9 @@ fun ExamEditScreen(
                     .padding(padding)
                     .padding(24.dp),
                 verticalArrangement = Arrangement.spacedBy(12.dp),
-            ) { Text("请先创建学期", style = MaterialTheme.typography.titleMedium) }
+            ) {
+                Text(stringResource(R.string.exam_edit_no_term), style = MaterialTheme.typography.titleMedium)
+            }
 
             state.noCourses -> Column(
                 Modifier
@@ -101,9 +115,12 @@ fun ExamEditScreen(
                     .padding(24.dp),
                 verticalArrangement = Arrangement.spacedBy(12.dp),
             ) {
-                Text("还没有课程", style = MaterialTheme.typography.titleMedium)
                 Text(
-                    "考试需要挂在具体课程上，请先添加课程。",
+                    stringResource(R.string.exam_edit_no_course_title),
+                    style = MaterialTheme.typography.titleMedium,
+                )
+                Text(
+                    stringResource(R.string.exam_edit_no_course_desc),
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                 )
             }
@@ -121,10 +138,15 @@ fun ExamEditScreen(
                     onClick = { showCoursePicker = true },
                     modifier = Modifier.fillMaxWidth(),
                 ) {
-                    Text("所属课程：${selectedCourse?.name ?: "请选择"}")
+                    Text(
+                        stringResource(
+                            R.string.exam_edit_course,
+                            selectedCourse?.name ?: stringResource(R.string.exam_edit_course_unselected),
+                        ),
+                    )
                 }
                 Text(
-                    "考试会保存为这门课程的关联信息",
+                    stringResource(R.string.exam_edit_course_hint),
                     style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                 )
@@ -132,7 +154,7 @@ fun ExamEditScreen(
                 OutlinedTextField(
                     value = state.title,
                     onValueChange = viewModel::setTitle,
-                    label = { Text("考试名称 *") },
+                    label = { Text(stringResource(R.string.exam_edit_name)) },
                     singleLine = true,
                     modifier = Modifier.fillMaxWidth(),
                 )
@@ -140,31 +162,31 @@ fun ExamEditScreen(
                 OutlinedTextField(
                     value = state.dateText,
                     onValueChange = viewModel::setDateText,
-                    label = { Text("日期 *") },
-                    supportingText = { Text("格式：yyyy-MM-dd") },
+                    label = { Text(stringResource(R.string.exam_edit_date)) },
+                    supportingText = { Text(stringResource(R.string.exam_edit_date_format)) },
                     singleLine = true,
                     modifier = Modifier.fillMaxWidth(),
                 )
                 OutlinedButton(
                     onClick = { showDatePicker = true },
                     modifier = Modifier.fillMaxWidth(),
-                ) { Text("选择日期${state.dateText.toDateLabelSuffix()}") }
+                ) { Text(pickDateLabel(state.dateText)) }
 
-                Text("时间（可选）", style = MaterialTheme.typography.labelLarge)
+                Text(stringResource(R.string.exam_edit_time_section), style = MaterialTheme.typography.labelLarge)
                 Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
                     OutlinedTextField(
                         value = state.startText,
                         onValueChange = viewModel::setStartText,
-                        label = { Text("开始时间") },
-                        placeholder = { Text("例如 09:00") },
+                        label = { Text(stringResource(R.string.exam_edit_start_time)) },
+                        placeholder = { Text(stringResource(R.string.exam_edit_start_time_hint)) },
                         singleLine = true,
                         modifier = Modifier.fillMaxWidth(),
                     )
                     OutlinedTextField(
                         value = state.endText,
                         onValueChange = viewModel::setEndText,
-                        label = { Text("结束时间") },
-                        placeholder = { Text("例如 11:00") },
+                        label = { Text(stringResource(R.string.exam_edit_end_time)) },
+                        placeholder = { Text(stringResource(R.string.exam_edit_end_time_hint)) },
                         singleLine = true,
                         modifier = Modifier.fillMaxWidth(),
                     )
@@ -173,21 +195,21 @@ fun ExamEditScreen(
                 OutlinedTextField(
                     value = state.location,
                     onValueChange = viewModel::setLocation,
-                    label = { Text("考场（可选）") },
+                    label = { Text(stringResource(R.string.exam_edit_location)) },
                     singleLine = true,
                     modifier = Modifier.fillMaxWidth(),
                 )
                 OutlinedTextField(
                     value = state.seat,
                     onValueChange = viewModel::setSeat,
-                    label = { Text("座位号（可选）") },
+                    label = { Text(stringResource(R.string.exam_edit_seat)) },
                     singleLine = true,
                     modifier = Modifier.fillMaxWidth(),
                 )
                 OutlinedTextField(
                     value = state.note,
                     onValueChange = viewModel::setNote,
-                    label = { Text("备注（可选）") },
+                    label = { Text(stringResource(R.string.exam_edit_note)) },
                     modifier = Modifier.fillMaxWidth(),
                 )
 
@@ -197,7 +219,7 @@ fun ExamEditScreen(
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(vertical = 12.dp),
-                ) { Text(if (state.saving) "保存中…" else "保存") }
+                ) { Text(saveButtonLabel(state.saving)) }
             }
         }
     }
@@ -205,7 +227,7 @@ fun ExamEditScreen(
     if (showCoursePicker) {
         AlertDialog(
             onDismissRequest = { showCoursePicker = false },
-            title = { Text("选择所属课程") },
+            title = { Text(stringResource(R.string.exam_edit_course_picker)) },
             text = {
                 Column(
                     modifier = Modifier
@@ -224,7 +246,11 @@ fun ExamEditScreen(
                     }
                 }
             },
-            confirmButton = { TextButton(onClick = { showCoursePicker = false }) { Text("取消") } },
+            confirmButton = {
+                TextButton(onClick = { showCoursePicker = false }) {
+                    Text(stringResource(CoreR.string.common_cancel))
+                }
+            },
         )
     }
 
@@ -254,21 +280,38 @@ fun ExamEditScreen(
                         }
                         showDatePicker = false
                     },
-                ) { Text("确定") }
+                ) { Text(stringResource(CoreR.string.common_confirm)) }
             },
-            dismissButton = { TextButton(onClick = { showDatePicker = false }) { Text("取消") } },
+            dismissButton = {
+                TextButton(onClick = { showDatePicker = false }) {
+                    Text(stringResource(CoreR.string.common_cancel))
+                }
+            },
         ) { DatePicker(state = datePickerState) }
     }
 
     state.error?.let { message ->
         AlertDialog(
             onDismissRequest = viewModel::dismissError,
-            title = { Text("无法保存") },
-            text = { Text(message) },
-            confirmButton = { TextButton(onClick = viewModel::dismissError) { Text("知道了") } },
+            title = { Text(stringResource(R.string.exam_edit_error_title)) },
+            text = { Text(message.resolve()) },
+            confirmButton = {
+                TextButton(onClick = viewModel::dismissError) {
+                    Text(stringResource(CoreR.string.common_got_it))
+                }
+            },
         )
     }
 }
 
-private fun String.toDateLabelSuffix(): String =
-    runCatching { " · ${ExamFormat.dateLabel(LocalDate.parse(this).toEpochDay())}" }.getOrDefault("")
+@Composable
+private fun saveButtonLabel(saving: Boolean): String =
+    stringResource(if (saving) R.string.exam_edit_saving else CoreR.string.common_save)
+
+/** 日期填得出来就把它读成人话附在按钮上，填了一半（或压根不合法）时只留「选择日期」。 */
+@Composable
+private fun pickDateLabel(dateText: String): String {
+    val epochDay = runCatching { LocalDate.parse(dateText).toEpochDay() }.getOrNull()
+        ?: return stringResource(R.string.exam_edit_pick_date)
+    return stringResource(R.string.exam_edit_pick_date_with_value, dateLabel(epochDay))
+}

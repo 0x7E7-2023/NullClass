@@ -7,23 +7,31 @@ import androidx.lifecycle.viewModelScope
 import com.nullclass.core.data.repository.CourseRepository
 import com.nullclass.core.data.repository.ExamRepository
 import com.nullclass.core.data.repository.TermRepository
+import com.nullclass.core.ui.i18n.toUiText as throwableToUiText
+import com.nullclass.core.ui.i18n.UiText
+import com.nullclass.core.ui.i18n.UiTextException
+import com.nullclass.core.ui.R as CoreR
+import com.nullclass.feature.settings.R
+import com.nullclass.feature.settings.toUiText as importIssueToUiText
+import com.nullclass.importer.ImportNoticeEntry
 import com.nullclass.importer.ImportProvenance
 import com.nullclass.importer.NullClassCodec
 import com.nullclass.importer.QrPayload
 import com.nullclass.importer.ScheduleDocument
+import com.nullclass.importer.ScheduleFileException
 import com.nullclass.importer.shiguang.ShiguangParser
 import com.nullclass.importer.wakeup.WakeUpParser
 import com.nullclass.sync.SnapshotCodec
 import com.nullclass.sync.SyncManager
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
+import javax.inject.Inject
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import javax.inject.Inject
 
 /** 每学期摘要（预览界面）。 */
 data class TermSummary(
@@ -37,11 +45,12 @@ data class TermSummary(
 /** 导入预览：解析成功 → 用户确认合并。 */
 data class ImportPreview(
     /** 来源描述：「文件 xxx.nullclass」/「二维码」/「WakeUp 课表」。 */
-    val source: String,
+    val source: UiText,
     val section: TransferSection,
     val document: ScheduleDocument,
     val termSummaries: List<TermSummary>,
-    val warnings: List<String> = emptyList(),
+    /** 解析时跳过了什么、替成了什么。文案随界面语言变化，因此在这里就取成 [UiText]。 */
+    val warnings: List<UiText> = emptyList(),
     /**
      * **第三方适配器**要求用户核对的说明。
      *
@@ -62,7 +71,8 @@ data class ImportPreview(
 data class TransferUiState(
     val section: TransferSection? = null,
     val busy: Boolean = false,
-    val message: String? = null,
+    /** 非界面层不持有文字：随语言切换的内容一律走 [UiText]。 */
+    val message: UiText? = null,
     val messageIsError: Boolean = false,
     val preview: ImportPreview? = null,
     val qrPayload: String? = null,
@@ -110,11 +120,26 @@ class TransferViewModel @Inject constructor(
                 withContext(Dispatchers.IO) {
                     appContext.contentResolver.openOutputStream(uri)?.use { out ->
                         out.write(NullClassCodec.encode(codec.dump(deviceId = null)).toByteArray(Charsets.UTF_8))
-                    } ?: error("无法打开目标文件")
+                    } ?: throw CannotOpenTargetException()
                 }
-                _state.update { it.copy(busy = false, message = "已导出", messageIsError = false) }
+                _state.update {
+                    it.copy(
+                        busy = false,
+                        message = UiText.Res(R.string.settings_transfer_export_done),
+                        messageIsError = false,
+                    )
+                }
             } catch (e: Exception) {
-                _state.update { it.copy(busy = false, message = "导出失败：${e.message}", messageIsError = true) }
+                _state.update {
+                    it.copy(
+                        busy = false,
+                        message = UiText.Res(
+                            R.string.settings_transfer_export_failed,
+                            e.throwableToUiText(CoreR.string.common_unknown_error),
+                        ),
+                        messageIsError = true,
+                    )
+                }
             }
         }
     }
@@ -128,29 +153,45 @@ class TransferViewModel @Inject constructor(
                 withContext(Dispatchers.IO) {
                     appContext.contentResolver.openOutputStream(uri)?.use { out ->
                         out.write(result.content.toByteArray(Charsets.UTF_8))
-                    } ?: error("无法打开目标文件")
+                    } ?: throw CannotOpenTargetException()
                 }
-                val skipped = if (result.skippedBlockCount == 0) {
+                // 这一小句是嵌进上一句的，本身也是一条可翻译词条（UiText 支持嵌套代入）
+                val skipped: Any = if (result.skippedBlockCount == 0) {
                     ""
                 } else {
-                    "，跳过 ${result.skippedBlockCount} 条缺少完整节次时间的安排"
+                    UiText.Res(R.string.settings_transfer_ics_skipped, result.skippedBlockCount)
                 }
                 _state.update {
                     it.copy(
                         busy = false,
-                        message = "已导出日历文件：${result.courseEventCount} 个课程安排、${result.examEventCount} 场考试$skipped",
+                        message = UiText.Res(
+                            R.string.settings_transfer_ics_export_done,
+                            result.courseEventCount,
+                            result.examEventCount,
+                            skipped,
+                        ),
                         messageIsError = false,
                     )
                 }
             } catch (e: Exception) {
-                _state.update { it.copy(busy = false, message = "日历导出失败：${e.message}", messageIsError = true) }
+                _state.update {
+                    it.copy(
+                        busy = false,
+                        message = UiText.Res(
+                            R.string.settings_transfer_ics_export_failed,
+                            e.throwableToUiText(CoreR.string.common_unknown_error),
+                        ),
+                        messageIsError = true,
+                    )
+                }
             }
         }
     }
 
     private suspend fun buildCurrentTermIcs(): IcsExportResult {
-        val term = termRepository.getCurrent() ?: error("当前没有学期")
+        val term = termRepository.getCurrent() ?: throw NoCurrentTermException()
         return IcsCalendar.build(
+            text = IcsText.from(appContext),
             term = term,
             schedule = courseRepository.getSchedule(term.id),
             periodTimes = termRepository.getPeriodTimes(term.id),
@@ -174,8 +215,7 @@ class TransferViewModel @Inject constructor(
         viewModelScope.launch {
             _state.update { it.copy(section = TransferSection.BACKUP, busy = true, message = null, qrPayload = null) }
             try {
-                val current = termRepository.getCurrent()
-                    ?: error("当前没有学期，无法生成二维码")
+                val current = termRepository.getCurrent() ?: throw NoCurrentTermException()
                 val payload = withContext(Dispatchers.Default) {
                     val sliced = QrPayload.sliceForShare(codec.dump(deviceId = null), current.id)
                     QrPayload.encode(sliced)
@@ -185,20 +225,49 @@ class TransferViewModel @Inject constructor(
                 throw e
             } catch (e: QrPayload.PayloadTooLargeException) {
                 _state.update {
-                    it.copy(busy = false, message = "课表过大无法生成二维码，请用文件分享", messageIsError = true)
+                    it.copy(
+                        busy = false,
+                        message = UiText.Res(
+                            CoreR.string.error_import_qr_too_large,
+                            e.size,
+                            e.limit,
+                        ),
+                        messageIsError = true,
+                    )
+                }
+            } catch (e: NoCurrentTermException) {
+                _state.update {
+                    it.copy(
+                        busy = false,
+                        message = UiText.Res(R.string.settings_transfer_no_term_for_qr),
+                        messageIsError = true,
+                    )
                 }
             } catch (e: Exception) {
-                _state.update { it.copy(busy = false, message = "生成失败：${e.message}", messageIsError = true) }
+                _state.update {
+                    it.copy(
+                        busy = false,
+                        message = UiText.Res(
+                            R.string.settings_transfer_qr_failed,
+                            e.throwableToUiText(CoreR.string.common_unknown_error),
+                        ),
+                        messageIsError = true,
+                    )
+                }
             }
         }
     }
 
     fun dismissQr() = _state.update { it.copy(qrPayload = null) }
 
-    /** 扫码页取消以外的失败（没权限、相机/识别异常、空内容）。 */
-    fun onScanFailed(message: String) = onOperationFailed(TransferSection.QR, message)
+    /**
+     * 扫码页取消以外的失败（没权限、相机/识别异常、空内容）。
+     *
+     * 传进来的文字是界面层已经取好的（相机异常详情、权限提示），原样展示。
+     */
+    fun onScanFailed(message: UiText) = onOperationFailed(TransferSection.QR, message)
 
-    fun onOperationFailed(section: TransferSection, message: String) =
+    fun onOperationFailed(section: TransferSection, message: UiText) =
         _state.update { it.copy(section = section, busy = false, message = message, messageIsError = true) }
 
     fun beginScan() = _state.update { it.copy(section = TransferSection.QR, message = null) }
@@ -212,7 +281,7 @@ class TransferViewModel @Inject constructor(
             } catch (e: kotlinx.coroutines.CancellationException) {
                 throw e
             } catch (e: Exception) {
-                onScanFailed(e.message ?: "无法识别这张图片，请重试")
+                onScanFailed(e.throwableToUiText(R.string.settings_transfer_qr_unreadable))
             }
         }
     }
@@ -221,14 +290,19 @@ class TransferViewModel @Inject constructor(
         _state.update { it.copy(section = TransferSection.QR, busy = false, message = null) }
         // 先快速判断（扫码结果可能是任意内容）
         if (!QrPayload.isNullClassPayload(payload)) {
-            _state.update { it.copy(message = "不是空课二维码", messageIsError = true) }
+            _state.update {
+                it.copy(
+                    message = UiText.Res(R.string.settings_transfer_qr_not_nullclass),
+                    messageIsError = true,
+                )
+            }
             return
         }
         // v3 分享包是重铸 ID 的单学期书包（WakeUp 同款合并语义），导入后激活该学期；
         // v1/v2 旧码是多学期 LWW 导入，保持「不动当前学期」
         parseRaw(
             { QrPayload.decode(payload) },
-            source = "二维码",
+            source = UiText.Res(R.string.settings_transfer_qr_source),
             section = TransferSection.QR,
             activateTermName = { document ->
                 if (document.deviceId == ImportProvenance.QR_IMPORT) {
@@ -246,8 +320,13 @@ class TransferViewModel @Inject constructor(
      * 「设为当前学期」不在这里决定：合并时 [com.nullclass.sync.ImportAligner] 按来源
      * （教务 = 开始用新学期；备份 / v1 v2 旧扫码 = 不动）处理。
      */
-    fun parseExtractedDocument(json: String, source: String, adapterNotes: List<String> = emptyList()) {
-        parseRaw({ NullClassCodec.decode(json) }, source = source, section = TransferSection.JW, adapterNotes = adapterNotes)
+    fun parseExtractedDocument(json: String, source: UiText, adapterNotes: List<String> = emptyList()) {
+        parseRaw(
+            { NullClassCodec.decode(json) },
+            source = source,
+            section = TransferSection.JW,
+            adapterNotes = adapterNotes,
+        )
     }
 
     // ---- 文件导入 ----
@@ -268,7 +347,14 @@ class TransferViewModel @Inject constructor(
                 previewShiguang(raw, section = TransferSection.FILE, displayName = displayName)
                 return@launch
             }
-            parseRaw({ NullClassCodec.decode(raw) }, source = "文件 ${displayName ?: uri.lastPathSegment ?: ""}", section = TransferSection.FILE)
+            parseRaw(
+                { NullClassCodec.decode(raw) },
+                source = UiText.Res(
+                    R.string.settings_transfer_file_source,
+                    displayName ?: uri.lastPathSegment.orEmpty(),
+                ),
+                section = TransferSection.FILE,
+            )
         }
     }
 
@@ -283,7 +369,10 @@ class TransferViewModel @Inject constructor(
                 _state.update {
                     it.copy(
                         preview = ImportPreview(
-                            source = "WakeUp ${displayName ?: "课表"}",
+                            source = UiText.Res(
+                                R.string.settings_transfer_wakeup_source,
+                                displayName ?: appContext.getString(R.string.settings_transfer_wakeup_generic),
+                            ),
                             section = TransferSection.WAKEUP,
                             document = ScheduleDocument(
                                 deviceId = ImportProvenance.WAKEUP_IMPORT,
@@ -302,13 +391,19 @@ class TransferViewModel @Inject constructor(
                                     examCount = 0,
                                 ),
                             ),
-                            warnings = result.warnings,
+                            warnings = result.warnings.map { it.importIssueToUiText() },
                             activateTermName = result.term.name,
                         ),
                     )
                 }
-            } catch (e: IllegalArgumentException) {
-                _state.update { it.copy(message = e.message ?: "不是有效的 WakeUp 文件", messageIsError = true) }
+            } catch (e: ScheduleFileException) {
+                _state.update {
+                    it.copy(
+                        section = TransferSection.WAKEUP,
+                        message = e.importIssueToUiText(),
+                        messageIsError = true,
+                    )
+                }
             }
         }
     }
@@ -336,7 +431,10 @@ class TransferViewModel @Inject constructor(
                 it.copy(
                     section = section,
                     preview = ImportPreview(
-                        source = "拾光课程表 ${displayName ?: "导出文件"}",
+                        source = UiText.Res(
+                            R.string.settings_transfer_shiguang_source,
+                            displayName ?: appContext.getString(R.string.settings_transfer_shiguang_generic),
+                        ),
                         section = section,
                         document = ScheduleDocument(
                             deviceId = ImportProvenance.SHIGUANG_IMPORT,
@@ -355,14 +453,14 @@ class TransferViewModel @Inject constructor(
                                 examCount = 0,
                             ),
                         ),
-                        warnings = result.warnings,
+                        warnings = result.warnings.map { it.importIssueToUiText() },
                         activateTermName = result.term.name,
                     ),
                 )
             }
-        } catch (e: IllegalArgumentException) {
+        } catch (e: ScheduleFileException) {
             _state.update {
-                it.copy(section = section, message = e.message ?: "不是有效的拾光课程表导出文件", messageIsError = true)
+                it.copy(section = section, message = e.importIssueToUiText(), messageIsError = true)
             }
         }
     }
@@ -371,10 +469,26 @@ class TransferViewModel @Inject constructor(
     private suspend fun readTextOrFail(uri: Uri, section: TransferSection): String? = try {
         withContext(Dispatchers.IO) {
             appContext.contentResolver.openInputStream(uri)?.use { it.readBytes().toString(Charsets.UTF_8) }
-                ?: error("无法读取文件")
+                ?: throw CannotReadFileException()
         }
     } catch (e: Exception) {
-        _state.update { it.copy(section = section, busy = false, message = "读取失败：${e.message}", messageIsError = true) }
+        val reason = if (e is CannotReadFileException) {
+            UiText.Res(R.string.settings_transfer_cannot_read_file)
+        } else {
+            UiText.Dynamic(e.message ?: e.javaClass.simpleName)
+        }
+        _state.update {
+            it.copy(
+                section = section,
+                busy = false,
+                message = if (e is CannotReadFileException) {
+                    reason
+                } else {
+                    UiText.Res(R.string.settings_transfer_read_failed, reason)
+                },
+                messageIsError = true,
+            )
+        }
         null
     }
 
@@ -418,18 +532,41 @@ class TransferViewModel @Inject constructor(
                     val newTimetables = result.newTimetableNames
                     val suffix = when {
                         newTimetables.isEmpty() -> ""
-                        newTimetables.size == 1 -> "，新增课表「${newTimetables.single()}」（我的 → 课表管理切换）"
-                        else -> "，新增 ${newTimetables.size} 张课表（我的 → 课表管理切换）"
+                        // 后缀嵌进上面那句的结果里，所以用字符串资源而不是 UiText：留空串代表没有
+                        newTimetables.size == 1 ->
+                            appContext.getString(
+                                R.string.settings_transfer_new_timetable_one,
+                                newTimetables.single(),
+                            )
+                        else ->
+                            appContext.getString(
+                                R.string.settings_transfer_new_timetable_many,
+                                newTimetables.size,
+                            )
                     }
                     it.copy(
                         busy = false,
                         preview = null,
-                        message = (if (result.adopted > 0) "已导入：采纳 ${result.adopted} 条记录" else "已导入（本地数据已是最新）") + suffix,
+                        message = if (result.adopted > 0) {
+                            UiText.Res(R.string.settings_transfer_import_done, result.adopted, suffix)
+                        } else {
+                            UiText.Res(R.string.settings_transfer_import_up_to_date, suffix)
+                        },
                         messageIsError = false,
                     )
                 }
             } catch (e: Exception) {
-                _state.update { it.copy(busy = false, preview = null, message = "导入失败：${e.message}", messageIsError = true) }
+                _state.update {
+                    it.copy(
+                        busy = false,
+                        preview = null,
+                        message = UiText.Res(
+                            R.string.settings_transfer_import_failed,
+                            e.throwableToUiText(CoreR.string.common_unknown_error),
+                        ),
+                        messageIsError = true,
+                    )
+                }
             }
         }
     }
@@ -438,7 +575,7 @@ class TransferViewModel @Inject constructor(
 
     private fun parseRaw(
         parser: () -> ScheduleDocument,
-        source: String,
+        source: UiText,
         section: TransferSection,
         adapterNotes: List<String> = emptyList(),
         /** 合并后要设为当前学期的学期名（重铸 ID 的来源按名激活——对齐可能换 id）。 */
@@ -448,7 +585,13 @@ class TransferViewModel @Inject constructor(
         try {
             val document = parser()
             if (document.terms.none { it.deletedAt == null }) {
-                _state.update { it.copy(busy = false, message = "文件里没有有效的学期数据", messageIsError = true) }
+                _state.update {
+                    it.copy(
+                        busy = false,
+                        message = UiText.Res(R.string.settings_transfer_no_terms_in_file),
+                        messageIsError = true,
+                    )
+                }
                 return
             }
             val summaries = document.terms.filter { it.deletedAt == null }.map { term ->
@@ -478,6 +621,7 @@ class TransferViewModel @Inject constructor(
                             section = section,
                             document = document,
                             termSummaries = summaries,
+                            warnings = emptyList(),
                             adapterNotes = adapterNotes,
                             activateTermName = activateTermName(document),
                             pendingDeletions = deletions,
@@ -486,13 +630,44 @@ class TransferViewModel @Inject constructor(
                 }
             }
         } catch (e: NullClassCodec.FutureVersionException) {
-            _state.update { it.copy(busy = false, message = e.message ?: "文件版本过新", messageIsError = true) }
-        } catch (e: IllegalArgumentException) {
-            _state.update { it.copy(busy = false, message = e.message ?: "不是有效的空课文件", messageIsError = true) }
+            _state.update {
+                it.copy(
+                    busy = false,
+                    // 文件 / 应用两个版本号写进词条里，用户反馈问题时一眼看得出差多少
+                    message = UiText.Res(
+                        CoreR.string.error_import_future_version,
+                        e.fileVersion,
+                        e.supportedVersion,
+                    ),
+                    messageIsError = true,
+                )
+            }
+        } catch (e: ScheduleFileException) {
+            _state.update { it.copy(busy = false, message = e.importIssueToUiText(), messageIsError = true) }
         } catch (e: Exception) {
-            _state.update { it.copy(busy = false, message = "解析失败：${e.message}", messageIsError = true) }
+            _state.update {
+                it.copy(
+                    busy = false,
+                    message = UiText.Res(
+                        R.string.settings_transfer_parse_failed,
+                        e.throwableToUiText(CoreR.string.common_unknown_error),
+                    ),
+                    messageIsError = true,
+                )
+            }
         }
     }
+
+    /** SAF 目标打不开（对方应用没给写权限等）。 */
+    private class CannotOpenTargetException :
+        UiTextException(UiText.Res(R.string.settings_transfer_cannot_open_target), "cannot open target")
+
+    /** SAF 源读不出内容。 */
+    private class CannotReadFileException : Exception("cannot read file")
+
+    /** 需要当前学期但这个操作没有可用学期。 */
+    private class NoCurrentTermException :
+        UiTextException(UiText.Res(R.string.settings_transfer_no_term), "no current term")
 
     /**
      * 信任边界：导入文档的墓碑会按 LWW 赢过本地同 id 记录（删除传播）。

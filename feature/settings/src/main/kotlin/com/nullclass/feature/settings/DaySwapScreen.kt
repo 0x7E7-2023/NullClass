@@ -36,11 +36,13 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import com.nullclass.core.model.DayOverride
-import com.nullclass.core.model.ScheduleFormat
 import com.nullclass.core.model.Term
+import com.nullclass.core.ui.R as CoreR
+import com.nullclass.core.ui.i18n.dayOfWeekLabel
 import com.nullclass.core.ui.layout.AdaptiveColumn
 import com.nullclass.core.ui.layout.LocalWindowSize
 import java.time.LocalDate
@@ -66,10 +68,13 @@ fun DaySwapScreen(
         modifier = Modifier.nestedScroll(appBarScrollBehavior.nestedScrollConnection),
         topBar = {
             TopAppBar(
-                title = { Text("调课（串课）") },
+                title = { Text(stringResource(R.string.settings_day_swap_title)) },
                 navigationIcon = {
                     IconButton(onClick = onBack) {
-                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "返回")
+                        Icon(
+                            Icons.AutoMirrored.Filled.ArrowBack,
+                            contentDescription = stringResource(CoreR.string.common_back),
+                        )
                     }
                 },
                 scrollBehavior = appBarScrollBehavior,
@@ -103,9 +108,7 @@ private fun DaySwapSection(
     onClear: (epochDay: Long) -> Unit,
 ) {
     Text(
-        "调休时把某一天设成上另一天的课（如「周六上周五的课」）。今日页、周视图、" +
-            "小组件和课前提醒会一起跟着改，上课时间仍按这一天的作息。" +
-            "在周视图里点某一列的星期表头，也能直接调这一天。",
+        stringResource(R.string.settings_day_swap_desc) + stringResource(R.string.settings_day_swap_hint),
         style = MaterialTheme.typography.bodySmall,
         color = MaterialTheme.colorScheme.onSurfaceVariant,
     )
@@ -119,7 +122,7 @@ private fun DaySwapSection(
 
     if (term == null) {
         Text(
-            "还没有学期，先建一个学期再来调课",
+            stringResource(R.string.settings_day_swap_no_term),
             style = MaterialTheme.typography.bodySmall,
             color = MaterialTheme.colorScheme.onSurfaceVariant,
         )
@@ -131,7 +134,7 @@ private fun DaySwapSection(
             },
             modifier = Modifier.fillMaxWidth(),
         ) {
-            Text("添加调课")
+            Text(stringResource(R.string.settings_day_swap_add))
         }
     }
 
@@ -175,13 +178,21 @@ private fun DaySwapSection(
                                 pendingTarget = null
                             }
                         },
-                    ) { Text(if (target == null) "下一步" else "确定") }
+                    ) {
+                        Text(
+                            if (target == null) {
+                                stringResource(R.string.settings_day_swap_next)
+                            } else {
+                                stringResource(CoreR.string.common_confirm)
+                            },
+                        )
+                    }
                 },
                 dismissButton = {
                     TextButton(onClick = {
                         picking = false
                         pendingTarget = null
-                    }) { Text("取消") }
+                    }) { Text(stringResource(CoreR.string.common_cancel)) }
                 },
             ) {
                 // 步骤提示走 DatePicker 自己的 title 槽，不能当兄弟节点塞在 DatePicker 上面：
@@ -193,11 +204,15 @@ private fun DaySwapSection(
                     title = {
                         Text(
                             if (target == null) {
-                                "第 1 步 · 选哪一天要调课"
+                                stringResource(R.string.settings_day_swap_step1)
                             } else {
                                 val date = LocalDate.ofEpochDay(target)
-                                "第 2 步 · ${date.monthValue}月${date.dayOfMonth}日" +
-                                    "（${ScheduleFormat.dayOfWeekLabel(date.dayOfWeek.value)}）上哪天的课"
+                                stringResource(
+                                    R.string.settings_day_swap_step2,
+                                    date.monthValue,
+                                    date.dayOfMonth,
+                                    dayOfWeekLabel(date.dayOfWeek.value),
+                                )
                             },
                             modifier = Modifier.padding(start = 24.dp, end = 12.dp, top = 16.dp),
                         )
@@ -210,13 +225,13 @@ private fun DaySwapSection(
     val today = remember { LocalDate.now().toEpochDay() }
     val upcoming = overrides.filter { it.epochDay >= today }
     Text(
-        "今天及以后",
+        stringResource(R.string.settings_day_swap_upcoming),
         style = MaterialTheme.typography.labelLarge,
         color = MaterialTheme.colorScheme.onSurfaceVariant,
     )
     if (upcoming.isEmpty()) {
         Text(
-            "暂无调课",
+            stringResource(R.string.settings_day_swap_empty),
             style = MaterialTheme.typography.bodySmall,
             color = MaterialTheme.colorScheme.onSurfaceVariant,
         )
@@ -245,13 +260,13 @@ private fun DayOverrideRow(override: DayOverride, onDelete: () -> Unit) {
                     style = MaterialTheme.typography.titleSmall,
                 )
                 Text(
-                    "上 ${dayLabel(override.sourceEpochDay)} 的课",
+                    stringResource(R.string.settings_day_swap_source, dayLabel(override.sourceEpochDay)),
                     style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                 )
             }
             IconButton(onClick = onDelete) {
-                Icon(Icons.Default.Delete, contentDescription = "删除")
+                Icon(Icons.Default.Delete, contentDescription = stringResource(CoreR.string.common_delete))
             }
         }
     }

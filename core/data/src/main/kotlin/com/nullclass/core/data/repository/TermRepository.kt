@@ -7,6 +7,8 @@ import com.nullclass.core.data.db.dao.ExamDao
 import com.nullclass.core.data.db.dao.TermDao
 import com.nullclass.core.data.db.dao.TimetableDao
 import com.nullclass.core.data.prefs.UserPreferencesRepository
+import com.nullclass.core.model.DataError
+import com.nullclass.core.model.DataException
 import com.nullclass.core.model.PeriodTime
 import com.nullclass.core.model.Term
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -115,7 +117,7 @@ class TermRepositoryImpl @Inject constructor(
         db.withTransaction {
             if (isNew) {
                 val timetableId = activeTimetableId()
-                    ?: error("没有课表可放学期——新装应用应先创建课表")
+                    ?: throw DataException(DataError.NO_TIMETABLE)
                 termDao.upsert(
                     term.copy(id = termId).toEntity(
                         timetableId = timetableId,

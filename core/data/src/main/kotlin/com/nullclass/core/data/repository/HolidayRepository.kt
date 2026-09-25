@@ -43,8 +43,13 @@ class HolidayRepository @Inject constructor(
         /** 未到同步间隔或开关关闭，本次跳过。 */
         data object Skipped : RefreshResult
 
-        /** 全部源失败；旧缓存保持原样。 */
-        data class Failed(val message: String) : RefreshResult
+        /**
+         * 全部源失败；旧缓存保持原样。
+         *
+         * [failedSource] 是最后一个尝试失败的数据源名（不翻译，用于反馈问题），
+         * null 表示没有任何可用数据源。提示文案由界面层组织。
+         */
+        data class Failed(val failedSource: String?) : RefreshResult
     }
 
     private val client = OkHttpClient.Builder()
@@ -82,7 +87,7 @@ class HolidayRepository @Inject constructor(
         }
 
         val years = termYears().distinct()
-        var lastError = "无可用数据源"
+        var lastFailedSource: String? = null
         val usedSources = LinkedHashSet<String>()
         var holidayCount = 0
         var wroteAny = false
@@ -92,7 +97,7 @@ class HolidayRepository @Inject constructor(
                 for (source in sources) {
                     val result = source.fetchYear(year)
                     if (result == null) {
-                        lastError = "${source.name} 不可用"
+                        lastFailedSource = source.name
                         continue
                     }
                     // 空结果 = 该年安排未发布（源正常），换下一源，不算源失败
@@ -122,7 +127,7 @@ class HolidayRepository @Inject constructor(
             userPrefs.setHolidayLastSyncMs(now)
             RefreshResult.Success(source = usedSources.joinToString(" + "), holidayCount = holidayCount)
         } else {
-            RefreshResult.Failed("节假日同步失败（$lastError），已保留上次结果")
+            RefreshResult.Failed(lastFailedSource)
         }
     }
 

@@ -13,6 +13,8 @@ import com.nullclass.core.model.RetimeResult
 import com.nullclass.core.model.Term
 import com.nullclass.core.model.nearestWeekday
 import com.nullclass.core.model.retimeSections
+import com.nullclass.core.ui.i18n.UiText
+import com.nullclass.core.ui.i18n.toUiText
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -49,13 +51,13 @@ data class TermEditUiState(
     val quickLessonText: String = DEFAULT_LESSON_MINUTES.toString(),
     val quickBreakText: String = DEFAULT_BREAK_MINUTES.toString(),
     /** 快速设定的就地提示（时间改不动时的原因），比弹窗更贴着手上的操作。 */
-    val quickNotice: String? = null,
+    val quickNotice: UiText? = null,
     /** 存在上学期时显示「复制课程」。 */
     val previousTermName: String? = null,
     val copyFromPrevious: Boolean = false,
     /** 已有学期的课程数，清空按钮用。 */
     val courseCount: Int = 0,
-    val error: String? = null,
+    val error: UiText? = null,
     /** 保存进行中（或已保存成功等待离开）：期间按钮禁用，防连点多次 popBackStack。 */
     val saving: Boolean = false,
     val clearing: Boolean = false,
@@ -157,7 +159,7 @@ class TermEditViewModel @Inject constructor(
 
     fun removePeriod(index: Int) = _state.update {
         if (it.periods.size <= 1) {
-            it.copy(error = "至少保留一节课的时间")
+            it.copy(error = UiText.Res(R.string.edit_term_error_keep_one_period))
         } else {
             val remaining = it.periods.filterIndexed { i, _ -> i != index }
             // 重新连续编号
@@ -220,8 +222,13 @@ class TermEditViewModel @Inject constructor(
         if (lesson == null || breakMinutes == null) {
             _state.update {
                 it.copy(
-                    quickNotice = "单节课请填 ${QUICK_LESSON_RANGE.first}~${QUICK_LESSON_RANGE.last} 分钟，" +
-                        "课间休息请填 ${QUICK_BREAK_RANGE.first}~${QUICK_BREAK_RANGE.last} 分钟。",
+                    quickNotice = UiText.Res(
+                        R.string.edit_term_quick_invalid,
+                        QUICK_LESSON_RANGE.first,
+                        QUICK_LESSON_RANGE.last,
+                        QUICK_BREAK_RANGE.first,
+                        QUICK_BREAK_RANGE.last,
+                    ),
                 )
             }
             return
@@ -233,8 +240,7 @@ class TermEditViewModel @Inject constructor(
             if (start == null || end == null || start >= end) {
                 _state.update {
                     it.copy(
-                        quickNotice = "第 ${index + 1} 节的时间不是有效的 HH:mm（开始要早于结束），" +
-                            "先改好再用快速设定。",
+                        quickNotice = UiText.Res(R.string.edit_term_quick_period_invalid, index + 1),
                     )
                 }
                 return
@@ -264,17 +270,26 @@ class TermEditViewModel @Inject constructor(
 
             is RetimeResult.Overflow -> _state.update {
                 it.copy(
-                    quickNotice = "按每节 $lesson 分钟、课间 $breakMinutes 分钟排，第 ${result.section} 大节要到 " +
-                        "${minuteLabel(result.endMinuteOfDay)}，而下一个大节 ${minuteLabel(result.nextStartMinuteOfDay)} " +
-                        "就开课了 —— 把单节时长或课间休息调小一点。",
+                    quickNotice = UiText.Res(
+                        R.string.edit_term_quick_overflow,
+                        lesson,
+                        breakMinutes,
+                        result.section,
+                        minuteLabel(result.endMinuteOfDay),
+                        minuteLabel(result.nextStartMinuteOfDay),
+                    ),
                 )
             }
 
             is RetimeResult.OutOfDay -> _state.update {
                 it.copy(
-                    quickNotice = "按每节 $lesson 分钟、课间 $breakMinutes 分钟排，第 ${result.section} 大节要到 " +
-                        "${minuteLabel(result.endMinuteOfDay)}，已经排到第二天了 —— " +
-                        "那一大节开得太晚，把单节时长或课间休息调小一点。",
+                    quickNotice = UiText.Res(
+                        R.string.edit_term_quick_out_of_day,
+                        lesson,
+                        breakMinutes,
+                        result.section,
+                        minuteLabel(result.endMinuteOfDay),
+                    ),
                 )
             }
         }
@@ -301,7 +316,7 @@ class TermEditViewModel @Inject constructor(
         // 连点会触发多次 popBackStack 把返回栈弹空（白屏卡死根因）。
         if (s.saving) return
         if (s.name.isBlank()) {
-            _state.update { it.copy(error = "学期名不能为空") }
+            _state.update { it.copy(error = UiText.Res(R.string.edit_term_error_no_name)) }
             return
         }
         // 解析并校验节次时间
@@ -310,11 +325,15 @@ class TermEditViewModel @Inject constructor(
             val end = parseMinute(p.endText)
             when {
                 start == null || end == null -> {
-                    _state.update { it.copy(error = "第${index + 1}节时间格式应为 HH:mm") }
+                    _state.update {
+                        it.copy(error = UiText.Res(R.string.edit_term_error_period_format, index + 1))
+                    }
                     null
                 }
                 start >= end -> {
-                    _state.update { it.copy(error = "第${index + 1}节开始时间必须早于结束时间") }
+                    _state.update {
+                        it.copy(error = UiText.Res(R.string.edit_term_error_period_order, index + 1))
+                    }
                     null
                 }
                 else -> PeriodTime(
@@ -346,7 +365,9 @@ class TermEditViewModel @Inject constructor(
                 onSaved()
             } catch (e: IllegalArgumentException) {
                 // 保存失败要允许重试
-                _state.update { it.copy(saving = false, error = e.message ?: "输入不合法") }
+                _state.update {
+                    it.copy(saving = false, error = e.toUiText(R.string.edit_term_error_invalid_input))
+                }
             }
         }
     }

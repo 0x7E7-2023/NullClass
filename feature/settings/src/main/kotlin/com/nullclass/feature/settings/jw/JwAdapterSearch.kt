@@ -33,7 +33,7 @@ private fun queryTokens(query: String): List<String> =
     query.lowercase().split(QUERY_SEPARATOR).filter(String::isNotEmpty)
 
 /** `\p{Z}` 覆盖各种 Unicode 空格（U+00A0 不换行空格、U+2007 数字空格、U+202F 窄不换行空格、U+3000 全角空格）。 */
-private val QUERY_SEPARATOR = Regex("[\\s\\p{Z}，,、；;/]+")
+private val QUERY_SEPARATOR = Regex("[\\s\\p{Z}，,、；;/]+") // i18n-exempt: 解析用分隔符（用户输入里的中英文标点都认）
 
 /** 展示给用户看的查询串：把看不见的首尾空白（含 `String.trim()` 不处理的 U+00A0）去掉。 */
 internal fun String.trimQuery(): String = trim { it.isWhitespace() }

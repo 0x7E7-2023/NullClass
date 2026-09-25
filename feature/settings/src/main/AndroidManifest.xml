@@ -5,7 +5,7 @@
         <activity
             android:name=".jw.JwImportActivity"
             android:exported="false"
-            android:label="教务导入" />
+            android:label="@string/settings_jw_activity_label" />
     </application>
 
 </manifest>

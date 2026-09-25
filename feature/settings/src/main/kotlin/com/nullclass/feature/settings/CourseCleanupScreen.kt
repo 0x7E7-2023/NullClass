@@ -49,11 +49,14 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import com.nullclass.core.model.ScheduleBlock
-import com.nullclass.core.model.ScheduleFormat
+import com.nullclass.core.ui.R as CoreR
+import com.nullclass.core.ui.i18n.dayOfWeekLabel
+import com.nullclass.core.ui.i18n.periodRangeLabel
 import com.nullclass.core.ui.layout.AdaptiveWidthWrapper
 import com.nullclass.core.ui.layout.LocalWindowSize
 
@@ -91,10 +94,13 @@ fun CourseCleanupScreen(
         modifier = Modifier.nestedScroll(appBarScrollBehavior.nestedScrollConnection),
         topBar = {
             TopAppBar(
-                title = { Text("快速删课") },
+                title = { Text(stringResource(R.string.settings_cleanup_title)) },
                 navigationIcon = {
                     IconButton(onClick = onBack) {
-                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "返回")
+                        Icon(
+                            Icons.AutoMirrored.Filled.ArrowBack,
+                            contentDescription = stringResource(CoreR.string.common_back),
+                        )
                     }
                 },
                 actions = {
@@ -108,7 +114,17 @@ fun CourseCleanupScreen(
                                     selected + visibleRows.map { it.course.id }
                                 }
                             },
-                        ) { Text(if (allSelected) "取消全选" else "全选") }
+                        ) {
+                            Text(
+                                stringResource(
+                                    if (allSelected) {
+                                        CoreR.string.common_deselect_all
+                                    } else {
+                                        CoreR.string.common_select_all
+                                    },
+                                ),
+                            )
+                        }
                     }
                 },
                 scrollBehavior = appBarScrollBehavior,
@@ -124,11 +140,13 @@ fun CourseCleanupScreen(
                         verticalAlignment = Alignment.CenterVertically,
                     ) {
                         Text(
-                            "已选 ${selectedRows.size} 门课",
+                            stringResource(R.string.settings_cleanup_selected, selectedRows.size),
                             style = MaterialTheme.typography.bodyMedium,
                             modifier = Modifier.weight(1f),
                         )
-                        Button(onClick = { confirming = true }) { Text("删除") }
+                        Button(onClick = { confirming = true }) {
+                            Text(stringResource(CoreR.string.common_delete))
+                        }
                     }
                 }
             }
@@ -144,7 +162,11 @@ fun CourseCleanupScreen(
                 contentAlignment = Alignment.Center,
             ) {
                 Text(
-                    if (state.loading) "加载中…" else "还没有学期，先建一个学期再来删课",
+                    if (state.loading) {
+                        stringResource(CoreR.string.common_loading)
+                    } else {
+                        stringResource(R.string.settings_cleanup_no_term)
+                    },
                     style = MaterialTheme.typography.bodyMedium,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                 )
@@ -159,21 +181,24 @@ fun CourseCleanupScreen(
                 .padding(horizontal = 16.dp),
         ) {
             Text(
-                "删除的是整门课：它在其他周次、其他星期的安排和关联的考试会一起删掉。" +
-                    "只想让某一天不上课，用「通知与提醒 → 跳过日期」。",
+                stringResource(R.string.settings_cleanup_hint) +
+                    stringResource(R.string.settings_cleanup_hint_alt),
                 style = MaterialTheme.typography.bodySmall,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
                 modifier = Modifier.padding(top = 8.dp, bottom = 12.dp),
             )
 
             SingleChoiceSegmentedButtonRow(Modifier.fillMaxWidth()) {
-                val options = listOf(CleanupFilter.WEEK to "按周次", CleanupFilter.DATE to "按日期")
-                options.forEachIndexed { index, (value, label) ->
+                val options = listOf(
+                    CleanupFilter.WEEK to R.string.settings_cleanup_by_week,
+                    CleanupFilter.DATE to R.string.settings_cleanup_by_date,
+                )
+                options.forEachIndexed { index, (value, labelRes) ->
                     SegmentedButton(
                         selected = state.filter == value,
                         onClick = { viewModel.setFilter(value) },
                         shape = SegmentedButtonDefaults.itemShape(index = index, count = options.size),
-                    ) { Text(label) }
+                    ) { Text(stringResource(labelRes)) }
                 }
             }
 
@@ -197,7 +222,16 @@ fun CourseCleanupScreen(
                                 selected = state.week == week,
                                 onClick = { viewModel.setWeek(week) },
                                 label = {
-                                    Text(if (week == state.todayWeek) "第${week}周 · 本周" else "第${week}周")
+                                    Text(
+                                        stringResource(
+                                            if (week == state.todayWeek) {
+                                                R.string.settings_cleanup_week_current
+                                            } else {
+                                                R.string.settings_cleanup_week
+                                            },
+                                            week,
+                                        ),
+                                    )
                                 },
                             )
                         }
@@ -213,8 +247,11 @@ fun CourseCleanupScreen(
                     ) { Text(dayLabel(state.date)) }
                     val swappedFrom = state.swappedFrom
                     val hint = when {
-                        state.dateOutOfTerm -> "这天不在学期内，没有课"
-                        swappedFrom != null -> "这天已调课：上 ${dayLabel(swappedFrom)} 的课"
+                        state.dateOutOfTerm -> stringResource(R.string.settings_cleanup_out_of_term)
+                        swappedFrom != null -> stringResource(
+                            R.string.settings_cleanup_swapped,
+                            dayLabel(swappedFrom),
+                        )
                         else -> null
                     }
                     hint?.let {
@@ -232,8 +269,9 @@ fun CourseCleanupScreen(
                 Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
                     Text(
                         when (state.filter) {
-                            CleanupFilter.WEEK -> "第${state.week}周没有课"
-                            CleanupFilter.DATE -> "这天没有课"
+                            CleanupFilter.WEEK ->
+                                stringResource(R.string.settings_cleanup_week_empty, state.week)
+                            CleanupFilter.DATE -> stringResource(R.string.settings_cleanup_day_empty)
                         },
                         style = MaterialTheme.typography.bodyMedium,
                         color = MaterialTheme.colorScheme.onSurfaceVariant,
@@ -291,10 +329,12 @@ fun CourseCleanupScreen(
                                 picked?.let { viewModel.setDate(it) }
                                 pickingDate = false
                             },
-                        ) { Text("确定") }
+                        ) { Text(stringResource(CoreR.string.common_confirm)) }
                     },
                     dismissButton = {
-                        TextButton(onClick = { pickingDate = false }) { Text("取消") }
+                        TextButton(onClick = { pickingDate = false }) {
+                            Text(stringResource(CoreR.string.common_cancel))
+                        }
                     },
                 ) {
                     DatePicker(state = pickerState)
@@ -308,12 +348,11 @@ fun CourseCleanupScreen(
         val doomed = selectedRows
         AlertDialog(
             onDismissRequest = { confirming = false },
-            title = { Text("删除 ${doomed.size} 门课") },
+            title = { Text(stringResource(R.string.settings_cleanup_confirm_title, doomed.size)) },
             text = {
                 Text(
-                    doomed.joinToString("、") { it.course.name } +
-                        "\n\n连同它们的全部时间安排和关联考试一起删除，" +
-                        "不只是当前筛选的这一周/这一天。删除会同步到其他设备。",
+                    doomed.joinToString(stringResource(CoreR.string.common_list_separator)) { it.course.name } + "\n\n" +
+                        stringResource(R.string.settings_cleanup_confirm_desc),
                 )
             },
             confirmButton = {
@@ -324,10 +363,17 @@ fun CourseCleanupScreen(
                         viewModel.deleteCourses(ids)
                         selected = selected - ids.toSet()
                     },
-                ) { Text("删除", color = MaterialTheme.colorScheme.error) }
+                ) {
+                    Text(
+                        stringResource(CoreR.string.common_delete),
+                        color = MaterialTheme.colorScheme.error,
+                    )
+                }
             },
             dismissButton = {
-                TextButton(onClick = { confirming = false }) { Text("取消") }
+                TextButton(onClick = { confirming = false }) {
+                    Text(stringResource(CoreR.string.common_cancel))
+                }
             },
         )
     }
@@ -374,7 +420,10 @@ private fun CleanupCourseRow(
                 }
                 if (row.totalBlocks > row.matched.size) {
                     Text(
-                        "另有 ${row.totalBlocks - row.matched.size} 条安排在其他日子，删除时一并删掉",
+                        stringResource(
+                            R.string.settings_cleanup_other_blocks,
+                            row.totalBlocks - row.matched.size,
+                        ),
                         style = MaterialTheme.typography.labelSmall,
                         color = MaterialTheme.colorScheme.error,
                     )
@@ -384,9 +433,10 @@ private fun CleanupCourseRow(
     }
 }
 
-/** 「周二 3-4节 · A101」；按日期筛时星期是废话，省掉。 */
+/** 「周二 · 3-4节 · A101」；按日期筛时星期是废话，省掉。 */
+@Composable
 private fun blockLabel(block: ScheduleBlock, showDayOfWeek: Boolean): String = buildList {
-    if (showDayOfWeek) add(ScheduleFormat.dayOfWeekLabel(block.dayOfWeek))
-    add(ScheduleFormat.periodRange(block))
+    if (showDayOfWeek) add(dayOfWeekLabel(block.dayOfWeek))
+    add(periodRangeLabel(block))
     block.location?.takeIf { it.isNotBlank() }?.let { add(it) }
-}.joinToString(" · ")
+}.joinToString(stringResource(CoreR.string.common_separator))

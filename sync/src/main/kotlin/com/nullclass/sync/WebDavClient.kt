@@ -27,20 +27,20 @@ data class WebDavConfig(
 ) {
     /**
      * 校验：必须 https；http 仅允许私网地址（局域网 NAS 场景）。
-     * @return 错误信息，null 表示合法
+     * @return 出错原因，null 表示合法。文案由界面层按 [SyncError] 取。
      */
-    fun validate(): String? {
+    fun validate(): SyncError? {
         val normalized = url.trim()
-        if (normalized.isBlank()) return "服务器地址不能为空"
+        if (normalized.isBlank()) return SyncError.URL_EMPTY
         val isHttps = normalized.startsWith("https://", ignoreCase = true)
         val isHttp = normalized.startsWith("http://", ignoreCase = true)
-        if (!isHttps && !isHttp) return "地址必须以 http:// 或 https:// 开头"
+        if (!isHttps && !isHttp) return SyncError.URL_SCHEME
         val host = normalized.removePrefix("https://").removePrefix("http://")
             .substringBefore(':').substringBefore('/')
         if (isHttp && !isPrivateHost(host)) {
-            return "公网地址必须使用 https，否则密码会明文传输"
+            return SyncError.URL_INSECURE
         }
-        if (username.isBlank()) return "用户名不能为空"
+        if (username.isBlank()) return SyncError.USERNAME_EMPTY
         return null
     }
 
@@ -71,7 +71,7 @@ data class WebDavConfig(
 
 sealed interface WebDavResult {
     data object Ok : WebDavResult
-    data class Error(val message: String) : WebDavResult
+    data class Error(val failure: SyncFailure) : WebDavResult
 }
 
 /**
@@ -114,7 +114,9 @@ class WebDavClient(private val config: WebDavConfig) {
                     .build(),
             ).execute().use { response ->
                 if (!response.isSuccessful) {
-                    return@withContext WebDavResult.Error("写入测试失败：HTTP ${response.code}")
+                    return@withContext WebDavResult.Error(
+                        SyncFailure(SyncError.WRITE_TEST_FAILED, httpDetail(response.code)),
+                    )
                 }
             }
             http.newCall(
@@ -125,11 +127,13 @@ class WebDavClient(private val config: WebDavConfig) {
                     .build(),
             ).execute().use { response ->
                 if (!response.isSuccessful) {
-                    return@withContext WebDavResult.Error("读取测试失败：HTTP ${response.code}")
+                    return@withContext WebDavResult.Error(
+                        SyncFailure(SyncError.READ_TEST_FAILED, httpDetail(response.code)),
+                    )
                 }
                 val body = response.body?.string().orEmpty()
                 if (!body.startsWith("nullclass-probe-")) {
-                    return@withContext WebDavResult.Error("读取内容不匹配，请确认这是专用目录")
+                    return@withContext WebDavResult.Error(SyncFailure(SyncError.CONTENT_MISMATCH))
                 }
             }
             http.newCall(
@@ -140,12 +144,16 @@ class WebDavClient(private val config: WebDavConfig) {
                     .build(),
             ).execute().use { response ->
                 if (!response.isSuccessful && response.code != 404) {
-                    return@withContext WebDavResult.Error("清理测试文件失败：HTTP ${response.code}")
+                    return@withContext WebDavResult.Error(
+                        SyncFailure(SyncError.CLEANUP_FAILED, httpDetail(response.code)),
+                    )
                 }
             }
             WebDavResult.Ok
         } catch (e: IOException) {
-            WebDavResult.Error("连接失败：${e.message ?: e.javaClass.simpleName}")
+            WebDavResult.Error(
+                SyncFailure(SyncError.CONNECT_FAILED, e.message ?: e.javaClass.simpleName),
+            )
         }
     }
 
@@ -172,7 +180,9 @@ class WebDavClient(private val config: WebDavConfig) {
             when {
                 response.code == 404 -> null
                 response.isSuccessful -> response.body?.string()?.let { manifestJson.decodeFromString<ManifestDto>(it) }
-                else -> throw IOException("下载 manifest 失败：HTTP ${response.code}")
+                else -> throw SyncException(
+                    SyncFailure(SyncError.DOWNLOAD_MANIFEST_FAILED, httpDetail(response.code)),
+                )
             }
         }
     }
@@ -188,7 +198,9 @@ class WebDavClient(private val config: WebDavConfig) {
             when {
                 response.code == 404 -> null
                 response.isSuccessful -> response.body?.string()?.let { NullClassCodec.decode(it) }
-                else -> throw IOException("下载快照失败：HTTP ${response.code}")
+                else -> throw SyncException(
+                    SyncFailure(SyncError.DOWNLOAD_SNAPSHOT_FAILED, httpDetail(response.code)),
+                )
             }
         }
     }
@@ -203,7 +215,11 @@ class WebDavClient(private val config: WebDavConfig) {
                 .put(snapshotJson.toRequestBody(jsonMedia))
                 .build(),
         ).execute().use { response ->
-            if (!response.isSuccessful) throw IOException("上传快照失败：HTTP ${response.code}")
+            if (!response.isSuccessful) {
+                throw SyncException(
+                    SyncFailure(SyncError.UPLOAD_SNAPSHOT_FAILED, httpDetail(response.code)),
+                )
+            }
         }
         val manifest = ManifestDto(
             deviceId = snapshot.deviceId,
@@ -217,7 +233,11 @@ class WebDavClient(private val config: WebDavConfig) {
                 .put(manifestJson.encodeToString(manifest).toRequestBody(jsonMedia))
                 .build(),
         ).execute().use { response ->
-            if (!response.isSuccessful) throw IOException("上传 manifest 失败：HTTP ${response.code}")
+            if (!response.isSuccessful) {
+                throw SyncException(
+                    SyncFailure(SyncError.UPLOAD_MANIFEST_FAILED, httpDetail(response.code)),
+                )
+            }
         }
     }
 
@@ -232,8 +252,13 @@ class WebDavClient(private val config: WebDavConfig) {
                 .build(),
         ).execute().use { response ->
             if (!response.isSuccessful && response.code != 405 && response.code != 301) {
-                throw IOException("创建目录失败：HTTP ${response.code}")
+                throw SyncException(
+                    SyncFailure(SyncError.CREATE_DIR_FAILED, httpDetail(response.code)),
+                )
             }
         }
     }
 }
+
+/** HTTP 状态码作为错误详情附在文案后面，便于反馈问题。 */
+private fun httpDetail(code: Int): String = "HTTP $code"

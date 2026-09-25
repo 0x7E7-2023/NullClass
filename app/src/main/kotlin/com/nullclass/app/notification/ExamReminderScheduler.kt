@@ -9,7 +9,9 @@ import androidx.work.workDataOf
 import com.nullclass.core.data.prefs.UserPreferencesRepository
 import com.nullclass.core.data.repository.ExamRepository
 import com.nullclass.core.data.repository.TermRepository
+import com.nullclass.app.R
 import com.nullclass.core.model.ExamFormat
+import com.nullclass.core.ui.i18n.DateText
 import com.nullclass.core.model.ExamReminderPlanner
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.first
@@ -62,8 +64,12 @@ class ExamReminderScheduler @Inject constructor(
                                 ExamReminderWorker.KEY_TAG to reminderTag,
                                 ExamReminderWorker.KEY_COURSE_NAME to planned.exam.course.name,
                                 ExamReminderWorker.KEY_EXAM_TITLE to planned.exam.exam.title,
-                                ExamReminderWorker.KEY_DATE_LABEL to ExamFormat.dateLabel(planned.exam.exam.dateEpochDay),
-                                ExamReminderWorker.KEY_TIME_LABEL to (ExamFormat.timeRange(planned.exam.exam) ?: "时间待定"),
+                                ExamReminderWorker.KEY_DATE_LABEL to
+                                    DateText.date(context, planned.exam.exam.dateEpochDay),
+                                ExamReminderWorker.KEY_TIME_LABEL to (
+                                    ExamFormat.timeRange(planned.exam.exam)
+                                        ?: context.getString(R.string.app_exam_time_undecided)
+                                    ),
                                 ExamReminderWorker.KEY_LOCATION to (planned.exam.exam.location ?: ""),
                                 ExamReminderWorker.KEY_SEAT to (planned.exam.exam.seat ?: ""),
                             ),

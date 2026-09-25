@@ -8,6 +8,8 @@ import com.nullclass.core.data.db.dao.TermDao
 import com.nullclass.core.data.db.dao.TimetableDao
 import com.nullclass.core.data.db.entity.TimetableEntity
 import com.nullclass.core.data.prefs.UserPreferencesRepository
+import com.nullclass.core.model.DataError
+import com.nullclass.core.model.DataException
 import com.nullclass.core.model.PeriodTime
 import com.nullclass.core.model.Term
 import com.nullclass.core.model.Timetable
@@ -110,7 +112,7 @@ class TimetableRepositoryImpl @Inject constructor(
         periodTimes: List<PeriodTime>,
     ): String {
         val trimmed = timetableName.trim()
-        require(trimmed.isNotEmpty()) { "课表名不能为空" }
+        if (trimmed.isEmpty()) throw DataException(DataError.TIMETABLE_NAME_EMPTY)
         val timetableId = UUID.randomUUID().toString()
         val termId = term.id.ifEmpty { UUID.randomUUID().toString() }
         val now = System.currentTimeMillis()

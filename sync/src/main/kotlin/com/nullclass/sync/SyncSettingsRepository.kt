@@ -15,11 +15,15 @@ import javax.inject.Singleton
 
 private val Context.syncDataStore by preferencesDataStore(name = "sync_settings")
 
-/** 自动同步周期（设置页三档）。 */
-enum class AutoSyncInterval(val hours: Long, val label: String) {
-    OFF(0, "关闭"),
-    EVERY_6_HOURS(6, "每 6 小时"),
-    DAILY(24, "每天");
+/**
+ * 自动同步周期（设置页三档）。
+ *
+ * 显示名称见 `:feature:settings` 的 `AutoSyncInterval.labelRes` —— 同步层不产出文案。
+ */
+enum class AutoSyncInterval(val hours: Long) {
+    OFF(0),
+    EVERY_6_HOURS(6),
+    DAILY(24);
 
     companion object {
         fun fromName(name: String?): AutoSyncInterval =

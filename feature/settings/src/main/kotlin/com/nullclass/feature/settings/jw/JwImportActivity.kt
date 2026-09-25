@@ -42,12 +42,16 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import com.nullclass.core.data.prefs.UserPreferencesRepository
 import com.nullclass.core.ui.theme.NullClassTheme
 import com.nullclass.importer.jw.JwAdapter
+import com.nullclass.core.ui.R as CoreR
+import com.nullclass.feature.settings.R
+import com.nullclass.core.ui.i18n.resolve
 import com.nullclass.importer.jw.JwAdapterSource
 import com.nullclass.importer.jw.JwManifest
 import dagger.hilt.android.AndroidEntryPoint
@@ -172,10 +176,15 @@ private fun JwImportScreen(
         topBar = {
             // 选学校时由 SchoolPicker 自带的搜索栏兼任顶栏
             if (selectedKey != null) TopAppBar(
-                title = { Text(selected?.displayName ?: "教务导入") },
+                title = {
+                    Text(selected?.displayName ?: stringResource(R.string.settings_transfer_jw_running_generic))
+                },
                 navigationIcon = {
                     IconButton(onClick = { if (selectedKey == null) onCancel() else selectedKey = null }) {
-                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "返回")
+                        Icon(
+                            Icons.AutoMirrored.Filled.ArrowBack,
+                            contentDescription = stringResource(CoreR.string.common_back),
+                        )
                     }
                 },
                 scrollBehavior = appBarScrollBehavior,
@@ -275,9 +284,23 @@ private fun JwImportScreen(
     state.message?.let { message ->
         AlertDialog(
             onDismissRequest = viewModel::dismissMessage,
-            title = { Text(if (state.messageIsError) "出错了" else "完成") },
-            text = { Text(message) },
-            confirmButton = { TextButton(onClick = viewModel::dismissMessage) { Text("好") } },
+            title = {
+                Text(
+                    stringResource(
+                        if (state.messageIsError) {
+                            R.string.settings_jw_error_title
+                        } else {
+                            R.string.settings_jw_done_title
+                        },
+                    ),
+                )
+            },
+            text = { Text(message.resolve()) },
+            confirmButton = {
+                TextButton(onClick = viewModel::dismissMessage) {
+                    Text(stringResource(R.string.settings_jw_ok))
+                }
+            },
         )
     }
 }
@@ -296,12 +319,15 @@ internal fun AdapterSearchField(query: String, onQueryChange: (String) -> Unit) 
         shape = MaterialTheme.shapes.large,
         textStyle = MaterialTheme.typography.bodyMedium,
         // 提示语要短到单行放得下，否则输入框会被撑成两行高
-        placeholder = { Text("搜索学校名称或域名") },
+        placeholder = { Text(stringResource(R.string.settings_jw_search_hint)) },
         leadingIcon = { Icon(Icons.Default.Search, contentDescription = null) },
         trailingIcon = {
             if (query.isNotEmpty()) {
                 IconButton(onClick = { onQueryChange("") }) {
-                    Icon(Icons.Default.Clear, contentDescription = "清空搜索")
+                    Icon(
+                        Icons.Default.Clear,
+                        contentDescription = stringResource(R.string.settings_jw_search_clear),
+                    )
                 }
             }
         },
@@ -325,28 +351,25 @@ private fun StartUrlDialog(
     val normalized = normalizeStartUrl(url)
     AlertDialog(
         onDismissRequest = onDismiss,
-        title = { Text("输入教务系统网址") },
+        title = { Text(stringResource(R.string.settings_jw_picker_login_title)) },
         text = {
             Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
                 Text(
-                    "填学校教务系统的登录页或课表页地址，例如 jw.example.edu.cn。" +
-                        "登录、验证码、扫码都在下一页里由你自己完成，空课不碰你的账号密码。",
+                    stringResource(R.string.settings_jw_picker_login_desc),
                     style = MaterialTheme.typography.bodySmall,
                 )
                 androidx.compose.material3.OutlinedTextField(
                     value = url,
                     onValueChange = { url = it },
                     singleLine = true,
-                    label = { Text("教务系统地址") },
+                    label = { Text(stringResource(R.string.settings_jw_picker_login_label)) },
                     isError = url.isNotBlank() && normalized == null,
                     supportingText = {
                         Text(
-                            if (url.isBlank()) {
-                                "不确定？在浏览器里打开学校教务系统，把地址栏整条复制过来"
-                            } else if (normalized == null) {
-                                "这个地址看不懂，检查一下有没有多余的空格或中文"
-                            } else {
-                                "将打开：$normalized（只支持 http/https；很多学校只有 http，打不开就换个协议试试）"
+                            when {
+                                url.isBlank() -> stringResource(R.string.settings_jw_picker_login_hint)
+                                normalized == null -> stringResource(R.string.settings_jw_picker_login_invalid)
+                                else -> stringResource(R.string.settings_jw_picker_login_preview, normalized)
                             },
                             style = MaterialTheme.typography.bodySmall,
                         )
@@ -356,9 +379,13 @@ private fun StartUrlDialog(
             }
         },
         confirmButton = {
-            TextButton(onClick = { normalized?.let(onSubmit) }, enabled = normalized != null) { Text("打开") }
+            TextButton(onClick = { normalized?.let(onSubmit) }, enabled = normalized != null) {
+                Text(stringResource(R.string.settings_jw_picker_login_open))
+            }
         },
-        dismissButton = { TextButton(onClick = onDismiss) { Text("取消") } },
+        dismissButton = {
+            TextButton(onClick = onDismiss) { Text(stringResource(CoreR.string.common_cancel)) }
+        },
     )
 }
 
@@ -379,25 +406,30 @@ internal fun LinkDialog(onSubmit: (String) -> Unit, onDismiss: () -> Unit) {
     var url by rememberSaveable { mutableStateOf("") }
     AlertDialog(
         onDismissRequest = onDismiss,
-        title = { Text("从适配器库添加") },
+        title = { Text(stringResource(R.string.settings_jw_picker_link_title)) },
         text = {
             Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
                 Text(
-                    "粘贴 GitHub 仓库地址或任意 index.json 链接（只允许 https）。" +
-                        "适配器由第三方维护，请确认来源可信。",
+                    stringResource(R.string.settings_jw_picker_link_desc),
                     style = MaterialTheme.typography.bodySmall,
                 )
                 androidx.compose.material3.OutlinedTextField(
                     value = url,
                     onValueChange = { url = it },
                     singleLine = true,
-                    label = { Text("库地址") },
+                    label = { Text(stringResource(R.string.settings_jw_picker_link_label)) },
                     modifier = Modifier.fillMaxWidth(),
                 )
             }
         },
-        confirmButton = { TextButton(onClick = { onSubmit(url) }, enabled = url.isNotBlank()) { Text("读取") } },
-        dismissButton = { TextButton(onClick = onDismiss) { Text("取消") } },
+        confirmButton = {
+            TextButton(onClick = { onSubmit(url) }, enabled = url.isNotBlank()) {
+                Text(stringResource(R.string.settings_jw_picker_link_read))
+            }
+        },
+        dismissButton = {
+            TextButton(onClick = onDismiss) { Text(stringResource(CoreR.string.common_cancel)) }
+        },
     )
 }
 

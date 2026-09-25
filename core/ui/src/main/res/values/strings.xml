@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  全应用通用的文案：按钮、通用状态、共享枚举的名称。
+  仅放各模块都会用到的词条；只属于某一界面的文案放在该模块自己的 strings.xml 里。
+  文案风格约定见 docs/ux-writing.md。
+-->
+<resources>
+
+    <!-- 通用操作 -->
+    <string name="common_confirm">确定</string>
+    <string name="common_cancel">取消</string>
+    <string name="common_save">保存</string>
+    <string name="common_delete">删除</string>
+    <string name="common_edit">编辑</string>
+    <string name="common_done">完成</string>
+    <string name="common_close">关闭</string>
+    <string name="common_back">返回</string>
+    <string name="common_undo">撤销</string>
+    <string name="common_select_all">全选</string>
+    <string name="common_deselect_all">取消全选</string>
+    <string name="common_create">新建</string>
+
+    <!-- 通用状态 -->
+    <string name="common_loading">正在加载…</string>
+    <string name="common_saving">正在保存…</string>
+    <string name="common_failed">操作失败</string>
+    <string name="common_got_it">知道了</string>
+    <string name="common_unknown_error">请稍后重试</string>
+
+    <!-- 配色模式（ThemeMode） -->
+    <string name="enum_theme_mode_dynamic">Material 取色</string>
+    <string name="enum_theme_mode_light">浅色</string>
+    <string name="enum_theme_mode_dark">深色</string>
+
+    <!-- 桌面小组件字号（WidgetFontSize） -->
+    <string name="enum_widget_font_size_small">小</string>
+    <string name="enum_widget_font_size_standard">标准</string>
+    <string name="enum_widget_font_size_large">大</string>
+    <string name="enum_widget_font_size_xlarge">特大</string>
+
+    <!-- 界面语言（AppLanguage） -->
+    <string name="enum_app_language_system">跟随系统</string>
+    <string name="enum_app_language_zh_hans">简体中文</string>
+    <string name="enum_app_language_en">English</string>
+
+    <!-- 课表共用文案（ScheduleText）。课表网格与桌面小组件的格子极窄，
+         这些紧凑标签不按常规在数字与中文之间留空格。 -->
+    <string-array name="fmt_day_of_week">
+        <item>周一</item>
+        <item>周二</item>
+        <item>周三</item>
+        <item>周四</item>
+        <item>周五</item>
+        <item>周六</item>
+        <item>周日</item>
+    </string-array>
+    <string-array name="fmt_day_of_week_short">
+        <item>一</item>
+        <item>二</item>
+        <item>三</item>
+        <item>四</item>
+        <item>五</item>
+        <item>六</item>
+        <item>日</item>
+    </string-array>
+    <string name="fmt_day_of_week_unknown">?</string>
+
+    <string name="fmt_week_single">第%1$d周</string>
+    <string name="fmt_week_range">第%1$d-%2$d周</string>
+    <string name="fmt_week_span_single">%1$d周</string>
+    <string name="fmt_week_span_range">%1$d-%2$d周</string>
+    <string name="fmt_week_type_odd">单周</string>
+    <string name="fmt_week_type_even">双周</string>
+    <!-- 紧凑处的单双周：接在周次后面，如「1-16周·单」 -->
+    <string name="fmt_week_span_with_type">%1$s·%2$s</string>
+    <string name="fmt_week_type_odd_short">单</string>
+    <string name="fmt_week_type_even_short">双</string>
+
+    <string name="fmt_period_single">%1$d节</string>
+    <string name="fmt_period_range">%1$d-%2$d节</string>
+
+    <string name="fmt_remaining_minutes">%1$d 分钟</string>
+    <string name="fmt_remaining_hours">%1$d 小时</string>
+    <string name="fmt_remaining_hours_minutes">%1$d 小时 %2$d 分钟</string>
+
+    <!-- 并列信息之间的分隔符，如「第1-16周 · 周二 · 3-4节 · A101」 -->
+    <string name="common_separator"> · </string>
+    <!-- 列举同类名词时的分隔符，如「甲、乙、丙」；英文一般是 ", " -->
+    <string name="common_list_separator">、</string>
+    <!-- 并列几句话之间的分隔符，如「表头顺序异常；节次号是推断的」；英文一般是 "; " -->
+    <string name="common_clause_separator">；</string>
+
+    <!-- 日期共用文案（DateText） -->
+    <string name="fmt_date">%1$d年%2$d月%3$d日</string>
+    <string name="fmt_month_day">%1$d月%2$d日</string>
+    <string name="fmt_exam_relative_today">今天</string>
+    <string name="fmt_exam_relative_tomorrow">明天</string>
+    <string name="fmt_exam_relative_yesterday">昨天</string>
+    <string name="fmt_exam_relative_past">已结束</string>
+    <string name="fmt_exam_relative_in_days">%1$d 天后</string>
+
+    <!-- 数据层错误（DataError）。任何模块捕获到 DataException 都用这组文案。 -->
+    <string name="error_data_course_not_found">所属课程已不存在，请重新选择。</string>
+    <string name="error_data_no_timetable">没有可用的课表，请先创建课表。</string>
+    <string name="error_data_timetable_name_empty">请填写课表名称。</string>
+
+    <!-- 通用：关闭（提前量选择等「不限」语义） -->
+    <string name="common_off">关闭</string>
+
+    <!-- 课表文件 / 二维码（:importer 的 ScheduleFileError） -->
+    <string name="error_import_future_version">文件来自更新版本的空课（文件 v%1$d 高于本机支持的 v%2$d），请先升级应用。</string>
+    <string name="error_import_invalid_file">不是有效的空课文件。</string>
+    <string name="error_import_qr_too_large">课表过大，无法生成二维码（%1$d B 超出 %2$d B 上限），请改用文件分享。</string>
+    <string name="error_import_qr_no_prefix">这不是空课的二维码（缺少协议头）。</string>
+    <string name="error_import_qr_no_term">找不到可分享的学期。</string>
+    <string name="error_import_qr_corrupt">二维码内容已损坏。</string>
+    <string name="error_import_qr_gunzip_failed">二维码数据无法解压。</string>
+    <string name="error_import_shiguang_bad_json">不是合法的 JSON 文件。</string>
+    <string name="error_import_shiguang_not_object">不是有效的拾光课程表导出文件（顶层不是对象）。</string>
+    <string name="error_import_shiguang_no_courses">不是有效的拾光课程表导出文件（缺少 courses）。</string>
+    <string name="error_import_shiguang_empty">拾光导出文件里没有任何课程。</string>
+    <string name="error_import_shiguang_no_rows">拾光导出文件里没有可用的课程数据。</string>
+    <string name="error_import_shiguang_no_placeable">拾光导出文件里没有可以放进课表的课程。</string>
+    <string name="error_import_shiguang_weeks_out_of_range">拾光导出文件里的课程周次都不在学期范围内。</string>
+    <string name="error_import_wakeup_no_schedule">不是有效的 WakeUp 课表文件（未找到课程时间安排数据）。</string>
+    <string name="error_import_wakeup_no_courses">WakeUp 文件缺少课程信息（courseName 列表）。</string>
+    <string name="error_import_wakeup_empty_courses">WakeUp 文件课程信息为空。</string>
+
+</resources>

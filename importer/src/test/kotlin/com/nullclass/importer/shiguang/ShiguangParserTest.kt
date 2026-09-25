@@ -1,6 +1,10 @@
 package com.nullclass.importer.shiguang
 
+import com.nullclass.importer.ImportNotice
+import com.nullclass.importer.ImportNoticeEntry
 import com.nullclass.importer.ImportProvenance
+import com.nullclass.importer.ScheduleFileError
+import com.nullclass.importer.ScheduleFileException
 import com.nullclass.importer.shiguang.ShiguangParser.ShiguangResult
 import java.time.LocalDate
 import kotlin.test.Test
@@ -21,6 +25,13 @@ class ShiguangParserTest {
             .readBytes().toString(Charsets.UTF_8)
 
     private fun parseSample(): ShiguangResult = ShiguangParser.parse(sample())
+
+    /** 提示里是否出现过某类问题（标识是稳定契约，断言不绑文案）。 */
+    private fun List<ImportNoticeEntry>.has(notice: ImportNotice): Boolean =
+        any { it.notice == notice }
+
+    private fun List<ImportNoticeEntry>.argsOf(notice: ImportNotice): List<Any> =
+        first { it.notice == notice }.args
 
     @Test
     fun `样本解析 - 学期信息`() {
@@ -129,7 +140,11 @@ class ShiguangParserTest {
         assertEquals(1, block.startPeriod) // 08:05 最接近第 1 节（08:00）
         assertEquals(1, block.endPeriod)
         assertEquals(5, block.dayOfWeek)
-        assertTrue(result.warnings.any { it.contains("晨跑打卡") && it.contains("第 1 节") })
+        assertTrue(result.warnings.has(ImportNotice.SHIGUANG_CUSTOM_TIME_NEAREST))
+        assertEquals(
+            listOf<Any>("晨跑打卡", "08:05", 1),
+            result.warnings.argsOf(ImportNotice.SHIGUANG_CUSTOM_TIME_NEAREST),
+        )
     }
 
     // ---- 周次切段（手册 §4.1）----
@@ -186,18 +201,20 @@ class ShiguangParserTest {
 
     @Test
     fun `非法输入 - 不是 JSON`() {
-        assertFailsWith<IllegalArgumentException> { ShiguangParser.parse("这不是 json") }
+        val e = assertFailsWith<ScheduleFileException> { ShiguangParser.parse("这不是 json") }
+        assertEquals(ScheduleFileError.SHIGUANG_BAD_JSON, e.error)
     }
 
     @Test
     fun `非法输入 - 缺少 courses`() {
-        val e = assertFailsWith<IllegalArgumentException> { ShiguangParser.parse("""{"timeSlots":[]}""") }
-        assertTrue(e.message!!.contains("courses"))
+        val e = assertFailsWith<ScheduleFileException> { ShiguangParser.parse("""{"timeSlots":[]}""") }
+        assertEquals(ScheduleFileError.SHIGUANG_NO_COURSES, e.error)
     }
 
     @Test
     fun `非法输入 - courses 为空`() {
-        assertFailsWith<IllegalArgumentException> { ShiguangParser.parse("""{"courses":[]}""") }
+        val e = assertFailsWith<ScheduleFileException> { ShiguangParser.parse("""{"courses":[]}""") }
+        assertEquals(ScheduleFileError.SHIGUANG_EMPTY_COURSES, e.error)
     }
 
     @Test
@@ -210,7 +227,8 @@ class ShiguangParserTest {
         """.trimIndent()
         val result = ShiguangParser.parse(raw)
         assertEquals(listOf("乙"), result.courses.map { it.name })
-        assertTrue(result.warnings.any { it.contains("甲") })
+        assertTrue(result.warnings.has(ImportNotice.SHIGUANG_ROW_BAD_DAY))
+        assertEquals(listOf<Any>("甲", "9"), result.warnings.argsOf(ImportNotice.SHIGUANG_ROW_BAD_DAY))
     }
 
     @Test
@@ -219,7 +237,7 @@ class ShiguangParserTest {
         val result = ShiguangParser.parse(raw)
         assertEquals(12, result.periodTimes.size)
         assertEquals(8 * 60, result.periodTimes.first().startMinuteOfDay)
-        assertTrue(result.warnings.any { it.contains("作息表") })
+        assertTrue(result.warnings.has(ImportNotice.SHIGUANG_NO_PERIOD_TABLE))
     }
 
     @Test
@@ -235,7 +253,7 @@ class ShiguangParserTest {
         val third = result.periodTimes.first { it.periodIndex == 3 }
         assertEquals(9 * 60 + 50, third.startMinuteOfDay)
         assertEquals(10 * 60 + 35, third.endMinuteOfDay)
-        assertTrue(result.warnings.any { it.contains("补齐") })
+        assertTrue(result.warnings.has(ImportNotice.SHIGUANG_PERIODS_EXTENDED))
     }
 
     @Test
@@ -282,7 +300,7 @@ class ShiguangParserTest {
         val raw = """{"courses":[{"name":"甲","day":1,"startSection":1,"endSection":1,"weeks":[1]}]}"""
         val result = ShiguangParser.parse(raw, today = LocalDate.of(2026, 9, 20)) // 周日
         assertEquals(LocalDate.of(2026, 9, 14).toEpochDay(), result.term.firstDayEpochDay)
-        assertTrue(result.warnings.any { it.contains("开学日期") })
+        assertTrue(result.warnings.has(ImportNotice.SHIGUANG_NO_START_DATE))
     }
 
     @Test
@@ -293,7 +311,7 @@ class ShiguangParserTest {
         """.trimIndent()
         val result = ShiguangParser.parse(raw)
         assertEquals(2, result.blocks.single().startPeriod)
-        assertTrue(result.warnings.any { it.contains("自定义") })
+        assertTrue(result.warnings.has(ImportNotice.SHIGUANG_CUSTOM_TIME_DROPPED))
     }
 
     @Test
@@ -303,8 +321,8 @@ class ShiguangParserTest {
                          "isCustomTime":true,"customStartTime":"05:00","customEndTime":"05:40"}],
              "timeSlots":[{"number":1,"startTime":"08:00","endTime":"08:45"}]}
         """.trimIndent()
-        val e = assertFailsWith<IllegalArgumentException> { ShiguangParser.parse(raw) }
-        assertTrue(e.message!!.contains("没有可以放进课表的课程"))
+        val e = assertFailsWith<ScheduleFileException> { ShiguangParser.parse(raw) }
+        assertEquals(ScheduleFileError.SHIGUANG_NO_PLACEABLE, e.error)
     }
 
     @Test
@@ -316,7 +334,11 @@ class ShiguangParserTest {
         val result = ShiguangParser.parse(raw)
         assertEquals(listOf("甲"), result.courses.map { it.name })
         assertTrue(result.periodTimes.size <= 60)
-        assertTrue(result.warnings.any { it.contains("炸弹") })
+        assertTrue(result.warnings.has(ImportNotice.SHIGUANG_COURSE_BEYOND_LAST_PERIOD))
+        assertEquals(
+            "炸弹",
+            result.warnings.argsOf(ImportNotice.SHIGUANG_COURSE_BEYOND_LAST_PERIOD).first(),
+        )
     }
 
     @Test
@@ -328,7 +350,7 @@ class ShiguangParserTest {
         val result = ShiguangParser.parse(raw)
         assertTrue(result.periodTimes.size <= 60, "不该按 number 造出上百万条节次")
         assertTrue(result.blocks.all { it.endPeriod <= 60 })
-        assertTrue(result.warnings.any { it.contains("上限") })
+        assertTrue(result.warnings.has(ImportNotice.SHIGUANG_PERIOD_OUT_OF_RANGE))
     }
 
     @Test
@@ -341,13 +363,18 @@ class ShiguangParserTest {
         val result = ShiguangParser.parse(raw)
         assertEquals(listOf("甲"), result.courses.map { it.name })
         assertTrue(result.blocks.none { it.dayOfWeek == 2 })
-        assertTrue(result.warnings.any { it.contains("越界") && it.contains("跳过") })
+        assertTrue(result.warnings.has(ImportNotice.SHIGUANG_WEEKS_ALL_OUT_OF_RANGE))
+        assertEquals(
+            "越界",
+            result.warnings.argsOf(ImportNotice.SHIGUANG_WEEKS_ALL_OUT_OF_RANGE).first(),
+        )
     }
 
     @Test
     fun `周次越界 - 全部课程都越界时报错而不是产出空壳课表`() {
         val raw = """{"courses":[{"name":"越界","day":1,"startSection":1,"endSection":1,"weeks":[35]}]}"""
-        assertFailsWith<IllegalArgumentException> { ShiguangParser.parse(raw) }
+        val e = assertFailsWith<ScheduleFileException> { ShiguangParser.parse(raw) }
+        assertEquals(ScheduleFileError.SHIGUANG_WEEKS_OUT_OF_RANGE, e.error)
     }
 
     @Test

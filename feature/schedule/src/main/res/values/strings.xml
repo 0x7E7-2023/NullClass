@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- :feature:schedule 的界面文案。资源名统一以 schedule_ 开头，风格见 docs/ux-writing.md。 -->
+<resources>
+
+    <!-- 周视图 -->
+    <string name="schedule_title_default">空课</string>
+    <string name="schedule_week_number">第 %1$d 周</string>
+    <string name="schedule_week_number_current">第 %1$d 周 · 本周</string>
+    <string name="schedule_subtitle_with_timetable">%1$s · %2$s</string>
+    <string name="schedule_back_to_current_week">回到本周</string>
+    <string name="schedule_pick_week">选择周次</string>
+    <string name="schedule_display_settings">显示设置</string>
+    <string name="schedule_add_course">添加课程</string>
+    <string name="schedule_no_term_title">尚未创建学期</string>
+    <string name="schedule_no_term_desc">创建学期后即可开始排课。</string>
+    <string name="schedule_create_term">创建学期</string>
+    <string name="schedule_other_week">非本周</string>
+
+    <!-- 显示设置 -->
+    <string name="schedule_show_now_line">显示当前时间线</string>
+    <string name="schedule_show_weekend">显示周末</string>
+    <string name="schedule_show_grid_lines">显示网格线</string>
+    <string name="schedule_show_time_in_cards">在课块上标注起止时间</string>
+    <string name="schedule_show_other_week">显示非本周课程</string>
+
+    <!-- 周视图表头：调课标记 -->
+    <string name="schedule_header_swap_weekday">调·%1$s</string>
+    <string name="schedule_header_swap_date">调·%1$d/%2$d</string>
+
+    <!-- 今日页 -->
+    <string name="schedule_today_date">%1$s · %2$s</string>
+    <string name="schedule_today_out_of_term">今天不在学期内</string>
+    <string name="schedule_today_next_up">下一节：%1$s · %2$s 开始</string>
+    <string name="schedule_today_in_class">上课中</string>
+    <string name="schedule_today_remaining">还剩 %1$s</string>
+    <string name="schedule_today_ongoing">进行中</string>
+    <string name="schedule_today_end_at">%1$s 下课</string>
+    <string name="schedule_today_empty_title">今天没有课程安排</string>
+    <string name="schedule_today_empty_desc">可在课表中查看其他日期的安排。</string>
+    <string name="schedule_today_out_of_term_desc">学期开始后将在此显示当天的课程。</string>
+    <string name="schedule_today_swap_title">今日调课 · 按 %1$s（%2$s）的课表上课</string>
+    <string name="schedule_today_swap_desc">上课时间仍按今天的作息，课前提醒已同步调整。</string>
+    <string name="schedule_today_skip_title">今天不上课 · %1$s</string>
+    <string name="schedule_today_skip_manual">手动跳过</string>
+    <string name="schedule_today_skip_desc">课前提醒已跳过，课表内容仍照常显示。如需改上其他日期的课，请使用「调课」。</string>
+
+    <!-- 今日页：时段分组 -->
+    <string name="schedule_session_morning">上午</string>
+    <string name="schedule_session_afternoon">下午</string>
+    <string name="schedule_session_evening">晚上</string>
+    <string name="schedule_session_other">其他</string>
+
+    <!-- 调课 -->
+    <string name="schedule_day_swap_title">调课 · %1$s %2$s</string>
+    <string name="schedule_day_swap_desc_none">这一天按课表原样上课。调休时可将其设为上另一天的课，今日页、周视图、桌面小组件与课前提醒会一并调整，上课时间仍按这一天的作息。</string>
+    <string name="schedule_day_swap_desc_current">当前设置：这一天上 %1$s（%2$s）的课。</string>
+    <string name="schedule_day_swap_pick_in_week">上本周哪一天的课</string>
+    <string name="schedule_day_swap_self">%1$s（本身）</string>
+    <string name="schedule_day_swap_other_date">选择其他日期…</string>
+    <string name="schedule_day_swap_reset">恢复原课表</string>
+
+    <!-- 课程详情 -->
+    <string name="schedule_course_block_count">共 %1$d 项安排</string>
+    <string name="schedule_course_exams">考试安排</string>
+    <string name="schedule_course_add_exam">添加考试</string>
+    <string name="schedule_course_no_exam">尚未设置考试</string>
+    <string name="schedule_course_seat">座位 %1$s</string>
+    <string name="schedule_course_delete">删除课程</string>
+    <string name="schedule_course_delete_confirm">将删除「%1$s」。该操作会同步到其他设备。</string>
+
+    <!-- 日程安排 -->
+    <string name="schedule_event_title">日程安排</string>
+    <string name="schedule_event_today">今天</string>
+    <string name="schedule_event_add">添加日程</string>
+    <string name="schedule_event_edit">编辑日程</string>
+    <string name="schedule_event_delete">删除日程</string>
+    <string name="schedule_event_delete_confirm">将删除「%1$s」。该操作无法撤销。</string>
+    <string name="schedule_event_day_header">%1$s %2$s</string>
+    <string name="schedule_event_day_empty">这一天没有日程。点击右下角的按钮添加。</string>
+    <string name="schedule_event_upcoming">近期日程</string>
+    <string name="schedule_event_month">%1$d年%2$d月</string>
+    <string name="schedule_event_prev_month">上个月</string>
+    <string name="schedule_event_next_month">下个月</string>
+    <string name="schedule_event_field_title">标题（必填）</string>
+    <string name="schedule_event_all_day">全天</string>
+    <string name="schedule_event_start_time">开始时间</string>
+    <string name="schedule_event_start_time_value">开始时间 %1$s</string>
+    <string name="schedule_event_remind">提醒</string>
+    <string name="schedule_event_remind_all_day">提醒（当天 8:00）</string>
+    <string name="schedule_event_note">备注（可选）</string>
+    <string name="schedule_event_summary">%1$s · %2$s</string>
+    <string name="schedule_event_summary_with_date">%1$s %2$s · %3$s · %4$s</string>
+
+    <!-- 日程提醒提前量 -->
+    <string name="schedule_event_lead_none">不提醒</string>
+    <string name="schedule_event_lead_all_day">当天 8:00</string>
+    <string name="schedule_event_lead_on_time">准时</string>
+    <string name="schedule_event_lead_days">提前 %1$d 天</string>
+    <string name="schedule_event_lead_hours">提前 %1$d 小时</string>
+    <string name="schedule_event_lead_minutes">提前 %1$d 分钟</string>
+
+    <!-- 日程：错误 -->
+    <string name="schedule_event_save_failed">保存失败，请重试。</string>
+    <string name="schedule_event_save_failed_detail">保存失败：%1$s</string>
+    <string name="schedule_event_delete_failed">删除失败，请重试。</string>
+    <string name="schedule_event_delete_failed_detail">删除失败：%1$s</string>
+
+</resources>

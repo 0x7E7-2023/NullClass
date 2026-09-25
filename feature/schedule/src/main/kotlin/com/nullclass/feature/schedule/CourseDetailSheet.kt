@@ -31,14 +31,17 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.nullclass.core.model.CourseWithBlocks
 import com.nullclass.core.model.ExamFormat
 import com.nullclass.core.model.ExamWithCourse
 import com.nullclass.core.model.PlacedBlock
-import com.nullclass.core.model.ScheduleFormat
+import com.nullclass.core.ui.i18n.blockSummaryLabel
+import com.nullclass.core.ui.i18n.dateLabel
 import com.nullclass.core.ui.theme.courseColor
+import com.nullclass.core.ui.R as CoreR
 import kotlinx.coroutines.launch
 
 /**
@@ -105,7 +108,7 @@ internal fun CourseDetailSheet(
                     Text(it, style = MaterialTheme.typography.bodyMedium, color = MaterialTheme.colorScheme.onSurfaceVariant)
                 }
                 Text(
-                    "共 ${courseWithBlocks.blocks.size} 个安排",
+                    stringResource(R.string.schedule_course_block_count, courseWithBlocks.blocks.size),
                     style = MaterialTheme.typography.bodyMedium,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                 )
@@ -124,7 +127,7 @@ internal fun CourseDetailSheet(
             courseWithBlocks.blocks.forEach { block ->
                 val isThis = block.id == placed.block.id
                 Text(
-                    text = ScheduleFormat.blockSummary(block),
+                    text = blockSummaryLabel(block),
                     style = MaterialTheme.typography.bodyMedium,
                     color = if (isThis) color.content else MaterialTheme.colorScheme.onSurface,
                     fontWeight = if (isThis) FontWeight.SemiBold else FontWeight.Normal,
@@ -139,14 +142,21 @@ internal fun CourseDetailSheet(
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.SpaceBetween,
             ) {
-                Text("考试安排", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold)
+                Text(
+                    stringResource(R.string.schedule_course_exams),
+                    style = MaterialTheme.typography.titleMedium,
+                    fontWeight = FontWeight.Bold,
+                )
                 IconButton(onClick = { closeThen { onAddExam(course.id) } }) {
-                    Icon(Icons.Default.Add, contentDescription = "添加考试")
+                    Icon(
+                        Icons.Default.Add,
+                        contentDescription = stringResource(R.string.schedule_course_add_exam),
+                    )
                 }
             }
             if (exams.isEmpty()) {
                 Text(
-                    "尚未设置考试",
+                    stringResource(R.string.schedule_course_no_exam),
                     style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                     modifier = Modifier.padding(top = 6.dp),
@@ -163,13 +173,13 @@ internal fun CourseDetailSheet(
                 horizontalArrangement = Arrangement.spacedBy(12.dp),
             ) {
                 FilledTonalButton(onClick = { closeThen(onEdit) }, modifier = Modifier.weight(1f)) {
-                    Text("编辑")
+                    Text(stringResource(CoreR.string.common_edit))
                 }
                 TextButton(
                     onClick = { confirmDelete.value = true },
                     modifier = Modifier.weight(1f),
                 ) {
-                    Text("删除", color = MaterialTheme.colorScheme.error)
+                    Text(stringResource(CoreR.string.common_delete), color = MaterialTheme.colorScheme.error)
                 }
             }
         }
@@ -178,16 +188,27 @@ internal fun CourseDetailSheet(
     if (confirmDelete.value) {
         AlertDialog(
             onDismissRequest = { confirmDelete.value = false },
-            title = { Text("删除课程") },
-            text = { Text("确定删除「${courseWithBlocks?.course?.name}」吗？该操作会同步到其他设备。") },
+            title = { Text(stringResource(R.string.schedule_course_delete)) },
+            text = {
+                Text(
+                    stringResource(
+                        R.string.schedule_course_delete_confirm,
+                        courseWithBlocks?.course?.name.orEmpty(),
+                    ),
+                )
+            },
             confirmButton = {
                 TextButton(onClick = {
                     confirmDelete.value = false
                     closeThen(onDelete)
-                }) { Text("删除", color = MaterialTheme.colorScheme.error) }
+                }) {
+                    Text(stringResource(CoreR.string.common_delete), color = MaterialTheme.colorScheme.error)
+                }
             },
             dismissButton = {
-                TextButton(onClick = { confirmDelete.value = false }) { Text("取消") }
+                TextButton(onClick = { confirmDelete.value = false }) {
+                    Text(stringResource(CoreR.string.common_cancel))
+                }
             },
         )
     }
@@ -210,7 +231,7 @@ private fun ExamSummaryRow(item: ExamWithCourse, onClick: () -> Unit) {
             ) {
                 Text(item.exam.title, style = MaterialTheme.typography.bodyMedium, fontWeight = FontWeight.SemiBold)
                 Text(
-                    ExamFormat.dateLabel(item.exam.dateEpochDay),
+                    dateLabel(item.exam.dateEpochDay),
                     style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                 )
@@ -218,10 +239,11 @@ private fun ExamSummaryRow(item: ExamWithCourse, onClick: () -> Unit) {
             buildList {
                 ExamFormat.timeRange(item.exam)?.let { add(it) }
                 item.exam.location?.takeIf { it.isNotBlank() }?.let { add(it) }
-                item.exam.seat?.takeIf { it.isNotBlank() }?.let { add("座位 $it") }
+                item.exam.seat?.takeIf { it.isNotBlank() }
+                    ?.let { add(stringResource(R.string.schedule_course_seat, it)) }
             }.takeIf { it.isNotEmpty() }?.let { details ->
                 Text(
-                    details.joinToString(" · "),
+                    details.joinToString(stringResource(CoreR.string.common_separator)),
                     style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                     modifier = Modifier.padding(top = 3.dp),

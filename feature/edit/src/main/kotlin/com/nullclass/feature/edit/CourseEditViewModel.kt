@@ -1,5 +1,6 @@
 package com.nullclass.feature.edit
 
+import android.content.Context
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -9,9 +10,12 @@ import com.nullclass.core.model.Course
 import com.nullclass.core.model.CourseConflict
 import com.nullclass.core.model.ScheduleBlock
 import com.nullclass.core.model.ScheduleConflicts
-import com.nullclass.core.model.ScheduleFormat
 import com.nullclass.core.model.WeekType
+import com.nullclass.core.ui.i18n.ScheduleText
+import com.nullclass.core.ui.i18n.UiText
+import com.nullclass.core.ui.i18n.toUiText
 import dagger.hilt.android.lifecycle.HiltViewModel
+import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -45,13 +49,14 @@ data class CourseEditUiState(
     val colorIndex: Int = 0,
     val blocks: List<EditableBlock> = emptyList(),
     /** 保存失败的就地错误提示。 */
-    val error: String? = null,
+    val error: UiText? = null,
     /** 保存进行中（或已保存成功等待离开）：期间按钮禁用，防连点多次 popBackStack。 */
     val saving: Boolean = false,
 )
 
 @HiltViewModel
 class CourseEditViewModel @Inject constructor(
+    @ApplicationContext private val context: Context,
     savedStateHandle: SavedStateHandle,
     private val termRepository: TermRepository,
     private val courseRepository: CourseRepository,
@@ -164,15 +169,15 @@ class CourseEditViewModel @Inject constructor(
         if (s.saving) return
         when {
             s.name.isBlank() -> {
-                _state.update { it.copy(error = "课程名不能为空") }
+                _state.update { it.copy(error = UiText.Res(R.string.edit_course_error_no_name)) }
                 return
             }
             s.blocks.isEmpty() -> {
-                _state.update { it.copy(error = "至少添加一条时间安排") }
+                _state.update { it.copy(error = UiText.Res(R.string.edit_course_error_no_block)) }
                 return
             }
             s.blocks.firstOverlappingPair() != null -> {
-                _state.update { it.copy(error = "有两条时间安排在同一时段重叠，请调整或删除多余的一条") }
+                _state.update { it.copy(error = UiText.Res(R.string.edit_course_error_overlap)) }
                 return
             }
         }
@@ -207,7 +212,9 @@ class CourseEditViewModel @Inject constructor(
                     ignoreCourseId = courseId,
                 )
                 if (conflicts.isNotEmpty()) {
-                    _state.update { it.copy(saving = false, error = conflicts.toConflictMessage()) }
+                    _state.update {
+                        it.copy(saving = false, error = conflicts.toConflictMessage(context))
+                    }
                     return@launch
                 }
                 courseRepository.upsertCourseWithBlocks(course, blocks)
@@ -216,23 +223,42 @@ class CourseEditViewModel @Inject constructor(
                 throw e
             } catch (e: Exception) {
                 // 保存失败要允许重试（含查重读库失败）
-                _state.update { it.copy(saving = false, error = e.message ?: "保存失败，请重试") }
+                _state.update {
+                    it.copy(saving = false, error = e.toUiText(R.string.edit_course_error_save_failed))
+                }
             }
         }
     }
 }
 
-/** 冲突提示文案：一行一处，最多列 [MAX_CONFLICT_LINES] 处，避免弹窗过长。 */
-private fun List<CourseConflict>.toConflictMessage(): String {
-    val lines = map { "与《${it.course.name}》冲突：${ScheduleFormat.blockSummary(it.existingBlock)}" }
-        .distinct()
+/**
+ * 冲突提示文案：一行一处，最多列 [MAX_CONFLICT_LINES] 处，避免弹窗过长。
+ *
+ * 这段是即时取文的（[UiText.Dynamic]）：它要把逐条冲突拼成多行，没法用单条资源表达。
+ * 弹窗是一次性的，用户切语言时它早已关闭，取文时机按当前语言即可。
+ */
+private fun List<CourseConflict>.toConflictMessage(context: Context): UiText {
+    val lines = map {
+        context.getString(
+            R.string.edit_course_conflict_line,
+            it.course.name,
+            ScheduleText.blockSummary(context, it.existingBlock),
+        )
+    }.distinct()
     val shown = lines.take(MAX_CONFLICT_LINES)
-    return buildString {
-        append("时间冲突，请调整后再保存：\n")
-        append(shown.joinToString("\n"))
-        if (lines.size > shown.size) append("\n…另有 ${lines.size - shown.size} 处冲突")
+    val text = buildString {
+        append(context.getString(R.string.edit_course_conflict_header))
+        append(LINE_BREAK)
+        append(shown.joinToString(LINE_BREAK))
+        if (lines.size > shown.size) {
+            append(LINE_BREAK)
+            append(context.getString(R.string.edit_course_conflict_more, lines.size - shown.size))
+        }
     }
+    return UiText.Dynamic(text)
 }
+
+private const val LINE_BREAK = "\n"
 
 private const val MAX_CONFLICT_LINES = 3
 

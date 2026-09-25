@@ -21,6 +21,13 @@ android {
     buildFeatures {
         compose = true
     }
+
+    // ViewModel 用 Context 取文案（i18n），单测经 Robolectric 拿真实资源
+    testOptions {
+        unitTests.isIncludeAndroidResources = true
+        // Robolectric 在 SDK 36 沙箱里要反射 FileDescriptor 内部，新版 JDK 默认不导出
+        unitTests.all { it.jvmArgs("--add-exports=java.base/jdk.internal.access=ALL-UNNAMED") }
+    }
 }
 
 dependencies {
@@ -42,4 +49,5 @@ dependencies {
     testImplementation(libs.junit)
     testImplementation(libs.kotlin.test)
     testImplementation(libs.coroutines.test)
+    testImplementation(libs.robolectric)
 }

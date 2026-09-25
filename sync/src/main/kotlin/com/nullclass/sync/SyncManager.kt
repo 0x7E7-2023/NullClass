@@ -15,8 +15,9 @@ sealed interface SyncResult {
         val rev: Long,
     ) : SyncResult
 
-    data class NotConfigured(val message: String = "未配置 WebDAV") : SyncResult
-    data class Error(val message: String) : SyncResult
+    data object NotConfigured : SyncResult
+
+    data class Error(val failure: SyncFailure) : SyncResult
 }
 
 /** 导入合并结果（confirmMerge / UI 消息用）。 */
@@ -42,8 +43,8 @@ class SyncManager @Inject constructor(
 
     suspend fun sync(): SyncResult = mutex.withLock {
         val config = settings.getConfig()
-            ?: return SyncResult.NotConfigured()
-        config.validate()?.let { return SyncResult.Error(it) }
+            ?: return SyncResult.NotConfigured
+        config.validate()?.let { return SyncResult.Error(SyncFailure(it)) }
 
         val client = WebDavClient(config)
         return try {
@@ -73,7 +74,14 @@ class SyncManager @Inject constructor(
             // 协程取消必须重抛，不能伪装成同步失败（B4）
             throw e
         } catch (e: Exception) {
-            SyncResult.Error(e.message ?: e.javaClass.simpleName)
+            // 带原因码的异常原样传出；其余归入 UNEXPECTED，原始信息留在 detail 里
+            if (e is SyncException) {
+                SyncResult.Error(e.failure)
+            } else {
+                SyncResult.Error(
+                    SyncFailure(SyncError.UNEXPECTED, e.message ?: e.javaClass.simpleName),
+                )
+            }
         }
     }
 
@@ -104,8 +112,9 @@ class SyncManager @Inject constructor(
     }
 
     suspend fun testConnection(): WebDavResult {
-        val config = settings.getConfig() ?: return WebDavResult.Error("未配置 WebDAV")
-        config.validate()?.let { return WebDavResult.Error(it) }
+        val config = settings.getConfig()
+            ?: return WebDavResult.Error(SyncFailure(SyncError.NOT_CONFIGURED))
+        config.validate()?.let { return WebDavResult.Error(SyncFailure(it)) }
         return WebDavClient(config).testConnection()
     }
 }

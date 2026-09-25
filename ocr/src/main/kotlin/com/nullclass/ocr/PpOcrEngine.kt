@@ -34,7 +34,10 @@ class PpOcrEngine(private val context: Context) : OcrEngine {
         }
 
     override suspend fun recognize(bitmap: Bitmap): OcrPage = withContext(Dispatchers.Default) {
-        val engine = ensurePipeline() ?: throw OcrUnavailableException(failure ?: "OCR 引擎不可用")
+        val engine = ensurePipeline()
+            ?: throw OcrUnavailableException(
+                failure ?: context.getString(R.string.ocr_engine_unavailable),
+            )
         engine.recognize(OcrImage.fromBitmap(bitmap))
     }
 
@@ -53,7 +56,10 @@ class PpOcrEngine(private val context: Context) : OcrEngine {
                 val rec = environment.createSession(readAsset(REC_MODEL), options)
                 PpOcrPipeline(environment, det, rec, readDictionary()).also { pipeline = it }
             } catch (e: Throwable) {
-                failure = "OCR 模型加载失败：${e.message ?: e.javaClass.simpleName}"
+                failure = context.getString(
+                    R.string.ocr_model_load_failed,
+                    e.message ?: e.javaClass.simpleName,
+                )
                 null
             }
         }

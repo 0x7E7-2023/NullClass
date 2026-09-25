@@ -23,8 +23,11 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import com.nullclass.core.ui.R as CoreR
+import com.nullclass.feature.settings.R
 import com.nullclass.importer.jw.JwAskRequest
 
 /**
@@ -80,10 +83,14 @@ private fun SelectDialog(
             }
         },
         confirmButton = {
-            TextButton(onClick = { onResult(JwAskResult.Index(selected)) }) { Text("确定") }
+            TextButton(onClick = { onResult(JwAskResult.Index(selected)) }) {
+                Text(stringResource(CoreR.string.common_confirm))
+            }
         },
         dismissButton = {
-            TextButton(onClick = { onResult(JwAskResult.Cancelled) }) { Text("取消") }
+            TextButton(onClick = { onResult(JwAskResult.Cancelled) }) {
+                Text(stringResource(CoreR.string.common_cancel))
+            }
         },
     )
 }
@@ -100,12 +107,13 @@ private fun ConfirmDialog(
         text = { AskMessage(request.message) },
         confirmButton = {
             TextButton(onClick = { onResult(JwAskResult.Flag(true)) }) {
-                Text(request.confirmText ?: "确定")
+                // 适配器可以自定义按钮文案；没给就用应用自己的「确定」
+                Text(request.confirmText ?: stringResource(CoreR.string.common_confirm))
             }
         },
         dismissButton = {
             TextButton(onClick = { onResult(JwAskResult.Flag(false)) }) {
-                Text(request.cancelText ?: "取消")
+                Text(request.cancelText ?: stringResource(CoreR.string.common_cancel))
             }
         },
     )
@@ -134,7 +142,7 @@ private fun PromptDialog(
                     modifier = Modifier.fillMaxWidth(),
                 )
                 Text(
-                    text = "空课不会向你索要教务密码等账号信息。",
+                    text = stringResource(R.string.settings_jw_ask_safety),
                     style = MaterialTheme.typography.labelSmall,
                     color = MaterialTheme.colorScheme.error,
                     modifier = Modifier.padding(top = 8.dp),
@@ -142,10 +150,14 @@ private fun PromptDialog(
             }
         },
         confirmButton = {
-            TextButton(onClick = { onResult(JwAskResult.Input(text)) }) { Text("确定") }
+            TextButton(onClick = { onResult(JwAskResult.Input(text)) }) {
+                Text(stringResource(CoreR.string.common_confirm))
+            }
         },
         dismissButton = {
-            TextButton(onClick = { onResult(JwAskResult.Cancelled) }) { Text("取消") }
+            TextButton(onClick = { onResult(JwAskResult.Cancelled) }) {
+                Text(stringResource(CoreR.string.common_cancel))
+            }
         },
     )
 }
@@ -155,7 +167,7 @@ private fun PromptDialog(
 private fun AskTitle(adapterLabel: String, title: String) {
     Column {
         Text(
-            text = "适配器「$adapterLabel」在向你提问",
+            text = stringResource(R.string.settings_jw_ask_title, adapterLabel),
             style = MaterialTheme.typography.labelMedium,
             color = MaterialTheme.colorScheme.onSecondaryContainer,
             modifier = Modifier

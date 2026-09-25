@@ -5,6 +5,7 @@ import androidx.hilt.work.HiltWorker
 import androidx.work.CoroutineWorker
 import androidx.work.WorkerParameters
 import com.nullclass.core.data.prefs.UserPreferencesRepository
+import com.nullclass.core.ui.R as CoreR
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedInject
 
@@ -26,10 +27,11 @@ class ClassStartWorker @AssistedInject constructor(
         val startTimeLabel = inputData.getString(KEY_START_TIME_LABEL).orEmpty()
         val tag = notificationTag()
 
-        val text = listOf(periodLabel, location).filter { it.isNotBlank() }.joinToString(" · ")
+        val separator = applicationContext.getString(CoreR.string.common_separator)
+        val text = listOf(periodLabel, location).filter { it.isNotBlank() }.joinToString(separator)
         // 未授权 POST_NOTIFICATIONS 时不落键：静默成功但不算「已发送」，
         // 之后授权了还能由迟发补发补上「已开始」
-        if (ReminderNotifier.post(applicationContext, tag, "$startTimeLabel · $name", text)) {
+        if (ReminderNotifier.post(applicationContext, tag, "$startTimeLabel$separator$name", text)) {
             userPrefs.markRemindersSent(listOf(tag))
         }
         return Result.success()

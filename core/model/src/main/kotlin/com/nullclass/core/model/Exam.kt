@@ -9,7 +9,13 @@ package com.nullclass.core.model
 data class Exam(
     val id: String = "",
     val courseId: String = "",
-    /** 例：期中考试、期末考试、补考；保留为文本以支持学校自定义名称。 */
+    /**
+     * 例：期中考试、期末考试、补考；保留为文本以支持学校自定义名称。
+     *
+     * 默认值是**数据内容**而不是界面文案：它会存进数据库并同步到其他设备。
+     * 新建考试时由界面层按当前语言填入（见 `exam_edit_default_title`），
+     * 这里的默认值只是反序列化等场景下的兜底。
+     */
     val title: String = "期末考试",
     /** 考试日期（LocalDate.toEpochDay()）。 */
     val dateEpochDay: Long = 0L,

@@ -1,5 +1,6 @@
 package com.nullclass.feature.settings.jw
 
+import com.nullclass.feature.settings.R
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -18,9 +19,11 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import com.nullclass.core.ui.R as CoreR
 import com.nullclass.importer.jw.JwAdapter
 import com.nullclass.importer.jw.JwAdapterSource
 import com.nullclass.importer.jw.JwLibrarySnapshot
@@ -43,7 +46,15 @@ fun InstallConfirmDialog(
 
     AlertDialog(
         onDismissRequest = onDismiss,
-        title = { Text(if (adapters.size > 1) "安装 ${adapters.size} 个适配器？" else "添加这个适配器？") },
+        title = {
+            Text(
+                if (adapters.size > 1) {
+                    stringResource(R.string.settings_jw_install_title_many, adapters.size)
+                } else {
+                    stringResource(R.string.settings_jw_install_title_one)
+                },
+            )
+        },
         text = {
             Column(
                 Modifier
@@ -53,31 +64,49 @@ fun InstallConfirmDialog(
             ) {
                 adapters.forEach { adapter ->
                     Column(verticalArrangement = Arrangement.spacedBy(2.dp)) {
-                        Text("${adapter.displayName}（${adapter.key} v${adapter.manifest.version}）", fontWeight = FontWeight.Bold)
                         Text(
-                            "登录页：${adapter.manifest.loginUrl}",
+                            stringResource(
+                                R.string.settings_jw_adapter_line,
+                                adapter.displayName,
+                                adapter.key,
+                                adapter.manifest.version,
+                            ),
+                            fontWeight = FontWeight.Bold,
+                        )
+                        Text(
+                            stringResource(R.string.settings_jw_adapter_login_url, adapter.manifest.loginUrl),
                             style = MaterialTheme.typography.bodySmall,
                             color = MaterialTheme.colorScheme.onSurfaceVariant,
                         )
                         if (adapter.manifest.allowHosts.isNotEmpty()) {
                             Text(
-                                "会请求的域名：${adapter.manifest.allowHosts.joinToString("、")}",
+                                stringResource(
+                                    R.string.settings_jw_adapter_hosts,
+                                    adapter.manifest.allowHosts.joinToString(stringResource(CoreR.string.common_list_separator)),
+                                ),
                                 style = MaterialTheme.typography.bodySmall,
                                 color = MaterialTheme.colorScheme.onSurfaceVariant,
                             )
                         }
-                        TextButton(onClick = { viewingScripts = adapter }) { Text("查看脚本全文") }
+                        TextButton(onClick = { viewingScripts = adapter }) {
+                            Text(stringResource(R.string.settings_jw_adapter_view_script))
+                        }
                     }
                 }
                 sourceUrl?.let {
-                    Text("来源：$it", style = MaterialTheme.typography.bodySmall)
+                    Text(
+                        stringResource(R.string.settings_jw_adapter_source_url, it),
+                        style = MaterialTheme.typography.bodySmall,
+                    )
                 }
                 fileName?.let {
-                    Text("来源文件：$it", style = MaterialTheme.typography.bodySmall)
+                    Text(
+                        stringResource(R.string.settings_jw_adapter_source_file, it),
+                        style = MaterialTheme.typography.bodySmall,
+                    )
                 }
                 Text(
-                    "⚠ 第三方适配器是别人写的代码，提取时会读取你**已登录**的教务页面内容" +
-                        "（空课不对它做代码审计）。请确认来源可信，或先查看脚本。",
+                    stringResource(R.string.settings_jw_adapter_untrusted),
                     style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.error,
                     fontWeight = FontWeight.Bold,
@@ -85,9 +114,13 @@ fun InstallConfirmDialog(
             }
         },
         confirmButton = {
-            TextButton(onClick = onConfirm, enabled = !busy) { Text("确认添加") }
+            TextButton(onClick = onConfirm, enabled = !busy) {
+                Text(stringResource(R.string.settings_jw_install_confirm))
+            }
         },
-        dismissButton = { TextButton(onClick = onDismiss) { Text("取消") } },
+        dismissButton = {
+            TextButton(onClick = onDismiss) { Text(stringResource(CoreR.string.common_cancel)) }
+        },
     )
 
     viewingScripts?.let { adapter ->
@@ -112,7 +145,7 @@ fun LibraryDialog(
 
     AlertDialog(
         onDismissRequest = onDismiss,
-        title = { Text(snapshot.index.name ?: "适配器库") },
+        title = { Text(snapshot.index.name ?: stringResource(R.string.settings_jw_library_dialog_title)) },
         text = {
             Column(
                 Modifier
@@ -126,12 +159,12 @@ fun LibraryDialog(
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                 )
                 if (snapshot.index.adapters.isEmpty()) {
-                    Text("这个库里还没有适配器。")
+                    Text(stringResource(R.string.settings_jw_library_empty))
                 } else {
                     AdapterSearchField(query = query, onQueryChange = { query = it })
                     if (entries.isEmpty()) {
                         Text(
-                            "这个库里没有匹配「${query.trimQuery()}」的适配器。",
+                            stringResource(R.string.settings_jw_library_no_match, query.trimQuery()),
                             style = MaterialTheme.typography.bodySmall,
                             color = MaterialTheme.colorScheme.onSurfaceVariant,
                         )
@@ -152,13 +185,15 @@ fun LibraryDialog(
                     }
                 }
                 Text(
-                    "库里的适配器同样由第三方维护，空课不做审计。",
+                    stringResource(R.string.settings_jw_library_untrusted),
                     style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                 )
             }
         },
-        confirmButton = { TextButton(onClick = onDismiss) { Text("关闭") } },
+        confirmButton = {
+            TextButton(onClick = onDismiss) { Text(stringResource(CoreR.string.common_close)) }
+        },
     )
 }
 
@@ -181,26 +216,59 @@ fun AdapterDetailsDialog(
                     .verticalScroll(rememberScrollState()),
                 verticalArrangement = Arrangement.spacedBy(6.dp),
             ) {
-                Text("key：${adapter.key}")
-                Text("版本：v${adapter.manifest.version}")
-                Text("来源：${if (adapter.source == JwAdapterSource.BUILTIN) "官方（随应用发布或官方更新）" else "用户添加"}")
-                adapter.manifest.author?.let { Text("作者：$it") }
-                adapter.manifest.homepage?.let { Text("主页：$it") }
-                Text("登录页：${adapter.manifest.loginUrl}")
+                Text(stringResource(R.string.settings_jw_adapter_key, adapter.key))
+                Text(stringResource(R.string.settings_jw_adapter_version, adapter.manifest.version))
+                Text(
+                    stringResource(
+                        R.string.settings_jw_adapter_source,
+                        stringResource(
+                            if (adapter.source == JwAdapterSource.BUILTIN) {
+                                R.string.settings_jw_adapter_source_builtin
+                            } else {
+                                R.string.settings_jw_adapter_source_user
+                            },
+                        ),
+                    ),
+                )
+                adapter.manifest.author?.let {
+                    Text(stringResource(R.string.settings_jw_adapter_author, it))
+                }
+                adapter.manifest.homepage?.let {
+                    Text(stringResource(R.string.settings_jw_adapter_homepage, it))
+                }
+                Text(stringResource(R.string.settings_jw_adapter_login_url, adapter.manifest.loginUrl))
                 if (adapter.manifest.allowHosts.isNotEmpty()) {
-                    Text("会请求的域名：${adapter.manifest.allowHosts.joinToString("、")}")
+                    Text(
+                        stringResource(
+                            R.string.settings_jw_adapter_hosts,
+                            adapter.manifest.allowHosts.joinToString(stringResource(CoreR.string.common_list_separator)),
+                        ),
+                    )
                 }
                 adapter.installInfo?.let { info ->
-                    info.sourceUrl?.let { Text("安装来源：$it") }
-                    info.sha256?.let { Text("内容校验：${it.take(16)}…") }
+                    info.sourceUrl?.let {
+                        Text(stringResource(R.string.settings_jw_adapter_installed_from, it))
+                    }
+                    info.sha256?.let {
+                        Text(stringResource(R.string.settings_jw_adapter_checksum, it.take(16)))
+                    }
                 }
-                TextButton(onClick = { viewingScripts = true }) { Text("查看脚本全文") }
+                TextButton(onClick = { viewingScripts = true }) {
+                    Text(stringResource(R.string.settings_jw_adapter_view_script))
+                }
             }
         },
-        confirmButton = { TextButton(onClick = onDismiss) { Text("关闭") } },
+        confirmButton = {
+            TextButton(onClick = onDismiss) { Text(stringResource(CoreR.string.common_close)) }
+        },
         dismissButton = {
             if (adapter.source == JwAdapterSource.USER) {
-                TextButton(onClick = onDelete) { Text("删除", color = MaterialTheme.colorScheme.error) }
+                TextButton(onClick = onDelete) {
+                    Text(
+                        stringResource(R.string.settings_jw_adapter_delete),
+                        color = MaterialTheme.colorScheme.error,
+                    )
+                }
             }
         },
     )
@@ -215,7 +283,7 @@ fun AdapterDetailsDialog(
 private fun ScriptViewerDialog(adapter: JwAdapter, onDismiss: () -> Unit) {
     AlertDialog(
         onDismissRequest = onDismiss,
-        title = { Text("${adapter.displayName} 的脚本") },
+        title = { Text(stringResource(R.string.settings_jw_script_dialog_title, adapter.displayName)) },
         text = {
             Column(
                 Modifier
@@ -227,7 +295,9 @@ private fun ScriptViewerDialog(adapter: JwAdapter, onDismiss: () -> Unit) {
                 adapter.parseScript?.let { ScriptBlock("parse.js", it) }
             }
         },
-        confirmButton = { TextButton(onClick = onDismiss) { Text("关闭") } },
+        confirmButton = {
+            TextButton(onClick = onDismiss) { Text(stringResource(CoreR.string.common_close)) }
+        },
     )
 }
 

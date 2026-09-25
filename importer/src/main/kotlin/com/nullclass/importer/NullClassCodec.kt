@@ -8,9 +8,13 @@ import kotlinx.serialization.json.Json
  */
 object NullClassCodec {
 
-    /** formatVersion 超过本应用支持的版本。 */
-    class FutureVersionException(val fileVersion: Int) :
-        IllegalArgumentException("文件来自更新版本的空课（v$fileVersion > v${ScheduleDocument.FORMAT_VERSION}），请先升级应用")
+    /**
+     * formatVersion 超过本应用支持的版本。
+     *
+     * 只带版本号，不带文案：文案由界面层按当前语言取（词条里会代入这两个版本）。
+     */
+    class FutureVersionException(val fileVersion: Int, val supportedVersion: Int) :
+        IllegalArgumentException("FutureVersion($fileVersion > $supportedVersion)")
 
     private val json = Json {
         prettyPrint = false
@@ -25,10 +29,10 @@ object NullClassCodec {
         val document = try {
             json.decodeFromString<ScheduleDocument>(raw)
         } catch (e: SerializationException) {
-            throw IllegalArgumentException("不是有效的空课文件", e)
+            throw ScheduleFileException(ScheduleFileError.NULLCLASS_INVALID_FILE)
         }
         if (document.formatVersion > ScheduleDocument.FORMAT_VERSION) {
-            throw FutureVersionException(document.formatVersion)
+            throw FutureVersionException(document.formatVersion, ScheduleDocument.FORMAT_VERSION)
         }
         return document
     }

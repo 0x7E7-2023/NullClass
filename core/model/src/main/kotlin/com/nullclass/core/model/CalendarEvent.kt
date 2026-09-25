@@ -59,6 +59,10 @@ object EventReminderPlanner {
     fun uniqueWorkName(planned: PlannedEventReminder): String =
         "event_reminder_${planned.event.id}_${planned.remindAtMillis}"
 
-    fun timeLabel(event: CalendarEvent): String =
-        event.startMinuteOfDay?.let(ScheduleFormat::minuteLabel) ?: "全天"
+    /**
+     * 定时日程的开始时刻（「9:00」）；全天日程返回 null，
+     * 由界面层补上「全天」——那是文案，不该在这里写死。
+     */
+    fun timeLabel(event: CalendarEvent): String? =
+        event.startMinuteOfDay?.let(ScheduleFormat::minuteLabel)
 }

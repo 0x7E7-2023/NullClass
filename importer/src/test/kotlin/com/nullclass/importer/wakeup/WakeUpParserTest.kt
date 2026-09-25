@@ -1,5 +1,9 @@
 package com.nullclass.importer.wakeup
 
+import com.nullclass.importer.ImportNotice
+import com.nullclass.importer.ImportNoticeEntry
+import com.nullclass.importer.ScheduleFileError
+import com.nullclass.importer.ScheduleFileException
 import com.nullclass.importer.wakeup.WakeUpParser.WakeUpResult
 import java.time.LocalDate
 import kotlin.test.Test
@@ -18,6 +22,10 @@ class WakeUpParserTest {
             .readBytes().toString(Charsets.UTF_8)
 
     private fun parseSample(): WakeUpResult = WakeUpParser.parse(sample())
+
+    /** 提示里是否出现过某类问题（标识是稳定契约，断言不绑文案）。 */
+    private fun List<ImportNoticeEntry>.has(notice: ImportNotice): Boolean =
+        any { it.notice == notice }
 
     @Test
     fun `样本解析 - 学期信息正确`() {
@@ -108,13 +116,14 @@ class WakeUpParserTest {
     }
 
     @Test
-    fun `非 WakeUp 内容 - 抛可读错误`() {
-        assertFailsWith<IllegalArgumentException> {
+    fun `非 WakeUp 内容 - 抛带原因码的错误`() {
+        assertFailsWith<ScheduleFileException> {
             WakeUpParser.parse("{\"hello\":\"world\"}")
         }
-        assertFailsWith<IllegalArgumentException> {
+        val e = assertFailsWith<ScheduleFileException> {
             WakeUpParser.parse("[{\"node\":1,\"startTime\":\"08:00\"}]") // 只有节次表，无课程安排
         }
+        assertEquals(ScheduleFileError.WAKEUP_NO_SCHEDULE, e.error)
     }
 
     @Test
@@ -144,7 +153,7 @@ class WakeUpParserTest {
         val block = result.blocks.single()
         assertEquals(3, block.startPeriod)
         assertEquals(3, block.endPeriod) // 不再倒挂
-        assertTrue(result.warnings.any { "step=0" in it })
+        assertTrue(result.warnings.has(ImportNotice.WAKEUP_BLOCK_BAD_STEP))
     }
 
     @Test
@@ -160,7 +169,7 @@ class WakeUpParserTest {
         """.trimIndent()
         val result = WakeUpParser.parse(raw)
         assertEquals(1, result.blocks.size)
-        assertTrue(result.warnings.any { "缺少 id/day/startNode" in it })
+        assertTrue(result.warnings.has(ImportNotice.WAKEUP_BLOCK_MISSING_FIELD))
     }
 
     @Test
@@ -174,7 +183,7 @@ class WakeUpParserTest {
         """.trimIndent()
         val result = WakeUpParser.parse(raw)
         assertTrue(result.blocks.isEmpty())
-        assertTrue(result.warnings.any { "startNode=0" in it })
+        assertTrue(result.warnings.has(ImportNotice.WAKEUP_BLOCK_BAD_START))
     }
 
     @Test
@@ -186,7 +195,7 @@ class WakeUpParserTest {
         """.trimIndent()
         val result = WakeUpParser.parse(raw)
         assertEquals(14, result.periodTimes.size) // max(nodesPerDay=14, startNode+step-1=14)
-        assertTrue("默认模板" in result.warnings.single())
+        assertEquals(ImportNotice.WAKEUP_NO_PERIOD_TABLE, result.warnings.single().notice)
         assertEquals(13, result.blocks.single().startPeriod)
     }
 

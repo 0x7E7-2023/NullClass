@@ -5,6 +5,7 @@ import androidx.lifecycle.viewModelScope
 import com.nullclass.core.data.prefs.UserPreferencesRepository
 import com.nullclass.core.data.repository.HolidayRepository
 import com.nullclass.core.model.SkipDate
+import com.nullclass.core.ui.i18n.UiText
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -17,7 +18,7 @@ import javax.inject.Inject
 
 /** 节假日同步的操作反馈（手动刷新 / 自动同步结果）。 */
 data class HolidayMessage(
-    val text: String,
+    val text: UiText,
     val isError: Boolean,
 )
 
@@ -97,12 +98,20 @@ class NotificationSettingsViewModel @Inject constructor(
             when (val result = holidayRepository.refresh(force = true)) {
                 is HolidayRepository.RefreshResult.Success ->
                     _holidayMessage.update {
-                        HolidayMessage("已从 ${result.source} 同步 ${result.holidayCount} 个节假日", false)
+                        HolidayMessage(
+                            UiText.Res(R.string.settings_holiday_synced, result.source, result.holidayCount),
+                            false,
+                        )
                     }
                 is HolidayRepository.RefreshResult.Skipped ->
-                    _holidayMessage.update { HolidayMessage("本次已跳过（未到同步间隔）", false) }
+                    _holidayMessage.update { HolidayMessage(UiText.Res(R.string.settings_holiday_skipped), false) }
                 is HolidayRepository.RefreshResult.Failed ->
-                    _holidayMessage.update { HolidayMessage(result.message, true) }
+                    _holidayMessage.update {
+                        val text = result.failedSource
+                            ?.let { UiText.Res(R.string.settings_holiday_failed, it) }
+                            ?: UiText.Res(R.string.settings_holiday_no_source)
+                        HolidayMessage(text, true)
+                    }
             }
             _holidayBusy.update { false }
         }

@@ -27,6 +27,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
@@ -64,7 +65,7 @@ fun ProfileScreen(
             imePadding = false,
         ) {
             Text(
-                "我的",
+                stringResource(R.string.settings_profile_title),
                 style = MaterialTheme.typography.headlineSmall,
                 fontWeight = FontWeight.Bold,
                 modifier = Modifier.padding(top = 8.dp, bottom = 16.dp),
@@ -81,24 +82,29 @@ fun ProfileScreen(
                 Column(modifier = Modifier.padding(20.dp)) {
                     state.timetableName?.let { timetableName ->
                         Text(
-                            "课表 · $timetableName",
+                            stringResource(R.string.settings_profile_timetable, timetableName),
                             style = MaterialTheme.typography.labelSmall,
                             color = MaterialTheme.colorScheme.onPrimaryContainer.copy(alpha = 0.6f),
                         )
                     }
                     Text(
-                        term?.name ?: "还没有学期",
+                        term?.name ?: stringResource(R.string.settings_profile_no_term_title),
                         style = MaterialTheme.typography.titleMedium,
                         fontWeight = FontWeight.Bold,
                         color = MaterialTheme.colorScheme.onPrimaryContainer,
                         modifier = Modifier.padding(top = 2.dp),
                     )
+                    // state 是委托属性，不能智能转换，先把当前周收进局部变量
+                    val currentWeek = state.currentWeek
                     Text(
                         when {
-                            term == null -> "点击创建学期开始排课"
-                            state.currentWeek != null ->
-                                "第 ${state.currentWeek} 周 · 共 ${term.totalWeeks} 周"
-                            else -> "不在学期内 · 共 ${term.totalWeeks} 周"
+                            term == null -> stringResource(R.string.settings_profile_no_term_desc)
+                            currentWeek != null -> stringResource(
+                                R.string.settings_profile_week,
+                                currentWeek,
+                                term.totalWeeks,
+                            )
+                            else -> stringResource(R.string.settings_profile_out_of_term, term.totalWeeks)
                         },
                         style = MaterialTheme.typography.bodySmall,
                         color = MaterialTheme.colorScheme.onPrimaryContainer.copy(alpha = 0.75f),
@@ -116,48 +122,54 @@ fun ProfileScreen(
             ) {
                 EntryRow(
                     icon = Icons.Default.Refresh,
-                    title = "快捷操作",
+                    title = stringResource(R.string.settings_profile_quick_actions),
                     subtitle = if (state.upcomingDaySwaps > 0) {
-                        "调课（串课）、快速删课 · 调课今天及以后有 ${state.upcomingDaySwaps} 条"
+                        stringResource(
+                            R.string.settings_profile_quick_actions_desc_with_count,
+                            state.upcomingDaySwaps,
+                        )
                     } else {
-                        "调课（串课）、快速删课"
+                        stringResource(R.string.settings_profile_quick_actions_desc)
                     },
                     onClick = onOpenQuickActions,
                 )
                 EntryRow(
                     icon = Icons.AutoMirrored.Filled.List,
-                    title = "课表管理",
-                    subtitle = "当前：${state.timetableName ?: "—"} · 切换、新建、重命名",
+                    title = stringResource(R.string.settings_profile_timetables),
+                    subtitle = stringResource(
+                        R.string.settings_profile_timetables_desc,
+                        state.timetableName ?: "—",
+                    ),
                     onClick = onOpenTimetableList,
                 )
                 EntryRow(
                     icon = Icons.Default.DateRange,
-                    title = "学期管理",
-                    subtitle = "切换、新建、删除",
+                    title = stringResource(R.string.settings_profile_terms),
+                    subtitle = stringResource(R.string.settings_profile_terms_desc),
                     onClick = onOpenTermList,
                 )
                 EntryRow(
                     icon = Icons.Default.Share,
-                    title = "导入 / 导出",
-                    subtitle = "备份、迁移、教务系统导入",
+                    title = stringResource(R.string.settings_transfer_entry),
+                    subtitle = stringResource(R.string.settings_profile_transfer_desc),
                     onClick = onOpenTransfer,
                 )
                 EntryRow(
                     icon = Icons.Default.Notifications,
-                    title = "通知与提醒",
-                    subtitle = "权限引导、提前提醒、节假日与跳过日期",
+                    title = stringResource(R.string.settings_profile_notification),
+                    subtitle = stringResource(R.string.settings_profile_notification_desc),
                     onClick = onOpenNotificationSettings,
                 )
                 EntryRow(
                     icon = Icons.Default.Settings,
-                    title = "应用设置",
-                    subtitle = "WebDAV 同步、自动同步、桌面小组件",
+                    title = stringResource(R.string.settings_title),
+                    subtitle = stringResource(R.string.settings_profile_settings_desc),
                     onClick = onOpenSettings,
                 )
                 EntryRow(
                     icon = Icons.Default.Info,
-                    title = "关于",
-                    subtitle = "版本、开源许可、反馈",
+                    title = stringResource(R.string.settings_profile_about),
+                    subtitle = stringResource(R.string.settings_profile_about_desc),
                     onClick = onOpenAbout,
                 )
             }

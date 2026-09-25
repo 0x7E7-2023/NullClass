@@ -1,5 +1,6 @@
 package com.nullclass.feature.settings.transfer
 
+import com.nullclass.feature.settings.R
 import android.content.Intent
 import android.graphics.Bitmap
 import androidx.compose.foundation.Image
@@ -25,8 +26,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.core.content.FileProvider
+import com.nullclass.core.ui.R as CoreR
 import com.nullclass.core.ui.layout.AdaptiveDialogContent
 import com.nullclass.core.ui.layout.LocalWindowSize
 import kotlinx.coroutines.Dispatchers
@@ -53,13 +56,13 @@ internal fun QrShareDialog(
             throw e
         } catch (e: Exception) {
             bitmap = null
-            encodeError = e.message ?: "二维码绘制失败"
+            encodeError = e.message ?: context.getString(R.string.settings_qr_render_failed)
         }
     }
 
     AlertDialog(
         onDismissRequest = onDismiss,
-        title = { Text("扫码导入课表") },
+        title = { Text(stringResource(R.string.settings_qr_share_title)) },
         text = {
             AdaptiveDialogContent(
                 verticalArrangement = Arrangement.spacedBy(8.dp),
@@ -74,7 +77,7 @@ internal fun QrShareDialog(
                 when {
                     current != null -> Image(
                         bitmap = current.asImageBitmap(),
-                        contentDescription = "课表二维码",
+                        contentDescription = stringResource(R.string.settings_qr_image_desc),
                         contentScale = ContentScale.Fit,
                         // fillMaxWidth + 1:1：高度跟弹窗宽度走，不再用位图像素当 dp
                         // （1024px 图在 mdpi/LDPlayer 上等于 1024dp，会把对话框撑破）。
@@ -92,7 +95,7 @@ internal fun QrShareDialog(
                     else -> CircularProgressIndicator()
                 }
                 Text(
-                    "当前学期，让另一台设备用空课扫码即可导入。",
+                    stringResource(R.string.settings_qr_share_hint),
                     style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                 )
@@ -112,16 +115,16 @@ internal fun QrShareDialog(
                                     putExtra(Intent.EXTRA_STREAM, uri)
                                     addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
                                 },
-                                "分享课表二维码",
+                                context.getString(R.string.settings_qr_share_entry),
                             ),
                         )
                     }
                 },
                 enabled = bitmap != null,
-            ) { Text("分享图片") }
+            ) { Text(stringResource(R.string.settings_qr_share_image)) }
         },
         dismissButton = {
-            TextButton(onClick = onDismiss) { Text("关闭") }
+            TextButton(onClick = onDismiss) { Text(stringResource(CoreR.string.common_close)) }
         },
     )
 }

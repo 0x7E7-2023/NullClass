@@ -60,6 +60,7 @@ class IcsCalendarTest {
         )
 
         val result = IcsCalendar.build(
+            text = TestIcsText,
             term = term,
             schedule = listOf(CourseWithBlocks(course, listOf(block))),
             periodTimes = periodTimes,
@@ -104,6 +105,7 @@ class IcsCalendarTest {
         )
 
         val result = IcsCalendar.build(
+            text = TestIcsText,
             term = term,
             schedule = listOf(CourseWithBlocks(course, listOf(odd, even))),
             periodTimes = periodTimes,
@@ -131,6 +133,7 @@ class IcsCalendarTest {
         )
 
         val result = IcsCalendar.build(
+            text = TestIcsText,
             term = term,
             schedule = listOf(CourseWithBlocks(course, listOf(block))),
             periodTimes = periodTimes.take(1),
@@ -158,6 +161,7 @@ class IcsCalendarTest {
         )
 
         val result = IcsCalendar.build(
+            text = TestIcsText,
             term = term,
             schedule = emptyList(),
             periodTimes = emptyList(),
@@ -187,6 +191,7 @@ class IcsCalendarTest {
         )
 
         val result = IcsCalendar.build(
+            text = TestIcsText,
             term = term,
             schedule = emptyList(),
             periodTimes = emptyList(),
@@ -197,3 +202,20 @@ class IcsCalendarTest {
         assertContains(result.content, "DTEND;VALUE=DATE:20260929\r\n")
     }
 }
+
+/**
+ * 单元测试用的固定文案，与 `values/strings.xml` 的简体中文一致。
+ * 测试关心的是 .ics 的结构与转义，文案只需稳定可预期。
+ */
+private val TestIcsText = IcsText(
+    calendarName = "空课 · %1\$s",
+    term = "学期：%1\$s",
+    teacher = "教师：%1\$s",
+    note = "备注：%1\$s",
+    course = "课程：%1\$s",
+    exam = "考试：%1\$s",
+    time = "时间：%1\$s",
+    location = "考场：%1\$s",
+    seat = "座位：%1\$s",
+    blockSummary = { block -> "周${block.dayOfWeek} · 第${block.startPeriod}-${block.endPeriod}节" },
+)

@@ -1,12 +1,16 @@
 package com.nullclass.feature.edit
 
+import android.content.Context
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.nullclass.core.data.repository.TimetableRepository
 import com.nullclass.core.model.DefaultPeriodTimes
 import com.nullclass.core.model.MAX_TOTAL_WEEKS
 import com.nullclass.core.model.Term
+import com.nullclass.core.ui.i18n.UiText
+import com.nullclass.core.ui.i18n.toUiText
 import dagger.hilt.android.lifecycle.HiltViewModel
+import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -19,13 +23,13 @@ import java.time.temporal.TemporalAdjusters
 import javax.inject.Inject
 
 data class TimetableCreateUiState(
-    val timetableName: String = "我的课表",
+    val timetableName: String = "",
     val termName: String = "",
     /** 第 1 周第 1 天（默认下周一开学）。 */
     val firstDayEpochDay: Long = 0L,
     val totalWeeks: Int = 20,
     val saving: Boolean = false,
-    val error: String? = null,
+    val error: UiText? = null,
 )
 
 /**
@@ -36,6 +40,7 @@ data class TimetableCreateUiState(
  */
 @HiltViewModel
 class TimetableCreateViewModel @Inject constructor(
+    @ApplicationContext private val context: Context,
     private val timetableRepository: TimetableRepository,
 ) : ViewModel() {
 
@@ -64,7 +69,17 @@ class TimetableCreateViewModel @Inject constructor(
         val s = _state.value
         if (s.saving) return
         if (s.timetableName.isBlank() || s.termName.isBlank()) {
-            _state.update { it.copy(error = if (s.timetableName.isBlank()) "课表名不能为空" else "学期名不能为空") }
+            _state.update {
+                it.copy(
+                    error = UiText.Res(
+                        if (s.timetableName.isBlank()) {
+                            R.string.edit_timetable_create_error_no_name
+                        } else {
+                            R.string.edit_timetable_create_error_no_term_name
+                        },
+                    ),
+                )
+            }
             return
         }
         if (s.firstDayEpochDay <= 0L) return // 初始默认值还没算好（理论上到不了这）
@@ -83,7 +98,9 @@ class TimetableCreateViewModel @Inject constructor(
                 )
                 onSaved()
             } catch (e: Exception) {
-                _state.update { it.copy(saving = false, error = e.message ?: "创建失败") }
+                _state.update {
+                    it.copy(saving = false, error = e.toUiText(R.string.edit_timetable_create_error_failed))
+                }
             }
         }
     }
@@ -91,7 +108,14 @@ class TimetableCreateViewModel @Inject constructor(
     private fun defaultState(): TimetableCreateUiState {
         val today = LocalDate.now()
         // 学期名默认按开学季节给个可改的：「2026 秋」
-        val season = if (today.monthValue in 2..7) "春" else "秋"
+        val seasonalName = context.getString(
+            if (today.monthValue in 2..7) {
+                R.string.edit_term_default_name_spring
+            } else {
+                R.string.edit_term_default_name_autumn
+            },
+            today.year,
+        )
         // 默认下周一开学（与学期编辑页的新建默认一致）
         val nextMonday = if (today.dayOfWeek == DayOfWeek.MONDAY) {
             today
@@ -99,8 +123,8 @@ class TimetableCreateViewModel @Inject constructor(
             today.with(TemporalAdjusters.next(DayOfWeek.MONDAY))
         }
         return TimetableCreateUiState(
-            timetableName = "我的课表",
-            termName = "${today.year} $season",
+            timetableName = context.getString(R.string.edit_timetable_default_name),
+            termName = seasonalName,
             firstDayEpochDay = nextMonday.toEpochDay(),
             totalWeeks = 20,
         )

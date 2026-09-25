@@ -5,7 +5,6 @@ import com.nullclass.core.model.ExamWithCourse
 import com.nullclass.core.model.ExamFormat
 import com.nullclass.core.model.PeriodTime
 import com.nullclass.core.model.ScheduleBlock
-import com.nullclass.core.model.ScheduleFormat
 import com.nullclass.core.model.Term
 import com.nullclass.core.model.WeekType
 import java.security.MessageDigest
@@ -39,6 +38,7 @@ internal object IcsCalendar {
         .withZone(ZoneOffset.UTC)
 
     fun build(
+        text: IcsText,
         term: Term,
         schedule: List<CourseWithBlocks>,
         periodTimes: List<PeriodTime>,
@@ -53,7 +53,7 @@ internal object IcsCalendar {
         writer.raw("PRODID:-//NullClass//Schedule//ZH-CN")
         writer.raw("CALSCALE:GREGORIAN")
         writer.raw("METHOD:PUBLISH")
-        writer.textProperty("X-WR-CALNAME", "空课 · ${term.name}")
+        writer.textProperty("X-WR-CALNAME", text.calendarName.format(term.name))
 
         var courseEventCount = 0
         var skippedBlockCount = 0
@@ -98,6 +98,7 @@ internal object IcsCalendar {
                         writer.textProperty(
                             "DESCRIPTION",
                             description(
+                                text,
                                 term = term,
                                 block = block,
                                 teacher = courseWithBlocks.course.teacher?.takeIf { it.isNotBlank() },
@@ -141,7 +142,7 @@ internal object IcsCalendar {
                     writer.raw("DTEND;VALUE=DATE:${basicDateFormatter.format(date.plusDays(1))}")
                 }
                 writer.textProperty("SUMMARY", "${item.course.name} · ${exam.title}")
-                writer.textProperty("DESCRIPTION", examDescription(term, item))
+                writer.textProperty("DESCRIPTION", examDescription(text, term, item))
                 exam.location
                     ?.takeIf { it.isNotBlank() }
                     ?.let { writer.textProperty("LOCATION", it) }
@@ -161,34 +162,37 @@ internal object IcsCalendar {
     }
 
     private fun description(
+        text: IcsText,
         term: Term,
         block: ScheduleBlock,
         teacher: String?,
         note: String?,
-    ): String = buildString {
-        append("学期：${term.name}")
-        teacher?.let { append("\n教师：$it") }
-        note?.let { append("\n备注：$it") }
-        append("\n")
-        append(ScheduleFormat.dayOfWeekLabel(block.dayOfWeek))
-        append(" · ")
-        append(ScheduleFormat.periodRange(block))
-        append(" · ")
-        append(ScheduleFormat.weekRange(block))
-        ScheduleFormat.weekTypeLabel(block.weekType)
-            .takeIf { it.isNotEmpty() }
-            ?.let { append(" · $it") }
+    ): String = buildLines {
+        add(text.term.format(term.name))
+        teacher?.let { add(text.teacher.format(it)) }
+        note?.let { add(text.note.format(it)) }
+        add(text.blockSummary(block))
     }
 
-    private fun examDescription(term: Term, item: ExamWithCourse): String = buildString {
-        append("学期：${term.name}")
-        append("\n课程：${item.course.name}")
-        append("\n考试：${item.exam.title}")
-        ExamFormat.timeRange(item.exam)?.let { append("\n时间：$it") }
-        item.exam.location?.takeIf { it.isNotBlank() }?.let { append("\n考场：$it") }
-        item.exam.seat?.takeIf { it.isNotBlank() }?.let { append("\n座位：$it") }
-        item.exam.note?.takeIf { it.isNotBlank() }?.let { append("\n备注：$it") }
+    private fun examDescription(
+        text: IcsText,
+        term: Term,
+        item: ExamWithCourse,
+    ): String = buildLines {
+        add(text.term.format(term.name))
+        add(text.course.format(item.course.name))
+        add(text.exam.format(item.exam.title))
+        ExamFormat.timeRange(item.exam)?.let { add(text.time.format(it)) }
+        item.exam.location?.takeIf { it.isNotBlank() }?.let { add(text.location.format(it)) }
+        item.exam.seat?.takeIf { it.isNotBlank() }?.let { add(text.seat.format(it)) }
+        item.exam.note?.takeIf { it.isNotBlank() }?.let { add(text.note.format(it)) }
     }
+
+    /** 逐行拼 DESCRIPTION：各行本身已是完整词条，这里只负责换行。 */
+    private inline fun buildLines(build: MutableList<String>.() -> Unit): String =
+        buildList(build).joinToString(LINE_BREAK)
+
+    private const val LINE_BREAK = "\n"
 
     private fun recurrenceFor(block: ScheduleBlock): Recurrence {
         if (block.weekType == WeekType.ALL) {

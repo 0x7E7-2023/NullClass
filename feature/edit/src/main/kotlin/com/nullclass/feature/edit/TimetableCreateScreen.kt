@@ -39,14 +39,19 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import com.nullclass.core.model.MAX_TOTAL_WEEKS
-import com.nullclass.core.model.ScheduleFormat
+import com.nullclass.core.ui.i18n.dateLabel
+import com.nullclass.core.ui.i18n.dayOfWeekLabel
+import com.nullclass.core.ui.i18n.monthDayLabel
+import com.nullclass.core.ui.i18n.resolve
 import com.nullclass.core.ui.layout.AdaptiveColumn
 import com.nullclass.core.ui.layout.LocalWindowSize
+import com.nullclass.core.ui.R as CoreR
 import java.time.LocalDate
 
 /**
@@ -71,10 +76,13 @@ fun TimetableCreateScreen(
         topBar = {
             if (!standalone) {
                 TopAppBar(
-                    title = { Text("新建课表") },
+                    title = { Text(stringResource(R.string.edit_timetable_create_title)) },
                     navigationIcon = {
                         IconButton(onClick = onBack) {
-                            Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "返回")
+                            Icon(
+                                Icons.AutoMirrored.Filled.ArrowBack,
+                                contentDescription = stringResource(CoreR.string.common_back),
+                            )
                         }
                     },
                     scrollBehavior = appBarScrollBehavior,
@@ -96,13 +104,12 @@ fun TimetableCreateScreen(
             if (standalone) {
                 Spacer(Modifier.height(16.dp))
                 Text(
-                    "欢迎使用空课",
+                    stringResource(R.string.edit_timetable_welcome),
                     style = MaterialTheme.typography.headlineSmall,
                     fontWeight = FontWeight.Bold,
                 )
                 Text(
-                    "先创建一张课表。不同课表的课程、节次时间各自独立，" +
-                        "互不影响——给自己和家里人各建一张都行。",
+                    stringResource(R.string.edit_timetable_welcome_desc),
                     style = MaterialTheme.typography.bodyMedium,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                 )
@@ -111,17 +118,20 @@ fun TimetableCreateScreen(
             OutlinedTextField(
                 value = state.timetableName,
                 onValueChange = viewModel::setTimetableName,
-                label = { Text("课表名称 *") },
+                label = { Text(stringResource(R.string.edit_timetable_create_name)) },
                 singleLine = true,
                 modifier = Modifier.fillMaxWidth(),
             )
 
-            Text("第一个学期", style = MaterialTheme.typography.labelLarge)
+            Text(
+                stringResource(R.string.edit_timetable_create_first_term),
+                style = MaterialTheme.typography.labelLarge,
+            )
 
             OutlinedTextField(
                 value = state.termName,
                 onValueChange = viewModel::setTermName,
-                label = { Text("学期名 *") },
+                label = { Text(stringResource(R.string.edit_timetable_create_term_name)) },
                 singleLine = true,
                 modifier = Modifier.fillMaxWidth(),
             )
@@ -130,17 +140,22 @@ fun TimetableCreateScreen(
             OutlinedButton(onClick = { showDatePicker = true }, modifier = Modifier.fillMaxWidth()) {
                 Text(
                     if (state.firstDayEpochDay > 0L) {
-                        "第 1 周第 1 天：${firstDay.year}年${firstDay.monthValue}月${firstDay.dayOfMonth}日"
+                        stringResource(
+                            R.string.edit_term_first_day,
+                            dateLabel(state.firstDayEpochDay),
+                        )
                     } else {
-                        "第 1 周第 1 天"
+                        stringResource(R.string.edit_term_first_day_unset)
                     },
                 )
             }
             if (state.firstDayEpochDay > 0L) {
                 Text(
-                    "第 1 周：${firstDay.monthValue}月${firstDay.dayOfMonth}日" +
-                        "（${ScheduleFormat.dayOfWeekLabel(firstDay.dayOfWeek.value)}）起，共 7 天。" +
-                        "节次时间先用默认模板，之后可以在学期管理里改。",
+                    stringResource(
+                        R.string.edit_timetable_create_first_week,
+                        monthDayLabel(state.firstDayEpochDay),
+                        dayOfWeekLabel(firstDay.dayOfWeek.value),
+                    ),
                     style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                 )
@@ -150,14 +165,20 @@ fun TimetableCreateScreen(
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.spacedBy(8.dp),
             ) {
-                Text("总周数", style = MaterialTheme.typography.labelLarge)
+                Text(
+                    stringResource(R.string.edit_term_total_weeks),
+                    style = MaterialTheme.typography.labelLarge,
+                )
                 NumberStepper(
                     label = "",
                     value = state.totalWeeks,
                     range = 1..MAX_TOTAL_WEEKS,
                     onChange = viewModel::setTotalWeeks,
                 )
-                Text("周", color = MaterialTheme.colorScheme.onSurfaceVariant)
+                Text(
+                    stringResource(R.string.edit_term_total_weeks_unit),
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                )
             }
 
             Button(
@@ -166,11 +187,21 @@ fun TimetableCreateScreen(
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(vertical = 12.dp),
-            ) { Text(if (state.saving) "创建中…" else "创建课表") }
+            ) {
+                Text(
+                    stringResource(
+                        if (state.saving) {
+                            R.string.edit_timetable_creating
+                        } else {
+                            R.string.edit_timetable_create_action
+                        },
+                    ),
+                )
+            }
 
             if (!standalone) {
                 Text(
-                    "创建后自动切到这张课表。之后可在「我的 → 课表管理」切换。",
+                    stringResource(R.string.edit_timetable_create_hint),
                     style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                 )
@@ -197,10 +228,12 @@ fun TimetableCreateScreen(
                         viewModel.setFirstDay(millis / 86_400_000L)
                     }
                     showDatePicker = false
-                }) { Text("确定") }
+                }) { Text(stringResource(CoreR.string.common_confirm)) }
             },
             dismissButton = {
-                TextButton(onClick = { showDatePicker = false }) { Text("取消") }
+                TextButton(onClick = { showDatePicker = false }) {
+                    Text(stringResource(CoreR.string.common_cancel))
+                }
             },
         ) {
             DatePicker(state = pickerState)
@@ -210,10 +243,12 @@ fun TimetableCreateScreen(
     state.error?.let { message ->
         AlertDialog(
             onDismissRequest = viewModel::dismissError,
-            title = { Text("无法创建") },
-            text = { Text(message) },
+            title = { Text(stringResource(R.string.edit_timetable_create_error_title)) },
+            text = { Text(message.resolve()) },
             confirmButton = {
-                TextButton(onClick = viewModel::dismissError) { Text("知道了") }
+                TextButton(onClick = viewModel::dismissError) {
+                    Text(stringResource(CoreR.string.common_got_it))
+                }
             },
         )
     }

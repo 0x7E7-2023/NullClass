@@ -6,6 +6,7 @@ import com.nullclass.core.data.repository.ExamRepository
 import com.nullclass.core.data.repository.TermRepository
 import com.nullclass.core.model.ExamWithCourse
 import com.nullclass.core.model.Term
+import com.nullclass.core.ui.i18n.UiText
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.delay
@@ -63,8 +64,9 @@ class ExamViewModel @Inject constructor(
         }
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), ExamUiState.Loading)
 
-    private val _message = MutableStateFlow<String?>(null)
-    val message: StateFlow<String?> = _message.asStateFlow()
+    /** 一次性错误提示。文案在界面层解析，语言切换后不会留下旧语言的残句。 */
+    private val _message = MutableStateFlow<UiText?>(null)
+    val message: StateFlow<UiText?> = _message.asStateFlow()
 
     fun dismissMessage() = _message.update { null }
 
@@ -73,7 +75,10 @@ class ExamViewModel @Inject constructor(
             try {
                 examRepository.delete(examId)
             } catch (e: Exception) {
-                _message.value = "删除考试失败：${e.message ?: "请重试"}"
+                // 异常详情原样带出，便于反馈问题；没有详情时只给结论，不拼出半句话
+                _message.value = e.message?.takeIf { it.isNotBlank() }
+                    ?.let { UiText.Res(R.string.exam_delete_failed_detail, it) }
+                    ?: UiText.Res(R.string.exam_delete_failed)
             }
         }
     }

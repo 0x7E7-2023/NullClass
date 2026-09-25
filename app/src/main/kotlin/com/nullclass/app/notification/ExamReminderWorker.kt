@@ -4,7 +4,9 @@ import android.content.Context
 import androidx.hilt.work.HiltWorker
 import androidx.work.CoroutineWorker
 import androidx.work.WorkerParameters
+import com.nullclass.app.R
 import com.nullclass.core.data.prefs.UserPreferencesRepository
+import com.nullclass.core.ui.R as CoreR
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedInject
 
@@ -28,13 +30,14 @@ class ExamReminderWorker @AssistedInject constructor(
             if (dateLabel.isNotBlank()) add(dateLabel)
             if (timeLabel.isNotBlank()) add(timeLabel)
             if (location.isNotBlank()) add(location)
-            if (seat.isNotBlank()) add("座位 $seat")
-        }.joinToString(" · ")
+            if (seat.isNotBlank()) add(applicationContext.getString(R.string.app_exam_seat, seat))
+        }.joinToString(applicationContext.getString(CoreR.string.common_separator))
 
         if (ReminderNotifier.post(
                 context = applicationContext,
                 tag = tag,
-                title = listOf(courseName, examTitle).filter { it.isNotBlank() }.joinToString(" · "),
+                title = listOf(courseName, examTitle).filter { it.isNotBlank() }
+                    .joinToString(applicationContext.getString(CoreR.string.common_separator)),
                 text = text,
                 channelId = NotificationChannels.EXAM_REMINDER,
             )

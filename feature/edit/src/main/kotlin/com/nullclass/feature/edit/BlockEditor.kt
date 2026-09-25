@@ -34,12 +34,17 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.nullclass.core.model.ScheduleFormat
+import com.nullclass.core.model.ScheduleBlock
 import com.nullclass.core.model.SectionMath
 import com.nullclass.core.model.WeekType
+import com.nullclass.core.ui.i18n.dayOfWeekShortLabel
+import com.nullclass.core.ui.i18n.periodRangeLabel
 import com.nullclass.core.ui.theme.CoursePalette
 
 /**
@@ -64,33 +69,51 @@ fun BlockEditor(
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically,
             ) {
-                Text("时间安排", fontSize = 12.sp, color = MaterialTheme.colorScheme.onSurfaceVariant)
+                Text(
+                    stringResource(R.string.edit_block_section),
+                    fontSize = 12.sp,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                )
                 IconButton(onClick = onRemove, modifier = Modifier.size(32.dp)) {
-                    Icon(Icons.Default.Delete, contentDescription = "删除该安排", tint = MaterialTheme.colorScheme.error)
+                    Icon(
+                        Icons.Default.Delete,
+                        contentDescription = stringResource(R.string.edit_block_remove),
+                        tint = MaterialTheme.colorScheme.error,
+                    )
                 }
             }
 
             // 周次范围
             Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                 NumberStepper(
-                    label = "第",
+                    label = stringResource(R.string.edit_block_week_prefix),
                     value = block.startWeek,
                     range = 1..block.endWeek,
                     onChange = { onUpdate(block.copy(startWeek = it)) },
                 )
-                Text("—", color = MaterialTheme.colorScheme.onSurfaceVariant)
+                Text(
+                    stringResource(R.string.edit_block_range_separator),
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                )
                 NumberStepper(
                     label = "",
                     value = block.endWeek,
                     range = block.startWeek..totalWeeks,
                     onChange = { onUpdate(block.copy(endWeek = it)) },
                 )
-                Text("周", color = MaterialTheme.colorScheme.onSurfaceVariant)
+                Text(
+                    stringResource(R.string.edit_block_week_suffix),
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                )
             }
 
             // 单双周
             SingleChoiceSegmentedButtonRow(modifier = Modifier.fillMaxWidth()) {
-                val options = listOf(WeekType.ALL to "每周", WeekType.ODD to "单周", WeekType.EVEN to "双周")
+                val options = listOf(
+                    WeekType.ALL to stringResource(R.string.edit_block_week_type_all),
+                    WeekType.ODD to stringResource(R.string.edit_block_week_type_odd),
+                    WeekType.EVEN to stringResource(R.string.edit_block_week_type_even),
+                )
                 options.forEachIndexed { index, (type, label) ->
                     SegmentedButton(
                         selected = block.weekType == type,
@@ -102,12 +125,11 @@ fun BlockEditor(
 
             // 星期
             Row(horizontalArrangement = Arrangement.spacedBy(6.dp), modifier = Modifier.fillMaxWidth()) {
-                val days = listOf("一", "二", "三", "四", "五", "六", "日")
-                days.forEachIndexed { index, label ->
+                for (day in 1..7) {
                     FilterChip(
-                        selected = block.dayOfWeek == index + 1,
-                        onClick = { onUpdate(block.copy(dayOfWeek = index + 1)) },
-                        label = { Text(label, fontSize = 12.sp) },
+                        selected = block.dayOfWeek == day,
+                        onClick = { onUpdate(block.copy(dayOfWeek = day)) },
+                        label = { Text(dayOfWeekShortLabel(day), fontSize = 12.sp) },
                     )
                 }
             }
@@ -122,7 +144,7 @@ fun BlockEditor(
             OutlinedTextField(
                 value = block.location,
                 onValueChange = { onUpdate(block.copy(location = it)) },
-                label = { Text("教室（可选）") },
+                label = { Text(stringResource(R.string.edit_block_location)) },
                 singleLine = true,
                 modifier = Modifier.fillMaxWidth(),
                 textStyle = MaterialTheme.typography.bodyMedium,
@@ -143,16 +165,20 @@ private fun PeriodPicker(
 
     Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
         Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-            Text("节次", fontSize = 12.sp, color = MaterialTheme.colorScheme.onSurfaceVariant)
+            Text(
+                stringResource(R.string.edit_block_period),
+                fontSize = 12.sp,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+            )
             FilterChip(
                 selected = !sectionMode,
                 onClick = { sectionMode = false },
-                label = { Text("按小节", fontSize = 12.sp) },
+                label = { Text(stringResource(R.string.edit_block_period_by_period), fontSize = 12.sp) },
             )
             FilterChip(
                 selected = sectionMode,
                 onClick = { sectionMode = true },
-                label = { Text("按大节", fontSize = 12.sp) },
+                label = { Text(stringResource(R.string.edit_block_period_by_section), fontSize = 12.sp) },
             )
         }
 
@@ -168,32 +194,40 @@ private fun PeriodPicker(
                     FilterChip(
                         selected = selected,
                         onClick = { onUpdate(block.copy(startPeriod = range.first, endPeriod = end)) },
-                        label = { Text("大$section", fontSize = 12.sp) },
+                        label = {
+                            Text(stringResource(R.string.edit_block_section_chip, section), fontSize = 12.sp)
+                        },
                     )
                 }
             }
         } else {
             Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                 NumberStepper(
-                    label = "第",
+                    label = stringResource(R.string.edit_block_period_prefix),
                     value = block.startPeriod,
                     range = 1..block.endPeriod,
                     onChange = { onUpdate(block.copy(startPeriod = it)) },
                 )
-                Text("—", color = MaterialTheme.colorScheme.onSurfaceVariant)
+                Text(
+                    stringResource(R.string.edit_block_range_separator),
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                )
                 NumberStepper(
                     label = "",
                     value = block.endPeriod,
                     range = block.startPeriod..totalPeriods,
                     onChange = { onUpdate(block.copy(endPeriod = it)) },
                 )
-                Text("节", color = MaterialTheme.colorScheme.onSurfaceVariant)
+                Text(
+                    stringResource(R.string.edit_block_period_suffix),
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                )
             }
         }
 
         Text(
-            text = ScheduleFormat.periodRange(
-                com.nullclass.core.model.ScheduleBlock(
+            text = periodRangeLabel(
+                ScheduleBlock(
                     startWeek = 1,
                     endWeek = 1,
                     dayOfWeek = 1,
@@ -219,12 +253,15 @@ internal fun NumberStepper(
         if (label.isNotEmpty()) {
             Text(label, fontSize = 13.sp, color = MaterialTheme.colorScheme.onSurfaceVariant)
         }
+        val decreaseLabel = stringResource(R.string.edit_stepper_decrease)
         Text(
             text = "−",
             fontSize = 18.sp,
             color = if (value > range.first) MaterialTheme.colorScheme.onSurface else MaterialTheme.colorScheme.onSurface.copy(alpha = 0.3f),
             modifier = Modifier
                 .size(28.dp)
+                // 「−」是画出来的符号，读屏会念成「减号」；与右边「+」按钮一样给出动作名
+                .semantics { contentDescription = decreaseLabel }
                 .clickable(enabled = value > range.first) { onChange((value - 1).coerceIn(range.first, range.last)) }
                 .wrapContentSize(Alignment.Center),
         )
@@ -239,7 +276,11 @@ internal fun NumberStepper(
             enabled = value < range.last,
             modifier = Modifier.size(28.dp),
         ) {
-            Icon(Icons.Default.Add, contentDescription = "加", modifier = Modifier.size(16.dp))
+            Icon(
+                Icons.Default.Add,
+                contentDescription = stringResource(R.string.edit_stepper_increase),
+                modifier = Modifier.size(16.dp),
+            )
         }
     }
 }

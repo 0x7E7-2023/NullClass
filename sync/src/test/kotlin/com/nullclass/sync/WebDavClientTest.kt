@@ -139,13 +139,14 @@ class WebDavClientTest {
         val result = client.testConnection()
 
         assertTrue(result is WebDavResult.Error)
-        assertTrue(result.message.contains("403"))
+        assertEquals(SyncError.WRITE_TEST_FAILED, result.failure.error)
+        assertTrue(result.failure.detail.orEmpty().contains("403"))
     }
 
     @Test
     fun `http 公网地址被拒绝 https 不受限`() {
         val publicHttp = WebDavConfig("http://dav.example.com/dav/", "u", "p")
-        assertEquals("公网地址必须使用 https，否则密码会明文传输", publicHttp.validate())
+        assertEquals(SyncError.URL_INSECURE, publicHttp.validate())
 
         val publicHttps = WebDavConfig("https://dav.example.com/dav/", "u", "p")
         assertNull(publicHttps.validate())

@@ -25,6 +25,7 @@ import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.NavigationRail
 import androidx.compose.material3.NavigationRailItem
 import androidx.compose.material3.Text
+import androidx.annotation.StringRes
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -37,6 +38,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.graphics.vector.ImageVector
@@ -61,6 +63,7 @@ import com.nullclass.feature.edit.TimetableCreateScreen
 import com.nullclass.feature.edit.TimetableListScreen
 import com.nullclass.feature.exam.ExamEditScreen
 import com.nullclass.feature.exam.ExamScreen
+import com.nullclass.app.R
 import com.nullclass.feature.schedule.EventScreen
 import com.nullclass.feature.schedule.ScheduleScreen
 import com.nullclass.feature.schedule.TodayScreen
@@ -106,15 +109,15 @@ object Routes {
 /** 底部 Tab：今日 / 课表（start destination）/ 考试 / 我的。 */
 private data class TopTab(
     val route: String,
-    val label: String,
+    @StringRes val label: Int,
     val icon: ImageVector,
 )
 
 private val TopTabs = listOf(
-    TopTab(Routes.TODAY, "今日", Icons.Filled.DateRange),
-    TopTab(Routes.SCHEDULE, "课表", Icons.Filled.Home),
-    TopTab(Routes.EXAMS, "考试", Icons.Filled.DateRange),
-    TopTab(Routes.PROFILE, "我的", Icons.Filled.Person),
+    TopTab(Routes.TODAY, R.string.app_tab_today, Icons.Filled.DateRange),
+    TopTab(Routes.SCHEDULE, R.string.app_tab_schedule, Icons.Filled.Home),
+    TopTab(Routes.EXAMS, R.string.app_tab_exams, Icons.Filled.DateRange),
+    TopTab(Routes.PROFILE, R.string.app_tab_profile, Icons.Filled.Person),
 )
 
 private const val PageFadeDurationMillis = 220
@@ -302,8 +305,8 @@ fun AppNavHost() {
                     NavigationRailItem(
                         selected = selectedRoute == tab.route,
                         onClick = { onTabClick(tab) },
-                        icon = { Icon(tab.icon, contentDescription = tab.label) },
-                        label = { Text(tab.label) },
+                        icon = { Icon(tab.icon, contentDescription = stringResource(tab.label)) },
+                        label = { Text(stringResource(tab.label)) },
                     )
                 }
             }
@@ -313,8 +316,8 @@ fun AppNavHost() {
                     NavigationBarItem(
                         selected = selectedRoute == tab.route,
                         onClick = { onTabClick(tab) },
-                        icon = { Icon(tab.icon, contentDescription = tab.label) },
-                        label = { Text(tab.label) },
+                        icon = { Icon(tab.icon, contentDescription = stringResource(tab.label)) },
+                        label = { Text(stringResource(tab.label)) },
                     )
                 }
             }

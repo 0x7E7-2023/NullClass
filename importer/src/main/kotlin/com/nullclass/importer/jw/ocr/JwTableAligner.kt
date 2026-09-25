@@ -1,5 +1,8 @@
 package com.nullclass.importer.jw.ocr
 
+import com.nullclass.importer.ImportNotice
+import com.nullclass.importer.ImportNoticeEntry
+
 /**
  * 把 OCR 文本框吸附到「7 列（星期）× N 行（节次）」的语义网格。
  *
@@ -21,12 +24,14 @@ data class AlignedTable(
     /** `cells[row][col]`，单元格内文本按原始顺序用换行拼接。 */
     val cells: List<List<String>>,
     val reliable: Boolean,
-    val warnings: List<String>,
+    /** 结构层的提示。只产出标识，文案由界面层取（见 [ImportNotice] 的注释）。 */
+    val warnings: List<ImportNoticeEntry>,
     val unassigned: List<OcrBox> = emptyList(),
 ) {
     companion object {
-        fun unreliable(warnings: List<String>): AlignedTable = AlignedTable(
-            emptyList(), emptyList(), emptyList(), emptyList(), emptyList(), emptyList(), false, warnings,
+        fun unreliable(notice: ImportNotice, vararg args: Any): AlignedTable = AlignedTable(
+            emptyList(), emptyList(), emptyList(), emptyList(), emptyList(), emptyList(), false,
+            listOf(ImportNoticeEntry(notice, args.toList())),
         )
     }
 }
@@ -40,9 +45,12 @@ object JwTableAligner {
     private const val MAX_DAY_COLUMNS = 7
     private const val MIN_PERIOD_ROWS = 4
 
+    /** 需要用户在校对页上核对的结构提示 —— [JwOcrScheduleBuilder] 会把它们带到校对页。 */
+    val REVIEW_NOTICES: Set<ImportNotice> = setOf(ImportNotice.OCR_DAY_ORDER_ODD, ImportNotice.OCR_PERIODS_BY_TIME)
+
     fun align(page: OcrPage, expectedRows: Int? = null, expectedCols: Int? = null): AlignedTable {
         val boxes = page.boxes.filter { it.text.isNotBlank() }
-        if (boxes.isEmpty()) return AlignedTable.unreliable(listOf("图片里没有识别到任何文字"))
+        if (boxes.isEmpty()) return AlignedTable.unreliable(ImportNotice.OCR_NO_TEXT)
 
         val medianHeight = boxes.map { it.height }.filter { it > 0 }.sorted().let { heights ->
             if (heights.isEmpty()) 20 else heights[heights.size / 2]
@@ -52,7 +60,7 @@ object JwTableAligner {
 
         val headerGroup = rowGroups.firstOrNull { group ->
             group.count { JwCourseTextParser.parseDayOfWeek(it.text) != null } >= 3
-        } ?: return AlignedTable.unreliable(listOf("没有找到星期表头行，无法确定课表列"))
+        } ?: return AlignedTable.unreliable(ImportNotice.OCR_NO_DAY_HEADER)
 
         val headerBoxes = headerGroup
             .filter { JwCourseTextParser.parseDayOfWeek(it.text) != null }
@@ -66,12 +74,16 @@ object JwTableAligner {
             colDays += day
         }
 
-        val warnings = mutableListOf<String>()
+        val warnings = mutableListOf<ImportNoticeEntry>()
         if (colAnchors.size !in MIN_DAY_COLUMNS..MAX_DAY_COLUMNS) {
-            return AlignedTable.unreliable(listOf("识别到 ${colAnchors.size} 个星期列（期望 5-7 个），表头可能不完整"))
+            return AlignedTable.unreliable(ImportNotice.OCR_DAY_COLUMNS_OUT_OF_RANGE, colAnchors.size)
         }
-        expectedCols?.let { if (it != colAnchors.size) warnings += "星期列数与预期不符（识别 ${colAnchors.size}，预期 $it）" }
-        if (colDays != colDays.sorted()) warnings += "星期表头顺序异常，请重点核对"
+        expectedCols?.let {
+            if (it != colAnchors.size) {
+                warnings += ImportNoticeEntry(ImportNotice.OCR_DAY_COLUMNS_MISMATCH, listOf(colAnchors.size, it))
+            }
+        }
+        if (colDays != colDays.sorted()) warnings += ImportNoticeEntry(ImportNotice.OCR_DAY_ORDER_ODD)
 
         val headerTop = headerGroup.maxOf { it.top }
         // 节次列在星期列**外侧**——左边是最常见的排法，右边也有（少数系统两侧都标）。
@@ -112,14 +124,18 @@ object JwTableAligner {
                     rowPeriods += rowAnchors.size
                     rowEndPeriods += rowAnchors.size
                 }
-                warnings += "节次列是按上课时间认的，节次号按行序推断，请重点核对"
+                warnings += ImportNoticeEntry(ImportNotice.OCR_PERIODS_BY_TIME)
                 rowLabelBoxes += timeBoxes
             }
         }
         if (rowAnchors.size < MIN_PERIOD_ROWS) {
-            return AlignedTable.unreliable(listOf("没有找到节次列（识别到 ${rowAnchors.size} 行），无法确定课表行"))
+            return AlignedTable.unreliable(ImportNotice.OCR_NO_PERIOD_COLUMN, rowAnchors.size)
         }
-        expectedRows?.let { if (it != rowAnchors.size) warnings += "节次行数与预期不符（识别 ${rowAnchors.size}，预期 $it）" }
+        expectedRows?.let {
+            if (it != rowAnchors.size) {
+                warnings += ImportNoticeEntry(ImportNotice.OCR_PERIOD_ROWS_MISMATCH, listOf(rowAnchors.size, it))
+            }
+        }
 
         val colTolerance = toleranceOf(colAnchors, medianHeight)
         val rowRange = tableRows(rowAnchors, headerTop, medianHeight)
@@ -155,7 +171,10 @@ object JwTableAligner {
         val considered = candidates.size
         val assignedRatio = if (considered <= 0) 1.0 else (considered - unassigned.size).toDouble() / considered
         if (unassigned.isNotEmpty()) {
-            warnings += "有 ${unassigned.size} 个文本块没能归入网格（占 ${(1 - assignedRatio).times(100).toInt()}%）"
+            warnings += ImportNoticeEntry(
+                ImportNotice.OCR_UNASSIGNED_BOXES,
+                listOf(unassigned.size, (1 - assignedRatio).times(100).toInt()),
+            )
         }
         val reliable = assignedRatio >= 1 - MAX_UNASSIGNED_RATIO
 

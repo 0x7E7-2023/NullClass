@@ -4,6 +4,7 @@ import android.content.Intent
 import android.icu.text.AlphabeticIndex
 import android.icu.text.Collator
 import android.net.Uri
+import androidx.annotation.StringRes
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.detectTapGestures
@@ -57,9 +58,12 @@ import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
+import com.nullclass.core.ui.R as CoreR
+import com.nullclass.feature.settings.R
 import com.nullclass.core.ui.layout.LocalWindowSize
 import com.nullclass.importer.jw.JwAdapter
 import com.nullclass.importer.jw.JwBrokenAdapter
@@ -70,7 +74,12 @@ import java.util.Locale
 private const val ADAPTER_REQUEST_URL =
     "https://github.com/0x7E7-2023/NullClass-adapters/issues/new?template=jw-adapter-request.md"
 
-private enum class PickerTab(val label: String) { SCHOOLS("学校"), GENERIC("通用适配"), MINE("我添加的") }
+/** 分页。名称与命中数都在渲染时按当前语言取，枚举本身不持有文字。 */
+private enum class PickerTab(@StringRes val labelRes: Int) {
+    SCHOOLS(R.string.settings_jw_tab_schools),
+    GENERIC(R.string.settings_jw_tab_generic),
+    MINE(R.string.settings_jw_tab_mine),
+}
 
 /**
  * 学校选择：顶部搜索 + 三个分页（学校 / 通用适配 / 我添加的）。
@@ -115,7 +124,10 @@ internal fun SchoolPicker(
                 Tab(
                     selected = tab == t,
                     onClick = { tab = t },
-                    text = { Text(if (searching && count != null) "${t.label} $count" else t.label) },
+                    text = {
+                        val label = stringResource(t.labelRes)
+                        Text(if (searching && count != null) "$label $count" else label)
+                    },
                 )
             }
         }
@@ -192,7 +204,7 @@ private fun SchoolsTab(
             modifier = Modifier.fillMaxSize(),
         ) {
             if (recent != null) {
-                item(key = "recent-label") { GroupLabel("最近使用") }
+                item(key = "recent-label") { GroupLabel(stringResource(R.string.settings_jw_recent_used)) }
                 item(key = "recent") { RecentCard(recent, onRefresh = onRefresh) }
             }
             groups.forEach { (label, list) ->
@@ -213,28 +225,42 @@ private fun SchoolsTab(
             if (noHitsQuery != null) {
                 item(key = "no-hits") {
                     Column(verticalArrangement = Arrangement.spacedBy(4.dp), modifier = Modifier.padding(top = 16.dp)) {
-                        Text("没找到匹配「$noHitsQuery」的学校。", style = MaterialTheme.typography.bodyMedium)
+                        Text(
+                            stringResource(R.string.settings_jw_no_school_match, noHitsQuery),
+                            style = MaterialTheme.typography.bodyMedium,
+                        )
                         if (mineHits > 0) {
-                            TextButton(onClick = { onGoTab(PickerTab.MINE) }) { Text("「我添加的」里有 $mineHits 个结果") }
+                            TextButton(onClick = { onGoTab(PickerTab.MINE) }) {
+                                Text(stringResource(R.string.settings_jw_mine_hits, mineHits))
+                            }
                         }
                         Text(
-                            "可以试试通用适配器：填上你的教务地址，登录后由空课读页面自己还原课表。",
+                            stringResource(R.string.settings_jw_try_generic),
                             style = MaterialTheme.typography.bodySmall,
                             color = MaterialTheme.colorScheme.onSurfaceVariant,
                         )
                     }
                 }
                 // 搜不到学校时通用适配器直接端上来 —— 「搜不到我的学校」正是它存在的理由
-                items(fallbacks, key = { "f-${it.key}" }) { AdapterRow(it, badge = "通用", onPick = onPick, onDetails = onDetails) }
+                items(fallbacks, key = { "f-${it.key}" }) { adapter ->
+                    AdapterRow(
+                        adapter,
+                        badge = stringResource(R.string.settings_jw_badge_generic),
+                        onPick = onPick,
+                        onDetails = onDetails,
+                    )
+                }
             } else {
                 item(key = "footer") {
                     Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.padding(top = 8.dp)) {
                         Text(
-                            "没有你的学校？",
+                            stringResource(R.string.settings_jw_no_your_school),
                             style = MaterialTheme.typography.bodySmall,
                             color = MaterialTheme.colorScheme.onSurfaceVariant,
                         )
-                        TextButton(onClick = { onGoTab(PickerTab.GENERIC) }) { Text("用通用适配") }
+                        TextButton(onClick = { onGoTab(PickerTab.GENERIC) }) {
+                            Text(stringResource(R.string.settings_jw_use_generic))
+                        }
                     }
                 }
             }
@@ -267,8 +293,7 @@ private fun GenericTab(
     ) {
         item {
             Text(
-                "通用适配器不认学校：填上你的教务地址，登录后由空课读页面文字自己还原出表格" +
-                    "（课表是图片/画布画的则走离线 OCR）。结果会先给你核对，确认后才导入。",
+                stringResource(R.string.settings_jw_generic_desc),
                 style = MaterialTheme.typography.bodySmall,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
             )
@@ -277,7 +302,7 @@ private fun GenericTab(
         item {
             TextButton(onClick = {
                 context.startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(ADAPTER_REQUEST_URL)))
-            }) { Text("想要专门适配你的学校？提交适配请求") }
+            }) { Text(stringResource(R.string.settings_jw_request_adapter)) }
         }
     }
 }
@@ -300,15 +325,18 @@ private fun MineTab(
     ) {
         item {
             Row(horizontalArrangement = Arrangement.spacedBy(12.dp), modifier = Modifier.fillMaxWidth()) {
-                OutlinedButton(onClick = onImportZip, modifier = Modifier.weight(1f)) { Text("导入适配器包") }
-                OutlinedButton(onClick = onAddLink, modifier = Modifier.weight(1f)) { Text("从链接添加") }
+                OutlinedButton(onClick = onImportZip, modifier = Modifier.weight(1f)) {
+                    Text(stringResource(R.string.settings_jw_import_zip))
+                }
+                OutlinedButton(onClick = onAddLink, modifier = Modifier.weight(1f)) {
+                    Text(stringResource(R.string.settings_jw_add_from_link))
+                }
             }
         }
         if (empty) {
             item {
                 Text(
-                    "还没有添加过适配器。可以导入别人做好的适配器包，或从适配器库链接添加。" +
-                        "第三方适配器由别人维护，空课不做审计。",
+                    stringResource(R.string.settings_jw_mine_empty),
                     style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                 )
@@ -329,7 +357,9 @@ private fun MineTab(
                         Text("⚠ ${broken.key}", style = MaterialTheme.typography.bodyLarge)
                         Text(broken.reason, style = MaterialTheme.typography.bodySmall)
                     }
-                    TextButton(onClick = { onDelete(JwAdapterPlaceholder.of(broken.key)) }) { Text("删除") }
+                    TextButton(onClick = { onDelete(JwAdapterPlaceholder.of(broken.key)) }) {
+                        Text(stringResource(R.string.settings_jw_adapter_delete))
+                    }
                 }
             }
         }
@@ -351,7 +381,10 @@ private fun PickerSearchBar(query: String, onQueryChange: (String) -> Unit, onBa
     ) {
         Row(verticalAlignment = Alignment.CenterVertically) {
             IconButton(onClick = onBack) {
-                Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "返回")
+                Icon(
+                    Icons.AutoMirrored.Filled.ArrowBack,
+                    contentDescription = stringResource(CoreR.string.common_back),
+                )
             }
             BasicTextField(
                 value = query,
@@ -365,7 +398,7 @@ private fun PickerSearchBar(query: String, onQueryChange: (String) -> Unit, onBa
                     Box(contentAlignment = Alignment.CenterStart) {
                         if (query.isEmpty()) {
                             Text(
-                                "搜索学校名称或教务域名",
+                                stringResource(R.string.settings_jw_search_hint),
                                 style = MaterialTheme.typography.bodyLarge,
                                 color = MaterialTheme.colorScheme.onSurfaceVariant,
                             )
@@ -376,7 +409,10 @@ private fun PickerSearchBar(query: String, onQueryChange: (String) -> Unit, onBa
             )
             if (query.isNotEmpty()) {
                 IconButton(onClick = { onQueryChange("") }) {
-                    Icon(Icons.Default.Clear, contentDescription = "清空搜索")
+                    Icon(
+                        Icons.Default.Clear,
+                        contentDescription = stringResource(R.string.settings_jw_search_clear),
+                    )
                 }
             } else {
                 Icon(
@@ -404,7 +440,10 @@ private fun RecentCard(adapter: JwAdapter, onRefresh: (JwAdapter) -> Unit) {
             Spacer(Modifier.width(12.dp))
             Column(Modifier.weight(1f)) {
                 Text(adapter.displayName, style = MaterialTheme.typography.bodyLarge, fontWeight = FontWeight.Bold)
-                Text("一键刷新：复用上次的登录状态重新提取", style = MaterialTheme.typography.bodySmall)
+                Text(
+                    stringResource(R.string.settings_jw_recent_refresh_hint),
+                    style = MaterialTheme.typography.bodySmall,
+                )
             }
         }
     }
@@ -453,7 +492,10 @@ private fun AdapterRow(
             Column(Modifier.weight(1f)) {
                 Text(adapter.displayName, style = MaterialTheme.typography.bodyLarge)
                 val insecure = adapter.manifest.loginUrl.startsWith("http://")
-                val subtitle = listOfNotNull(badge, "不安全连接".takeIf { insecure }).joinToString(" · ")
+                val subtitle = listOfNotNull(
+                    badge,
+                    stringResource(R.string.settings_jw_insecure).takeIf { insecure },
+                ).joinToString(stringResource(CoreR.string.common_separator))
                 if (subtitle.isNotEmpty()) {
                     Text(
                         subtitle,
@@ -463,7 +505,10 @@ private fun AdapterRow(
                 }
             }
             IconButton(onClick = { onDetails(adapter) }) {
-                Icon(Icons.Outlined.Info, contentDescription = "详情")
+                Icon(
+                    Icons.Outlined.Info,
+                    contentDescription = stringResource(R.string.settings_jw_details),
+                )
             }
         }
     }
@@ -532,19 +577,20 @@ private fun groupByInitial(adapters: List<JwAdapter>): List<Pair<String, List<Jw
 
 /**
  * 地名里的多音字 → 同音且只有一个读音的字，只用来排序和推断首字母，不影响显示。
+ * 这些全是**教材名词条**（解析用），不是界面文案，故整表标注 i18n-exempt。
  * ICU 对多音字只认最常用的读音（「长」= zhǎng），没填 `initial` 的适配器靠这张表兜底。
  * 学校名的多音字几乎都出在地名上；发现哪个学校分错了组，往这里加一行即可。
  * 已用 ICU 58（Android 8）与 77 对照拾光课程表适配库的 221 所学校核过：加上这张表后全部分对。
  * 「重庆」ICU 自己就认得 chóng，不用收。
  */
-private val PLACE_NAME_READINGS = mapOf(
-    "长春" to "常春", // cháng，否则按 zhǎng 落进 Z
-    "长沙" to "常沙",
-    "长江" to "常江",
-    "长治" to "常治",
-    "长安" to "常安",
-    "厦门" to "夏门", // xià，否则按 shà 落进 S
-    "番禺" to "潘禺", // pān，否则按 fān 落进 F
+private val PLACE_NAME_READINGS = mapOf( // i18n-exempt: 解析用词条
+    "长春" to "常春", // cháng，否则按 zhǎng 落进 Z // i18n-exempt: 解析用词条
+    "长沙" to "常沙", // i18n-exempt: 解析用词条
+    "长江" to "常江", // i18n-exempt: 解析用词条
+    "长治" to "常治", // i18n-exempt: 解析用词条
+    "长安" to "常安", // i18n-exempt: 解析用词条
+    "厦门" to "夏门", // xià，否则按 shà 落进 S // i18n-exempt: 解析用词条
+    "番禺" to "潘禺", // pān，否则按 fān 落进 F // i18n-exempt: 解析用词条
 )
 
 private fun sortName(name: String): String =

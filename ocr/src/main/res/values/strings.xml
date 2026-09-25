@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- :ocr 的用户可见文案。资源名统一以 ocr_ 开头，风格见 docs/ux-writing.md。 -->
+<resources>
+    <string name="ocr_engine_unavailable">离线识别引擎不可用。</string>
+    <string name="ocr_model_load_failed">离线识别模型加载失败：%1$s</string>
+</resources>

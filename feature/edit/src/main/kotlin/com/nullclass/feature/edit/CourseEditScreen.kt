@@ -29,9 +29,12 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
+import com.nullclass.core.ui.i18n.resolve
 import com.nullclass.core.ui.layout.AdaptiveColumn
+import com.nullclass.core.ui.R as CoreR
 
 /** 课程编辑（新建/编辑复用）。新建默认周一 1-2 节、整学期每周。 */
 @OptIn(ExperimentalMaterial3Api::class)
@@ -48,17 +51,26 @@ fun CourseEditScreen(
         modifier = Modifier.nestedScroll(appBarScrollBehavior.nestedScrollConnection),
         topBar = {
             TopAppBar(
-                title = { Text(if (state.isNew) "添加课程" else "编辑课程") },
+                title = {
+                    Text(
+                        stringResource(
+                            if (state.isNew) R.string.edit_course_title_new else R.string.edit_course_title_edit,
+                        ),
+                    )
+                },
                 navigationIcon = {
                     IconButton(onClick = onBack) {
-                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "返回")
+                        Icon(
+                            Icons.AutoMirrored.Filled.ArrowBack,
+                            contentDescription = stringResource(CoreR.string.common_back),
+                        )
                     }
                 },
                 actions = {
                     TextButton(
                         onClick = { viewModel.save(onBack) },
                         enabled = !state.loading && !state.termMissing && !state.saving,
-                    ) { Text(if (state.saving) "保存中…" else "保存") }
+                    ) { Text(saveButtonLabel(state.saving)) }
                 },
                 scrollBehavior = appBarScrollBehavior,
             )
@@ -80,7 +92,10 @@ fun CourseEditScreen(
                     .padding(24.dp),
                 verticalArrangement = Arrangement.spacedBy(12.dp),
             ) {
-                Text("请先创建学期", style = MaterialTheme.typography.titleMedium)
+                Text(
+                    stringResource(R.string.edit_course_no_term),
+                    style = MaterialTheme.typography.titleMedium,
+                )
             }
 
             else -> AdaptiveColumn(
@@ -94,7 +109,7 @@ fun CourseEditScreen(
                 OutlinedTextField(
                     value = state.name,
                     onValueChange = viewModel::setName,
-                    label = { Text("课程名 *") },
+                    label = { Text(stringResource(R.string.edit_course_name)) },
                     singleLine = true,
                     isError = state.error != null && state.name.isBlank(),
                     modifier = Modifier.fillMaxWidth(),
@@ -102,18 +117,18 @@ fun CourseEditScreen(
                 OutlinedTextField(
                     value = state.teacher,
                     onValueChange = viewModel::setTeacher,
-                    label = { Text("教师（可选）") },
+                    label = { Text(stringResource(R.string.edit_course_teacher)) },
                     singleLine = true,
                     modifier = Modifier.fillMaxWidth(),
                 )
                 OutlinedTextField(
                     value = state.note,
                     onValueChange = viewModel::setNote,
-                    label = { Text("备注（可选）") },
+                    label = { Text(stringResource(R.string.edit_course_note)) },
                     modifier = Modifier.fillMaxWidth(),
                 )
 
-                Text("颜色", style = MaterialTheme.typography.labelLarge)
+                Text(stringResource(R.string.edit_course_color), style = MaterialTheme.typography.labelLarge)
                 ColorPalettePicker(selectedIndex = state.colorIndex, onSelect = viewModel::setColor)
 
                 state.blocks.forEachIndexed { index, block ->
@@ -127,7 +142,7 @@ fun CourseEditScreen(
                 }
 
                 OutlinedButton(onClick = viewModel::addBlock, modifier = Modifier.fillMaxWidth()) {
-                    Text("添加时间安排")
+                    Text(stringResource(R.string.edit_course_add_block))
                 }
 
                 Button(
@@ -136,7 +151,7 @@ fun CourseEditScreen(
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(vertical = 12.dp),
-                ) { Text(if (state.saving) "保存中…" else "保存") }
+                ) { Text(saveButtonLabel(state.saving)) }
 
                 androidx.compose.foundation.layout.Spacer(Modifier.padding(bottom = 24.dp))
             }
@@ -146,11 +161,17 @@ fun CourseEditScreen(
     state.error?.let { message ->
         AlertDialog(
             onDismissRequest = { viewModel.dismissError() },
-            title = { Text("无法保存") },
-            text = { Text(message) },
+            title = { Text(stringResource(R.string.edit_course_error_title)) },
+            text = { Text(message.resolve()) },
             confirmButton = {
-                TextButton(onClick = { viewModel.dismissError() }) { Text("知道了") }
+                TextButton(onClick = { viewModel.dismissError() }) {
+                    Text(stringResource(CoreR.string.common_got_it))
+                }
             },
         )
     }
 }
+
+@Composable
+private fun saveButtonLabel(saving: Boolean): String =
+    stringResource(if (saving) CoreR.string.common_saving else CoreR.string.common_save)

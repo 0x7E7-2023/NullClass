@@ -61,24 +61,28 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import com.nullclass.core.model.CalendarEvent
 import com.nullclass.core.model.EventReminderPlanner
-import com.nullclass.core.model.ExamFormat
 import com.nullclass.core.model.ScheduleFormat
+import com.nullclass.core.ui.i18n.dateLabel
+import com.nullclass.core.ui.i18n.dayOfWeekLabel
+import com.nullclass.core.ui.i18n.dayOfWeekShortLabel
+import com.nullclass.core.ui.i18n.monthDayLabel
+import com.nullclass.core.ui.i18n.resolve
 import com.nullclass.core.ui.layout.AdaptiveWidthWrapper
 import com.nullclass.core.ui.layout.LocalWindowSize
+import com.nullclass.core.ui.R as CoreR
 import java.time.Instant
 import java.time.LocalDate
 import java.time.LocalTime
 import java.time.YearMonth
 import java.time.ZoneOffset
 import java.util.UUID
-
-private val WeekdayLabels = listOf("一", "二", "三", "四", "五", "六", "日")
 
 /** 定时日程的提醒提前量（分钟）；全天日程只有开/关，开 = 当天 8:00。 */
 private val LeadOptions = listOf(0, 5, 15, 30, 60, 24 * 60)
@@ -105,10 +109,13 @@ fun EventScreen(
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("日程安排") },
+                title = { Text(stringResource(R.string.schedule_event_title)) },
                 navigationIcon = {
                     IconButton(onClick = onBack) {
-                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "返回")
+                        Icon(
+                            Icons.AutoMirrored.Filled.ArrowBack,
+                            contentDescription = stringResource(CoreR.string.common_back),
+                        )
                     }
                 },
                 actions = {
@@ -116,14 +123,14 @@ fun EventScreen(
                         TextButton(onClick = {
                             month = YearMonth.from(today)
                             selectedDay = today.toEpochDay()
-                        }) { Text("今天") }
+                        }) { Text(stringResource(R.string.schedule_event_today)) }
                     }
                 },
             )
         },
         floatingActionButton = {
             FloatingActionButton(onClick = { editing = newEvent(selectedDay) }) {
-                Icon(Icons.Default.Add, contentDescription = "添加日程")
+                Icon(Icons.Default.Add, contentDescription = stringResource(R.string.schedule_event_add))
             }
         },
         contentWindowInsets = WindowInsets.safeDrawing,
@@ -156,16 +163,24 @@ fun EventScreen(
                         onSelectDay = { selectedDay = it },
                     )
                 }
-                item { SectionTitle("${ExamFormat.monthDayLabel(selectedDay)} ${weekdayLabel(selectedDay)}") }
+                item {
+                    SectionTitle(
+                        stringResource(
+                            R.string.schedule_event_day_header,
+                            monthDayLabel(selectedDay),
+                            weekdayLabel(selectedDay),
+                        ),
+                    )
+                }
                 if (dayEvents.isEmpty()) {
-                    item { HintText("这天没有日程，点右下角 + 添加") }
+                    item { HintText(stringResource(R.string.schedule_event_day_empty)) }
                 } else {
                     items(dayEvents, key = { "day-${it.id}" }) { event ->
                         EventCard(event, showDate = false, onClick = { editing = event }, onDelete = { deleteTarget = event })
                     }
                 }
                 if (upcoming.isNotEmpty()) {
-                    item { SectionTitle("近期日程") }
+                    item { SectionTitle(stringResource(R.string.schedule_event_upcoming)) }
                     items(upcoming, key = { "up-${it.id}" }) { event ->
                         EventCard(event, showDate = true, onClick = { editing = event }, onDelete = { deleteTarget = event })
                     }
@@ -192,24 +207,30 @@ fun EventScreen(
     deleteTarget?.let { target ->
         AlertDialog(
             onDismissRequest = { deleteTarget = null },
-            title = { Text("删除日程") },
-            text = { Text("确定删除「${target.title}」吗？") },
+            title = { Text(stringResource(R.string.schedule_event_delete)) },
+            text = { Text(stringResource(R.string.schedule_event_delete_confirm, target.title)) },
             confirmButton = {
                 TextButton(onClick = {
                     viewModel.delete(target.id)
                     deleteTarget = null
-                }) { Text("删除", color = MaterialTheme.colorScheme.error) }
+                }) {
+                    Text(stringResource(CoreR.string.common_delete), color = MaterialTheme.colorScheme.error)
+                }
             },
-            dismissButton = { TextButton(onClick = { deleteTarget = null }) { Text("取消") } },
+            dismissButton = {
+                TextButton(onClick = { deleteTarget = null }) { Text(stringResource(CoreR.string.common_cancel)) }
+            },
         )
     }
 
     message?.let {
         AlertDialog(
             onDismissRequest = viewModel::dismissMessage,
-            title = { Text("操作失败") },
-            text = { Text(it) },
-            confirmButton = { TextButton(onClick = viewModel::dismissMessage) { Text("知道了") } },
+            title = { Text(stringResource(CoreR.string.common_failed)) },
+            text = { Text(it.resolve()) },
+            confirmButton = {
+                TextButton(onClick = viewModel::dismissMessage) { Text(stringResource(CoreR.string.common_got_it)) }
+            },
         )
     }
 }
@@ -226,15 +247,19 @@ private fun newEvent(day: Long): CalendarEvent {
     )
 }
 
+@Composable
 private fun weekdayLabel(epochDay: Long): String =
-    "周" + WeekdayLabels[LocalDate.ofEpochDay(epochDay).dayOfWeek.value - 1]
+    dayOfWeekLabel(LocalDate.ofEpochDay(epochDay).dayOfWeek.value)
 
+@Composable
 private fun leadLabel(lead: Int?, allDay: Boolean): String = when {
-    lead == null -> "不提醒"
-    lead == 0 -> if (allDay) "当天 8:00" else "准时"
-    lead % (24 * 60) == 0 -> "提前 ${lead / (24 * 60)} 天"
-    lead % 60 == 0 -> "提前 ${lead / 60} 小时"
-    else -> "提前 $lead 分钟"
+    lead == null -> stringResource(R.string.schedule_event_lead_none)
+    lead == 0 -> stringResource(
+        if (allDay) R.string.schedule_event_lead_all_day else R.string.schedule_event_lead_on_time,
+    )
+    lead % (24 * 60) == 0 -> stringResource(R.string.schedule_event_lead_days, lead / (24 * 60))
+    lead % 60 == 0 -> stringResource(R.string.schedule_event_lead_hours, lead / 60)
+    else -> stringResource(R.string.schedule_event_lead_minutes, lead)
 }
 
 @Composable
@@ -249,23 +274,29 @@ private fun MonthCalendar(
     Column {
         Row(verticalAlignment = Alignment.CenterVertically) {
             IconButton(onClick = { onMonthChange(month.minusMonths(1)) }) {
-                Icon(Icons.AutoMirrored.Filled.KeyboardArrowLeft, contentDescription = "上个月")
+                Icon(
+                    Icons.AutoMirrored.Filled.KeyboardArrowLeft,
+                    contentDescription = stringResource(R.string.schedule_event_prev_month),
+                )
             }
             Text(
-                "${month.year}年${month.monthValue}月",
+                stringResource(R.string.schedule_event_month, month.year, month.monthValue),
                 style = MaterialTheme.typography.titleMedium,
                 fontWeight = FontWeight.Bold,
                 textAlign = TextAlign.Center,
                 modifier = Modifier.weight(1f),
             )
             IconButton(onClick = { onMonthChange(month.plusMonths(1)) }) {
-                Icon(Icons.AutoMirrored.Filled.KeyboardArrowRight, contentDescription = "下个月")
+                Icon(
+                    Icons.AutoMirrored.Filled.KeyboardArrowRight,
+                    contentDescription = stringResource(R.string.schedule_event_next_month),
+                )
             }
         }
         Row {
-            WeekdayLabels.forEach {
+            for (day in 1..7) {
                 Text(
-                    it,
+                    dayOfWeekShortLabel(day),
                     style = MaterialTheme.typography.labelSmall,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                     textAlign = TextAlign.Center,
@@ -358,9 +389,23 @@ private fun EventCard(event: CalendarEvent, showDate: Boolean, onClick: () -> Un
             Column(Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(2.dp)) {
                 Text(event.title, style = MaterialTheme.typography.titleMedium)
                 val time = EventReminderPlanner.timeLabel(event)
+                    ?: stringResource(R.string.schedule_event_all_day)
                 Text(
-                    (if (showDate) "${ExamFormat.monthDayLabel(event.dateEpochDay)} ${weekdayLabel(event.dateEpochDay)} · " else "") +
-                        "$time · ${leadLabel(event.remindLeadMinutes, event.startMinuteOfDay == null)}",
+                    if (showDate) {
+                        stringResource(
+                            R.string.schedule_event_summary_with_date,
+                            monthDayLabel(event.dateEpochDay),
+                            weekdayLabel(event.dateEpochDay),
+                            time,
+                            leadLabel(event.remindLeadMinutes, event.startMinuteOfDay == null),
+                        )
+                    } else {
+                        stringResource(
+                            R.string.schedule_event_summary,
+                            time,
+                            leadLabel(event.remindLeadMinutes, event.startMinuteOfDay == null),
+                        )
+                    },
                     style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                 )
@@ -369,7 +414,10 @@ private fun EventCard(event: CalendarEvent, showDate: Boolean, onClick: () -> Un
                 }
             }
             IconButton(onClick = onDelete) {
-                Icon(Icons.Default.Delete, contentDescription = "删除日程")
+                Icon(
+                    Icons.Default.Delete,
+                    contentDescription = stringResource(R.string.schedule_event_delete),
+                )
             }
         }
     }
@@ -396,7 +444,13 @@ private fun EventEditorDialog(
 
     AlertDialog(
         onDismissRequest = onDismiss,
-        title = { Text(if (initial.title.isEmpty()) "添加日程" else "编辑日程") },
+        title = {
+            Text(
+                stringResource(
+                    if (initial.title.isEmpty()) R.string.schedule_event_add else R.string.schedule_event_edit,
+                ),
+            )
+        },
         text = {
             Column(
                 modifier = Modifier.verticalScroll(rememberScrollState()),
@@ -405,24 +459,44 @@ private fun EventEditorDialog(
                 OutlinedTextField(
                     value = title,
                     onValueChange = { title = it },
-                    label = { Text("标题 *") },
+                    label = { Text(stringResource(R.string.schedule_event_field_title)) },
                     singleLine = true,
                     modifier = Modifier.fillMaxWidth(),
                 )
                 OutlinedButton(onClick = { showDatePicker = true }, modifier = Modifier.fillMaxWidth()) {
-                    Text("${ExamFormat.dateLabel(day)} ${weekdayLabel(day)}")
+                    Text(
+                        stringResource(
+                            R.string.schedule_event_day_header,
+                            dateLabel(day),
+                            weekdayLabel(day),
+                        ),
+                    )
                 }
                 Row(verticalAlignment = Alignment.CenterVertically) {
-                    Text("全天", modifier = Modifier.weight(1f))
+                    Text(stringResource(R.string.schedule_event_all_day), modifier = Modifier.weight(1f))
                     Switch(checked = allDay, onCheckedChange = { allDay = it })
                 }
                 if (!allDay) {
                     OutlinedButton(onClick = { showTimePicker = true }, modifier = Modifier.fillMaxWidth()) {
-                        Text("开始时间 ${ScheduleFormat.minuteLabel(startMinute)}")
+                        Text(
+                            stringResource(
+                                R.string.schedule_event_start_time_value,
+                                ScheduleFormat.minuteLabel(startMinute),
+                            ),
+                        )
                     }
                 }
                 Row(verticalAlignment = Alignment.CenterVertically) {
-                    Text(if (allDay && remind) "提醒（当天 8:00）" else "提醒", modifier = Modifier.weight(1f))
+                    Text(
+                        stringResource(
+                            if (allDay && remind) {
+                                R.string.schedule_event_remind_all_day
+                            } else {
+                                R.string.schedule_event_remind
+                            },
+                        ),
+                        modifier = Modifier.weight(1f),
+                    )
                     Switch(checked = remind, onCheckedChange = { remind = it })
                 }
                 if (remind && !allDay) {
@@ -443,7 +517,7 @@ private fun EventEditorDialog(
                 OutlinedTextField(
                     value = note,
                     onValueChange = { note = it },
-                    label = { Text("备注（可选）") },
+                    label = { Text(stringResource(R.string.schedule_event_note)) },
                     modifier = Modifier.fillMaxWidth(),
                 )
             }
@@ -466,9 +540,11 @@ private fun EventEditorDialog(
                         ),
                     )
                 },
-            ) { Text("保存") }
+            ) { Text(stringResource(CoreR.string.common_save)) }
         },
-        dismissButton = { TextButton(onClick = onDismiss) { Text("取消") } },
+        dismissButton = {
+            TextButton(onClick = onDismiss) { Text(stringResource(CoreR.string.common_cancel)) }
+        },
     )
 
     if (showDatePicker) {
@@ -485,9 +561,13 @@ private fun EventEditorDialog(
                         day = Instant.ofEpochMilli(it).atZone(ZoneOffset.UTC).toLocalDate().toEpochDay()
                     }
                     showDatePicker = false
-                }) { Text("确定") }
+                }) { Text(stringResource(CoreR.string.common_confirm)) }
             },
-            dismissButton = { TextButton(onClick = { showDatePicker = false }) { Text("取消") } },
+            dismissButton = {
+                TextButton(onClick = { showDatePicker = false }) {
+                    Text(stringResource(CoreR.string.common_cancel))
+                }
+            },
         ) { DatePicker(state = state) }
     }
 
@@ -495,7 +575,7 @@ private fun EventEditorDialog(
         val state = rememberTimePickerState(startMinute / 60, startMinute % 60, is24Hour = true)
         AlertDialog(
             onDismissRequest = { showTimePicker = false },
-            title = { Text("开始时间") },
+            title = { Text(stringResource(R.string.schedule_event_start_time)) },
             text = {
                 // 矮屏放不下表盘，改键盘输入
                 if (LocalWindowSize.current.isCompactHeight) TimeInput(state) else TimePicker(state)
@@ -504,9 +584,13 @@ private fun EventEditorDialog(
                 TextButton(onClick = {
                     startMinute = state.hour * 60 + state.minute
                     showTimePicker = false
-                }) { Text("确定") }
+                }) { Text(stringResource(CoreR.string.common_confirm)) }
             },
-            dismissButton = { TextButton(onClick = { showTimePicker = false }) { Text("取消") } },
+            dismissButton = {
+                TextButton(onClick = { showTimePicker = false }) {
+                    Text(stringResource(CoreR.string.common_cancel))
+                }
+            },
         )
     }
 }

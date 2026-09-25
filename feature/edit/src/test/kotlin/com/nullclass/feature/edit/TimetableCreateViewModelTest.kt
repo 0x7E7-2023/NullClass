@@ -1,8 +1,10 @@
 package com.nullclass.feature.edit
 
+import android.content.Context
 import com.nullclass.core.model.DefaultPeriodTimes
 import com.nullclass.core.model.MAX_TOTAL_WEEKS
 import com.nullclass.core.model.Term
+import com.nullclass.core.ui.i18n.UiText
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.first
@@ -10,6 +12,10 @@ import kotlinx.coroutines.test.UnconfinedTestDispatcher
 import kotlinx.coroutines.test.resetMain
 import kotlinx.coroutines.test.runTest
 import kotlinx.coroutines.test.setMain
+import org.junit.runner.RunWith
+import org.robolectric.RobolectricTestRunner
+import org.robolectric.RuntimeEnvironment
+import org.robolectric.annotation.Config
 import kotlin.test.AfterTest
 import kotlin.test.BeforeTest
 import kotlin.test.Test
@@ -18,7 +24,11 @@ import kotlin.test.assertNull
 import kotlin.test.assertTrue
 
 @OptIn(ExperimentalCoroutinesApi::class)
+@RunWith(RobolectricTestRunner::class)
+@Config(sdk = [36])
 class TimetableCreateViewModelTest {
+
+    private val context: Context = RuntimeEnvironment.getApplication()
 
     private lateinit var timetables: FakeTimetableRepository
 
@@ -35,31 +45,31 @@ class TimetableCreateViewModelTest {
 
     @Test
     fun blankTimetableNameIsRejected() = runTest {
-        val vm = TimetableCreateViewModel(timetables)
+        val vm = TimetableCreateViewModel(context, timetables)
         vm.state.first { it.firstDayEpochDay > 0 } // 等默认值算好
 
         vm.setTimetableName("  ")
         vm.save {}
 
         assertNull(timetables.createCalls.singleOrNull())
-        assertEquals("课表名不能为空", vm.state.value.error)
+        assertEquals(UiText.Res(R.string.edit_timetable_create_error_no_name), vm.state.value.error)
     }
 
     @Test
     fun blankTermNameIsRejected() = runTest {
-        val vm = TimetableCreateViewModel(timetables)
+        val vm = TimetableCreateViewModel(context, timetables)
         vm.state.first { it.firstDayEpochDay > 0 }
 
         vm.setTermName("")
         vm.save {}
 
         assertNull(timetables.createCalls.singleOrNull())
-        assertEquals("学期名不能为空", vm.state.value.error)
+        assertEquals(UiText.Res(R.string.edit_timetable_create_error_no_term_name), vm.state.value.error)
     }
 
     @Test
     fun saveCreatesTimetableAndFirstTermTogether() = runTest {
-        val vm = TimetableCreateViewModel(timetables)
+        val vm = TimetableCreateViewModel(context, timetables)
         vm.state.first { it.firstDayEpochDay > 0 }
         vm.setTermName("2026 秋")
         vm.setTotalWeeks(18)
@@ -69,7 +79,7 @@ class TimetableCreateViewModelTest {
 
         assertTrue(saved)
         val (name, term, periods) = timetables.createCalls.single()
-        assertEquals("我的课表", name)
+        assertEquals(context.getString(R.string.edit_timetable_default_name), name)
         assertEquals("2026 秋", term.name)
         assertEquals(18, term.totalWeeks)
         assertEquals(vm.state.value.firstDayEpochDay, term.firstDayEpochDay)
@@ -83,7 +93,7 @@ class TimetableCreateViewModelTest {
     fun failedCreationAllowsRetryWithoutHalfState() = runTest {
         // 事务失败 = 课表和学期都没落库，重试干净（不会多出一张同名课表）
         timetables.createWithFirstTermHook = { throw IllegalStateException("disk") }
-        val vm = TimetableCreateViewModel(timetables)
+        val vm = TimetableCreateViewModel(context, timetables)
         vm.state.first { it.firstDayEpochDay > 0 }
 
         vm.save {}
@@ -98,7 +108,7 @@ class TimetableCreateViewModelTest {
 
     @Test
     fun totalWeeksIsClampedToValidRange() = runTest {
-        val vm = TimetableCreateViewModel(timetables)
+        val vm = TimetableCreateViewModel(context, timetables)
         vm.state.first { it.firstDayEpochDay > 0 }
 
         vm.setTotalWeeks(99)

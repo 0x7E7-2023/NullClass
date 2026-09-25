@@ -37,8 +37,10 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import com.nullclass.core.ui.R as CoreR
 import com.nullclass.core.ui.layout.AdaptiveColumn
 
 private const val REPO_URL = "https://github.com/0x7E7-2023/NullClass"
@@ -69,10 +71,13 @@ fun AboutScreen(onBack: () -> Unit) {
         modifier = Modifier.nestedScroll(appBarScrollBehavior.nestedScrollConnection),
         topBar = {
             TopAppBar(
-                title = { Text("关于") },
+                title = { Text(stringResource(R.string.settings_about_title)) },
                 navigationIcon = {
                     IconButton(onClick = onBack) {
-                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "返回")
+                        Icon(
+                            Icons.AutoMirrored.Filled.ArrowBack,
+                            contentDescription = stringResource(CoreR.string.common_back),
+                        )
                     }
                 },
                 scrollBehavior = appBarScrollBehavior,
@@ -87,7 +92,7 @@ fun AboutScreen(onBack: () -> Unit) {
             imePadding = false,
         ) {
             Text(
-                "空课",
+                stringResource(R.string.settings_about_app_name),
                 style = MaterialTheme.typography.headlineSmall,
                 fontWeight = FontWeight.Bold,
                 modifier = Modifier.padding(top = 8.dp),
@@ -101,7 +106,7 @@ fun AboutScreen(onBack: () -> Unit) {
                     .clickable { context.copyVersion(versionName) },
             )
             Text(
-                "本地优先的大学课表。数据只在这台设备上，无账号、无云端、无埋点。",
+                stringResource(R.string.settings_about_tagline),
                 style = MaterialTheme.typography.bodySmall,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
                 modifier = Modifier.padding(top = 12.dp),
@@ -114,36 +119,35 @@ fun AboutScreen(onBack: () -> Unit) {
                 verticalArrangement = Arrangement.spacedBy(8.dp),
             ) {
                 LinkRow(
-                    title = "源码仓库",
+                    title = stringResource(R.string.settings_about_source),
                     subtitle = "github.com/0x7E7-2023/NullClass",
                     onClick = { context.openHttps(REPO_URL) },
                 )
                 LinkRow(
-                    title = "反馈问题",
+                    title = stringResource(R.string.settings_about_feedback),
                     subtitle = "GitHub Issues",
                     onClick = { context.openHttps(ISSUES_URL) },
                 )
                 LinkRow(
-                    title = "开源许可",
+                    title = stringResource(R.string.settings_about_license),
                     subtitle = "GNU GPL-3.0",
                     onClick = { context.openHttps(LICENSE_URL) },
                 )
                 LinkRow(
-                    title = "致谢 · 拾光课程表",
+                    title = stringResource(R.string.settings_about_upstream),
                     subtitle = "github.com/ShiGuangSchedule",
                     onClick = { context.openHttps(SHIGUANG_URL) },
                 )
             }
 
             Text(
-                "鸣谢  " + Contributors.joinToString(" · "),
+                stringResource(R.string.settings_about_contributors, Contributors.joinToString(" · ")),
                 style = MaterialTheme.typography.bodySmall,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
                 modifier = Modifier.padding(top = 32.dp),
             )
             Text(
-                "内置教务适配器绝大多数移植自拾光课程表社区的适配库 shiguang_warehouse（MIT），" +
-                    "「从拾光课程表迁移」也基于拾光公开的导出格式。感谢拾光课程表及其社区。",
+                stringResource(R.string.settings_about_upstream_desc),
                 style = MaterialTheme.typography.bodySmall,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
                 modifier = Modifier.padding(top = 8.dp),
@@ -198,14 +202,16 @@ private fun Context.appVersionName(): String {
 
 private fun Context.copyVersion(versionName: String) {
     val clipboard = getSystemService(Context.CLIPBOARD_SERVICE) as? ClipboardManager ?: return
-    clipboard.setPrimaryClip(ClipData.newPlainText("空课版本", versionName))
-    Toast.makeText(this, "已复制 $versionName", Toast.LENGTH_SHORT).show()
+    clipboard.setPrimaryClip(
+        ClipData.newPlainText(getString(R.string.settings_about_version), versionName),
+    )
+    Toast.makeText(this, getString(R.string.settings_about_version_copied, versionName), Toast.LENGTH_SHORT).show()
 }
 
 private fun Context.openHttps(url: String) {
     try {
         startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(url)))
     } catch (_: ActivityNotFoundException) {
-        Toast.makeText(this, "没有可打开链接的应用", Toast.LENGTH_SHORT).show()
+        Toast.makeText(this, getString(R.string.settings_about_no_browser), Toast.LENGTH_SHORT).show()
     }
 }

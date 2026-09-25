@@ -1,5 +1,7 @@
 package com.nullclass.importer.jw.ocr
 
+import com.nullclass.importer.ImportNotice
+import com.nullclass.importer.ImportNoticeEntry
 import com.nullclass.importer.jw.JwScheduleNormalizer
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -8,6 +10,10 @@ import kotlin.test.assertNull
 import kotlin.test.assertTrue
 
 class JwOcrTest {
+
+    /** 提示里是否出现过某类问题（标识是稳定契约，断言不绑文案）。 */
+    private fun List<ImportNoticeEntry>.has(notice: ImportNotice): Boolean =
+        any { it.notice == notice }
 
     // ---- 文本解析 ----
 
@@ -94,7 +100,7 @@ class JwOcrTest {
         )
         val table = JwTableAligner.align(page)
         assertFalse(table.reliable)
-        assertTrue(table.warnings.any { it.contains("表头") }, table.warnings.toString())
+        assertTrue(table.warnings.has(ImportNotice.OCR_NO_DAY_HEADER), table.warnings.toString())
     }
 
     @Test
@@ -109,7 +115,7 @@ class JwOcrTest {
         )
         val table = JwTableAligner.align(OcrPage(800, 400, boxes))
         assertFalse(table.reliable)
-        assertTrue(table.warnings.any { it.contains("节次") }, table.warnings.toString())
+        assertTrue(table.warnings.has(ImportNotice.OCR_NO_PERIOD_COLUMN), table.warnings.toString())
     }
 
     @Test
@@ -260,7 +266,7 @@ class JwOcrTest {
         val table = JwTableAligner.align(OcrPage(800, 600, boxes))
         assertTrue(table.reliable, table.warnings.toString())
         assertEquals(4, table.rowAnchors.size)
-        assertTrue(table.warnings.any { it.contains("按上课时间") }, table.warnings.toString())
+        assertTrue(table.warnings.has(ImportNotice.OCR_PERIODS_BY_TIME), table.warnings.toString())
 
         val result = JwOcrScheduleBuilder.build(table, "T", 20000, 20)
         val block = result.payload.terms.single().courses.single().blocks.single()
@@ -269,7 +275,7 @@ class JwOcrTest {
         assertEquals(1, block.startPeriod)
         assertEquals(2, block.endPeriod)
         // 推断出来的节次号必须出现在校对页上，不能只躺在 warnings 里
-        assertTrue(result.issues.any { it.contains("按上课时间") }, result.issues.toString())
+        assertTrue(result.issues.has(ImportNotice.OCR_PERIODS_BY_TIME), result.issues.toString())
     }
 
     @Test
@@ -296,7 +302,7 @@ class JwOcrTest {
         val result = JwOcrScheduleBuilder.build(table, "T", 20000, 20)
         val courses = result.payload.terms.single().courses
         assertEquals(listOf("大学英语", "高等数学"), courses.map { it.name }.sorted())
-        assertTrue(result.issues.any { it.contains("没有周次信息") }, result.issues.toString())
+        assertTrue(result.issues.has(ImportNotice.OCR_NO_WEEK_INFO), result.issues.toString())
 
         val english = courses.first { it.name == "大学英语" }
         assertEquals("李四", english.teacher)
@@ -306,7 +312,7 @@ class JwOcrTest {
         // 周次认不出 → 按整学期兜底，并逐条提示核对
         assertEquals(1, block.startWeek)
         assertEquals(20, block.endWeek)
-        assertTrue(result.issues.any { it.contains("没识别出周次") }, result.issues.toString())
+        assertTrue(result.issues.has(ImportNotice.OCR_CELL_NO_WEEKS), result.issues.toString())
     }
 
     @Test
@@ -393,7 +399,7 @@ class JwOcrTest {
         assertEquals(1, block.startWeek)
         assertEquals(16, block.endWeek)
         assertEquals("教1-101", block.location)
-        assertFalse(result.issues.any { it.contains("没识别出周次") }, result.issues.toString())
+        assertFalse(result.issues.has(ImportNotice.OCR_CELL_NO_WEEKS), result.issues.toString())
     }
 
     @Test
@@ -415,7 +421,7 @@ class JwOcrTest {
         val table = JwTableAligner.align(page)
         val result = JwOcrScheduleBuilder.build(table, "T", 20000, 20)
 
-        assertTrue(result.issues.any { it.contains("没识别出周次") }, result.issues.toString())
+        assertTrue(result.issues.has(ImportNotice.OCR_CELL_NO_WEEKS), result.issues.toString())
         val block = result.payload.terms.single().courses.single().blocks.single()
         assertEquals(1, block.startWeek)
         assertEquals(20, block.endWeek)

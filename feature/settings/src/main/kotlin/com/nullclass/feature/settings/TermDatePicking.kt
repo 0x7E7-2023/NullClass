@@ -1,8 +1,11 @@
 package com.nullclass.feature.settings
 
+import android.content.Context
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.SelectableDates
-import com.nullclass.core.model.ScheduleFormat
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.platform.LocalContext
+import com.nullclass.core.ui.i18n.ScheduleText
 import com.nullclass.core.model.Term
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
@@ -19,12 +22,21 @@ internal const val MILLIS_PER_DAY = 86_400_000L
 internal fun epochDayOfMillis(utcTimeMillis: Long): Long = Math.floorDiv(utcTimeMillis, MILLIS_PER_DAY)
 
 /** 「10月11日 · 周六」；跨年时补年份（与跳过日期列表同一口径）。 */
-internal fun dayLabel(epochDay: Long): String {
+internal fun dayLabel(context: Context, epochDay: Long): String {
     val date = LocalDate.ofEpochDay(epochDay)
-    val yearPrefix = if (date.year != LocalDate.now().year) "${date.year}年" else ""
-    return yearPrefix + date.format(DateTimeFormatter.ofPattern("M月d日")) +
-        " · ${ScheduleFormat.dayOfWeekLabel(date.dayOfWeek.value)}"
+    val pattern = DateTimeFormatter.ofPattern(context.getString(R.string.settings_month_day_pattern))
+    val monthDay = date.format(pattern)
+    val weekday = ScheduleText.dayOfWeek(context, date.dayOfWeek.value)
+    return if (date.year != LocalDate.now().year) {
+        context.getString(R.string.settings_day_label_with_year, date.year, monthDay, weekday)
+    } else {
+        context.getString(R.string.settings_day_label, monthDay, weekday)
+    }
 }
+
+/** Compose 里用的同一口径。 */
+@Composable
+internal fun dayLabel(epochDay: Long): String = dayLabel(LocalContext.current, epochDay)
 
 /** 日期选择器默认停在哪个月：今天在学期内就是今天，否则开学那天。 */
 internal fun defaultDisplayedDay(term: Term): Long {

@@ -1,0 +1,143 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- :feature:edit 的界面文案。资源名统一以 edit_ 开头，风格见 docs/ux-writing.md。 -->
+<resources>
+
+    <!-- 上课安排编辑器 -->
+    <string name="edit_block_section">时间安排</string>
+    <string name="edit_block_remove">删除该安排</string>
+    <string name="edit_block_week_prefix">第</string>
+    <string name="edit_block_week_suffix">周</string>
+    <string name="edit_block_range_separator">—</string>
+    <string name="edit_block_week_type_all">每周</string>
+    <string name="edit_block_week_type_odd">单周</string>
+    <string name="edit_block_week_type_even">双周</string>
+    <string name="edit_block_location">教室（可选）</string>
+    <string name="edit_block_period">节次</string>
+    <string name="edit_block_period_by_period">按小节</string>
+    <string name="edit_block_period_by_section">按大节</string>
+    <string name="edit_block_period_prefix">第</string>
+    <string name="edit_block_period_suffix">节</string>
+    <string name="edit_block_section_chip">大%1$d</string>
+    <string name="edit_stepper_decrease">减少</string>
+    <string name="edit_stepper_increase">增加</string>
+
+    <!-- 课程编辑 -->
+    <string name="edit_course_title_new">添加课程</string>
+    <string name="edit_course_title_edit">编辑课程</string>
+    <string name="edit_course_no_term">请先创建学期</string>
+    <string name="edit_course_name">课程名称（必填）</string>
+    <string name="edit_course_teacher">任课教师（可选）</string>
+    <string name="edit_course_note">备注（可选）</string>
+    <string name="edit_course_color">颜色</string>
+    <string name="edit_course_add_block">添加时间安排</string>
+    <string name="edit_course_error_title">无法保存</string>
+    <string name="edit_course_error_no_name">请填写课程名称。</string>
+    <string name="edit_course_error_no_block">请至少添加一条时间安排。</string>
+    <string name="edit_course_error_overlap">有两条时间安排在同一时段重叠，请调整或删除其中一条。</string>
+    <string name="edit_course_error_save_failed">保存失败，请重试。</string>
+    <string name="edit_course_conflict_header">时间冲突，请调整后再保存：</string>
+    <string name="edit_course_conflict_line">与《%1$s》冲突：%2$s</string>
+    <string name="edit_course_conflict_more">另有 %1$d 处冲突</string>
+
+    <!-- 学期编辑 -->
+    <string name="edit_term_title_new">创建学期</string>
+    <string name="edit_term_title_edit">编辑学期</string>
+    <string name="edit_term_name">学期名称（必填）</string>
+    <string name="edit_term_name_hint">如 2026-2027-1</string>
+    <string name="edit_term_week_start">每周起始日</string>
+    <string name="edit_term_week_start_monday">周一</string>
+    <string name="edit_term_week_start_sunday">周日</string>
+    <string name="edit_term_week_start_custom">当前从%1$s算起，两个选项均未选中。保持原样即可；选择任一项会把日期挪到最近的周一或周日。</string>
+    <string name="edit_term_first_day">第 1 周第 1 天：%1$s</string>
+    <string name="edit_term_first_day_unset">第 1 周第 1 天</string>
+    <string name="edit_term_first_week_range">第 1 周：%1$s – %2$s</string>
+    <string name="edit_term_day_with_weekday">%1$s（%2$s）</string>
+    <string name="edit_term_week_start_hint">一周从哪天算起，第 1 周就从哪天开始，周视图的列顺序与周次编号都随之调整。选择上方选项会把日期挪到最近的对应星期。</string>
+    <string name="edit_term_total_weeks">总周数</string>
+    <string name="edit_term_total_weeks_unit">周</string>
+    <string name="edit_term_copy_previous">从上一学期复制课程</string>
+    <string name="edit_term_copy_previous_source">来源：%1$s</string>
+
+    <!-- 学期编辑：节次时间 -->
+    <string name="edit_term_quick_section">快速设定</string>
+    <string name="edit_term_quick_lesson">单节课</string>
+    <string name="edit_term_quick_break">课间休息</string>
+    <string name="edit_term_quick_minutes">分钟</string>
+    <string name="edit_term_quick_hint">课间休息指一个大节内两节课之间的休息，默认模板为 10 分钟；大节与大节之间的休息不在此范围内。套用时仅按各大节现有的开课时刻重排其内部节次。</string>
+    <string name="edit_term_quick_apply">套用</string>
+    <string name="edit_term_quick_invalid">单节课请填 %1$d~%2$d 分钟，课间休息请填 %3$d~%4$d 分钟。</string>
+    <string name="edit_term_periods">节次时间（%1$d 节 = %2$d 大节）</string>
+    <string name="edit_term_reset_periods">恢复默认模板</string>
+    <string name="edit_term_add_period">添加节次</string>
+    <string name="edit_term_period_index">第%1$d节</string>
+    <string name="edit_term_remove_period">删除节次</string>
+    <string name="edit_term_session_morning">上午</string>
+    <string name="edit_term_session_afternoon">下午</string>
+    <string name="edit_term_session_evening">晚上</string>
+
+    <!-- 学期编辑：清空课程 -->
+    <string name="edit_term_clear_hint">清空本学期全部课程，学期与节次时间保留。删除会同步到其他设备。</string>
+    <string name="edit_term_clearing">正在清空…</string>
+    <string name="edit_term_clear_empty">本学期没有课程</string>
+    <string name="edit_term_clear">清空本学期课程</string>
+    <string name="edit_term_clear_confirm">将删除本学期的全部 %1$d 门课程，学期与节次时间保留。删除会同步到其他设备。</string>
+    <string name="edit_term_clear_action">清空</string>
+
+    <!-- 学期编辑：错误 -->
+    <string name="edit_term_error_title">无法保存</string>
+    <string name="edit_term_error_no_name">请填写学期名称。</string>
+    <string name="edit_term_error_keep_one_period">请至少保留一个节次。</string>
+    <string name="edit_term_error_invalid_input">输入内容不合法。</string>
+    <string name="edit_term_quick_period_invalid">第 %1$d 节的时间不是有效的 HH:mm（开始须早于结束），请先修正后再使用快速设定。</string>
+    <string name="edit_term_quick_overflow">按每节 %1$d 分钟、课间 %2$d 分钟排列，第 %3$d 大节将持续到 %4$s，而下一大节 %5$s 即开始。请减小单节时长或课间休息。</string>
+    <string name="edit_term_quick_out_of_day">按每节 %1$d 分钟、课间 %2$d 分钟排列，第 %3$d 大节将持续到 %4$s，已跨入次日。该大节开始过晚，请减小单节时长或课间休息。</string>
+    <string name="edit_term_error_period_format">第 %1$d 节的时间格式应为 HH:mm。</string>
+    <string name="edit_term_error_period_order">第 %1$d 节的开始时间须早于结束时间。</string>
+
+    <!-- 学期管理 -->
+    <string name="edit_term_list_title">学期管理</string>
+    <string name="edit_term_list_empty_title">尚未创建学期</string>
+    <string name="edit_term_list_empty_desc">创建学期后即可开始排课。</string>
+    <string name="edit_term_list_create">创建学期</string>
+    <string name="edit_term_list_current">当前</string>
+    <string name="edit_term_list_owner">所属课表：%1$s</string>
+    <string name="edit_term_list_week">第 %1$d 周 · 共 %2$d 周</string>
+    <string name="edit_term_list_out_of_term">不在学期内 · 共 %1$d 周</string>
+    <string name="edit_term_list_edit">编辑学期</string>
+    <string name="edit_term_list_delete">删除学期</string>
+    <string name="edit_term_list_delete_confirm">将删除「%1$s」及其全部课程与考试。该操作会同步到其他设备。</string>
+
+    <!-- 课表管理 -->
+    <string name="edit_timetable_list_title">课表管理</string>
+    <string name="edit_timetable_list_empty_title">尚未创建课表</string>
+    <string name="edit_timetable_list_empty_desc">创建课表后即可开始排课。</string>
+    <string name="edit_timetable_list_create">创建课表</string>
+    <string name="edit_timetable_list_current">当前</string>
+    <string name="edit_timetable_term_count">%1$d 个学期</string>
+    <string name="edit_timetable_delete">删除课表</string>
+    <string name="edit_timetable_delete_confirm">将删除「%1$s」及其全部学期、课程与考试。该操作会同步到其他设备。</string>
+    <string name="edit_timetable_delete_blocked_title">无法删除</string>
+    <string name="edit_timetable_delete_blocked_desc">请至少保留一张课表。如需清空内容，请在学期管理中删除其中的学期。</string>
+    <string name="edit_timetable_rename">重命名课表</string>
+    <string name="edit_timetable_name">课表名称</string>
+
+    <!-- 新建课表 -->
+    <string name="edit_timetable_create_title">新建课表</string>
+    <string name="edit_timetable_welcome">欢迎使用空课</string>
+    <string name="edit_timetable_welcome_desc">请先创建一张课表。不同课表的课程与节次时间相互独立，可按需创建多张。</string>
+    <string name="edit_timetable_create_name">课表名称（必填）</string>
+    <string name="edit_timetable_create_first_term">第一个学期</string>
+    <string name="edit_timetable_create_term_name">学期名称（必填）</string>
+    <string name="edit_timetable_creating">正在创建…</string>
+    <string name="edit_timetable_create_action">创建课表</string>
+    <string name="edit_timetable_create_first_week">第 1 周：%1$s（%2$s）起，共 7 天。节次时间先使用默认模板，之后可在学期管理中调整。</string>
+    <string name="edit_timetable_create_hint">创建后将自动切换到这张课表，之后可在「我的 → 课表管理」中切换。</string>
+    <string name="edit_timetable_create_error_title">无法创建</string>
+    <string name="edit_timetable_create_error_no_name">请填写课表名称。</string>
+    <string name="edit_timetable_create_error_no_term_name">请填写学期名称。</string>
+    <string name="edit_timetable_create_error_failed">创建失败，请重试。</string>
+    <string name="edit_timetable_default_name">我的课表</string>
+    <string name="edit_term_default_name_spring">%1$d 春</string>
+    <string name="edit_term_default_name_autumn">%1$d 秋</string>
+
+</resources>

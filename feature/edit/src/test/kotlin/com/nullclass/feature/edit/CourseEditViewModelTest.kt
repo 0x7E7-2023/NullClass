@@ -1,5 +1,6 @@
 package com.nullclass.feature.edit
 
+import android.content.Context
 import androidx.lifecycle.SavedStateHandle
 import com.nullclass.core.data.repository.CourseRepository
 import com.nullclass.core.data.repository.TermRepository
@@ -16,6 +17,10 @@ import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.test.UnconfinedTestDispatcher
 import kotlinx.coroutines.test.resetMain
 import kotlinx.coroutines.test.setMain
+import org.junit.runner.RunWith
+import org.robolectric.RobolectricTestRunner
+import org.robolectric.RuntimeEnvironment
+import org.robolectric.annotation.Config
 import kotlin.test.AfterTest
 import kotlin.test.BeforeTest
 import kotlin.test.Test
@@ -27,7 +32,11 @@ import kotlin.test.assertTrue
 
 /** 添加课程时的查重：与同学期其他课程时段重叠必须拦下，不许落库。 */
 @OptIn(ExperimentalCoroutinesApi::class)
+@RunWith(RobolectricTestRunner::class)
+@Config(sdk = [36])
 class CourseEditViewModelTest {
+
+    private val context: Context = RuntimeEnvironment.getApplication()
 
     private val term = Term(id = "t1", name = "2026-2027-1", firstDayEpochDay = 0, totalWeeks = 20)
 
@@ -47,6 +56,7 @@ class CourseEditViewModelTest {
     }
 
     private fun viewModel(courseId: String? = null): CourseEditViewModel = CourseEditViewModel(
+        context = context,
         savedStateHandle = SavedStateHandle(courseId?.let { mapOf("courseId" to it) } ?: emptyMap()),
         termRepository = termRepository,
         courseRepository = courseRepository,
@@ -90,7 +100,7 @@ class CourseEditViewModelTest {
         assertFalse(saved, "冲突时不应保存成功并离开页面")
         assertTrue(courseRepository.upserts.isEmpty(), "冲突时不应写入数据库")
         assertFalse(vm.state.value.saving, "冲突后应允许用户修改并重试")
-        val error = assertNotNull(vm.state.value.error)
+        val error = assertNotNull(vm.state.value.error).resolve(context)
         assertTrue(error.contains("高等数学"), "提示应说明和哪门课冲突，实际：$error")
     }
 

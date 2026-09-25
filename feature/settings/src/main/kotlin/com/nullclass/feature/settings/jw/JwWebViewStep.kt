@@ -42,10 +42,16 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
+import com.nullclass.core.ui.R as CoreR
+import com.nullclass.feature.settings.R
+import com.nullclass.feature.settings.toUiText
+import com.nullclass.core.ui.i18n.UiText
+import com.nullclass.core.ui.i18n.resolve
 import com.nullclass.core.ui.layout.LocalWindowSize
 import com.nullclass.importer.NullClassCodec
 import com.nullclass.importer.jw.JwAdapter
@@ -56,6 +62,7 @@ import com.nullclass.importer.jw.JwPackageException
 import com.nullclass.importer.jw.JwPayloadCodec
 import com.nullclass.importer.jw.JwScheduleNormalizer
 import com.nullclass.importer.jw.JwSchedulePayload
+import com.nullclass.importer.ImportNoticeEntry
 import com.nullclass.importer.jw.ocr.JwBoxes
 import com.nullclass.importer.jw.ocr.JwOcrBuildResult
 import com.nullclass.importer.jw.ocr.JwOcrScheduleBuilder
@@ -123,7 +130,7 @@ class JwNetworkGate {
         if (!frozen || allows(url)) return null
         val host = hostOf(url) ?: "?"
         if (blockedHosts.add(host)) {
-            JwExtractLog.w("闸门拦截 $host  $url")
+            JwExtractLog.w("闸门拦截 $host  $url") // i18n-exempt: 开发者日志
         }
         return blocked()
     }
@@ -149,13 +156,17 @@ fun JwWebViewStep(
 ) {
     val context = LocalContext.current
     val scope = rememberCoroutineScope()
+    // 状态行由 WebView / 相机回调写入（非 Compose 上下文），所以存 UiText：
+    // 存成已解析的字符串会把文案钉死在写入那一刻的语言上。
     var status by remember {
         mutableStateOf(
-            if (adapter.promptsForStartUrl) {
-                "登录并打开课表页面后，点「提取课表」。通用适配器会读整页文字自己还原表格"
-            } else {
-                "登录并打开课表页面后，点下方「提取课表」"
-            },
+            UiText.Res(
+                if (adapter.promptsForStartUrl) {
+                    R.string.settings_jw_hint_generic
+                } else {
+                    R.string.settings_jw_hint
+                },
+            ),
         )
     }
     // rememberSaveable：这是用户显式点「切换手机版/电脑版」的选择（见下方按钮），
@@ -221,9 +232,10 @@ fun JwWebViewStep(
         lastErrorLog = null
         JwExtractLog.clearLastError(context)
         scriptBridge?.reset()
-        status = "提取中…"
+        status = UiText.Res(R.string.settings_jw_extracting)
         JwExtractLog.i(
-            "开始提取 key=${adapter.key} url=${view.url} desktop=$isDesktopMode hosts=${gate.allowedHosts}",
+            // 开发者日志：adb / logcat 用，不翻译
+            "开始提取 key=${adapter.key} url=${view.url} desktop=$isDesktopMode hosts=${gate.allowedHosts}", // i18n-exempt: 开发者日志
         )
         scope.launch {
             try {
@@ -248,15 +260,15 @@ fun JwWebViewStep(
                 val payload = JwPayloadCodec.decode(payloadJson)
                 when (payload.kind) {
                     JwSchedulePayload.KIND_IMAGE -> {
-                        status = "识别图片课表…"
+                        status = UiText.Res(R.string.settings_jw_ocr_running)
                         val page = JwImageOcr.recognize(context, payload.images.first(), gate.allowedHosts)
                         val table = JwTableAligner.align(page)
                         if (!table.reliable) {
-                            val msg = "识别不可靠：${table.warnings.joinToString("；")}。请改用手动录入。"
-                            status = msg
+                            val warnings = table.warnings.joined()
+                            status = UiText.Res(R.string.settings_jw_ocr_unreliable, warnings)
                             persistError(
                                 buildErrorLog(
-                                    error = IllegalStateException(msg),
+                                    error = IllegalStateException("识别不可靠：${warnings.resolve(context)}"), // i18n-exempt: 开发者日志
                                     url = view.url,
                                     adapter = adapter,
                                     isDesktopMode = isDesktopMode,
@@ -266,7 +278,11 @@ fun JwWebViewStep(
                         } else {
                             val built = JwOcrScheduleBuilder.build(
                                 table = table,
-                                termName = "${adapter.displayName}（图片识别）",
+                                // 学期名会进数据库，属数据不属文案：用界面语言的当前取值即可
+                                termName = context.getString(
+                                    R.string.settings_jw_adapter_ocr,
+                                    adapter.displayName,
+                                ),
                                 firstDayEpochDay = LocalDate.now()
                                     .with(TemporalAdjusters.previousOrSame(DayOfWeek.MONDAY))
                                     .toEpochDay(),
@@ -274,11 +290,10 @@ fun JwWebViewStep(
                                 warnings = payload.warnings,
                             )
                             if (built.payload.terms.single().courses.isEmpty()) {
-                                val msg = "识别结果里没有课程，请改用手动录入。"
-                                status = msg
+                                status = UiText.Res(R.string.settings_jw_ocr_empty)
                                 persistError(
                                     buildErrorLog(
-                                        error = IllegalStateException(msg),
+                                        error = IllegalStateException("识别结果里没有课程"), // i18n-exempt: 开发者日志
                                         url = view.url,
                                         adapter = adapter,
                                         isDesktopMode = isDesktopMode,
@@ -287,18 +302,18 @@ fun JwWebViewStep(
                                 )
                             } else {
                                 ocrReview = built
-                                status = "识别完成，请核对后导入"
+                                status = UiText.Res(R.string.settings_jw_ocr_done)
                                 lastErrorLog = null
-                                JwExtractLog.i("OCR 识别完成 courses=${built.payload.terms.single().courses.size}")
+                                JwExtractLog.i("OCR 识别完成 courses=${built.payload.terms.single().courses.size}") // i18n-exempt: 开发者日志
                             }
                         }
                     }
                     JwSchedulePayload.KIND_BOXES -> {
                         // 通用适配器：适配器已把页面量成「文字 + 坐标」，这里走与 OCR 完全相同的
                         // 表格结构层。文字是精确的，没有识别误差。
-                        status = "分析表格结构…"
-                        ocrReview = buildBoxesReview(adapter, view.title, payload)
-                        status = "结构还原完成，请核对后导入"
+                        status = UiText.Res(R.string.settings_jw_ocr_building)
+                        ocrReview = buildBoxesReview(context, adapter, view.title, payload)
+                        status = UiText.Res(R.string.settings_jw_structure_done)
                         lastErrorLog = null
                     }
                     else -> {
@@ -307,14 +322,51 @@ fun JwWebViewStep(
                             schoolKey = adapter.key,
                             now = System.currentTimeMillis(),
                         )
-                        status = "提取成功"
+                        status = UiText.Res(R.string.settings_jw_extract_done)
                         lastErrorLog = null
-                        JwExtractLog.i("提取成功 key=${adapter.key} terms=${document.terms.size}")
+                        JwExtractLog.i("提取成功 key=${adapter.key} terms=${document.terms.size}") // i18n-exempt: 开发者日志
                         onExtracted(NullClassCodec.encode(document), rememberableUrl(), payload.reviewNotes)
                     }
                 }
+            } catch (e: JwStructureNotFoundException) {
+                status = UiText.Res(R.string.settings_jw_structure_missing, e.warnings.joined())
+                persistError(
+                    buildErrorLog(
+                        error = e,
+                        url = view.url,
+                        adapter = adapter,
+                        isDesktopMode = isDesktopMode,
+                        consoleLogs = synchronized(consoleLogs) { consoleLogs.toList() },
+                    ),
+                )
+            } catch (e: JwNoCoursesFoundException) {
+                status = UiText.Res(R.string.settings_jw_no_courses)
+                persistError(
+                    buildErrorLog(
+                        error = e,
+                        url = view.url,
+                        adapter = adapter,
+                        isDesktopMode = isDesktopMode,
+                        consoleLogs = synchronized(consoleLogs) { consoleLogs.toList() },
+                    ),
+                )
+            } catch (e: JwImageOcr.JwImageUnreadableException) {
+                status = UiText.Res(R.string.settings_jw_extract_failed, UiText.Res(R.string.settings_jw_image_unreadable))
+                persistError(
+                    buildErrorLog(
+                        error = e,
+                        url = view.url,
+                        adapter = adapter,
+                        isDesktopMode = isDesktopMode,
+                        consoleLogs = synchronized(consoleLogs) { consoleLogs.toList() },
+                    ),
+                )
             } catch (e: Exception) {
-                status = "提取失败：${e.message ?: e.javaClass.simpleName}"
+                // 异常详情不翻（系统/服务器给的原始信息），只翻结论
+                status = UiText.Res(
+                    R.string.settings_jw_extract_failed,
+                    e.message ?: e.javaClass.simpleName,
+                )
                 persistError(
                     buildErrorLog(
                         error = e,
@@ -333,7 +385,8 @@ fun JwWebViewStep(
     DisposableEffect(Unit) {
         onDispose {
             // 弹窗还挂着就走人：不叫醒脚本的话它会一直卡在「等用户回答」上
-            scriptBridge?.cancelPendingAsk("页面已关闭")
+            // 回填给适配器脚本的协议文本：脚本侧只认字符串，属给适配器作者的诊断
+            scriptBridge?.cancelPendingAsk("页面已关闭") // i18n-exempt: 适配器协议文本
             webView?.apply {
                 loadUrl("about:blank")
                 (parent as? android.view.ViewGroup)?.removeView(this)
@@ -389,7 +442,8 @@ fun JwWebViewStep(
                                     }
                                     consoleLogs.add(formatted)
                                 }
-                                if (level == "ERROR" || level == "WARNING" || msg.contains("空课沙箱")) {
+                                // 「空课沙箱」是注入脚本自己写的标记，用于筛出沙箱告警：解析判据
+                                if (level == "ERROR" || level == "WARNING" || msg.contains("空课沙箱")) { // i18n-exempt: 解析关键词
                                     JwExtractLog.w("console $formatted")
                                 }
                             }
@@ -420,7 +474,7 @@ fun JwWebViewStep(
                             if (adapter.promptsForStartUrl) gate.allowCurrentHost(url)
                             if (autoExtract && !autoTriggered) {
                                 autoTriggered = true
-                                status = "页面已加载，自动提取中…"
+                                status = UiText.Res(R.string.settings_jw_page_loaded)
                                 extract()
                             }
                         }
@@ -436,7 +490,7 @@ fun JwWebViewStep(
                     }
                     if (startUrl.isBlank()) {
                         // startUrlPrompt 适配器理论上不会走到这（地址在进入本页前就填好了）
-                        status = "没有可打开的地址，请返回重新选择学校并填写教务地址"
+                        status = UiText.Res(R.string.settings_jw_no_start_url)
                     } else {
                         loadUrl(startUrl)
                     }
@@ -471,7 +525,7 @@ fun JwWebViewStep(
                 verticalAlignment = Alignment.CenterVertically,
             ) {
                 Text(
-                    status,
+                    status.resolve(),
                     style = MaterialTheme.typography.bodySmall,
                     color = if (lastErrorLog != null) MaterialTheme.colorScheme.error else MaterialTheme.colorScheme.onSurfaceVariant,
                     maxLines = if (compactBar) 1 else Int.MAX_VALUE,
@@ -481,17 +535,27 @@ fun JwWebViewStep(
                 TextButton(
                     onClick = { isDesktopMode = !isDesktopMode },
                 ) {
-                    Text(if (isDesktopMode) "切换手机版" else "切换电脑版")
+                    Text(
+                        stringResource(
+                            if (isDesktopMode) {
+                                R.string.settings_jw_switch_mobile
+                            } else {
+                                R.string.settings_jw_switch_desktop
+                            },
+                        ),
+                    )
                 }
             }
             if (frozen) {
                 // 安全提示不能因为屏幕矮就不显示，只缩短文案
                 Text(
-                    if (compactBar) {
-                        "提取期间已冻结网页网络。"
-                    } else {
-                        "提取期间已冻结网页网络（防止适配器把页面内容发到站外）。"
-                    },
+                    stringResource(
+                        if (compactBar) {
+                            R.string.settings_jw_network_frozen_short
+                        } else {
+                            R.string.settings_jw_network_frozen
+                        },
+                    ),
                     style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.tertiary,
                     maxLines = if (compactBar) 1 else Int.MAX_VALUE,
@@ -503,31 +567,50 @@ fun JwWebViewStep(
                     onClick = { extract() },
                     enabled = !extracting,
                     modifier = Modifier.weight(1f),
-                ) { Text(if (extracting) "提取中…" else "提取课表") }
+                ) {
+                    Text(
+                        stringResource(
+                            if (extracting) R.string.settings_jw_extracting else R.string.settings_jw_extract,
+                        ),
+                    )
+                }
                 OutlinedButton(
                     onClick = {
                         if (frozen) {
                             frozen = false
                             gate.frozen = false
-                            status = "已恢复网页网络"
+                            status = UiText.Res(R.string.settings_jw_network_restored)
                         } else {
                             (context as? JwImportActivity)?.finish()
                         }
                     },
                     modifier = Modifier.weight(1f),
-                ) { Text(if (frozen) "继续浏览网页" else "取消") }
+                ) {
+                    Text(
+                        stringResource(
+                            if (frozen) R.string.settings_jw_resume_browsing else CoreR.string.common_cancel,
+                        ),
+                    )
+                }
             }
             if (lastErrorLog != null) {
                 OutlinedButton(
                     onClick = {
                         val clipboard = context.getSystemService(Context.CLIPBOARD_SERVICE) as? ClipboardManager
-                        val clip = ClipData.newPlainText("教务提取失败日志", lastErrorLog)
+                        val clip = ClipData.newPlainText(
+                            context.getString(R.string.settings_jw_error_log_title),
+                            lastErrorLog,
+                        )
                         clipboard?.setPrimaryClip(clip)
-                        Toast.makeText(context, "已复制失败日志到剪贴板", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(
+                            context,
+                            context.getString(R.string.settings_jw_error_log_copied),
+                            Toast.LENGTH_SHORT,
+                        ).show()
                     },
                     modifier = Modifier.fillMaxWidth(),
                 ) {
-                    Text("复制失败日志")
+                    Text(stringResource(R.string.settings_jw_error_log_copy))
                 }
             }
         }
@@ -555,7 +638,7 @@ fun JwWebViewStep(
             },
             onDismiss = {
                 ocrReview = null
-                status = "已取消图片识别结果（可重试或手动录入）"
+                status = UiText.Res(R.string.settings_jw_image_cancelled)
             },
         )
     }
@@ -568,20 +651,18 @@ fun JwWebViewStep(
  * 这里的文本框是适配器从 DOM 量出来的，文字精确；OCR 那条是识别出来的。
  */
 private fun buildBoxesReview(
+    context: Context,
     adapter: JwAdapter,
     title: String?,
     payload: JwSchedulePayload,
 ): JwOcrBuildResult {
     val table = JwTableAligner.align(JwBoxes.toOcrPage(payload))
     if (!table.reliable) {
-        throw JwPackageException(
-            "这一页里找不出课表结构：${table.warnings.joinToString("；")}。" +
-                "请确认已打开课表页面（长表格建议切到电脑版、让整张表完整显示）后重试",
-        )
+        throw JwStructureNotFoundException(table.warnings)
     }
     val built = JwOcrScheduleBuilder.build(
         table = table,
-        termName = pageTermName(adapter, title),
+        termName = pageTermName(context, adapter, title),
         firstDayEpochDay = LocalDate.now()
             .with(TemporalAdjusters.previousOrSame(DayOfWeek.MONDAY))
             .toEpochDay(),
@@ -590,34 +671,50 @@ private fun buildBoxesReview(
         warnings = payload.warnings,
     )
     if (built.payload.terms.single().courses.isEmpty()) {
-        throw JwPackageException("这一页里没有解析出任何课程，请确认打开的是课表页面")
+        throw JwNoCoursesFoundException()
     }
     return built
 }
 
+/** 找不出课表结构（表头/节次锚点对不上）。携带匹配器给的警告，文案由界面层取。 */
+private class JwStructureNotFoundException(val warnings: List<ImportNoticeEntry>) :
+    Exception("structure not found")
+
+/** 结构层的几条提示连成一句（分句符随语言：中文「；」）。 */
+private fun List<ImportNoticeEntry>.joined(): UiText =
+    UiText.Joined(map { it.toUiText() }, CoreR.string.common_clause_separator)
+
+/** 页面里没解析出任何课程。 */
+private class JwNoCoursesFoundException : Exception("no courses")
+
 /** 学期名：页面标题本身就是学期名就用它（用户一眼能认出），否则退回适配器名。 */
-private fun pageTermName(adapter: JwAdapter, title: String?): String {
+private fun pageTermName(context: Context, adapter: JwAdapter, title: String?): String {
     val clean = title?.replace(Regex("\\s+"), " ")?.trim()?.take(30).orEmpty()
-    return if (clean.length >= 3 && (clean.contains("学期") || clean.contains("学年"))) {
+    // 「学期」「学年」是判断页面标题是否就是学期名的关键词：数据判据，不是文案
+    return if (clean.length >= 3 && (clean.contains("学期") || clean.contains("学年"))) { // i18n-exempt: 解析关键词
         clean
     } else {
-        "${adapter.displayName}（自动识别）"
+        // 学期名会进数据库，属数据不属文案：与图片识别那条路一样，用界面语言的当前取值即可
+        context.getString(R.string.settings_jw_adapter_auto, adapter.displayName)
     }
 }
 
 /** 图片课表的**确认闸门**：识别结果先给用户看，确认后才归一化入库。 */
 @Composable
-private fun OcrReviewDialog(    review: JwOcrBuildResult,
+private fun OcrReviewDialog(
+    review: JwOcrBuildResult,
     onConfirm: () -> Unit,
     onDismiss: () -> Unit,
 ) {
     val term = review.payload.terms.firstOrNull()
     val courseCount = term?.courses?.size ?: 0
     val blockCount = term?.courses?.sumOf { it.blocks.size } ?: 0
+    // joinToString 的 lambda 不是 @Composable，取不了 stringResource，用 context 取
+    val context = LocalContext.current
 
     AlertDialog(
         onDismissRequest = onDismiss,
-        title = { Text("核对识别结果") },
+        title = { Text(stringResource(R.string.settings_jw_review_title)) },
         text = {
             Column(
                 Modifier
@@ -625,44 +722,56 @@ private fun OcrReviewDialog(    review: JwOcrBuildResult,
                     .verticalScroll(rememberScrollState()),
                 verticalArrangement = Arrangement.spacedBy(8.dp),
             ) {
-                Text("识别到 $courseCount 门课程、$blockCount 条安排。", fontWeight = FontWeight.Bold)
                 Text(
-                    "学期名与开学日期用的是默认值（页面标题 / 本周周一），导入后可在学期编辑里改。",
+                    stringResource(R.string.settings_jw_review_count, courseCount, blockCount),
+                    fontWeight = FontWeight.Bold,
+                )
+                Text(
+                    stringResource(R.string.settings_jw_review_defaults),
                     style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                 )
                 term?.courses?.take(20)?.forEach { course ->
                     Text(
                         "· ${course.name}" + course.blocks.joinToString("") { block ->
-                            "（周${block.dayOfWeek} ${block.startPeriod}-${block.endPeriod}节）"
+                            context.getString(
+                                R.string.settings_jw_review_block,
+                                block.dayOfWeek,
+                                block.startPeriod,
+                                block.endPeriod,
+                            )
                         },
                         style = MaterialTheme.typography.bodySmall,
                     )
                 }
                 if (review.issues.isNotEmpty()) {
                     Text(
-                        "⚠ 以下内容需要你重点核对：",
+                        stringResource(R.string.settings_jw_review_warn),
                         style = MaterialTheme.typography.bodySmall,
                         color = MaterialTheme.colorScheme.error,
                         fontWeight = FontWeight.Bold,
                     )
                     review.issues.take(10).forEach { issue ->
                         Text(
-                            "· $issue",
+                            "· ${issue.toUiText().resolve()}",
                             style = MaterialTheme.typography.bodySmall,
                             color = MaterialTheme.colorScheme.error,
                         )
                     }
                 }
                 Text(
-                    "识别是按格子的位置还原的，可能整行错位。导入后请到课表里抽查几门课的位置。",
+                    stringResource(R.string.settings_jw_review_hint),
                     style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                 )
             }
         },
-        confirmButton = { TextButton(onClick = onConfirm) { Text("确认导入") } },
-        dismissButton = { TextButton(onClick = onDismiss) { Text("取消") } },
+        confirmButton = {
+            TextButton(onClick = onConfirm) { Text(stringResource(R.string.settings_jw_review_confirm)) }
+        },
+        dismissButton = {
+            TextButton(onClick = onDismiss) { Text(stringResource(CoreR.string.common_cancel)) }
+        },
     )
 }
 
@@ -699,21 +808,22 @@ private fun buildErrorLog(
     isDesktopMode: Boolean,
     consoleLogs: List<String>,
 ): String = buildString {
-    appendLine("=== 教务课表提取失败日志 ===")
-    appendLine("学校: ${adapter.displayName} (${adapter.key})")
-    appendLine("当前 URL: ${url ?: "未知"}")
-    appendLine("显示模式: ${if (isDesktopMode) "电脑版" else "手机版"}")
+    // 整块是给开发者看的原始日志（adb / 剪贴板反馈用），不翻译，逐行标注豁免
+    appendLine("=== 教务课表提取失败日志 ===") // i18n-exempt: 开发者日志
+    appendLine("学校: ${adapter.displayName} (${adapter.key})") // i18n-exempt: 开发者日志
+    appendLine("当前 URL: ${url ?: "未知"}") // i18n-exempt: 开发者日志
+    appendLine("显示模式: ${if (isDesktopMode) "电脑版" else "手机版"}") // i18n-exempt: 开发者日志
     val time = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault()).format(Date())
-    appendLine("发生时间: $time")
+    appendLine("发生时间: $time") // i18n-exempt: 开发者日志
     appendLine()
-    appendLine("【错误信息】")
+    appendLine("【错误信息】") // i18n-exempt: 开发者日志
     appendLine(error.message ?: error.javaClass.simpleName)
     appendLine()
-    appendLine("【异常堆栈】")
+    appendLine("【异常堆栈】") // i18n-exempt: 开发者日志
     appendLine(error.stackTraceToString().trim())
     if (consoleLogs.isNotEmpty()) {
         appendLine()
-        appendLine("【网页控制台日志 (最新 ${consoleLogs.size} 条)】")
+        appendLine("【网页控制台日志 (最新 ${consoleLogs.size} 条)】") // i18n-exempt: 开发者日志
         consoleLogs.forEach { log ->
             appendLine(log)
         }

@@ -4,6 +4,8 @@ import androidx.room.withTransaction
 import com.nullclass.core.data.db.NullClassDatabase
 import com.nullclass.core.data.db.dao.CourseDao
 import com.nullclass.core.data.db.dao.ExamDao
+import com.nullclass.core.model.DataError
+import com.nullclass.core.model.DataException
 import com.nullclass.core.model.Exam
 import com.nullclass.core.model.ExamWithCourse
 import kotlinx.coroutines.flow.Flow
@@ -56,7 +58,7 @@ class ExamRepositoryImpl @Inject constructor(
 
     override suspend fun upsert(exam: Exam): String {
         val course = courseDao.getById(exam.courseId)
-        require(course != null && course.deletedAt == null) { "所属课程不存在" }
+        if (course == null || course.deletedAt != null) throw DataException(DataError.COURSE_NOT_FOUND)
         val now = System.currentTimeMillis()
         val examId = exam.id.ifEmpty { UUID.randomUUID().toString() }
         val existing = examDao.getById(examId)

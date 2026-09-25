@@ -54,6 +54,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -62,9 +63,11 @@ import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.LifecycleOwner
-import com.nullclass.core.model.ScheduleFormat
 import com.nullclass.core.model.SkipDate
 import com.nullclass.core.model.SkipDateType
+import com.nullclass.core.ui.R as CoreR
+import com.nullclass.core.ui.i18n.dayOfWeekLabel
+import com.nullclass.core.ui.i18n.resolve
 import com.nullclass.core.ui.layout.AdaptiveColumn
 import com.nullclass.core.ui.layout.LocalWindowSize
 import java.time.Instant
@@ -100,10 +103,13 @@ fun NotificationSettingsScreen(
         modifier = Modifier.nestedScroll(appBarScrollBehavior.nestedScrollConnection),
         topBar = {
             TopAppBar(
-                title = { Text("通知与提醒") },
+                title = { Text(stringResource(R.string.settings_notification_title)) },
                 navigationIcon = {
                     IconButton(onClick = onBack) {
-                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "返回")
+                        Icon(
+                            Icons.AutoMirrored.Filled.ArrowBack,
+                            contentDescription = stringResource(CoreR.string.common_back),
+                        )
                     }
                 },
                 scrollBehavior = appBarScrollBehavior,
@@ -119,9 +125,13 @@ fun NotificationSettingsScreen(
             verticalArrangement = Arrangement.spacedBy(12.dp),
         ) {
             // ---- 权限引导 ----
-            Text("权限与后台", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold)
             Text(
-                "提醒依赖系统通知与后台权限。逐项检查，未授权的可以一键跳到对应系统页。",
+                stringResource(R.string.settings_notification_permissions),
+                style = MaterialTheme.typography.titleMedium,
+                fontWeight = FontWeight.Bold,
+            )
+            Text(
+                stringResource(R.string.settings_notification_permissions_desc),
                 style = MaterialTheme.typography.bodySmall,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
             )
@@ -135,10 +145,13 @@ fun NotificationSettingsScreen(
             HorizontalDivider(modifier = Modifier.padding(vertical = 8.dp))
 
             // ---- 提前提醒时间 ----
-            Text("课前提醒", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold)
             Text(
-                "每节课开始前发系统通知。默认方案非精确（省电策略下可能有几分钟误差）；" +
-                    "需要准时可在上面开启「精确提醒」。",
+                stringResource(R.string.settings_notification_class_title),
+                style = MaterialTheme.typography.titleMedium,
+                fontWeight = FontWeight.Bold,
+            )
+            Text(
+                stringResource(R.string.settings_notification_class_desc),
                 style = MaterialTheme.typography.bodySmall,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
             )
@@ -146,10 +159,13 @@ fun NotificationSettingsScreen(
                 selected = reminderLeadMinutes,
                 onSelect = viewModel::setReminderLeadMinutes,
             )
-            Text("考试提醒", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold)
             Text(
-                "有具体时间时按考试开始时间提醒；未填写时间时，以考试日 08:00 作为提醒基准。" +
-                    "节假日不会跳过考试提醒（考试日期是学校定的）。",
+                stringResource(R.string.settings_notification_exam_title),
+                style = MaterialTheme.typography.titleMedium,
+                fontWeight = FontWeight.Bold,
+            )
+            Text(
+                stringResource(R.string.settings_notification_exam_desc),
                 style = MaterialTheme.typography.bodySmall,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
             )
@@ -161,17 +177,19 @@ fun NotificationSettingsScreen(
             HorizontalDivider(modifier = Modifier.padding(vertical = 8.dp))
 
             // ---- 节假日与跳过日期 ----
-            Text("节假日与跳过日期", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold)
             Text(
-                "在线同步法定节假日（逐年多数据源自动降级：timor.tech → holiday-cn → Nager.Date），" +
-                    "落在这天的课前提醒自动跳过。也可以手动添加自己的跳过日期。" +
-                    "调休补班日仅作提示，不会生成课程。",
+                stringResource(R.string.settings_holiday_section),
+                style = MaterialTheme.typography.titleMedium,
+                fontWeight = FontWeight.Bold,
+            )
+            Text(
+                stringResource(R.string.settings_holiday_section_desc),
                 style = MaterialTheme.typography.bodySmall,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
             )
             ToggleRow(
-                title = "在线同步节假日",
-                subtitle = "每周自动同步一次当前学期覆盖的年份",
+                title = stringResource(R.string.settings_holiday_sync_title),
+                subtitle = stringResource(R.string.settings_holiday_sync_desc),
                 checked = holidaySyncEnabled,
                 onCheckedChange = viewModel::setHolidaySyncEnabled,
             )
@@ -183,26 +201,34 @@ fun NotificationSettingsScreen(
                     val time = Instant.ofEpochMilli(holidayLastSyncMs).atZone(ZoneId.systemDefault())
                         .format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm"))
                     Text(
-                        "上次同步：$time",
+                        stringResource(R.string.settings_holiday_last_sync, time),
                         style = MaterialTheme.typography.bodySmall,
                         color = MaterialTheme.colorScheme.onSurfaceVariant,
                         modifier = Modifier.weight(1f),
                     )
                 } else {
                     Text(
-                        "从未同步",
+                        stringResource(R.string.settings_holiday_never_synced),
                         style = MaterialTheme.typography.bodySmall,
                         color = MaterialTheme.colorScheme.onSurfaceVariant,
                         modifier = Modifier.weight(1f),
                     )
                 }
                 OutlinedButton(onClick = viewModel::refreshHolidays, enabled = !holidayBusy) {
-                    Text(if (holidayBusy) "同步中…" else "立即同步")
+                    Text(
+                        stringResource(
+                            if (holidayBusy) {
+                                R.string.settings_holiday_syncing
+                            } else {
+                                R.string.settings_holiday_sync_now
+                            },
+                        ),
+                    )
                 }
             }
             holidayMessage?.let { message ->
                 Text(
-                    message.text,
+                    message.text.resolve(),
                     style = MaterialTheme.typography.bodySmall,
                     color = if (message.isError) {
                         MaterialTheme.colorScheme.error
@@ -214,7 +240,7 @@ fun NotificationSettingsScreen(
 
             var showDatePicker by remember { mutableStateOf(false) }
             Button(onClick = { showDatePicker = true }, modifier = Modifier.fillMaxWidth()) {
-                Text("添加跳过日期")
+                Text(stringResource(R.string.settings_holiday_add_skip))
             }
             if (showDatePicker) {
                 val pickerState = androidx.compose.material3.rememberDatePickerState(
@@ -234,10 +260,12 @@ fun NotificationSettingsScreen(
                                 viewModel.addManualDate(millis / 86_400_000L)
                             }
                             showDatePicker = false
-                        }) { Text("确定") }
+                        }) { Text(stringResource(CoreR.string.common_confirm)) }
                     },
                     dismissButton = {
-                        TextButton(onClick = { showDatePicker = false }) { Text("取消") }
+                        TextButton(onClick = { showDatePicker = false }) {
+                            Text(stringResource(CoreR.string.common_cancel))
+                        }
                     },
                 ) {
                     DatePicker(state = pickerState)
@@ -248,13 +276,13 @@ fun NotificationSettingsScreen(
             val upcoming = skipDates.filter { it.epochDay >= today }
             if (upcoming.isEmpty()) {
                 Text(
-                    "今天及以后暂无跳过日期",
+                    stringResource(R.string.settings_holiday_no_skips),
                     style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                 )
             } else {
                 Text(
-                    "今天及以后（${upcoming.size} 条，往前的已隐藏）",
+                    stringResource(R.string.settings_holiday_skip_count, upcoming.size),
                     style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                 )
@@ -311,42 +339,57 @@ private fun PermissionPanel(
 
     Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
         PermissionRow(
-            title = "通知权限",
-            status = if (notificationGranted) "已授权" else "未授权，收不到任何提醒",
+            title = stringResource(R.string.settings_permission_notification),
+            status = stringResource(
+                if (notificationGranted) {
+                    R.string.settings_permission_granted
+                } else {
+                    R.string.settings_permission_notification_denied
+                },
+            ),
             granted = notificationGranted,
-            actionLabel = "去授权",
+            actionLabel = stringResource(R.string.settings_permission_grant_action),
             onAction = { requestNotificationPermission(context, permissionLauncher) },
         )
 
         PermissionRow(
-            title = "忽略电池优化",
-            status = if (batteryIgnored) "已豁免" else "未豁免，后台提醒可能被推迟",
+            title = stringResource(R.string.settings_permission_battery),
+            status = stringResource(
+                if (batteryIgnored) {
+                    R.string.settings_permission_battery_exempt
+                } else {
+                    R.string.settings_permission_battery_denied
+                },
+            ),
             granted = batteryIgnored,
-            actionLabel = "去设置",
+            actionLabel = stringResource(R.string.settings_permission_settings_action),
             onAction = { BackgroundReliability.startBatteryOptimizationSettings(context) },
         )
 
         val autostartPage = remember { BackgroundReliability.resolvedAutostartActivity(context) }
         if (autostartPage != null) {
             PermissionRow(
-                title = "厂商自启动",
+                title = stringResource(R.string.settings_permission_autostart),
                 // 自启动状态无法查询，只能引导用户去系统页自查
-                status = "部分厂商需单独允许空课自启动",
+                status = stringResource(R.string.settings_permission_autostart_hint),
                 granted = null,
-                actionLabel = "去设置",
+                actionLabel = stringResource(R.string.settings_permission_settings_action),
                 onAction = { BackgroundReliability.startAutostartSettings(context) },
             )
         }
 
         PermissionRow(
-            title = "精确闹钟权限",
-            status = when {
-                !exactReminder -> "未开启精确提醒（当前为普通提醒，误差几分钟）"
-                exactAllowed -> "已授权，提醒将到点准时"
-                else -> "已开启但未授权，仍按普通提醒工作"
-            },
+            title = stringResource(R.string.settings_permission_exact_alarm),
+            status = stringResource(
+                when {
+                    !exactReminder -> R.string.settings_permission_exact_off
+                    exactAllowed -> R.string.settings_permission_exact_granted
+                    else -> R.string.settings_permission_exact_denied
+                },
+            ),
             granted = if (!exactReminder) null else exactAllowed,
-            actionLabel = if (exactAllowed) null else "去授权",
+            actionLabel = stringResource(R.string.settings_permission_grant_action)
+                .takeIf { !exactAllowed },
             onAction = {
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
                     runCatching {
@@ -360,17 +403,24 @@ private fun PermissionPanel(
             },
         )
         ToggleRow(
-            title = "精确提醒",
-            subtitle = "课程提醒改用系统精确闹钟，到点准时（需要上面的精确闹钟权限）",
+            title = stringResource(R.string.settings_notification_exact_title),
+            subtitle = stringResource(R.string.settings_notification_exact_desc),
             checked = exactReminder,
             onCheckedChange = onSetExactReminder,
         )
 
         PermissionRow(
-            title = "勿扰模式权限",
-            status = if (dndGranted) "已授权" else "未授权",
+            title = stringResource(R.string.settings_permission_dnd),
+            status = stringResource(
+                if (dndGranted) {
+                    R.string.settings_permission_granted
+                } else {
+                    R.string.settings_permission_denied
+                },
+            ),
             granted = dndGranted,
-            actionLabel = if (dndGranted) null else "去授权",
+            actionLabel = stringResource(R.string.settings_permission_grant_action)
+                .takeIf { !dndGranted },
             onAction = {
                 runCatching {
                     context.startActivity(
@@ -383,8 +433,8 @@ private fun PermissionPanel(
         )
         if (dndGranted) {
             ToggleRow(
-                title = "勿扰模式下响铃",
-                subtitle = "开启后课前/考试提醒在勿扰模式中照常发出",
+                title = stringResource(R.string.settings_notification_bypass_dnd),
+                subtitle = stringResource(R.string.settings_notification_bypass_dnd_desc),
                 checked = reminderBypassDnd,
                 onCheckedChange = onSetReminderBypassDnd,
             )
@@ -467,26 +517,34 @@ private fun SkipDateRow(skip: SkipDate, onDelete: () -> Unit) {
         ) {
             Column(Modifier.weight(1f)) {
                 val date = LocalDate.ofEpochDay(skip.epochDay)
-                // 列表会同时含跨年学期的两个年份，日期只写「M月d日」时
-                // 「10月1日 · 国庆节」这类两年都有的条目看起来像重复
-                val yearPrefix = if (date.year != LocalDate.now().year) "${date.year}年" else ""
+                // 跨年时列表里会出现两个年份都有的「10月1日 · 国庆节」，
+                // 看起来像重复条目，所以年份只在与今年不同时才写出来
+                val monthDay = stringResource(R.string.settings_month_day, date.monthValue, date.dayOfMonth)
+                val dayLabel = if (date.year != LocalDate.now().year) {
+                    stringResource(R.string.settings_day_label_with_year, date.year, monthDay, dayOfWeekLabel(date.dayOfWeek.value))
+                } else {
+                    stringResource(R.string.settings_day_label, monthDay, dayOfWeekLabel(date.dayOfWeek.value))
+                }
                 Text(
-                    yearPrefix + date.format(DateTimeFormatter.ofPattern("M月d日")) +
-                        " · ${ScheduleFormat.dayOfWeekLabel(date.dayOfWeek.value)}",
+                    dayLabel,
                     style = MaterialTheme.typography.titleSmall,
                 )
                 Text(
                     when (skip.type) {
-                        SkipDateType.HOLIDAY -> skip.label ?: "节假日"
-                        SkipDateType.WORKDAY -> "调休补班（仅提示，不生成课程）"
-                        SkipDateType.MANUAL -> "手动跳过"
+                        SkipDateType.HOLIDAY ->
+                            skip.label ?: stringResource(R.string.settings_holiday_type_holiday)
+                        SkipDateType.WORKDAY -> stringResource(R.string.settings_holiday_type_workday)
+                        SkipDateType.MANUAL -> stringResource(R.string.settings_holiday_type_manual)
                     },
                     style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                 )
             }
             IconButton(onClick = onDelete) {
-                Icon(Icons.Default.Delete, contentDescription = "删除")
+                Icon(
+                    Icons.Default.Delete,
+                    contentDescription = stringResource(CoreR.string.common_delete),
+                )
             }
         }
     }
@@ -505,7 +563,14 @@ private fun ReminderLeadSelector(selected: Int, onSelect: (Int) -> Unit) {
                 onClick = { onSelect(minutes) },
                 shape = SegmentedButtonDefaults.itemShape(index, ReminderOptions.size),
             ) {
-                Text(if (minutes == 0) "关闭" else "${minutes}分钟", fontSize = 13.sp)
+                Text(
+                    if (minutes == 0) {
+                        stringResource(CoreR.string.common_off)
+                    } else {
+                        stringResource(R.string.settings_reminder_minutes, minutes)
+                    },
+                    fontSize = 13.sp,
+                )
             }
         }
     }
@@ -526,11 +591,12 @@ private fun ExamReminderLeadSelector(selected: Int, onSelect: (Int) -> Unit) {
     }
 }
 
+@Composable
 private fun examReminderLabel(minutes: Int): String = when {
-    minutes == 0 -> "关闭"
-    minutes % (24 * 60) == 0 -> "${minutes / (24 * 60)}天"
-    minutes % 60 == 0 -> "${minutes / 60}小时"
-    else -> "${minutes}分钟"
+    minutes == 0 -> stringResource(CoreR.string.common_off)
+    minutes % (24 * 60) == 0 -> stringResource(R.string.settings_reminder_days, minutes / (24 * 60))
+    minutes % 60 == 0 -> stringResource(R.string.settings_reminder_hours, minutes / 60)
+    else -> stringResource(R.string.settings_reminder_minutes, minutes)
 }
 
 private fun isNotificationGranted(context: Context): Boolean =

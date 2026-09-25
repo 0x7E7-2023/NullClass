@@ -10,6 +10,8 @@ import androidx.datastore.preferences.core.longPreferencesKey
 import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.datastore.preferences.core.stringSetPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
+import com.nullclass.core.data.locale.AppLocale
+import com.nullclass.core.model.AppLanguage
 import com.nullclass.core.model.ThemeMode
 import com.nullclass.core.model.WidgetFontSize
 import dagger.hilt.android.qualifiers.ApplicationContext
@@ -45,6 +47,7 @@ class UserPreferencesRepository @Inject constructor(
         val SHOW_EXAM_TAB = booleanPreferencesKey("show_exam_tab")
         val WIDGET_FONT_SIZE = stringPreferencesKey("widget_font_size")
         val THEME_MODE = stringPreferencesKey("theme_mode")
+        val APP_LANGUAGE = stringPreferencesKey("app_language")
         val SENT_REMINDER_KEYS = stringSetPreferencesKey("sent_reminder_keys")
         val EXACT_REMINDER = booleanPreferencesKey("exact_reminder")
         val REMINDER_BYPASS_DND = booleanPreferencesKey("reminder_bypass_dnd")
@@ -168,6 +171,22 @@ class UserPreferencesRepository @Inject constructor(
 
     suspend fun setThemeMode(value: ThemeMode) {
         context.userPrefs.edit { it[Keys.THEME_MODE] = value.name }
+    }
+
+    /**
+     * 应用界面语言。默认跟随系统；未知值回落到跟随系统。
+     *
+     * 读到值时顺手写入 [AppLocale] 的同步镜像 —— Activity 的 attachBaseContext
+     * 早于依赖注入执行，无法在那里读 DataStore。
+     */
+    val appLanguage: Flow<AppLanguage> =
+        context.userPrefs.data.map { AppLanguage.fromName(it[Keys.APP_LANGUAGE]) }
+            .distinctUntilChanged()
+            .onEach { AppLocale.cache(context, it) }
+
+    suspend fun setAppLanguage(value: AppLanguage) {
+        context.userPrefs.edit { it[Keys.APP_LANGUAGE] = value.name }
+        AppLocale.cache(context, value)
     }
 
     /**

@@ -28,6 +28,14 @@ import java.util.concurrent.TimeUnit
  */
 object JwImageOcr {
 
+    /**
+     * 图片读不出来：不在白名单内、下载失败，或数据本身损坏。
+     *
+     * 不在这里拼文案 —— 它既会回给适配器脚本（协议通道），也会直接显示在提取状态里，
+     * 两条路径的措辞不同，由各自的调用方按当前语言取。
+     */
+    class JwImageUnreadableException : IllegalArgumentException("image unreadable")
+
     private const val MAX_IMAGE_BYTES = 8 * 1024 * 1024
 
     /** 解码后的像素上限（8MB 的 PNG 可以解成 20000×20000 的位图，必须先拦）。 */
@@ -41,11 +49,7 @@ object JwImageOcr {
     }
 
     suspend fun recognize(context: Context, image: JwImageRef, allowedHosts: List<String>): OcrPage {
-        val bitmap = loadBitmap(image, allowedHosts)
-            ?: throw IllegalArgumentException(
-                "图片无法读取或不在白名单内（只允许 https/http 且域名在适配器声明范围内），" +
-                    "也可能只是图片损坏——建议用原始截图，不要用微信转发后的压缩图",
-            )
+        val bitmap = loadBitmap(image, allowedHosts) ?: throw JwImageUnreadableException()
         return OcrEngines.default(context).recognize(bitmap)
     }
 

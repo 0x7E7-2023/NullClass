@@ -1,5 +1,6 @@
 package com.nullclass.feature.settings.transfer
 
+import com.nullclass.feature.settings.R
 import android.graphics.Rect
 import android.util.Size
 import android.os.SystemClock
@@ -49,6 +50,7 @@ import androidx.compose.ui.geometry.Size as ComposeSize
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalView
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.core.content.ContextCompat
@@ -60,6 +62,8 @@ import com.google.mlkit.vision.barcode.BarcodeScannerOptions
 import com.google.mlkit.vision.barcode.BarcodeScanning
 import com.google.mlkit.vision.barcode.common.Barcode
 import com.google.mlkit.vision.common.InputImage
+import com.nullclass.core.ui.R as CoreR
+import com.nullclass.core.ui.i18n.UiText
 import java.util.concurrent.Executors
 import java.util.concurrent.TimeUnit
 import java.util.concurrent.atomic.AtomicBoolean
@@ -77,7 +81,7 @@ internal fun QrScanScreen(
     onPayload: (String) -> Unit,
     onCancel: () -> Unit,
     onPickImage: () -> Unit,
-    onError: (String) -> Unit,
+    onError: (UiText) -> Unit,
 ) {
     val context = LocalContext.current
     // ponytail: Dialog's LocalLifecycleOwner can swap after first frame and restart the
@@ -89,7 +93,7 @@ internal fun QrScanScreen(
     var camera by remember { mutableStateOf<Camera?>(null) }
     var manualZoom by remember { mutableStateOf(false) }
     var streaming by remember { mutableStateOf(false) }
-    var status by remember { mutableStateOf("将二维码放入框内，双指缩放、点按对焦") }
+    var statusRes by remember { mutableStateOf(R.string.settings_qr_scan_hint) }
     val currentOnPayload by rememberUpdatedState(onPayload)
     val currentOnError by rememberUpdatedState(onError)
     val previewView = remember(context) {
@@ -131,7 +135,9 @@ internal fun QrScanScreen(
             val provider = try {
                 cameraProviderFuture.get()
             } catch (e: Exception) {
-                currentOnError("打不开相机：${e.message ?: e.javaClass.simpleName}")
+                currentOnError(
+                    UiText.Res(R.string.settings_qr_scan_camera_failed, e.message ?: e.javaClass.simpleName),
+                )
                 return@addListener
             }
             val preview = Preview.Builder().build().also {
@@ -168,14 +174,18 @@ internal fun QrScanScreen(
                             if (target > zoom.zoomRatio) {
                                 lastAutoZoomAt = now
                                 cam.cameraControl.setZoomRatio(target)
-                                status = "检测到二维码，正在缓慢拉近…"
+                                statusRes = R.string.settings_qr_scan_zooming
                             } else {
-                                status = "保持稳定，正在识别二维码…"
+                                statusRes = R.string.settings_qr_scan_decoding
                             }
                         }
                     }
                 },
-                onError = { message ->
+                onError = { cause ->
+                    val message = UiText.Res(
+                        R.string.settings_qr_scan_failed,
+                        cause?.message ?: UiText.Res(R.string.settings_qr_scan_failed_retry),
+                    )
                     if (done.compareAndSet(false, true)) mainExecutor.execute { currentOnError(message) }
                 },
             )
@@ -197,7 +207,9 @@ internal fun QrScanScreen(
                 camera = bound
                 torchAvailable = bound.cameraInfo.hasFlashUnit()
             } catch (e: Exception) {
-                currentOnError("打不开相机：${e.message ?: e.javaClass.simpleName}")
+                currentOnError(
+                    UiText.Res(R.string.settings_qr_scan_camera_failed, e.message ?: e.javaClass.simpleName),
+                )
             }
         }, mainExecutor)
 
@@ -231,7 +243,7 @@ internal fun QrScanScreen(
                         manualZoom = true
                         requestedZoom = (requestedZoom * zoomChange).coerceIn(1f, zoom.maxZoomRatio)
                         cam.cameraControl.setZoomRatio(requestedZoom)
-                        status = "将二维码放入框内，双指缩放、点按对焦"
+                        statusRes = R.string.settings_qr_scan_hint
                     }
                 }
             }.pointerInput(camera) {
@@ -263,7 +275,11 @@ internal fun QrScanScreen(
                 .align(Alignment.TopStart)
                 .padding(8.dp),
         ) {
-            Icon(Icons.Filled.Close, contentDescription = "关闭", tint = Color.White)
+            Icon(
+                Icons.Filled.Close,
+                contentDescription = stringResource(CoreR.string.common_close),
+                tint = Color.White,
+            )
         }
         if (torchAvailable) {
             TextButton(
@@ -277,7 +293,16 @@ internal fun QrScanScreen(
                     .align(Alignment.TopEnd)
                     .padding(8.dp),
             ) {
-                Text(if (torchOn) "关闭闪光灯" else "闪光灯", color = Color.White)
+                Text(
+                    stringResource(
+                        if (torchOn) {
+                            R.string.settings_qr_scan_torch_off
+                        } else {
+                            R.string.settings_qr_scan_torch_on
+                        },
+                    ),
+                    color = Color.White,
+                )
             }
         }
         Column(
@@ -287,11 +312,13 @@ internal fun QrScanScreen(
             verticalArrangement = Arrangement.spacedBy(8.dp),
         ) {
             Text(
-                if (streaming) status else "正在启动相机…",
+                if (streaming) stringResource(statusRes) else stringResource(R.string.settings_qr_scan_starting),
                 color = Color.White,
                 style = MaterialTheme.typography.bodyMedium,
             )
-            TextButton(onClick = onPickImage) { Text("从相册选择二维码", color = Color.White) }
+            TextButton(onClick = onPickImage) {
+                Text(stringResource(R.string.settings_qr_scan_album), color = Color.White)
+            }
         }
     }
 }
@@ -303,7 +330,8 @@ private class DenseQrAnalyzer(
     private val scanner: BarcodeScanner,
     private val onPayload: (String) -> Unit,
     private val onSmallBox: (fill: Float) -> Unit,
-    private val onError: (String) -> Unit,
+    /** 识别失败。传异常本身而不是文字：文案由调用方按当前语言取。 */
+    private val onError: (Throwable?) -> Unit,
 ) : ImageAnalysis.Analyzer {
 
     private val busy = AtomicBoolean(false)
@@ -322,7 +350,7 @@ private class DenseQrAnalyzer(
         } catch (e: Exception) {
             busy.set(false)
             imageProxy.close()
-            onError("识别失败：${e.message ?: "请重新打开扫码器"}")
+            onError(e)
             return
         }
         task
@@ -341,7 +369,7 @@ private class DenseQrAnalyzer(
                 val fill = boxSide / minSide
                 if (fill in 0.04f..0.5f) onSmallBox(fill)
             }
-            .addOnFailureListener { onError("识别失败：${it.message ?: "请重新打开扫码器"}") }
+            .addOnFailureListener { onError(it) }
             .addOnCompleteListener {
                 busy.set(false)
                 imageProxy.close()

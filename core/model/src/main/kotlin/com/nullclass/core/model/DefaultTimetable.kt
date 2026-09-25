@@ -11,5 +11,12 @@ package com.nullclass.core.model
  */
 object DefaultTimetable {
     const val ID = "00000000-0000-0000-0000-000000000001"
+
+    /**
+     * 迁移时写进数据库的课表名。
+     *
+     * 这是**数据内容**而不是界面文案：它随库一起同步到其他设备，用户也可以改名，
+     * 因此不随界面语言变化。数据库迁移在 SQL 里拼这个值，也拿不到 Context。
+     */
     const val NAME = "我的课表"
 }

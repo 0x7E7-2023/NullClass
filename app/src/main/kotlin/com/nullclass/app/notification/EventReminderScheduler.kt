@@ -9,7 +9,9 @@ import androidx.work.workDataOf
 import com.nullclass.core.data.prefs.UserPreferencesRepository
 import com.nullclass.core.data.repository.CalendarEventRepository
 import com.nullclass.core.model.EventReminderPlanner
-import com.nullclass.core.model.ExamFormat
+import com.nullclass.app.R
+import com.nullclass.core.ui.R as CoreR
+import com.nullclass.core.ui.i18n.DateText
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.first
 import java.time.Duration
@@ -38,9 +40,14 @@ class EventReminderScheduler @Inject constructor(
             val uniqueName = EventReminderPlanner.uniqueWorkName(planned)
             val event = planned.event
             val text = listOf(
-                "${ExamFormat.dateLabel(event.dateEpochDay)} ${EventReminderPlanner.timeLabel(event)}",
+                context.getString(
+                    R.string.app_event_reminder_text,
+                    DateText.date(context, event.dateEpochDay),
+                    EventReminderPlanner.timeLabel(event)
+                        ?: context.getString(R.string.app_event_all_day),
+                ),
                 event.note.orEmpty(),
-            ).filter { it.isNotBlank() }.joinToString(" · ")
+            ).filter { it.isNotBlank() }.joinToString(context.getString(CoreR.string.common_separator))
             wm.enqueueUniqueWork(
                 uniqueName,
                 ExistingWorkPolicy.REPLACE,

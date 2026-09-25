@@ -12,12 +12,14 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.nullclass.core.model.DayOverrides
-import com.nullclass.core.model.ScheduleFormat
 import com.nullclass.core.model.Term
+import com.nullclass.core.ui.i18n.dayOfWeekLabel
+import com.nullclass.core.ui.i18n.dayOfWeekShortLabel
 import java.time.LocalDate
 
 /**
@@ -54,7 +56,7 @@ internal fun WeekHeader(
                 horizontalAlignment = Alignment.CenterHorizontally,
             ) {
                 Text(
-                    text = ScheduleFormat.dayOfWeekShortLabel(day),
+                    text = dayOfWeekShortLabel(day),
                     fontSize = 11.sp,
                     color = if (isToday) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurfaceVariant,
                     fontWeight = if (isToday) FontWeight.Bold else FontWeight.Normal,
@@ -72,9 +74,16 @@ internal fun WeekHeader(
                         // 而这里说的是「上（动词）周五的课」。间隔号把动词和宾语隔开，两义不再撞车。
                         // 来源日就在同一周内时写星期；跨周才补月/日（同一列宽里放不下两者）。
                         text = if (term.weekOf(sourceEpochDay) == week) {
-                            "调·周${ScheduleFormat.dayOfWeekShortLabel(source.dayOfWeek.value)}"
+                            stringResource(
+                                R.string.schedule_header_swap_weekday,
+                                dayOfWeekLabel(source.dayOfWeek.value),
+                            )
                         } else {
-                            "调·${source.monthValue}/${source.dayOfMonth}"
+                            stringResource(
+                                R.string.schedule_header_swap_date,
+                                source.monthValue,
+                                source.dayOfMonth,
+                            )
                         },
                         fontSize = 9.sp,
                         color = MaterialTheme.colorScheme.tertiary,

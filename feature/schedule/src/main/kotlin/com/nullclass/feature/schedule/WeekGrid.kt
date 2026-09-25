@@ -25,6 +25,7 @@ import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
@@ -40,6 +41,7 @@ import com.nullclass.core.model.PlacedBlock
 import com.nullclass.core.model.ScheduleFormat
 import com.nullclass.core.model.Session
 import com.nullclass.core.model.Term
+import com.nullclass.core.ui.i18n.weekSpanLabel
 import com.nullclass.core.ui.theme.courseColor
 import com.nullclass.core.ui.theme.otherWeekBlockColor
 
@@ -383,7 +385,7 @@ private fun OtherWeekBlock(placed: PlacedBlock, onBlockClick: (PlacedBlock) -> U
             horizontalAlignment = Alignment.CenterHorizontally,
             modifier = Modifier.padding(horizontal = 2.dp, vertical = 3.dp),
         ) {
-            OtherWeekText("非本周", color.content)
+            OtherWeekText(stringResource(R.string.schedule_other_week), color.content)
             OtherWeekText(
                 text = placed.course.name,
                 color = color.content,
@@ -391,7 +393,7 @@ private fun OtherWeekBlock(placed: PlacedBlock, onBlockClick: (PlacedBlock) -> U
                 lineHeight = 12.sp,
                 maxLines = 2,
             )
-            OtherWeekText(ScheduleFormat.weekSpanLabel(placed.block), color.content)
+            OtherWeekText(weekSpanLabel(placed.block), color.content)
         }
     }
 }
