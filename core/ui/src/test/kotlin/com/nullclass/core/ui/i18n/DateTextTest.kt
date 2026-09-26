@@ -10,7 +10,7 @@ import kotlin.test.Test
 import kotlin.test.assertEquals
 
 @RunWith(RobolectricTestRunner::class)
-@Config(sdk = [36])
+@Config(sdk = [36], qualifiers = "zh-rCN")
 class DateTextTest {
 
     private val context: Context get() = RuntimeEnvironment.getApplication()

@@ -20,7 +20,7 @@
     <string name="schedule_show_now_line">显示当前时间线</string>
     <string name="schedule_show_weekend">显示周末</string>
     <string name="schedule_show_grid_lines">显示网格线</string>
-    <string name="schedule_show_time_in_cards">在课块上标注起止时间</string>
+    <string name="schedule_show_time_in_cards">在课程卡片上显示上课时间</string>
     <string name="schedule_show_other_week">显示非本周课程</string>
 
     <!-- 周视图表头：调课标记 -->
@@ -52,10 +52,10 @@
 
     <!-- 调课 -->
     <string name="schedule_day_swap_title">调课 · %1$s %2$s</string>
-    <string name="schedule_day_swap_desc_none">这一天按课表原样上课。调休时可将其设为上另一天的课，今日页、周视图、桌面小组件与课前提醒会一并调整，上课时间仍按这一天的作息。</string>
+    <string name="schedule_day_swap_desc_none">这一天按原课表上课。遇到调休时，可改为上另一天的课；今日页、课表、桌面小组件与课前提醒会同步调整，上课时间仍按这一天的作息。</string>
     <string name="schedule_day_swap_desc_current">当前设置：这一天上 %1$s（%2$s）的课。</string>
     <string name="schedule_day_swap_pick_in_week">上本周哪一天的课</string>
-    <string name="schedule_day_swap_self">%1$s（本身）</string>
+    <string name="schedule_day_swap_self">%1$s（原课表）</string>
     <string name="schedule_day_swap_other_date">选择其他日期…</string>
     <string name="schedule_day_swap_reset">恢复原课表</string>
 
@@ -68,7 +68,7 @@
     <string name="schedule_course_no_exam">尚未设置考试</string>
     <string name="schedule_course_seat">座位 %1$s</string>
     <string name="schedule_course_delete">删除课程</string>
-    <string name="schedule_course_delete_confirm">将删除「%1$s」。该操作会同步到其他设备。</string>
+    <string name="schedule_course_delete_confirm">将删除「%1$s」及其全部上课安排与考试。删除后无法恢复；如已开启同步，其他设备上也会一并删除。</string>
 
     <!-- 日程安排 -->
     <string name="schedule_event_title">日程安排</string>
@@ -76,7 +76,7 @@
     <string name="schedule_event_add">添加日程</string>
     <string name="schedule_event_edit">编辑日程</string>
     <string name="schedule_event_delete">删除日程</string>
-    <string name="schedule_event_delete_confirm">将删除「%1$s」。该操作无法撤销。</string>
+    <string name="schedule_event_delete_confirm">将删除「%1$s」。删除后无法恢复。</string>
     <string name="schedule_event_day_header">%1$s %2$s</string>
     <string name="schedule_event_day_empty">这一天没有日程。点击右下角的按钮添加。</string>
     <string name="schedule_event_upcoming">近期日程</string>

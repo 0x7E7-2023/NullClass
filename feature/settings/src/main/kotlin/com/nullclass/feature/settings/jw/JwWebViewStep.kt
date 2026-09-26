@@ -43,6 +43,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalResources
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
@@ -157,6 +158,8 @@ fun JwWebViewStep(
     modifier: Modifier = Modifier,
 ) {
     val context = LocalContext.current
+    // 组合里取文字要经 LocalResources：它随配置变化失效重组，LocalContext 不会
+    val resources = LocalResources.current
     val scope = rememberCoroutineScope()
     // 状态行由 WebView / 相机回调写入（非 Compose 上下文），所以存 UiText：
     // 存成已解析的字符串会把文案钉死在写入那一刻的语言上。
@@ -281,7 +284,7 @@ fun JwWebViewStep(
                             val built = JwOcrScheduleBuilder.build(
                                 table = table,
                                 // 学期名会进数据库，属数据不属文案：用界面语言的当前取值即可
-                                termName = context.getString(
+                                termName = resources.getString(
                                     R.string.settings_jw_adapter_ocr,
                                     adapter.displayName,
                                 ),
@@ -600,13 +603,13 @@ fun JwWebViewStep(
                     onClick = {
                         val clipboard = context.getSystemService(Context.CLIPBOARD_SERVICE) as? ClipboardManager
                         val clip = ClipData.newPlainText(
-                            context.getString(R.string.settings_jw_error_log_title),
+                            resources.getString(R.string.settings_jw_error_log_title),
                             lastErrorLog,
                         )
                         clipboard?.setPrimaryClip(clip)
                         Toast.makeText(
                             context,
-                            context.getString(R.string.settings_jw_error_log_copied),
+                            resources.getString(R.string.settings_jw_error_log_copied),
                             Toast.LENGTH_SHORT,
                         ).show()
                     },
@@ -716,8 +719,9 @@ private fun OcrReviewDialog(
     val term = review.payload.terms.firstOrNull()
     val courseCount = term?.courses?.size ?: 0
     val blockCount = term?.courses?.sumOf { it.blocks.size } ?: 0
-    // joinToString 的 lambda 不是 @Composable，取不了 stringResource，用 context 取
-    val context = LocalContext.current
+    // joinToString 的 lambda 不是 @Composable，取不了 stringResource，用 LocalResources 取
+    val resources = LocalResources.current
+    val dayNames = resources.getStringArray(CoreR.array.fmt_day_of_week)
 
     AlertDialog(
         onDismissRequest = onDismiss,
@@ -745,9 +749,11 @@ private fun OcrReviewDialog(
                 term?.courses?.take(20)?.forEach { course ->
                     Text(
                         "· ${course.name}" + course.blocks.joinToString("") { block ->
-                            context.getString(
+                            resources.getString(
                                 R.string.settings_jw_review_block,
-                                block.dayOfWeek,
+                                dayNames.getOrElse(block.dayOfWeek - 1) {
+                                    resources.getString(CoreR.string.fmt_day_of_week_unknown)
+                                },
                                 block.startPeriod,
                                 block.endPeriod,
                             )

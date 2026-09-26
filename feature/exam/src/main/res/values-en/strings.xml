@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- English translation of values/strings.xml. Conventions: docs/i18n.md. -->
+<resources>
+
+    <!-- Exam list -->
+    <string name="exam_title">Exams</string>
+    <string name="exam_add">Add exam</string>
+    <string name="exam_delete">Delete exam</string>
+    <string name="exam_no_term_title">No term yet</string>
+    <string name="exam_no_term_desc">Create a term before adding exams.</string>
+    <string name="exam_create_term">Create term</string>
+    <string name="exam_summary_empty">No exams</string>
+    <plurals name="exam_summary_count">
+        <item quantity="one">%1$d exam</item>
+        <item quantity="other">%1$d exams</item>
+    </plurals>
+    <string name="exam_no_upcoming">No upcoming exams</string>
+    <string name="exam_section_upcoming">Upcoming</string>
+    <string name="exam_section_past">Ended</string>
+    <string name="exam_next">Next exam</string>
+    <string name="exam_time_undecided">Time to be announced</string>
+    <string name="exam_seat">Seat %1$s</string>
+    <string name="exam_detail_empty">No details</string>
+    <string name="exam_delete_confirm">“%1$s · %2$s” will be deleted. This can’t be undone. If sync is on, it will also be deleted on your other devices.</string>
+    <string name="exam_delete_failed">Couldn’t delete the exam. Please try again.</string>
+    <string name="exam_delete_failed_detail">Couldn’t delete the exam: %1$s</string>
+
+    <!-- Exam editor -->
+    <string name="exam_edit_title_new">Add exam</string>
+    <string name="exam_edit_title_edit">Edit exam</string>
+    <string name="exam_edit_saving">Saving…</string>
+    <string name="exam_edit_no_term">Please create a term first</string>
+    <string name="exam_edit_no_course_title">No courses yet</string>
+    <string name="exam_edit_no_course_desc">An exam must belong to a course. Please add a course to the timetable first.</string>
+    <string name="exam_edit_course">Course: %1$s</string>
+    <string name="exam_edit_course_unselected">Not selected</string>
+    <string name="exam_edit_course_hint">The exam will appear in this course’s details.</string>
+    <string name="exam_edit_course_picker">Choose course</string>
+    <string name="exam_edit_name">Exam name (required)</string>
+    <string name="exam_edit_date">Date (required)</string>
+    <string name="exam_edit_date_format">For example, 2026-12-20</string>
+    <string name="exam_edit_pick_date">Choose date</string>
+    <string name="exam_edit_pick_date_with_value">Choose date · %1$s</string>
+    <string name="exam_edit_time_section">Time (optional)</string>
+    <string name="exam_edit_start_time">Start time</string>
+    <string name="exam_edit_start_time_hint">e.g. 09:00</string>
+    <string name="exam_edit_end_time">End time</string>
+    <string name="exam_edit_end_time_hint">e.g. 11:00</string>
+    <string name="exam_edit_location">Room (optional)</string>
+    <string name="exam_edit_seat">Seat number (optional)</string>
+    <string name="exam_edit_note">Note (optional)</string>
+    <string name="exam_edit_default_title">Final exam</string>
+
+    <!-- Exam editor: validation and errors -->
+    <string name="exam_edit_error_title">Can’t save</string>
+    <string name="exam_edit_error_time_format">Enter the time as hours:minutes, for example 09:00.</string>
+    <string name="exam_edit_error_time_order">The end time must be later than the start time.</string>
+    <string name="exam_edit_error_no_course">Please choose a course.</string>
+    <string name="exam_edit_error_no_name">Please enter an exam name.</string>
+    <string name="exam_edit_error_date_format">Enter the date as year-month-day, for example 2026-12-20.</string>
+    <string name="exam_edit_error_save_failed">Couldn’t save. Please try again.</string>
+
+</resources>

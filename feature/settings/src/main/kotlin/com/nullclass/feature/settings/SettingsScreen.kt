@@ -169,7 +169,8 @@ fun SettingsScreen(
                 fontWeight = FontWeight.Bold,
             )
             Text(
-                stringResource(R.string.settings_webdav_desc) + " " +
+                stringResource(R.string.settings_webdav_desc) +
+                    stringResource(CoreR.string.common_sentence_separator) +
                     stringResource(R.string.settings_webdav_warning),
                 style = MaterialTheme.typography.bodySmall,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,

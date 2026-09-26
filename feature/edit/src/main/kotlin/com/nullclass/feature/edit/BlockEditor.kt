@@ -1,5 +1,6 @@
 package com.nullclass.feature.edit
 
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -8,6 +9,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentSize
@@ -25,6 +27,7 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.SegmentedButton
 import androidx.compose.material3.SegmentedButtonDefaults
 import androidx.compose.material3.SingleChoiceSegmentedButtonRow
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -46,6 +49,33 @@ import com.nullclass.core.model.WeekType
 import com.nullclass.core.ui.i18n.dayOfWeekShortLabel
 import com.nullclass.core.ui.i18n.periodRangeLabel
 import com.nullclass.core.ui.theme.CoursePalette
+
+/** 星期选择格：外观同 FilterChip（选中填色、未选描边），宽度由调用方按比例分配。 */
+@Composable
+private fun DayToggle(
+    label: String,
+    selected: Boolean,
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier,
+) {
+    Surface(
+        selected = selected,
+        onClick = onClick,
+        modifier = modifier.height(32.dp),
+        shape = MaterialTheme.shapes.small,
+        color = if (selected) MaterialTheme.colorScheme.secondaryContainer else Color.Transparent,
+        contentColor = if (selected) {
+            MaterialTheme.colorScheme.onSecondaryContainer
+        } else {
+            MaterialTheme.colorScheme.onSurfaceVariant
+        },
+        border = if (selected) null else BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant),
+    ) {
+        Box(contentAlignment = Alignment.Center) {
+            Text(label, style = MaterialTheme.typography.labelLarge, fontSize = 12.sp, maxLines = 1, softWrap = false)
+        }
+    }
+}
 
 /**
  * 单条时间安排编辑卡：周次范围、单双周、星期、节次（小节/大节双模式）、教室。
@@ -124,12 +154,15 @@ fun BlockEditor(
             }
 
             // 星期
+            // 七个等宽：星期缩写各语言长短不一（中文一个字、英文两个字母）。FilterChip 自带约 32dp
+            // 内边距，一行七个时留给文字的只剩十来 dp，两个字母就会被截断，所以用 Surface 自己画
             Row(horizontalArrangement = Arrangement.spacedBy(6.dp), modifier = Modifier.fillMaxWidth()) {
                 for (day in 1..7) {
-                    FilterChip(
+                    DayToggle(
+                        label = dayOfWeekShortLabel(day),
                         selected = block.dayOfWeek == day,
                         onClick = { onUpdate(block.copy(dayOfWeek = day)) },
-                        label = { Text(dayOfWeekShortLabel(day), fontSize = 12.sp) },
+                        modifier = Modifier.weight(1f),
                     )
                 }
             }

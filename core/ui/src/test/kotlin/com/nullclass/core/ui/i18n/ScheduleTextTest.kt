@@ -12,7 +12,7 @@ import kotlin.test.assertEquals
 
 /** 课表共用文案：断言走真实 strings.xml，资源写坏（比如分隔符的空格被 aapt 吃掉）会在这里暴露。 */
 @RunWith(RobolectricTestRunner::class)
-@Config(sdk = [36])
+@Config(sdk = [36], qualifiers = "zh-rCN")
 class ScheduleTextTest {
 
     private val context: Context get() = RuntimeEnvironment.getApplication()

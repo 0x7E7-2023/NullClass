@@ -21,13 +21,26 @@ android {
      * OCR 引擎（ONNX Runtime）的 .so 是体积大头，必须按 ABI 拆包：
      * 不拆的话四个 ABI 全进一个 APK，release 会从 3MB 涨到 129MB。
      * 保留 universal 兜底（模拟器 / 未知 ABI）。
+     * 打 AAB（bundle* 任务）时必须关掉：AGP 不允许一边拆 APK 一边打 bundle
+     * （issuetracker 402800800），而 AAB 本来就由商店按 ABI 分发。
      */
+    val buildingBundle = gradle.startParameter.taskNames.any { it.substringAfterLast(':').startsWith("bundle") }
     splits {
         abi {
-            isEnable = true
+            isEnable = !buildingBundle
             reset()
             include("arm64-v8a", "armeabi-v7a", "x86_64")
             isUniversalApk = true
+        }
+    }
+
+    /**
+     * 上架用的 AAB 不按语言拆分：应用内可以切换语言（AppLocale），按系统语言装进来的
+     * 语言分包里没有切过去的那门语言的资源，切了也只会显示默认文案。
+     */
+    bundle {
+        language {
+            enableSplit = false
         }
     }
 

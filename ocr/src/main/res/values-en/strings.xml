@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- English translation of values/strings.xml. Conventions: docs/i18n.md. -->
+<resources>
+    <string name="ocr_engine_unavailable">Image recognition is unavailable.</string>
+    <string name="ocr_model_load_failed">Image recognition failed to load. Please restart NullClass and try again (%1$s).</string>
+</resources>

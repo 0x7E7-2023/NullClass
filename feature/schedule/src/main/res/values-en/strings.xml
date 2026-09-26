@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- English translation of values/strings.xml. Conventions: docs/i18n.md. -->
+<resources>
+
+    <!-- Week view -->
+    <string name="schedule_title_default">NullClass</string>
+    <string name="schedule_week_number">Week %1$d</string>
+    <string name="schedule_week_number_current">Week %1$d · This week</string>
+    <string name="schedule_subtitle_with_timetable">%1$s · %2$s</string>
+    <string name="schedule_back_to_current_week">Back to this week</string>
+    <string name="schedule_pick_week">Choose week</string>
+    <string name="schedule_display_settings">Display settings</string>
+    <string name="schedule_add_course">Add course</string>
+    <string name="schedule_no_term_title">No term yet</string>
+    <string name="schedule_no_term_desc">Create a term to start adding classes.</string>
+    <string name="schedule_create_term">Create term</string>
+    <string name="schedule_other_week">Not this week</string>
+
+    <!-- Display settings -->
+    <string name="schedule_show_now_line">Show current time line</string>
+    <string name="schedule_show_weekend">Show weekends</string>
+    <string name="schedule_show_grid_lines">Show grid lines</string>
+    <string name="schedule_show_time_in_cards">Show class times on course cards</string>
+    <string name="schedule_show_other_week">Show classes from other weeks</string>
+
+    <!-- Week view header: day swap marker -->
+    <string name="schedule_header_swap_weekday">→%1$s</string>
+    <string name="schedule_header_swap_date">→%1$d/%2$d</string>
+
+    <!-- Today -->
+    <string name="schedule_today_date">%1$s · %2$s</string>
+    <string name="schedule_today_out_of_term">Today is outside the term</string>
+    <string name="schedule_today_next_up">Next: %1$s · starts at %2$s</string>
+    <string name="schedule_today_in_class">In class</string>
+    <string name="schedule_today_remaining">%1$s left</string>
+    <string name="schedule_today_ongoing">In progress</string>
+    <string name="schedule_today_end_at">Ends at %1$s</string>
+    <string name="schedule_today_empty_title">No classes today</string>
+    <string name="schedule_today_empty_desc">Check the timetable for other days.</string>
+    <string name="schedule_today_out_of_term_desc">Once the term starts, today’s classes will appear here.</string>
+    <string name="schedule_today_swap_title">Day swap · Following the timetable of %1$s (%2$s)</string>
+    <string name="schedule_today_swap_desc">Class times still follow today’s schedule. Class reminders have been adjusted.</string>
+    <string name="schedule_today_skip_title">No classes today · %1$s</string>
+    <string name="schedule_today_skip_manual">Skipped manually</string>
+    <string name="schedule_today_skip_desc">Class reminders are skipped; the timetable is still shown as usual. To follow another day’s classes, use “Day swap”.</string>
+
+    <!-- Today: time of day -->
+    <string name="schedule_session_morning">Morning</string>
+    <string name="schedule_session_afternoon">Afternoon</string>
+    <string name="schedule_session_evening">Evening</string>
+    <string name="schedule_session_other">Other</string>
+
+    <!-- Day swap -->
+    <string name="schedule_day_swap_title">Day swap · %1$s %2$s</string>
+    <string name="schedule_day_swap_desc_none">This day follows the timetable as usual. For make-up days you can have it follow another day’s classes; Today, the week view, widgets and class reminders adjust accordingly, while class times still follow this day’s schedule.</string>
+    <string name="schedule_day_swap_desc_current">Current setting: this day follows the classes of %1$s (%2$s).</string>
+    <string name="schedule_day_swap_pick_in_week">Follow which day of this week</string>
+    <string name="schedule_day_swap_self">%1$s (as scheduled)</string>
+    <string name="schedule_day_swap_other_date">Choose another date…</string>
+    <string name="schedule_day_swap_reset">Restore original timetable</string>
+
+    <!-- Course details -->
+    <plurals name="schedule_course_block_count">
+        <item quantity="one">%1$d class time</item>
+        <item quantity="other">%1$d class times</item>
+    </plurals>
+    <string name="schedule_course_exams">Exams</string>
+    <string name="schedule_course_add_exam">Add exam</string>
+    <string name="schedule_course_no_exam">No exams set</string>
+    <string name="schedule_course_seat">Seat %1$s</string>
+    <string name="schedule_course_delete">Delete course</string>
+    <string name="schedule_course_delete_confirm">“%1$s” and all its class times and exams will be deleted. This can’t be undone. If sync is on, it will also be deleted on your other devices.</string>
+
+    <!-- Events -->
+    <string name="schedule_event_title">Events</string>
+    <string name="schedule_event_today">Today</string>
+    <string name="schedule_event_add">Add event</string>
+    <string name="schedule_event_edit">Edit event</string>
+    <string name="schedule_event_delete">Delete event</string>
+    <string name="schedule_event_delete_confirm">“%1$s” will be deleted. This cannot be undone.</string>
+    <string name="schedule_event_day_header">%1$s %2$s</string>
+    <string name="schedule_event_day_empty">No events on this day. Tap the button at the bottom right to add one.</string>
+    <string name="schedule_event_upcoming">Upcoming events</string>
+    <string name="schedule_event_month">%1$d-%2$02d</string>
+    <string name="schedule_event_prev_month">Previous month</string>
+    <string name="schedule_event_next_month">Next month</string>
+    <string name="schedule_event_field_title">Title (required)</string>
+    <string name="schedule_event_all_day">All day</string>
+    <string name="schedule_event_start_time">Start time</string>
+    <string name="schedule_event_start_time_value">Start time %1$s</string>
+    <string name="schedule_event_remind">Reminder</string>
+    <string name="schedule_event_remind_all_day">Reminder (8:00 that day)</string>
+    <string name="schedule_event_note">Note (optional)</string>
+    <string name="schedule_event_summary">%1$s · %2$s</string>
+    <string name="schedule_event_summary_with_date">%1$s %2$s · %3$s · %4$s</string>
+
+    <!-- Event reminder lead time -->
+    <string name="schedule_event_lead_none">No reminder</string>
+    <string name="schedule_event_lead_all_day">8:00 that day</string>
+    <string name="schedule_event_lead_on_time">At start time</string>
+    <plurals name="schedule_event_lead_days">
+        <item quantity="one">%1$d day before</item>
+        <item quantity="other">%1$d days before</item>
+    </plurals>
+    <plurals name="schedule_event_lead_hours">
+        <item quantity="one">%1$d hour before</item>
+        <item quantity="other">%1$d hours before</item>
+    </plurals>
+    <plurals name="schedule_event_lead_minutes">
+        <item quantity="one">%1$d minute before</item>
+        <item quantity="other">%1$d minutes before</item>
+    </plurals>
+
+    <!-- Events: errors -->
+    <string name="schedule_event_save_failed">Couldn’t save. Please try again.</string>
+    <string name="schedule_event_save_failed_detail">Couldn’t save: %1$s</string>
+    <string name="schedule_event_delete_failed">Couldn’t delete. Please try again.</string>
+    <string name="schedule_event_delete_failed_detail">Couldn’t delete: %1$s</string>
+
+</resources>

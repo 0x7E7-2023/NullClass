@@ -47,6 +47,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalResources
 import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -82,6 +83,7 @@ fun TransferScreen(
 ) {
     val state by viewModel.state.collectAsState()
     val context = LocalContext.current
+    val resources = LocalResources.current
     val scope = rememberCoroutineScope()
     val hostView = LocalView.current
     var resumeScannerOnCancel by remember { mutableStateOf(false) }
@@ -276,7 +278,7 @@ fun TransferScreen(
                                             putExtra(Intent.EXTRA_STREAM, uri)
                                             addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
                                         },
-                                        context.getString(R.string.settings_transfer_share_file),
+                                        resources.getString(R.string.settings_transfer_share_file),
                                     ),
                                 )
                             } catch (e: kotlinx.coroutines.CancellationException) {

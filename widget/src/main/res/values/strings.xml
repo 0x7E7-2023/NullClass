@@ -16,7 +16,7 @@
     <string name="widget_today_week">第%1$d周 · %2$s</string>
     <string name="widget_updated_at">更新于 %1$s</string>
     <plurals name="widget_today_remaining_count">
-        <item quantity="other">待上 %1$d 门</item>
+        <item quantity="other">还有 %1$d 门</item>
     </plurals>
     <string name="widget_today_footer">空课 · 今天</string>
 

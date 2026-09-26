@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- English translation of values/strings.xml. Conventions: docs/i18n.md. -->
+<resources>
+
+    <string name="app_name">NullClass</string>
+
+    <!-- Bottom navigation -->
+    <string name="app_tab_today">Today</string>
+    <string name="app_tab_schedule">Timetable</string>
+    <string name="app_tab_exams">Exams</string>
+    <string name="app_tab_profile">Me</string>
+
+    <!-- Two-pane placeholders -->
+    <string name="app_detail_placeholder_profile_title">Select an item on the left</string>
+    <string name="app_detail_placeholder_profile_desc">Settings, import / export and About appear here.</string>
+    <string name="app_detail_placeholder_exam_title">Select an exam</string>
+    <string name="app_detail_placeholder_exam_desc">Select an exam on the left to edit it, or add one from the top right.</string>
+
+    <!-- Notification channels -->
+    <string name="app_channel_class">Class reminders</string>
+    <string name="app_channel_class_desc">Notifications before a class starts</string>
+    <string name="app_channel_exam">Exam reminders</string>
+    <string name="app_channel_exam_desc">Notifications before an exam starts</string>
+    <string name="app_channel_event">Event reminders</string>
+    <string name="app_channel_event_desc">Notifications for your events</string>
+
+    <!-- Reminder content -->
+    <string name="app_class_started">Started · %1$s</string>
+    <string name="app_exam_time_undecided">Time to be announced</string>
+    <string name="app_exam_seat">Seat %1$s</string>
+    <string name="app_event_reminder_text">%1$s %2$s</string>
+    <string name="app_event_all_day">All day</string>
+
+</resources>

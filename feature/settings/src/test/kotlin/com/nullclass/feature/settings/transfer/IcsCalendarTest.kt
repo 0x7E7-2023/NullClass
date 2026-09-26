@@ -22,7 +22,7 @@ import kotlin.test.assertTrue
 
 /** 文案取真实 strings.xml（经 Robolectric），模板写坏会在这里暴露。 */
 @RunWith(RobolectricTestRunner::class)
-@Config(sdk = [36])
+@Config(sdk = [36], qualifiers = "zh-rCN")
 class IcsCalendarTest {
 
     private val term = Term(

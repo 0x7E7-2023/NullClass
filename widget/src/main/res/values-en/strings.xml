@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- English translation of values/strings.xml. Widget cells are very narrow: keep labels short. -->
+<resources>
+
+    <!-- Widget picker (API 31+) -->
+    <string name="widget_today_label">NullClass · Today</string>
+    <string name="widget_next_label">NullClass · Next class</string>
+    <string name="widget_today_description">Shows today’s remaining classes in time order.</string>
+    <string name="widget_next_description">Shows the time and location of your next class.</string>
+
+    <!-- Today -->
+    <string name="widget_today_title">Today’s classes</string>
+    <string name="widget_today_title_short">Today</string>
+    <string name="widget_app_name">NullClass</string>
+    <string name="widget_today_week">Week %1$d · %2$s</string>
+    <string name="widget_updated_at">Updated %1$s</string>
+    <plurals name="widget_today_remaining_count">
+        <item quantity="one">%1$d to go</item>
+        <item quantity="other">%1$d to go</item>
+    </plurals>
+    <string name="widget_today_footer">NullClass · Today</string>
+
+    <!-- Empty states -->
+    <string name="widget_empty_no_timetable">No timetable yet</string>
+    <string name="widget_empty_no_timetable_desc">Tap here to create a term</string>
+    <string name="widget_empty_no_class">No classes today</string>
+    <string name="widget_empty_no_class_desc">Open the app to see other days</string>
+    <string name="widget_empty_finished">All of today’s classes are over</string>
+    <string name="widget_empty_finished_desc">Open the app to see tomorrow</string>
+
+    <!-- Paging -->
+    <string name="widget_page_prev">↑ Prev</string>
+    <string name="widget_page_prev_short">↑</string>
+    <string name="widget_page_prev_desc">Previous page</string>
+    <string name="widget_page_next">↓ Next</string>
+    <string name="widget_page_next_short">↓</string>
+    <string name="widget_page_next_desc">Next page</string>
+    <string name="widget_page_indicator_desc">Page %1$d of %2$d</string>
+    <string name="widget_action_unavailable">%1$s, unavailable</string>
+
+    <!-- Class rows -->
+    <string name="widget_row_in_class">In class · %1$dm left</string>
+    <string name="widget_row_next">Next · %1$s</string>
+    <string name="widget_row_period_range">P%1$d–%2$d</string>
+
+    <!-- Next class -->
+    <string name="widget_next_empty_finished">Today’s classes are over</string>
+    <string name="widget_next_in_class">In class</string>
+    <string name="widget_next_upcoming">Up next</string>
+    <plurals name="widget_next_remaining">
+        <item quantity="one">%1$d min left</item>
+        <item quantity="other">%1$d min left</item>
+    </plurals>
+    <string name="widget_next_time_range">%1$s — %2$s</string>
+    <string name="widget_next_location_unknown">Room TBA</string>
+
+</resources>

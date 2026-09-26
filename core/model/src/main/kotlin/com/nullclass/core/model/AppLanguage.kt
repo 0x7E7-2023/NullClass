@@ -24,10 +24,10 @@ enum class AppLanguage(val tag: String?) {
         /**
          * 译文已就绪、可供用户选择的语言。
          *
-         * [ENGLISH] 暂未列入：译文补齐前选中它只会显示中文资源，不如先不提供该选项。
-         * 译文合入后把它加进来即可，界面与存储层无需改动。
+         * 须与 `app/src/main/res/xml/locales_config.xml` 一致；新增前先让
+         * `tools/check_translations.py` 通过（它按该清单检查各模块译文是否齐全）。
          */
-        private val TRANSLATED = setOf(SYSTEM, SIMPLIFIED_CHINESE)
+        private val TRANSLATED = setOf(SYSTEM, SIMPLIFIED_CHINESE, ENGLISH)
 
         /** 可供用户选择的语言，顺序与枚举声明一致。 */
         val selectable: List<AppLanguage> get() = entries.filter { it.isTranslated }

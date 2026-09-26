@@ -1,0 +1,167 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- English translation of values/strings.xml. Conventions: docs/i18n.md. -->
+<resources>
+
+    <!-- Class time editor -->
+    <string name="edit_block_section">Class times</string>
+    <string name="edit_block_remove">Remove this class time</string>
+    <string name="edit_block_week_prefix">Week</string>
+    <string name="edit_block_week_suffix"></string>
+    <string name="edit_block_range_separator">—</string>
+    <string name="edit_block_week_type_all">Every week</string>
+    <string name="edit_block_week_type_odd">Odd weeks</string>
+    <string name="edit_block_week_type_even">Even weeks</string>
+    <string name="edit_block_location">Room (optional)</string>
+    <string name="edit_block_period">Periods</string>
+    <string name="edit_block_period_by_period">By period</string>
+    <string name="edit_block_period_by_section">By block</string>
+    <string name="edit_block_period_prefix">Period</string>
+    <string name="edit_block_period_suffix"></string>
+    <string name="edit_block_section_chip">B%1$d</string>
+    <string name="edit_stepper_decrease">Decrease</string>
+    <string name="edit_stepper_increase">Increase</string>
+
+    <!-- Course editor -->
+    <string name="edit_course_title_new">Add course</string>
+    <string name="edit_course_title_edit">Edit course</string>
+    <string name="edit_course_no_term">Please create a term first</string>
+    <string name="edit_course_name">Course name (required)</string>
+    <string name="edit_course_teacher">Teacher (optional)</string>
+    <string name="edit_course_note">Note (optional)</string>
+    <string name="edit_course_color">Color</string>
+    <string name="edit_course_add_block">Add class time</string>
+    <string name="edit_course_error_title">Can’t save</string>
+    <string name="edit_course_error_no_name">Please enter a course name.</string>
+    <string name="edit_course_error_no_block">Add at least one class time.</string>
+    <string name="edit_course_error_overlap">Two class times overlap. Please adjust or remove one of them.</string>
+    <string name="edit_course_error_save_failed">Couldn’t save. Please try again.</string>
+    <string name="edit_course_conflict_header">Time conflict. Please adjust before saving:</string>
+    <string name="edit_course_conflict_line">Conflicts with “%1$s”: %2$s</string>
+    <plurals name="edit_course_conflict_more">
+        <item quantity="one">%1$d more conflict</item>
+        <item quantity="other">%1$d more conflicts</item>
+    </plurals>
+
+    <!-- Term editor -->
+    <string name="edit_term_title_new">Create term</string>
+    <string name="edit_term_title_edit">Edit term</string>
+    <string name="edit_term_name">Term name (required)</string>
+    <string name="edit_term_name_hint">For example, Fall 2026</string>
+    <string name="edit_term_week_start">First day of the week</string>
+    <string name="edit_term_week_start_monday">Monday</string>
+    <string name="edit_term_week_start_sunday">Sunday</string>
+    <string name="edit_term_week_start_custom">Weeks currently start on %1$s. You can keep this; choosing an option above moves the start of week 1 to the nearest Monday or Sunday.</string>
+    <string name="edit_term_first_day">Day 1 of week 1: %1$s</string>
+    <string name="edit_term_first_day_unset">Day 1 of week 1</string>
+    <string name="edit_term_first_week_range">Week 1: %1$s – %2$s</string>
+    <string name="edit_term_day_with_weekday">%1$s (%2$s)</string>
+    <string name="edit_term_week_start_hint">Sets which day each week starts on in the timetable; week 1 also starts on that day. Choosing an option above moves the start of week 1 to the nearest matching day.</string>
+    <string name="edit_term_total_weeks">Total weeks</string>
+    <string name="edit_term_total_weeks_unit">weeks</string>
+    <string name="edit_term_copy_previous">Copy courses from the previous term</string>
+    <string name="edit_term_copy_previous_source">From: %1$s</string>
+
+    <!-- Term editor: period times -->
+    <string name="edit_term_quick_section">Quick setup</string>
+    <string name="edit_term_quick_lesson">Lesson length</string>
+    <string name="edit_term_quick_break">Break</string>
+    <string name="edit_term_quick_minutes">min</string>
+    <string name="edit_term_quick_hint">Break means the gap between two periods within a block; breaks between blocks are not affected. Applying keeps each block’s start time and recalculates the periods inside it.</string>
+    <string name="edit_term_quick_apply">Apply</string>
+    <string name="edit_term_quick_invalid">Lesson length must be %1$d–%2$d minutes and the break %3$d–%4$d minutes.</string>
+    <string name="edit_term_periods">Period times (%1$s · %2$s)</string>
+    <plurals name="edit_term_period_count">
+        <item quantity="one">%1$d period</item>
+        <item quantity="other">%1$d periods</item>
+    </plurals>
+    <plurals name="edit_term_section_count">
+        <item quantity="one">%1$d block</item>
+        <item quantity="other">%1$d blocks</item>
+    </plurals>
+    <string name="edit_term_reset_periods">Restore default period times</string>
+    <string name="edit_term_add_period">Add period</string>
+    <string name="edit_term_period_index">P%1$d</string>
+    <string name="edit_term_remove_period">Remove period</string>
+    <string name="edit_term_session_morning">Morning</string>
+    <string name="edit_term_session_afternoon">Afternoon</string>
+    <string name="edit_term_session_evening">Evening</string>
+
+    <!-- Term editor: clear courses -->
+    <string name="edit_term_clear_hint">Deletes all courses in this term. The term and its period times are kept. If sync is on, the courses will also be deleted on your other devices.</string>
+    <string name="edit_term_clearing">Clearing…</string>
+    <string name="edit_term_clear_empty">This term has no courses</string>
+    <string name="edit_term_clear">Clear courses in this term</string>
+    <plurals name="edit_term_clear_confirm">
+        <item quantity="one">The %1$d course in this term will be deleted. The term and its period times are kept. This can’t be undone. If sync is on, it will also be deleted on your other devices.</item>
+        <item quantity="other">All %1$d courses in this term will be deleted. The term and its period times are kept. This can’t be undone. If sync is on, they will also be deleted on your other devices.</item>
+    </plurals>
+    <string name="edit_term_clear_action">Clear</string>
+
+    <!-- Term editor: errors -->
+    <string name="edit_term_error_title">Can’t save</string>
+    <string name="edit_term_error_no_name">Please enter a term name.</string>
+    <string name="edit_term_error_keep_one_period">Please keep at least one period.</string>
+    <string name="edit_term_error_invalid_input">Some fields are invalid. Check them and try again.</string>
+    <string name="edit_term_quick_period_invalid">The time of period %1$d is invalid (it must start before it ends). Fix it before using quick setup.</string>
+    <string name="edit_term_quick_overflow">With %1$s per period and %2$s breaks, block %3$d would end at %4$s, after the next block starts at %5$s. Shorten the period or break length.</string>
+    <string name="edit_term_quick_out_of_day">With %1$s per period and %2$s breaks, block %3$d would run past midnight to %4$s. Shorten the period or break length.</string>
+    <plurals name="edit_minutes">
+        <item quantity="one">%1$d-minute</item>
+        <item quantity="other">%1$d-minute</item>
+    </plurals>
+    <string name="edit_term_error_period_format">The time of period %1$d is invalid. Enter it as hours:minutes, for example 08:00.</string>
+    <string name="edit_term_error_period_order">The start time of period %1$d must be earlier than its end time.</string>
+
+    <!-- Terms -->
+    <string name="edit_term_list_title">Terms</string>
+    <string name="edit_term_list_empty_title">No term yet</string>
+    <string name="edit_term_list_empty_desc">Create a term to start adding classes.</string>
+    <string name="edit_term_list_create">Create term</string>
+    <string name="edit_term_list_current">Current</string>
+    <string name="edit_term_list_owner">Timetable: %1$s</string>
+    <string name="edit_term_list_week">Week %1$d · %2$s</string>
+    <string name="edit_term_list_out_of_term">Outside the term · %1$s</string>
+    <string name="edit_term_list_edit">Edit term</string>
+    <string name="edit_term_list_delete">Delete term</string>
+    <string name="edit_term_list_delete_confirm">“%1$s” and all its courses and exams will be deleted. This can’t be undone. If sync is on, they will also be deleted on your other devices.</string>
+
+    <!-- Timetables -->
+    <string name="edit_timetable_list_title">Timetables</string>
+    <string name="edit_timetable_list_empty_title">No timetable yet</string>
+    <string name="edit_timetable_list_empty_desc">Create a timetable to start adding classes.</string>
+    <string name="edit_timetable_list_create">Create timetable</string>
+    <string name="edit_timetable_list_current">Current</string>
+    <plurals name="edit_timetable_term_count">
+        <item quantity="one">%1$d term</item>
+        <item quantity="other">%1$d terms</item>
+    </plurals>
+    <string name="edit_timetable_delete">Delete timetable</string>
+    <plurals name="edit_timetable_delete_confirm">
+        <item quantity="one">“%1$s”, its %2$d term, and all courses and exams in it will be deleted. This can’t be undone. If sync is on, they will also be deleted on your other devices.</item>
+        <item quantity="other">“%1$s”, its %2$d terms, and all courses and exams in them will be deleted. This can’t be undone. If sync is on, they will also be deleted on your other devices.</item>
+    </plurals>
+    <string name="edit_timetable_delete_blocked_title">Can’t delete</string>
+    <string name="edit_timetable_delete_blocked_desc">At least one timetable must remain. To clear its content, delete its terms in Terms.</string>
+    <string name="edit_timetable_rename">Rename timetable</string>
+    <string name="edit_timetable_name">Timetable name</string>
+
+    <!-- New timetable -->
+    <string name="edit_timetable_create_title">New timetable</string>
+    <string name="edit_timetable_welcome">Welcome to NullClass</string>
+    <string name="edit_timetable_welcome_desc">Start by creating a timetable. Each timetable has its own courses and period times, and you can create as many as you need.</string>
+    <string name="edit_timetable_create_name">Timetable name (required)</string>
+    <string name="edit_timetable_create_first_term">First term</string>
+    <string name="edit_timetable_create_term_name">Term name (required)</string>
+    <string name="edit_timetable_creating">Creating…</string>
+    <string name="edit_timetable_create_action">Create timetable</string>
+    <string name="edit_timetable_create_first_week">Week 1 starts on %1$s (%2$s). Default period times are used for now; you can change them later in “Terms”.</string>
+    <string name="edit_timetable_create_hint">The app switches to this timetable once it is created. You can switch later in “Me → Timetables”.</string>
+    <string name="edit_timetable_create_error_title">Can’t create</string>
+    <string name="edit_timetable_create_error_no_name">Please enter a timetable name.</string>
+    <string name="edit_timetable_create_error_no_term_name">Please enter a term name.</string>
+    <string name="edit_timetable_create_error_failed">Couldn’t create. Please try again.</string>
+    <string name="edit_timetable_default_name">My timetable</string>
+    <string name="edit_term_default_name_spring">Spring %1$d</string>
+    <string name="edit_term_default_name_autumn">Fall %1$d</string>
+
+</resources>

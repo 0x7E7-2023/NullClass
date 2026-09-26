@@ -123,22 +123,22 @@
     <string name="common_off">关闭</string>
 
     <!-- 课表文件 / 二维码（:importer 的 ScheduleFileError） -->
-    <string name="error_import_future_version">文件来自更新版本的空课（文件 v%1$d 高于本机支持的 v%2$d），请先升级应用。</string>
-    <string name="error_import_invalid_file">不是有效的空课文件。</string>
-    <string name="error_import_qr_too_large">课表过大，无法生成二维码（%1$d B 超出 %2$d B 上限），请改用文件分享。</string>
-    <string name="error_import_qr_no_prefix">这不是空课的二维码（缺少协议头）。</string>
+    <string name="error_import_future_version">该文件由更新版本的空课导出（文件格式 v%1$d，当前最高支持 v%2$d），请先将空课更新到最新版本。</string>
+    <string name="error_import_invalid_file">无法识别该文件，请确认选择的是空课导出的备份文件。</string>
+    <string name="error_import_qr_too_large">课表内容过多，超出二维码容量（%1$d 字节，上限 %2$d 字节），请改用「分享课表文件」。</string>
+    <string name="error_import_qr_no_prefix">这不是空课的课表二维码。</string>
     <string name="error_import_qr_no_term">找不到可分享的学期。</string>
-    <string name="error_import_qr_corrupt">二维码内容已损坏。</string>
-    <string name="error_import_qr_gunzip_failed">二维码数据无法解压。</string>
-    <string name="error_import_shiguang_bad_json">不是合法的 JSON 文件。</string>
-    <string name="error_import_shiguang_not_object">不是有效的拾光课程表导出文件（顶层不是对象）。</string>
-    <string name="error_import_shiguang_no_courses">不是有效的拾光课程表导出文件（缺少 courses）。</string>
-    <string name="error_import_shiguang_empty">拾光导出文件里没有任何课程。</string>
-    <string name="error_import_shiguang_no_rows">拾光导出文件里没有可用的课程数据。</string>
-    <string name="error_import_shiguang_no_placeable">拾光导出文件里没有可以放进课表的课程。</string>
-    <string name="error_import_shiguang_weeks_out_of_range">拾光导出文件里的课程周次都不在学期范围内。</string>
-    <string name="error_import_wakeup_no_schedule">不是有效的 WakeUp 课表文件（未找到课程时间安排数据）。</string>
-    <string name="error_import_wakeup_no_courses">WakeUp 文件缺少课程信息（courseName 列表）。</string>
-    <string name="error_import_wakeup_empty_courses">WakeUp 文件课程信息为空。</string>
+    <string name="error_import_qr_corrupt">二维码内容不完整，请让对方重新生成后再扫描。</string>
+    <string name="error_import_qr_gunzip_failed">无法读取二维码内容，请让对方重新生成后再扫描。</string>
+    <string name="error_import_shiguang_bad_json">无法识别该文件，请确认选择的是拾光课程表导出的课程文件。</string>
+    <string name="error_import_shiguang_not_object">无法识别该文件，请确认选择的是拾光课程表导出的课程文件。</string>
+    <string name="error_import_shiguang_no_courses">无法识别该文件，请确认选择的是拾光课程表导出的课程文件。</string>
+    <string name="error_import_shiguang_empty">该文件中没有课程。</string>
+    <string name="error_import_shiguang_no_rows">该文件中没有可导入的课程。</string>
+    <string name="error_import_shiguang_no_placeable">该文件中的课程都缺少有效的上课时间，无法放入课表。</string>
+    <string name="error_import_shiguang_weeks_out_of_range">该文件中课程的周次都超出了学期范围。</string>
+    <string name="error_import_wakeup_no_schedule">无法识别该文件，请确认选择的是 WakeUp 课程表导出的备份文件。</string>
+    <string name="error_import_wakeup_no_courses">该 WakeUp 文件缺少课程信息，可能已损坏，请重新导出。</string>
+    <string name="error_import_wakeup_empty_courses">该 WakeUp 文件中没有课程。</string>
 
 </resources>

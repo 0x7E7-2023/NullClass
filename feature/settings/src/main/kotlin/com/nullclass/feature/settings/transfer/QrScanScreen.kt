@@ -6,6 +6,7 @@ import android.util.Size
 import android.os.SystemClock
 import androidx.activity.compose.BackHandler
 import androidx.camera.core.Camera
+import androidx.camera.core.ExperimentalGetImage
 import androidx.camera.core.CameraSelector
 import androidx.camera.core.FocusMeteringAction
 import androidx.camera.core.ImageAnalysis
@@ -336,6 +337,8 @@ private class DenseQrAnalyzer(
 
     private val busy = AtomicBoolean(false)
 
+    // imageProxy.image 是 CameraX 标注的实验 API；ML Kit 的 fromMediaImage 只收 Image，绕不开
+    @androidx.annotation.OptIn(ExperimentalGetImage::class)
     override fun analyze(imageProxy: ImageProxy) {
         val media = imageProxy.image
         if (media == null || !busy.compareAndSet(false, true)) {

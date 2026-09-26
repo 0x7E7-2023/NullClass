@@ -1,5 +1,6 @@
 package com.nullclass.core.data.locale
 
+import android.annotation.SuppressLint
 import android.app.LocaleManager
 import android.content.Context
 import android.content.res.Configuration
@@ -24,6 +25,8 @@ import com.nullclass.core.model.AppLanguage
  * 读不了 DataStore，因此另用 SharedPreferences 存一份可同步读取的镜像。
  * 镜像由 `UserPreferencesRepository.appLanguage` 写入，以 DataStore 为准。
  */
+// AAB 的按语言拆分已在 :app 的 build.gradle.kts 里关掉；库模块的 lint 看不到应用的 bundle 配置
+@SuppressLint("AppBundleLocaleChanges")
 object AppLocale {
 
     private const val PREFS_NAME = "app_locale"

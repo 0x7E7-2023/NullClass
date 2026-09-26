@@ -26,6 +26,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalResources
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.core.content.FileProvider
@@ -44,19 +45,21 @@ internal fun QrShareDialog(
     onDismiss: () -> Unit,
 ) {
     val context = LocalContext.current
+    val resources = LocalResources.current
     val scope = rememberCoroutineScope()
     var bitmap by remember(payload) { mutableStateOf<Bitmap?>(null) }
-    var encodeError by remember(payload) { mutableStateOf<String?>(null) }
+    var encodeFailed by remember(payload) { mutableStateOf(false) }
 
     LaunchedEffect(payload) {
         try {
             bitmap = withContext(Dispatchers.Default) { QrBitmap.encode(payload) }
-            encodeError = null
+            encodeFailed = false
         } catch (e: kotlinx.coroutines.CancellationException) {
             throw e
         } catch (e: Exception) {
             bitmap = null
-            encodeError = e.message ?: context.getString(R.string.settings_qr_render_failed)
+            // zxing 的异常消息是英文的开发者信息，不给用户看
+            encodeFailed = true
         }
     }
 
@@ -87,8 +90,8 @@ internal fun QrShareDialog(
                             .aspectRatio(1f)
                             .padding(4.dp),
                     )
-                    encodeError != null -> Text(
-                        encodeError!!,
+                    encodeFailed -> Text(
+                        stringResource(R.string.settings_qr_render_failed),
                         color = MaterialTheme.colorScheme.error,
                         style = MaterialTheme.typography.bodyMedium,
                     )
@@ -115,7 +118,7 @@ internal fun QrShareDialog(
                                     putExtra(Intent.EXTRA_STREAM, uri)
                                     addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
                                 },
-                                context.getString(R.string.settings_qr_share_entry),
+                                resources.getString(R.string.settings_qr_share_entry),
                             ),
                         )
                     }

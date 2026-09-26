@@ -1,5 +1,6 @@
 package com.nullclass.app.navigation
 
+import android.annotation.SuppressLint
 import androidx.activity.compose.BackHandler
 import androidx.compose.animation.AnimatedContentScope
 import androidx.compose.animation.EnterExitState
@@ -265,6 +266,10 @@ fun AppNavHost() {
     // 同一 NavigationEventDispatcher 里优先级更低（LIFO），NavHost 拦截期间
     // 完全轮不到它。
     val visibleEntries by navController.visibleEntries.collectAsState()
+    // 组合期读 currentState 本身不会触发重组，但这里的重组由 visibleEntries 驱动：
+    // 条目被弹出（→ CREATED）与转场落定（→ DESTROYED、移出列表）时 NavController
+    // 都会先改生命周期、再发新的 visibleEntries，读到的总是最新状态。
+    @SuppressLint("LifecycleCurrentStateInComposition")
     val exitTransitionRunning =
         visibleEntries.any { it.lifecycle.currentState == Lifecycle.State.CREATED }
     BackHandler(enabled = exitTransitionRunning) { /* 吞掉，等退出转场播完 */ }

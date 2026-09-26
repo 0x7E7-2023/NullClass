@@ -10,7 +10,9 @@
     <string name="exam_no_term_desc">添加考试前需先创建学期。</string>
     <string name="exam_create_term">创建学期</string>
     <string name="exam_summary_empty">暂无考试安排</string>
-    <string name="exam_summary_count">共 %1$d 场考试</string>
+    <plurals name="exam_summary_count">
+        <item quantity="other">共 %1$d 场考试</item>
+    </plurals>
     <string name="exam_no_upcoming">没有待考的考试</string>
     <string name="exam_section_upcoming">待考</string>
     <string name="exam_section_past">已结束</string>
@@ -18,7 +20,7 @@
     <string name="exam_time_undecided">时间待定</string>
     <string name="exam_seat">座位 %1$s</string>
     <string name="exam_detail_empty">暂无详细信息</string>
-    <string name="exam_delete_confirm">将删除「%1$s · %2$s」。该操作无法撤销。</string>
+    <string name="exam_delete_confirm">将删除「%1$s · %2$s」。删除后无法恢复；如已开启同步，其他设备上也会一并删除。</string>
     <string name="exam_delete_failed">删除考试失败，请重试。</string>
     <string name="exam_delete_failed_detail">删除考试失败：%1$s</string>
 
@@ -31,11 +33,11 @@
     <string name="exam_edit_no_course_desc">考试需归属于某门课程，请先在课表中添加课程。</string>
     <string name="exam_edit_course">所属课程：%1$s</string>
     <string name="exam_edit_course_unselected">未选择</string>
-    <string name="exam_edit_course_hint">考试将作为该课程的关联信息保存。</string>
+    <string name="exam_edit_course_hint">考试将显示在该课程的详情中。</string>
     <string name="exam_edit_course_picker">选择所属课程</string>
     <string name="exam_edit_name">考试名称（必填）</string>
     <string name="exam_edit_date">日期（必填）</string>
-    <string name="exam_edit_date_format">格式：yyyy-MM-dd</string>
+    <string name="exam_edit_date_format">例如 2026-12-20</string>
     <string name="exam_edit_pick_date">选择日期</string>
     <string name="exam_edit_pick_date_with_value">选择日期 · %1$s</string>
     <string name="exam_edit_time_section">时间（可选）</string>
@@ -50,11 +52,11 @@
 
     <!-- 考试编辑：校验与错误 -->
     <string name="exam_edit_error_title">无法保存</string>
-    <string name="exam_edit_error_time_format">时间格式应为 HH:mm，例如 09:00。</string>
+    <string name="exam_edit_error_time_format">请按「时:分」填写时间，例如 09:00。</string>
     <string name="exam_edit_error_time_order">结束时间须晚于开始时间。</string>
     <string name="exam_edit_error_no_course">请选择所属课程。</string>
     <string name="exam_edit_error_no_name">请填写考试名称。</string>
-    <string name="exam_edit_error_date_format">日期格式应为 yyyy-MM-dd，例如 2026-12-20。</string>
+    <string name="exam_edit_error_date_format">请按「年-月-日」填写日期，例如 2026-12-20。</string>
     <string name="exam_edit_error_save_failed">保存失败，请重试。</string>
 
 </resources>

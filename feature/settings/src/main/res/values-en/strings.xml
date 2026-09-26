@@ -1,0 +1,614 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- English translation of values/strings.xml. Conventions: docs/i18n.md. -->
+<resources>
+
+    <!-- Shared date labels -->
+    <string name="settings_day_label">%1$s · %2$s</string>
+    <string name="settings_day_label_with_year">%2$s/%1$d · %3$s</string>
+    <!-- DateTimeFormatter pattern. Numeric on purpose: see fmt_date in :core:ui. -->
+    <string name="settings_month_day_pattern">M/d</string>
+    <string name="settings_month_day">%1$d/%2$d</string>
+
+    <!-- App settings -->
+    <string name="settings_title">Settings</string>
+    <string name="settings_transfer_entry">Import / export</string>
+    <string name="settings_appearance">Appearance</string>
+    <string name="settings_appearance_desc">Material You takes colors from your wallpaper and follows the system light or dark mode; Light and Dark always use the built-in colors. Widgets always follow the system.</string>
+    <string name="settings_appearance_desc_unsupported">This system does not support wallpaper colors, so Material You uses the built-in colors and follows the system light or dark mode. Widgets always follow the system.</string>
+    <string name="settings_language">Language</string>
+    <string name="settings_language_desc">Takes effect immediately.</string>
+
+    <!-- WebDAV sync -->
+    <string name="settings_webdav">WebDAV sync</string>
+    <string name="settings_webdav_desc">Your timetable syncs between devices through your own WebDAV server (Nutstore (坚果云), NextCloud and others).</string>
+    <string name="settings_webdav_warning">Your credentials are stored unencrypted on this device. Use a server URL that starts with https.</string>
+    <string name="settings_webdav_server">Server URL</string>
+    <string name="settings_webdav_username">Username</string>
+    <string name="settings_webdav_password">Password / app password</string>
+    <string name="settings_webdav_save">Save</string>
+    <string name="settings_webdav_test">Test connection</string>
+    <string name="settings_webdav_syncing">Syncing…</string>
+    <string name="settings_webdav_sync_now">Sync now</string>
+    <string name="settings_webdav_last_sync">Last synced: %1$s</string>
+    <string name="settings_webdav_merge_desc">When syncing, the most recently edited version of each item is kept. Anything deleted on one device is deleted on the others too.</string>
+    <string name="settings_webdav_saved">Settings saved</string>
+    <string name="settings_webdav_connected">Connected</string>
+    <plurals name="settings_webdav_sync_done">
+        <item quantity="one">Sync complete. %1$d item updated from other devices</item>
+        <item quantity="other">Sync complete. %1$d items updated from other devices</item>
+    </plurals>
+    <string name="settings_auto_sync">Auto sync</string>
+    <string name="settings_auto_sync_desc">Syncs automatically in the background. Set up WebDAV first.</string>
+
+    <!-- Widgets -->
+    <string name="settings_widget">Widgets</string>
+    <string name="settings_widget_desc">Tap an option below and confirm to add it to your home screen.</string>
+    <string name="settings_widget_unsupported">Your launcher doesn’t support adding widgets directly. Long-press an empty area of the home screen and add NullClass from the widget list.</string>
+    <string name="settings_widget_today">Today 3×2</string>
+    <string name="settings_widget_next">Next class 2×1</string>
+
+    <!-- Timetable display -->
+    <string name="settings_schedule_display">Timetable display</string>
+    <string name="settings_show_other_week">Show classes from other weeks</string>
+    <string name="settings_bottom_nav">Bottom navigation</string>
+    <string name="settings_show_exam_tab">Show the “Exams” tab</string>
+
+    <!-- Me -->
+    <string name="settings_profile_title">Me</string>
+    <string name="settings_profile_timetable">Timetable · %1$s</string>
+    <string name="settings_profile_no_term_title">No term yet</string>
+    <string name="settings_profile_no_term_desc">Create a term to start adding classes.</string>
+    <string name="settings_profile_week">Week %1$d · %2$s</string>
+    <string name="settings_profile_out_of_term">Outside the term · %1$s</string>
+    <string name="settings_profile_quick_actions">Quick actions</string>
+    <string name="settings_profile_quick_actions_desc">Day swap, quick course removal</string>
+    <plurals name="settings_profile_quick_actions_desc_with_count">
+        <item quantity="one">Day swap, quick course removal · %1$d day swap from today on</item>
+        <item quantity="other">Day swap, quick course removal · %1$d day swaps from today on</item>
+    </plurals>
+    <string name="settings_profile_timetables">Timetables</string>
+    <string name="settings_profile_timetables_desc">Current: %1$s · switch, create, rename</string>
+    <string name="settings_profile_terms">Terms</string>
+    <string name="settings_profile_terms_desc">Switch, create, delete</string>
+    <string name="settings_profile_transfer_desc">Backup, migration, academic system import</string>
+    <string name="settings_profile_notification">Notifications and reminders</string>
+    <string name="settings_profile_notification_desc">Permissions, reminder timing, holidays and skipped dates</string>
+    <string name="settings_profile_settings_desc">WebDAV sync, auto sync, widgets</string>
+    <string name="settings_profile_about">About</string>
+    <string name="settings_profile_about_desc">Version, license, feedback</string>
+
+    <!-- Day swap -->
+    <string name="settings_day_swap_title">Day swap</string>
+    <string name="settings_day_swap_desc">For make-up days, a day can follow another day’s classes, e.g. Saturday follows Friday’s classes. Today, the week view, widgets and class reminders adjust accordingly, while class times still follow that day’s schedule.</string>
+    <string name="settings_day_swap_hint">You can also tap a weekday header in the week view to adjust that day.</string>
+    <string name="settings_day_swap_no_term">Please create a term before setting up day swaps.</string>
+    <string name="settings_day_swap_add">Add day swap</string>
+    <string name="settings_day_swap_next">Next</string>
+    <string name="settings_day_swap_step1">Step 1 · Choose the date to swap</string>
+    <string name="settings_day_swap_step2">Step 2 · Which day’s classes should %1$d/%2$d (%3$s) follow</string>
+    <string name="settings_day_swap_upcoming">From today on</string>
+    <string name="settings_day_swap_empty">No day swaps</string>
+    <string name="settings_day_swap_source">Follows %1$s</string>
+
+    <!-- Quick actions -->
+    <string name="settings_quick_actions_title">Quick actions</string>
+    <string name="settings_quick_actions_swap_desc">Make a day follow another day’s classes for make-up days</string>
+    <plurals name="settings_quick_actions_swap_desc_with_count">
+        <item quantity="one">Make a day follow another day’s classes for make-up days · %1$d from today on</item>
+        <item quantity="other">Make a day follow another day’s classes for make-up days · %1$d from today on</item>
+    </plurals>
+    <string name="settings_quick_actions_cleanup">Quick course removal</string>
+    <string name="settings_quick_actions_cleanup_desc">Filter courses by week or date, then select and delete them in bulk</string>
+
+    <!-- Calendar export (.ics) -->
+    <string name="settings_ics_calendar_name">NullClass · %1$s</string>
+    <string name="settings_ics_term">Term: %1$s</string>
+    <string name="settings_ics_teacher">Teacher: %1$s</string>
+    <string name="settings_ics_note">Note: %1$s</string>
+    <string name="settings_ics_course">Course: %1$s</string>
+    <string name="settings_ics_exam">Exam: %1$s</string>
+    <string name="settings_ics_time">Time: %1$s</string>
+    <string name="settings_ics_location">Room: %1$s</string>
+    <string name="settings_ics_seat">Seat: %1$s</string>
+
+    <!-- Holiday sync -->
+    <plurals name="settings_holiday_synced">
+        <item quantity="one">Synced %2$d holiday (source: %1$s)</item>
+        <item quantity="other">Synced %2$d holidays (source: %1$s)</item>
+    </plurals>
+    <string name="settings_holiday_skipped">Recently synced. No update needed yet</string>
+    <string name="settings_holiday_failed">Couldn’t sync holidays; the previous data is kept (%1$s is unavailable)</string>
+    <string name="settings_holiday_no_source">Couldn’t sync holidays because no data source is available; the previous data is kept</string>
+
+    <!-- SyncError -->
+    <string name="settings_sync_not_configured">WebDAV is not set up yet.</string>
+    <string name="settings_sync_url_empty">Please enter the server URL.</string>
+    <string name="settings_sync_url_scheme">The server URL must start with http:// or https://.</string>
+    <string name="settings_sync_url_insecure">Public addresses must use https; otherwise your password is sent in plain text.</string>
+    <string name="settings_sync_username_empty">Please enter a username.</string>
+    <string name="settings_sync_write_test_failed">Couldn’t write to the server. Check the account’s permissions.</string>
+    <string name="settings_sync_read_test_failed">Couldn’t read from the server.</string>
+    <string name="settings_sync_content_mismatch">The server returned unexpected data. Make sure this folder is used only by NullClass.</string>
+    <string name="settings_sync_cleanup_failed">Couldn’t delete the test file on the server. Check the account’s permissions.</string>
+    <string name="settings_sync_connect_failed">Couldn’t connect to the server.</string>
+    <string name="settings_sync_download_manifest_failed">Couldn’t download sync data from the server.</string>
+    <string name="settings_sync_download_snapshot_failed">Couldn’t download timetable data from the server.</string>
+    <string name="settings_sync_upload_snapshot_failed">Couldn’t upload timetable data to the server.</string>
+    <string name="settings_sync_upload_manifest_failed">Couldn’t upload sync data to the server.</string>
+    <string name="settings_sync_create_dir_failed">Couldn’t create a folder on the server. Check the account’s permissions.</string>
+    <string name="settings_sync_unexpected">Something went wrong while syncing. Please try again later.</string>
+    <string name="settings_sync_with_detail">%1$s (%2$s)</string>
+
+    <!-- AutoSyncInterval -->
+    <string name="settings_auto_sync_off">Off</string>
+    <string name="settings_auto_sync_6h">Every 6 hours</string>
+    <string name="settings_auto_sync_daily">Daily</string>
+
+    <!-- Quick course removal -->
+    <string name="settings_cleanup_title">Quick course removal</string>
+    <plurals name="settings_cleanup_selected">
+        <item quantity="one">%1$d course selected</item>
+        <item quantity="other">%1$d courses selected</item>
+    </plurals>
+    <string name="settings_cleanup_no_term">Please create a term before removing courses.</string>
+    <string name="settings_cleanup_hint">This deletes whole courses: their class times in other weeks and on other days, and their exams, are deleted too.</string>
+    <string name="settings_cleanup_hint_alt">If there are simply no classes on a certain day, use “Notifications and reminders → Skipped dates”.</string>
+    <string name="settings_cleanup_by_week">By week</string>
+    <string name="settings_cleanup_by_date">By date</string>
+    <string name="settings_cleanup_week">Week %1$d</string>
+    <string name="settings_cleanup_week_current">Week %1$d · This week</string>
+    <string name="settings_cleanup_out_of_term">This day is outside the term and has no classes.</string>
+    <string name="settings_cleanup_swapped">This day is swapped: it follows %1$s.</string>
+    <string name="settings_cleanup_week_empty">No classes in week %1$d.</string>
+    <string name="settings_cleanup_day_empty">No classes on this day.</string>
+    <plurals name="settings_cleanup_confirm_title">
+        <item quantity="one">Delete %1$d course</item>
+        <item quantity="other">Delete %1$d courses</item>
+    </plurals>
+    <string name="settings_cleanup_confirm_desc">All class times and exams of these courses will be deleted, not only those in the selected week or day. This can’t be undone. If sync is on, they will also be deleted on your other devices.</string>
+    <plurals name="settings_cleanup_other_blocks">
+        <item quantity="one">%1$d more class time on other dates will also be deleted</item>
+        <item quantity="other">%1$d more class times on other dates will also be deleted</item>
+    </plurals>
+
+    <!-- About -->
+    <string name="settings_about_title">About</string>
+    <string name="settings_about_app_name">NullClass</string>
+    <string name="settings_about_tagline">A timetable app for university students. No account needed: your data stays on this device by default, and no usage data is collected.</string>
+    <string name="settings_about_source">Source code</string>
+    <string name="settings_about_feedback">Report an issue</string>
+    <string name="settings_about_license">License</string>
+    <string name="settings_about_upstream">Credits · Shiguang Schedule</string>
+    <string name="settings_about_contributors">Thanks to %1$s</string>
+    <string name="settings_about_upstream_desc">Most built-in academic system adapters are ported from shiguang_warehouse (MIT), the adapter library of the Shiguang Schedule (拾光课程表) community, and “Migrate from Shiguang Schedule” is based on its public export format. Thanks to Shiguang Schedule and its community.</string>
+    <string name="settings_about_version">NullClass version</string>
+    <string name="settings_about_version_copied">Copied %1$s</string>
+    <string name="settings_about_no_browser">No app available to open the link.</string>
+
+    <!-- Notifications and reminders -->
+    <string name="settings_notification_title">Notifications and reminders</string>
+    <string name="settings_notification_permissions">Permissions and background</string>
+    <string name="settings_notification_permissions_desc">Reminders need notification and background permissions. Tap an item that isn’t granted to open its system setting.</string>
+    <string name="settings_notification_class_title">Class reminders</string>
+    <string name="settings_notification_class_desc">Sends a notification before each class. Power saving may delay it by a few minutes; for on-time reminders, turn on “Exact reminders” below.</string>
+    <string name="settings_notification_exam_title">Exam reminders</string>
+    <string name="settings_notification_exam_desc">Reminds you based on the exam’s start time; exams without a time use 08:00 on the exam day. Exam reminders are not skipped on holidays.</string>
+    <string name="settings_notification_exact_title">Exact reminders</string>
+    <string name="settings_notification_exact_desc">Uses system alarms to send class reminders on time. Requires the “Exact alarm permission” above.</string>
+    <string name="settings_notification_bypass_dnd">Ring in Do Not Disturb</string>
+    <string name="settings_notification_bypass_dnd_desc">When on, class and exam reminders are delivered as usual in Do Not Disturb mode.</string>
+
+    <!-- Permission panel -->
+    <string name="settings_permission_granted">Granted</string>
+    <string name="settings_permission_denied">Not granted</string>
+    <string name="settings_permission_grant_action">Grant</string>
+    <string name="settings_permission_settings_action">Settings</string>
+    <string name="settings_permission_notification">Notification permission</string>
+    <string name="settings_permission_notification_denied">Not granted, so no reminders can be shown</string>
+    <string name="settings_permission_battery">Ignore battery optimization</string>
+    <string name="settings_permission_battery_exempt">Allowed</string>
+    <string name="settings_permission_battery_denied">Not allowed. Reminders may be delayed</string>
+    <string name="settings_permission_autostart">Auto-start</string>
+    <string name="settings_permission_autostart_hint">Some phones require allowing NullClass to auto-start, or reminders may not arrive</string>
+    <string name="settings_permission_exact_alarm">Exact alarm permission</string>
+    <string name="settings_permission_exact_off">“Exact reminders” is off. Reminders may be a few minutes late</string>
+    <string name="settings_permission_exact_granted">Granted; reminders will arrive on time</string>
+    <string name="settings_permission_exact_denied">“Exact reminders” is on but not granted. Reminders may be a few minutes late</string>
+    <string name="settings_permission_dnd">Do Not Disturb permission</string>
+
+    <!-- Reminder lead time -->
+    <plurals name="settings_reminder_minutes">
+        <item quantity="one">%1$d minute</item>
+        <item quantity="other">%1$d minutes</item>
+    </plurals>
+    <plurals name="settings_reminder_hours">
+        <item quantity="one">%1$d hour</item>
+        <item quantity="other">%1$d hours</item>
+    </plurals>
+    <plurals name="settings_reminder_days">
+        <item quantity="one">%1$d day</item>
+        <item quantity="other">%1$d days</item>
+    </plurals>
+
+    <!-- Holidays and skipped dates -->
+    <string name="settings_holiday_section">Holidays and skipped dates</string>
+    <string name="settings_holiday_section_desc">Public holidays are fetched automatically, and no class reminders are sent on those days. You can also add skipped dates manually. Make-up workdays are shown for reference only; to hold classes on them, use “Day swap”.</string>
+    <string name="settings_holiday_sync_title">Sync holidays online</string>
+    <string name="settings_holiday_sync_desc">Updates holidays for the current term once a week</string>
+    <string name="settings_holiday_last_sync">Last synced: %1$s</string>
+    <string name="settings_holiday_never_synced">Never synced</string>
+    <string name="settings_holiday_syncing">Syncing…</string>
+    <string name="settings_holiday_sync_now">Sync now</string>
+    <string name="settings_holiday_add_skip">Add skipped date</string>
+    <string name="settings_holiday_no_skips">No skipped dates from today on</string>
+    <plurals name="settings_holiday_skip_count">
+        <item quantity="one">Today and later (%1$d, past dates hidden)</item>
+        <item quantity="other">Today and later (%1$d, past dates hidden)</item>
+    </plurals>
+    <string name="settings_holiday_type_holiday">Holiday</string>
+    <string name="settings_holiday_type_workday">Make-up workday (for reference)</string>
+    <string name="settings_holiday_type_manual">Skipped manually</string>
+
+    <!-- Import / export -->
+    <string name="settings_transfer_title">Import / export</string>
+    <string name="settings_transfer_jw_section">Import from academic system</string>
+    <string name="settings_transfer_jw_desc">Open your school’s academic system in NullClass and sign in, then go to the timetable page to import it. Your credentials are entered only on the school’s page; NullClass never collects them.</string>
+    <string name="settings_transfer_jw_pick_school">Choose school</string>
+    <string name="settings_transfer_jw_running">Academic system import · %1$s</string>
+    <string name="settings_transfer_jw_running_generic">Academic system import</string>
+    <string name="settings_transfer_backup_section">Backup and sharing</string>
+    <string name="settings_transfer_backup_desc">Exports all timetables and terms for backup, moving to a new phone, or sending to classmates.</string>
+    <string name="settings_transfer_save_file">Save to file</string>
+    <string name="settings_transfer_share">Share</string>
+    <string name="settings_transfer_share_file">Share timetable file</string>
+    <string name="settings_transfer_qr_generate">Generate QR code</string>
+    <string name="settings_transfer_qr_desc">Includes only the current term’s courses. After scanning, they are imported into the other person’s current timetable, which switches to that term. For a full backup, use “Save to file”.</string>
+    <string name="settings_transfer_ics_section">Calendar export</string>
+    <string name="settings_transfer_ics_desc">Exports the courses and exams of the current term as a standard .ics file that the system calendar, Google Calendar and others can open.</string>
+    <string name="settings_transfer_ics_once">The exported calendar doesn’t update automatically. Export again after courses or exams change.</string>
+    <string name="settings_transfer_ics_export">Export current term as .ics</string>
+    <string name="settings_transfer_import_section">Import</string>
+    <string name="settings_transfer_import_file">Import from backup file</string>
+    <string name="settings_transfer_import_qr">Scan QR code</string>
+    <string name="settings_transfer_import_qr_album">Read QR code from gallery</string>
+    <string name="settings_transfer_wakeup_section">Migrate from WakeUp</string>
+    <string name="settings_transfer_wakeup_desc">In WakeUp, back up your timetable to a file, then choose that file here. Consecutive periods, odd/even weeks, period times and colors are kept.</string>
+    <string name="settings_transfer_wakeup_pick">Choose WakeUp backup file</string>
+    <string name="settings_transfer_shiguang_section">Migrate from Shiguang Schedule</string>
+    <string name="settings_transfer_shiguang_desc">In Shiguang Schedule (拾光课程表), export your courses from “我的 → 高级功能 → 课表导入/导出” (the file name starts with shiguangschedule_), then choose that file here. Courses, odd/even weeks, period times and the term start date are kept.</string>
+    <string name="settings_transfer_shiguang_pick">Choose Shiguang export file</string>
+    <string name="settings_transfer_merge_hint">Imported data is merged with your existing data; newer changes on this device are not overwritten.</string>
+    <string name="settings_transfer_processing">Processing…</string>
+    <string name="settings_transfer_preview_title">Import preview</string>
+    <string name="settings_transfer_preview_source">Source: %1$s</string>
+    <string name="settings_transfer_preview_activate">After import it becomes the current term; Today, the timetable and widgets switch to it immediately.</string>
+    <string name="settings_transfer_preview_adapter_notes">The following notes come from the adapter’s author, not from NullClass:</string>
+    <string name="settings_transfer_preview_confirm">Import</string>
+    <string name="settings_transfer_preview_term">Term “%1$s” · %2$s · %3$s · %4$s · %5$s</string>
+    <!-- Counts in import preview, calendar export and recognition review -->
+    <plurals name="settings_count_weeks">
+        <item quantity="one">%1$d week</item>
+        <item quantity="other">%1$d weeks</item>
+    </plurals>
+    <plurals name="settings_count_courses">
+        <item quantity="one">%1$d course</item>
+        <item quantity="other">%1$d courses</item>
+    </plurals>
+    <plurals name="settings_count_blocks">
+        <item quantity="one">%1$d class time</item>
+        <item quantity="other">%1$d class times</item>
+    </plurals>
+    <plurals name="settings_count_exams">
+        <item quantity="one">%1$d exam</item>
+        <item quantity="other">%1$d exams</item>
+    </plurals>
+    <plurals name="settings_transfer_preview_deletions">
+        <item quantity="one">Importing will delete %1$d existing item on this device. Make sure the file comes from a trusted source.</item>
+        <item quantity="other">Importing will delete %1$d existing items on this device. Make sure the file comes from a trusted source.</item>
+    </plurals>
+    <string name="settings_transfer_preview_merge_note">Takes effect after merging with local data.</string>
+    <string name="settings_transfer_share_failed">Couldn’t share: %1$s</string>
+    <string name="settings_transfer_ics_failed_to_open">Couldn’t write to the selected location: %1$s</string>
+    <string name="settings_transfer_permission_camera">Camera permission is not granted. Grant it in system settings and try again.</string>
+
+    <!-- Import / export results -->
+    <string name="settings_transfer_export_done">Exported</string>
+    <string name="settings_transfer_export_failed">Export failed: %1$s</string>
+    <string name="settings_transfer_ics_export_done">Calendar file exported: %1$s, %2$s.</string>
+    <plurals name="settings_transfer_ics_block_count">
+        <item quantity="one">%1$d class time</item>
+        <item quantity="other">%1$d class times</item>
+    </plurals>
+    <plurals name="settings_transfer_ics_skipped">
+        <item quantity="one">%1$d class time has no period time and was not exported.</item>
+        <item quantity="other">%1$d class times have no period times and were not exported.</item>
+    </plurals>
+    <string name="settings_transfer_ics_export_failed">Calendar export failed: %1$s</string>
+    <string name="settings_transfer_no_term">No current term</string>
+    <string name="settings_transfer_cannot_open_target">Couldn’t open the selected file</string>
+    <string name="settings_transfer_no_term_for_qr">There is no current term, so no QR code can be generated.</string>
+    <string name="settings_transfer_qr_failed">Couldn’t generate the QR code: %1$s</string>
+    <string name="settings_transfer_qr_unreadable">This image can’t be read. Try another one.</string>
+    <string name="settings_transfer_qr_not_nullclass">This is not a NullClass QR code.</string>
+    <string name="settings_transfer_qr_source">QR code</string>
+    <string name="settings_transfer_file_source">File %1$s</string>
+    <string name="settings_transfer_wakeup_source">WakeUp %1$s</string>
+    <string name="settings_transfer_shiguang_source">Shiguang Schedule %1$s</string>
+    <string name="settings_transfer_read_failed">Couldn’t read: %1$s</string>
+    <plurals name="settings_transfer_import_done">
+        <item quantity="one">Import complete. %1$d item updated.</item>
+        <item quantity="other">Import complete. %1$d items updated.</item>
+    </plurals>
+    <string name="settings_transfer_import_up_to_date">Your data is already up to date.</string>
+    <string name="settings_transfer_cannot_read_file">Couldn’t read the file.</string>
+    <string name="settings_transfer_wakeup_generic">timetable</string>
+    <string name="settings_transfer_shiguang_generic">export file</string>
+    <string name="settings_transfer_import_failed">Import failed: %1$s</string>
+    <string name="settings_transfer_ocr_review_note">This timetable was recognized from an image. Please check course names, weeks and periods carefully</string>
+    <string name="settings_transfer_no_terms_in_file">The file contains no terms to import.</string>
+    <string name="settings_transfer_parse_failed">Couldn’t read the file: %1$s</string>
+    <string name="settings_transfer_new_timetable_one">Added timetable “%1$s”. Switch to it in “Me → Timetables”.</string>
+    <plurals name="settings_transfer_new_timetable_many">
+        <item quantity="one">Added %1$d timetable. Switch to it in “Me → Timetables”.</item>
+        <item quantity="other">Added %1$d timetables. Switch between them in “Me → Timetables”.</item>
+    </plurals>
+
+    <!-- QR sharing / scanning -->
+    <string name="settings_qr_render_failed">Couldn’t draw the QR code</string>
+    <string name="settings_qr_share_entry">Share timetable QR code</string>
+    <string name="settings_qr_share_title">Scan to import timetable</string>
+    <string name="settings_qr_share_image">Share image</string>
+    <string name="settings_qr_image_desc">Timetable QR code</string>
+    <string name="settings_qr_share_hint">Scan this QR code with NullClass on another device to import the current term.</string>
+    <string name="settings_qr_scan_hint">Place the QR code inside the frame. Pinch to zoom, tap to focus</string>
+    <string name="settings_qr_scan_zooming">QR code detected. Zooming in…</string>
+    <string name="settings_qr_scan_decoding">Hold steady. Reading the code…</string>
+    <string name="settings_qr_scan_starting">Starting camera…</string>
+    <string name="settings_qr_scan_album">Choose QR code from gallery</string>
+    <string name="settings_qr_scan_torch_on">Turn on flashlight</string>
+    <string name="settings_qr_scan_torch_off">Turn off flashlight</string>
+    <string name="settings_qr_scan_camera_failed">Couldn’t open the camera: %1$s</string>
+    <string name="settings_qr_scan_failed">Recognition failed: %1$s</string>
+    <string name="settings_qr_scan_failed_retry">Go back and scan again</string>
+    <string name="settings_qr_image_not_found">No QR code found in the image. Please choose a clear image of the complete QR code.</string>
+
+    <!-- ImportNotice: notes in the import preview -->
+    <string name="settings_notice_shiguang_row_not_object">Course %1$d has invalid data and was skipped</string>
+    <string name="settings_notice_shiguang_row_no_name">Course %1$d has no name and was skipped</string>
+    <string name="settings_notice_shiguang_row_no_day">“%1$s” has no day of the week and was skipped</string>
+    <string name="settings_notice_shiguang_row_bad_day">“%1$s” has an invalid day of the week (%2$s) and was skipped</string>
+    <string name="settings_notice_shiguang_weeks_truncated">The term has %1$d weeks, more than the limit of %2$d. The extra weeks were not imported</string>
+    <string name="settings_notice_shiguang_weeks_exceed_declared">Courses use week %1$d, beyond the %2$d weeks set in the file. The term was imported with %1$d weeks</string>
+    <string name="settings_notice_shiguang_no_start_date">The file has no term start date, so this week was used. Please check it in “Terms”</string>
+    <string name="settings_notice_shiguang_start_date_unreadable">The term start date “%1$s” couldn’t be read, so this week was used. Please check it in “Terms”</string>
+    <string name="settings_notice_shiguang_no_period_table">The file has no period times, so the defaults were used. Please check them in “Terms”</string>
+    <string name="settings_notice_shiguang_period_row_invalid">Period time entry %1$d is invalid and was skipped</string>
+    <string name="settings_notice_shiguang_period_out_of_range">Period %1$d exceeds the limit of %2$d periods per day and was skipped</string>
+    <string name="settings_notice_shiguang_period_time_invalid">Period %1$d doesn’t end after it starts and was skipped</string>
+    <string name="settings_notice_shiguang_course_beyond_last_period">“%1$s” is in period %2$d, beyond the limit of %3$d periods per day, and was skipped</string>
+    <string name="settings_notice_shiguang_course_no_time">“%1$s” has no class time and was skipped</string>
+    <string name="settings_notice_shiguang_custom_time_no_nearest">“%1$s” uses a custom time (%2$s) that doesn’t match any period and was skipped</string>
+    <string name="settings_notice_shiguang_custom_time_nearest">“%1$s” uses a custom time (%2$s) and was placed in the closest period, P%3$d</string>
+    <plurals name="settings_notice_shiguang_custom_time_dropped">
+        <item quantity="one">%1$d class time had a custom time in Shiguang. It was imported by period, and the custom time was not kept</item>
+        <item quantity="other">%1$d class times had custom times in Shiguang. They were imported by period, and the custom times were not kept</item>
+    </plurals>
+    <string name="settings_notice_shiguang_periods_extended">Courses use period %1$d, but only %2$d periods have times. The rest were filled in with %3$d-minute periods and %4$d-minute breaks. Please check them in “Terms”</string>
+    <string name="settings_notice_shiguang_weeks_overflow_dropped">“%1$s” has weeks beyond week %2$d. Those weeks were not imported</string>
+    <string name="settings_notice_shiguang_weeks_missing">“%1$s” has no week information and was imported for weeks 1–%2$d</string>
+    <string name="settings_notice_shiguang_weeks_all_out_of_range">“%1$s” only has weeks outside the %3$d-week term (week %2$s) and was skipped</string>
+    <string name="settings_notice_wakeup_line_unparsable">Line %1$d of the file couldn’t be read and was skipped</string>
+    <string name="settings_notice_wakeup_line_not_object">Line %1$d of the file couldn’t be read and was skipped</string>
+    <string name="settings_notice_wakeup_line_not_array">Line %1$d of the file couldn’t be read and was skipped</string>
+    <string name="settings_notice_wakeup_weeks_truncated">The term has %1$d weeks, more than the limit of %2$d. The extra weeks were not imported</string>
+    <string name="settings_notice_wakeup_period_row_invalid">Period time entry %1$d is invalid and was skipped</string>
+    <string name="settings_notice_wakeup_no_period_table">The WakeUp file has no period times, so the defaults were used</string>
+    <string name="settings_notice_wakeup_course_no_name">A course has no name and was imported as “课程 %1$s”</string>
+    <string name="settings_notice_wakeup_block_missing_field">Class time %1$d is incomplete and was skipped</string>
+    <string name="settings_notice_wakeup_block_bad_step">Class time %1$d has an invalid length (%2$s) and was imported as 1 period</string>
+    <string name="settings_notice_wakeup_block_bad_day">Class time %1$d has an invalid day of the week (%2$s) and was skipped</string>
+    <string name="settings_notice_wakeup_block_bad_start">Class time %1$d has an invalid start period (%2$s) and was skipped</string>
+    <!-- Academic system: image OCR / rebuilding the table from page text (ImportNotice.OCR_*). Rows and columns count from 1 -->
+    <string name="settings_notice_ocr_no_text">No text was recognized in the image</string>
+    <string name="settings_notice_ocr_no_day_header">No weekday headings were found, so the columns couldn’t be matched to days</string>
+    <plurals name="settings_notice_ocr_day_columns_out_of_range">
+        <item quantity="one">Found %1$d day (usually 5–7). The weekday headings may be incomplete</item>
+        <item quantity="other">Found %1$d days (usually 5–7). The weekday headings may be incomplete</item>
+    </plurals>
+    <string name="settings_notice_ocr_day_columns_mismatch">Found %1$d days, but %2$d were expected</string>
+    <string name="settings_notice_ocr_day_order_odd">The weekday headings are out of order. Please check carefully</string>
+    <string name="settings_notice_ocr_periods_by_time">Periods were inferred from class times. Please check carefully</string>
+    <plurals name="settings_notice_ocr_no_period_column">
+        <item quantity="one">No period column was found (%1$d row recognized), so rows couldn’t be matched to periods</item>
+        <item quantity="other">No period column was found (%1$d rows recognized), so rows couldn’t be matched to periods</item>
+    </plurals>
+    <string name="settings_notice_ocr_period_rows_mismatch">Found %1$d periods, but %2$d were expected</string>
+    <plurals name="settings_notice_ocr_unassigned_boxes">
+        <item quantity="one">%1$d piece of text couldn’t be placed in the timetable (%2$d%%)</item>
+        <item quantity="other">%1$d pieces of text couldn’t be placed in the timetable (%2$d%%)</item>
+    </plurals>
+    <string name="settings_notice_ocr_no_week_info">The timetable has no week information, so courses were imported for the whole term. Please check</string>
+    <plurals name="settings_notice_ocr_column_lines_skipped">
+        <item quantity="one">Column %1$d: %2$d line of text didn’t match any course and was skipped</item>
+        <item quantity="other">Column %1$d: %2$d lines of text didn’t match any course and were skipped</item>
+    </plurals>
+    <string name="settings_notice_ocr_cell_no_grid">Row %1$d, column %2$d: the position couldn’t be determined</string>
+    <string name="settings_notice_ocr_cell_no_weeks">Row %1$d, column %2$d (“%3$s”): no weeks were recognized, so it was imported for the whole term. Please check</string>
+    <string name="settings_notice_ocr_no_courses">No courses were recognized</string>
+
+    <!-- Academic system import: choose school / adapter details / library updates -->
+    <string name="settings_jw_activity_label">Academic system import</string>
+    <string name="settings_jw_search_hint">Search school name or domain</string>
+    <string name="settings_jw_search_clear">Clear search</string>
+    <string name="settings_jw_tab_schools">Schools</string>
+    <string name="settings_jw_tab_generic">Universal</string>
+    <string name="settings_jw_tab_mine">Added by me</string>
+    <string name="settings_jw_import_zip">Import adapter package</string>
+
+    <!-- Academic system import: library updates -->
+    <plurals name="settings_jw_library_version">
+        <item quantity="one">Adapter library version: %1$s (%2$d adapter)</item>
+        <item quantity="other">Adapter library version: %1$s (%2$d adapters)</item>
+    </plurals>
+    <string name="settings_jw_library_builtin">built-in</string>
+    <string name="settings_jw_library_last_check">Last checked for updates: %1$s</string>
+    <string name="settings_jw_library_never_checked">never</string>
+    <string name="settings_jw_library_checking">Checking…</string>
+    <string name="settings_jw_library_updating">Updating…</string>
+    <string name="settings_jw_library_check_now">Check for updates</string>
+    <string name="settings_jw_library_update_to">Update to v%1$s</string>
+    <string name="settings_jw_library_check_failed">Couldn’t check for updates. Check your network and try again.</string>
+    <string name="settings_jw_library_found">New version v%1$s available</string>
+    <string name="settings_jw_library_latest">Already up to date</string>
+    <string name="settings_jw_library_updated">Adapter library updated to v%1$s.</string>
+    <string name="settings_jw_library_shadowed">The official library now includes %1$s, so the official version will be used.</string>
+    <string name="settings_jw_library_update_failed">Update failed: %1$s</string>
+
+    <!-- Academic system import: web page step -->
+    <string name="settings_jw_hint_generic">After signing in and opening the timetable page, tap “Extract timetable”. The universal adapter recognizes the timetable from the page content.</string>
+    <string name="settings_jw_hint">After logging in and opening the timetable page, tap “Extract timetable”.</string>
+    <string name="settings_jw_extracting">Extracting…</string>
+    <string name="settings_jw_extract">Extract timetable</string>
+    <string name="settings_jw_ocr_running">Recognizing timetable image…</string>
+    <string name="settings_jw_image_unreadable">The timetable image can’t be read. It may be damaged or hosted on a site the adapter isn’t allowed to access. If you use a screenshot, choose the original, not a copy compressed by a chat app.</string>
+    <string name="settings_jw_ocr_building">Analyzing the timetable…</string>
+    <string name="settings_jw_ocr_unreliable">The recognition result may be wrong (%1$s). Consider adding courses manually.</string>
+    <string name="settings_jw_ocr_empty">No courses were recognized. Consider adding courses manually.</string>
+    <string name="settings_jw_ocr_done">Recognition complete. Please check before importing</string>
+    <string name="settings_jw_structure_done">Table rebuilt. Please check before importing</string>
+    <string name="settings_jw_extract_done">Extracted</string>
+    <string name="settings_jw_extract_failed">Extraction failed: %1$s</string>
+    <string name="settings_jw_page_loaded">Page loaded, extracting automatically…</string>
+    <string name="settings_jw_no_start_url">The academic system address is missing. Go back and choose your school again.</string>
+    <string name="settings_jw_switch_mobile">Mobile site</string>
+    <string name="settings_jw_switch_desktop">Desktop site</string>
+    <string name="settings_jw_network_frozen_short">Network access for the web page is paused during extraction.</string>
+    <string name="settings_jw_network_frozen">Network access for the web page is paused during extraction, so page content can’t be sent to other sites.</string>
+    <string name="settings_jw_network_restored">Network access for the web page restored</string>
+    <string name="settings_jw_resume_browsing">Continue browsing</string>
+    <string name="settings_jw_error_log_title">Error log</string>
+    <string name="settings_jw_error_log_copy">Copy error log</string>
+    <string name="settings_jw_error_log_copied">Error log copied</string>
+    <string name="settings_jw_image_cancelled">The recognition result was discarded. You can extract again or add courses manually.</string>
+    <string name="settings_jw_structure_missing">No timetable was found on this page (%1$s). Make sure the timetable page is open and try again; if the timetable is cut off, switch to the desktop version.</string>
+    <string name="settings_jw_no_courses">No courses were found on this page. Make sure the timetable page is open.</string>
+    <string name="settings_jw_adapter_ocr">%1$s (image recognition)</string>
+    <string name="settings_jw_adapter_auto">%1$s (auto-detected)</string>
+
+    <!-- Academic system import: review recognition result -->
+    <string name="settings_jw_review_title">Check recognition result</string>
+    <string name="settings_jw_review_count">Recognized %1$s and %2$s.</string>
+    <plurals name="settings_jw_review_course_count">
+        <item quantity="one">%1$d course</item>
+        <item quantity="other">%1$d courses</item>
+    </plurals>
+    <string name="settings_jw_review_defaults">The term name and start date were filled in automatically. You can change them in “Terms” after importing.</string>
+    <string name="settings_jw_review_warn">Please check the following carefully:</string>
+    <string name="settings_jw_review_hint">The result is based on table positions, so a whole row may be shifted. After importing, spot-check a few courses in the timetable.</string>
+    <!-- Appended directly after the course name, hence the leading space inside the quotes -->
+    <string name="settings_jw_review_block">" (%1$s, P%2$d–%3$d)"</string>
+    <string name="settings_jw_review_confirm">Import</string>
+
+    <!-- Academic system import: script execution and bridge -->
+    <string name="settings_jw_error_title">Something went wrong</string>
+    <string name="settings_jw_done_title">Done</string>
+    <string name="settings_jw_ok">OK</string>
+    <string name="settings_jw_unknown_error">Unknown error</string>
+    <string name="settings_jw_package_read_failed">Couldn’t read the adapter package</string>
+    <string name="settings_jw_cannot_read_file">Couldn’t read the file</string>
+    <!-- JwErrorCode -->
+    <string name="settings_jw_err_network_failed">Network request failed: %1$s</string>
+    <string name="settings_jw_err_http_status">The server is unavailable (error %1$d)</string>
+    <string name="settings_jw_err_insecure_redirect">The server redirected to an insecure address, so the request was stopped: %1$s</string>
+    <string name="settings_jw_err_empty_response">The server returned nothing</string>
+    <string name="settings_jw_err_response_too_large">The server response is too large (over %1$d KB)</string>
+    <string name="settings_jw_err_no_newer_version">Already up to date</string>
+    <string name="settings_jw_err_index_unreadable">Couldn’t read the adapter library: %1$s</string>
+    <string name="settings_jw_err_adapter_file_unreadable">Couldn’t read file %2$s of adapter “%1$s”: %3$s</string>
+    <string name="settings_jw_err_library_url_empty">Enter the adapter library URL</string>
+    <string name="settings_jw_err_library_url_invalid">Invalid adapter library URL: %1$s</string>
+    <string name="settings_jw_err_library_url_not_http">The adapter library URL must start with https://: %1$s</string>
+    <string name="settings_jw_err_library_url_insecure">The adapter library URL must use https so its content can’t be tampered with in transit</string>
+    <string name="settings_jw_err_library_url_no_host">Incomplete adapter library URL: %1$s</string>
+    <string name="settings_jw_err_library_url_github_shape">GitHub URLs must look like github.com/user/repository</string>
+    <string name="settings_jw_err_spec_too_new">This adapter needs a newer version of NullClass (adapter spec v%1$d; this version supports up to v%2$d). Please update the app</string>
+    <string name="settings_jw_err_app_too_old">This adapter needs a newer version of NullClass (build %1$d or later; this is build %2$d). Please update the app</string>
+    <string name="settings_jw_broken_unreadable">Couldn’t read</string>
+    <!-- Limits the host sets for adapter scripts -->
+    <string name="settings_jw_script_timeout">The adapter timed out (%1$d s)</string>
+    <string name="settings_jw_wait_timeout">Timed out waiting for input (%1$d s)</string>
+    <string name="settings_jw_result_too_large">The extracted result exceeds the size limit (%1$dK characters). Please report this to the adapter’s author</string>
+    <string name="settings_jw_library_read_failed">Couldn’t read the adapter library</string>
+    <string name="settings_jw_download_failed">Couldn’t download the adapter</string>
+    <string name="settings_jw_install_failed">Couldn’t add</string>
+    <string name="settings_jw_installed">Added: %1$s</string>
+    <string name="settings_jw_deleted">Deleted “%1$s”</string>
+    <string name="settings_jw_delete_builtin_denied">Built-in adapters can’t be deleted.</string>
+
+    <!-- Academic system import: adapter question dialog -->
+    <string name="settings_jw_ask_title">“%1$s” needs more information</string>
+    <string name="settings_jw_ask_safety">NullClass never asks for your academic system password or other account details.</string>
+
+    <!-- Academic system import: choose school, library and details sheets -->
+    <string name="settings_jw_picker_login_title">Enter academic system address</string>
+    <string name="settings_jw_picker_login_desc">Enter the address of your school’s academic system sign-in or timetable page, for example jw.example.edu.cn. You sign in and verify on the next page; NullClass never collects your credentials.</string>
+    <string name="settings_jw_picker_login_label">Academic system address</string>
+    <string name="settings_jw_picker_login_hint">Not sure? Open your school’s academic system in a browser and copy the full address from the address bar</string>
+    <string name="settings_jw_picker_login_invalid">The address is invalid. Check for extra spaces or non-Latin characters</string>
+    <string name="settings_jw_picker_login_preview">Will open: %1$s. Some schools only support http; if it doesn’t load, try changing the start to http://</string>
+    <string name="settings_jw_picker_login_open">Open</string>
+    <string name="settings_jw_picker_link_title">Add from adapter library</string>
+    <string name="settings_jw_picker_link_desc">Paste a GitHub repository URL or any index.json link (https only). Adapters are maintained by third parties; make sure the source is trustworthy.</string>
+    <string name="settings_jw_picker_link_label">Library URL</string>
+    <string name="settings_jw_picker_link_read">Load</string>
+
+    <!-- Academic system import: install confirmation / library list / details -->
+    <plurals name="settings_jw_install_title_many">
+        <item quantity="one">Install %1$d adapter?</item>
+        <item quantity="other">Install %1$d adapters?</item>
+    </plurals>
+    <string name="settings_jw_install_title_one">Add this adapter?</string>
+    <string name="settings_jw_adapter_line">%1$s (%2$s v%3$s)</string>
+    <string name="settings_jw_adapter_login_url">Login page: %1$s</string>
+    <string name="settings_jw_adapter_hosts">Sites it can access: %1$s</string>
+    <string name="settings_jw_adapter_view_script">View code</string>
+    <string name="settings_jw_adapter_source_url">Source: %1$s</string>
+    <string name="settings_jw_adapter_source_file">Source file: %1$s</string>
+    <string name="settings_jw_adapter_untrusted">Third-party adapters are written by others and read the academic system pages you are signed in to. NullClass doesn’t review them. Make sure the source is trustworthy, or view the code first.</string>
+    <string name="settings_jw_install_confirm">Add</string>
+    <string name="settings_jw_library_dialog_title">Adapter library</string>
+    <string name="settings_jw_library_empty">This library has no adapters yet.</string>
+    <string name="settings_jw_library_no_match">No adapters in this library match “%1$s”.</string>
+    <string name="settings_jw_library_untrusted">Adapters in this library are also maintained by third parties and are not reviewed by NullClass.</string>
+    <string name="settings_jw_adapter_key">ID: %1$s</string>
+    <string name="settings_jw_adapter_version">Version: v%1$s</string>
+    <string name="settings_jw_adapter_source_builtin">Official</string>
+    <string name="settings_jw_adapter_source_user">Added by you</string>
+    <string name="settings_jw_adapter_source">Source: %1$s</string>
+    <string name="settings_jw_adapter_author">Author: %1$s</string>
+    <string name="settings_jw_adapter_homepage">Homepage: %1$s</string>
+    <string name="settings_jw_adapter_installed_from">Installed from: %1$s</string>
+    <string name="settings_jw_adapter_checksum">Checksum: %1$s…</string>
+    <string name="settings_jw_adapter_delete">Delete</string>
+    <string name="settings_jw_script_dialog_title">Code: %1$s</string>
+
+    <!-- Academic system import: choose school -->
+    <string name="settings_jw_recent_used">Recently used</string>
+    <string name="settings_jw_recent_refresh_hint">Tap to import again using your last sign-in</string>
+    <string name="settings_jw_no_school_match">No school matches “%1$s”.</string>
+    <plurals name="settings_jw_mine_hits">
+        <item quantity="one">%1$d result in “Added by me”</item>
+        <item quantity="other">%1$d results in “Added by me”</item>
+    </plurals>
+    <string name="settings_jw_try_generic">Try the universal adapter: enter your academic system address and sign in, and NullClass will recognize the timetable on the page.</string>
+    <string name="settings_jw_badge_generic">Universal</string>
+    <string name="settings_jw_no_your_school">Can’t find your school?</string>
+    <string name="settings_jw_use_generic">Use universal adapter</string>
+    <string name="settings_jw_generic_desc">The universal adapter isn’t tied to a specific school: enter your academic system address and sign in, and NullClass recognizes the timetable on the page (image timetables are recognized on this device). You review the result before anything is imported.</string>
+    <string name="settings_jw_request_adapter">Request support for your school</string>
+    <string name="settings_jw_add_from_link">Add from link</string>
+    <string name="settings_jw_mine_empty">No adapters added yet. Import an adapter package or add one from a library link. Third-party adapters are maintained by others and are not reviewed by NullClass.</string>
+    <string name="settings_jw_insecure">Insecure connection</string>
+    <string name="settings_jw_details">Details</string>
+
+</resources>
