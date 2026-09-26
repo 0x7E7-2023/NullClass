@@ -86,8 +86,8 @@ class SettingsViewModel @Inject constructor(
     /**
      * 切换界面语言。
      *
-     * Android 13+ 交给系统的 LocaleManager，由它负责重建界面；
-     * 低版本由 MainActivity 观察偏好变化后自行重建。见 [AppLocale]。
+     * Android 13+ 交给系统的 LocaleManager，由它下发配置变更；
+     * 低版本由 MainActivity 观察偏好变化后原地切换资源。两者都不重建界面。见 [AppLocale]。
      */
     fun setAppLanguage(value: AppLanguage) {
         viewModelScope.launch {

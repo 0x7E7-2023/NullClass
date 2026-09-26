@@ -41,9 +41,9 @@ class AppLocaleTest {
     @Test
     @Config(sdk = [28])
     fun `12 及以下运行期切换会套到 Application 资源上`() {
-        AppLocale.applyToApplication(app, AppLanguage.ENGLISH)
+        AppLocale.applyInPlace(app, AppLanguage.ENGLISH)
         assertEquals("en", app.resources.configuration.locales[0].language)
-        AppLocale.applyToApplication(app, AppLanguage.SIMPLIFIED_CHINESE)
+        AppLocale.applyInPlace(app, AppLanguage.SIMPLIFIED_CHINESE)
         assertEquals("zh", app.resources.configuration.locales[0].language)
     }
 

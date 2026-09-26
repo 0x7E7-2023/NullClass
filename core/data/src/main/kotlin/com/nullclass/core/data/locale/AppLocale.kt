@@ -15,11 +15,15 @@ import com.nullclass.core.model.AppLanguage
  * 分两条路径，按系统版本二选一，互不叠加：
  *
  * - **Android 13 及以上**：系统自带「应用语言」设置页，语言状态由 [LocaleManager] 保管。
- *   此时应用只负责写入 [LocaleManager]，资源切换与界面重建都交给系统。应用**不得**再自行包装
+ *   此时应用只负责写入 [LocaleManager]，资源切换交给系统。应用**不得**再自行包装
  *   Context —— 否则用户从系统设置页改的语言会被应用的旧值顶回去。
  * - **Android 12 及以下**：系统没有该机制，由应用自行在 `Activity.attachBaseContext` 中
- *   包装 Context（[wrap]）并重建界面；Application 的资源另由 [applyToApplication] 跟上，
- *   否则通知、小组件、ViewModel 经 Application Context 取到的仍是启动时的语言。
+ *   包装 Context（[wrap]），运行期切换时用 [applyInPlace] 原地换掉 Activity 与 Application
+ *   的资源 —— Application 不跟上的话，通知、小组件、ViewModel 经 Application Context 取到的
+ *   仍是启动时的语言。
+ *
+ * 两条路径都不重建 Activity：`MainActivity` 在清单里声明了 `configChanges="locale|layoutDirection"`，
+ * 语言变化作为配置变更送达，Compose 按新配置重组即可；重建会整窗重画，切换时闪一下。
  *
  * 语言必须在 `attachBaseContext` 阶段就确定，而该方法早于依赖注入执行且不能挂起，
  * 读不了 DataStore，因此另用 SharedPreferences 存一份可同步读取的镜像。
@@ -63,7 +67,7 @@ object AppLocale {
     /**
      * 把语言应用到系统（仅 Android 13+）。
      *
-     * 系统收到后会自行重建 Activity，调用方无需也不应再手动重建。
+     * 系统收到后会把新配置下发给各 Activity，调用方无需再做别的。
      */
     fun applyToSystem(context: Context, language: AppLanguage) {
         if (!isSystemManaged) return
@@ -78,7 +82,7 @@ object AppLocale {
      *
      * Android 13+ 与「跟随系统」都原样返回：前者由系统负责，后者本就该交给系统匹配资源目录。
      * 在 `Application` / `Activity` 的 `attachBaseContext` 中调用 —— 此时 [base] 是系统给的原始
-     * Context，所以「跟随系统」原样返回就是系统语言。运行期切换见 [applyToApplication]。
+     * Context，所以「跟随系统」原样返回就是系统语言。运行期切换见 [applyInPlace]。
      */
     fun wrap(base: Context): Context = wrap(base, current(base))
 
@@ -91,22 +95,22 @@ object AppLocale {
     }
 
     /**
-     * 把语言套到 Application 自己的资源上（仅 Android 12 及以下）。
+     * 把语言原地套到 [context] 自己的资源上（仅 Android 12 及以下）。
      *
-     * Application 的 Context 只在进程启动时由 [wrap] 包装一次；应用内切换语言后不重启进程，
-     * 不跟上的话通知、小组件、ViewModel 经 Application Context 取到的仍是旧语言。
-     * 系统配置变化（旋转、改系统语言）会把资源按启动时的配置重算一遍，所以
-     * `Application.onConfigurationChanged` 里也要再调一次。
+     * Application 与 Activity 的 Context 都只在创建时由 [wrap] 包装一次；应用内切换语言时
+     * 不重启进程、也不重建 Activity，靠这里把已有的资源换成新语言。
+     * 系统配置变化（旋转、改系统语言）会把资源按创建时的配置重算一遍，所以
+     * `onConfigurationChanged` 里也要再调一次。
      */
-    fun applyToApplication(application: Context, language: AppLanguage) {
+    fun applyInPlace(context: Context, language: AppLanguage) {
         if (isSystemManaged) return
-        val resources = application.resources
+        val resources = context.resources
         val config = Configuration(resources.configuration)
         config.setLocales(
             language.tag?.let { LocaleList.forLanguageTags(it) }
                 ?: Resources.getSystem().configuration.locales,
         )
-        // 已弃用但仍是 12 及以下唯一能原地改 Application 资源的办法；13+ 不走这里
+        // 已弃用但仍是 12 及以下唯一能原地改资源的办法；13+ 不走这里
         @Suppress("DEPRECATION")
         resources.updateConfiguration(config, resources.displayMetrics)
     }

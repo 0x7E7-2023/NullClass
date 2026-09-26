@@ -73,7 +73,7 @@ class NullClassApplication : Application(), Configuration.Provider {
             appScope.launch { syncLanguageFromSystem() }
         } else {
             // 系统配置变化会按启动时的配置重算 Application 资源，把当前选择重新套上
-            AppLocale.applyToApplication(this, AppLocale.current(this))
+            AppLocale.applyInPlace(this, AppLocale.current(this))
         }
         localeChanges.report(resources.configuration.locales)
     }
@@ -81,7 +81,7 @@ class NullClassApplication : Application(), Configuration.Provider {
     /**
      * 让 Application 的语言与用户选择保持一致，并在变化时刷新 Activity 之外的文字。
      *
-     * - 12 及以下：偏好一变就把新语言套到 Application 资源上（Activity 由 MainActivity 自行重建）；
+     * - 12 及以下：偏好一变就把新语言套到 Application 资源上（Activity 由 MainActivity 自己原地切换）；
      * - 13+：以系统 LocaleManager 为准，偏好只是它的镜像。
      */
     private fun observeAppLanguage() {
@@ -102,7 +102,7 @@ class NullClassApplication : Application(), Configuration.Provider {
             appScope.launch {
                 userPreferences.appLanguage.collect { language ->
                     withContext(Dispatchers.Main) {
-                        AppLocale.applyToApplication(this@NullClassApplication, language)
+                        AppLocale.applyInPlace(this@NullClassApplication, language)
                         localeChanges.report(resources.configuration.locales)
                     }
                 }

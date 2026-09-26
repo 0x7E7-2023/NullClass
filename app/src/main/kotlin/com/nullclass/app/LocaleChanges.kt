@@ -10,7 +10,7 @@ import kotlinx.coroutines.flow.asStateFlow
 /**
  * 界面语言实际生效的版本号：每变一次自增。
  *
- * Activity 会被系统（13+）或 MainActivity（12 及以下）重建，自然换成新语言；但 Activity 之外
+ * Activity 收到配置变更（13+ 由系统下发，12 及以下由 MainActivity 自己原地切换）后按新语言重组；但 Activity 之外
  * 已经生成好的文字不会 —— 通知渠道名、已排期提醒里预先渲染的标题正文、桌面小组件。
  * 它们观察这里，语言一变就重建渠道、重排提醒、重画小组件。
  *

@@ -85,8 +85,11 @@
             android:name=".notification.AlarmReceiver"
             android:exported="false" />
 
+        <!-- configChanges：切换语言不重建 Activity（重建会整窗重画、闪一下），由 Compose 按新配置重组。
+             旋转、分屏、深浅色等其余变化仍照常重建。 -->
         <activity
             android:name=".MainActivity"
+            android:configChanges="locale|layoutDirection"
             android:exported="true"
             android:launchMode="singleTask">
             <intent-filter>

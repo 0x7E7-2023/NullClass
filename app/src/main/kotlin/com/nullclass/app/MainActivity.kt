@@ -3,6 +3,7 @@ package com.nullclass.app
 import android.Manifest
 import android.content.Context
 import android.content.Intent
+import android.content.res.Configuration
 import android.os.Build
 import android.os.Bundle
 import androidx.activity.ComponentActivity
@@ -22,6 +23,7 @@ import androidx.lifecycle.repeatOnLifecycle
 import com.nullclass.app.navigation.AppNavHost
 import com.nullclass.core.data.locale.AppLocale
 import com.nullclass.core.data.prefs.UserPreferencesRepository
+import com.nullclass.core.model.AppLanguage
 import com.nullclass.core.ui.layout.ProvideWindowSize
 import com.nullclass.core.ui.theme.NullClassTheme
 import com.nullclass.feature.settings.transfer.PendingImport
@@ -63,8 +65,8 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background,
                 ) {
-                    // 窗口尺寸档位在这里量一次向下提供：Activity 没有 configChanges，
-                    // 旋转/分屏 resize 会整体重建，自然跟着重测
+                    // 窗口尺寸档位在这里量一次向下提供：Activity 只接管了语言相关的 configChanges，
+                    // 旋转/分屏 resize 仍会整体重建，自然跟着重测
                     ProvideWindowSize {
                         AppNavHost()
                     }
@@ -76,21 +78,31 @@ class MainActivity : ComponentActivity() {
     }
 
     /**
-     * 语言变更后重建界面，让已加载的资源整体换成新语言。
+     * 语言变更后原地换掉本 Activity 的资源，再把新配置发给界面，Compose 据此重组成新语言。
      *
-     * 仅限 Android 12 及以下：13 起语言由系统的 LocaleManager 管理，系统会自行重建，
-     * 这里再重建一次只会让界面多闪一次。
+     * 不用 recreate()：重建会整窗重画，切换时闪一下，还会丢掉滚动位置等界面状态。
+     * 仅限 Android 12 及以下：13 起语言由系统的 LocaleManager 管理，系统会把配置变更发过来
+     * （清单里声明了 configChanges，不会重建）。
      */
     private fun observeLanguageChange() {
         if (AppLocale.isSystemManaged) return
-        val applied = AppLocale.current(this)
         lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
-                userPreferences.appLanguage.collect { language ->
-                    if (language != applied) recreate()
-                }
+                userPreferences.appLanguage.collect { applyLanguageInPlace(it) }
             }
         }
+    }
+
+    private fun applyLanguageInPlace(language: AppLanguage) {
+        AppLocale.applyInPlace(this, language)
+        // 配置没变时 Compose 按值比较，不会多重组一次
+        window.decorView.dispatchConfigurationChanged(resources.configuration)
+    }
+
+    override fun onConfigurationChanged(newConfig: Configuration) {
+        super.onConfigurationChanged(newConfig)
+        // 12 及以下改系统语言时，系统会把资源按 attachBaseContext 时的语言重算，把当前选择重新套上
+        if (!AppLocale.isSystemManaged) applyLanguageInPlace(AppLocale.current(this))
     }
 
     /** 首启动一次性请求通知权限（API 33+）；拒绝不打扰。 */
