@@ -61,9 +61,9 @@
     <string name="settings_profile_week">第 %1$d 周 · %2$s</string>
     <string name="settings_profile_out_of_term">不在学期内 · %1$s</string>
     <string name="settings_profile_quick_actions">快捷操作</string>
-    <string name="settings_profile_quick_actions_desc">调课、快速删课</string>
+    <string name="settings_profile_quick_actions_desc">调课、日程安排、快速删课</string>
     <plurals name="settings_profile_quick_actions_desc_with_count">
-        <item quantity="other">调课、快速删课 · 今天及以后有 %1$d 条调课</item>
+        <item quantity="other">调课、日程安排、快速删课 · 今天及以后有 %1$d 条调课</item>
     </plurals>
     <string name="settings_profile_timetables">课表管理</string>
     <string name="settings_profile_timetables_desc">当前：%1$s · 切换、新建、重命名</string>
@@ -95,6 +95,8 @@
     <plurals name="settings_quick_actions_swap_desc_with_count">
         <item quantity="other">调休时将某一天设为上另一天的课 · 今天及以后有 %1$d 条</item>
     </plurals>
+    <string name="settings_quick_actions_events">日程安排</string>
+    <string name="settings_quick_actions_events_desc">添加与管理日程，可为每条日程单独设置提醒</string>
     <string name="settings_quick_actions_cleanup">快速删课</string>
     <string name="settings_quick_actions_cleanup_desc">按周次或日期筛选课程，勾选后批量删除</string>
 

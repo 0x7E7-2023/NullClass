@@ -464,6 +464,7 @@ fun AppNavHost() {
                 QuickActionsScreen(
                     onBack = ::back,
                     onOpenDaySwap = { navController.navigate(Routes.DAY_SWAP) },
+                    onOpenEvents = { navController.navigate(Routes.EVENTS) { launchSingleTop = true } },
                     onOpenCourseCleanup = { navController.navigate(Routes.COURSE_CLEANUP) },
                 )
             }

@@ -61,10 +61,10 @@
     <string name="settings_profile_week">Week %1$d · %2$s</string>
     <string name="settings_profile_out_of_term">Outside the term · %1$s</string>
     <string name="settings_profile_quick_actions">Quick actions</string>
-    <string name="settings_profile_quick_actions_desc">Day swap, quick course removal</string>
+    <string name="settings_profile_quick_actions_desc">Day swap, events, quick course removal</string>
     <plurals name="settings_profile_quick_actions_desc_with_count">
-        <item quantity="one">Day swap, quick course removal · %1$d day swap from today on</item>
-        <item quantity="other">Day swap, quick course removal · %1$d day swaps from today on</item>
+        <item quantity="one">Day swap, events, quick course removal · %1$d day swap from today on</item>
+        <item quantity="other">Day swap, events, quick course removal · %1$d day swaps from today on</item>
     </plurals>
     <string name="settings_profile_timetables">Timetables</string>
     <string name="settings_profile_timetables_desc">Current: %1$s · switch, create, rename</string>
@@ -97,6 +97,8 @@
         <item quantity="one">Make a day follow another day’s classes for make-up days · %1$d from today on</item>
         <item quantity="other">Make a day follow another day’s classes for make-up days · %1$d from today on</item>
     </plurals>
+    <string name="settings_quick_actions_events">Events</string>
+    <string name="settings_quick_actions_events_desc">Add and manage events, each with its own reminder</string>
     <string name="settings_quick_actions_cleanup">Quick course removal</string>
     <string name="settings_quick_actions_cleanup_desc">Filter courses by week or date, then select and delete them in bulk</string>
 

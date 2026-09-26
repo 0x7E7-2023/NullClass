@@ -83,6 +83,7 @@ internal fun ProfileTwoPane(navController: NavHostController) {
                     onBack = dismiss,
                     // 三级页仍走整屏：再切一栏会把可读宽度切得太碎
                     onOpenDaySwap = { navController.navigate(Routes.DAY_SWAP) },
+                    onOpenEvents = { navController.navigate(Routes.EVENTS) { launchSingleTop = true } },
                     onOpenCourseCleanup = { navController.navigate(Routes.COURSE_CLEANUP) },
                 )
 

@@ -11,6 +11,7 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Delete
+import androidx.compose.material.icons.filled.Notifications
 import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -34,17 +35,19 @@ import com.nullclass.core.ui.layout.AdaptiveColumn
 import java.time.LocalDate
 
 /**
- * 「我的 → 快捷操作」：学期当中随时会用一下的操作，目前是调课与快速删课。
+ * 「我的 → 快捷操作」：学期当中随时会用一下的操作，目前是调课、日程安排与快速删课。
  *
  * 独立成页而不是散在设置里：这些是「今天要做的事」，不是配一次就不动的开关。
- * 这一层只做导航聚合，每个操作各自占一个子页（[DaySwapScreen]、[CourseCleanupScreen]）——
- * 两件事都带日期筛选和一份列表，堆在同一页里会互相抢滚动位置。
+ * 这一层只做导航聚合，每个操作各自占一个子页（[DaySwapScreen]、[CourseCleanupScreen]，
+ * 日程是 :feature:schedule 的 EventScreen，与课表页右上角进的是同一页）——
+ * 几件事都带日期筛选和一份列表，堆在同一页里会互相抢滚动位置。
  */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun QuickActionsScreen(
     onBack: () -> Unit,
     onOpenDaySwap: () -> Unit,
+    onOpenEvents: () -> Unit,
     onOpenCourseCleanup: () -> Unit,
     viewModel: DaySwapViewModel = hiltViewModel(),
 ) {
@@ -88,6 +91,12 @@ fun QuickActionsScreen(
                     stringResource(R.string.settings_quick_actions_swap_desc)
                 },
                 onClick = onOpenDaySwap,
+            )
+            EntryRow(
+                icon = Icons.Default.Notifications,
+                title = stringResource(R.string.settings_quick_actions_events),
+                subtitle = stringResource(R.string.settings_quick_actions_events_desc),
+                onClick = onOpenEvents,
             )
             EntryRow(
                 icon = Icons.Default.Delete,
