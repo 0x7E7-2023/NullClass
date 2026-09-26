@@ -51,23 +51,36 @@ class WidgetAgendaTest {
     }
 
     @Test
-    fun `分页布局为按钮预留空间且大字号自动减少行数`() {
-        for (height in listOf(110, 180, 240, 320, 600)) {
+    fun `分页布局不溢出且大字号自动减少行数`() {
+        for (height in listOf(110, 140, 180, 240, 320, 410, 600)) {
             for (font in WidgetFontSize.entries) {
                 val layout = widgetPageLayout(height, font)
-                val used = layout.paddingDp * 2 + layout.headerHeightDp + 8 +
-                    layout.rowHeightDp * layout.rowsPerPage +
-                    if (layout.inlinePager) 0 else layout.controlsHeightDp + 8
+                val used = layout.paddingDp * 2 + layout.headerHeightDp + layout.headerGapDp +
+                    layout.rowHeightDp * layout.rowsPerPage + layout.rowGapDp * (layout.rowsPerPage - 1)
                 assertTrue(used <= height, "height=$height font=$font used=$used")
                 assertTrue(layout.rowsPerPage in 1..10)
+                assertTrue(layout.headerHeightDp >= WIDGET_PAGE_BUTTON_DP)
             }
         }
-        assertTrue(widgetPageLayout(110, WidgetFontSize.STANDARD).inlinePager)
-        assertTrue(!widgetPageLayout(240, WidgetFontSize.STANDARD).inlinePager)
         assertTrue(widgetPageLayout(320, WidgetFontSize.STANDARD).rowsPerPage >
             widgetPageLayout(320, WidgetFontSize.XLARGE).rowsPerPage)
         assertTrue(widgetPageLayout(320, WidgetFontSize.STANDARD, 1.5f).rowsPerPage <
             widgetPageLayout(320, WidgetFontSize.STANDARD).rowsPerPage)
+    }
+
+    @Test
+    fun `矮尺寸单行卡片能多排就用单行，放得下两门两行卡片就用两行`() {
+        // 3×2 最矮档：两种卡片都只放得下一门，保留地点
+        assertTrue(widgetPageLayout(110, WidgetFontSize.STANDARD).showDetails)
+        assertEquals(1, widgetPageLayout(110, WidgetFontSize.STANDARD).rowsPerPage)
+        // 稍高一点：两行卡片仍只有一门，单行能排两门
+        val medium = widgetPageLayout(140, WidgetFontSize.STANDARD)
+        assertTrue(!medium.showDetails)
+        assertEquals(2, medium.rowsPerPage)
+        // 180 起两行卡片至少两门
+        val roomy = widgetPageLayout(180, WidgetFontSize.STANDARD)
+        assertTrue(roomy.showDetails)
+        assertEquals(2, roomy.rowsPerPage)
     }
 
     private fun entry(

@@ -9,16 +9,9 @@
     <string name="widget_today_description">按时间顺序显示今天剩余的课程。</string>
     <string name="widget_next_description">显示下一节课的时间与地点。</string>
 
-    <!-- 今日课程 -->
-    <string name="widget_today_title">今日课程</string>
-    <string name="widget_today_title_short">今日</string>
-    <string name="widget_app_name">空课</string>
-    <string name="widget_today_week">第%1$d周 · %2$s</string>
-    <string name="widget_updated_at">更新于 %1$s</string>
-    <plurals name="widget_today_remaining_count">
-        <item quantity="other">还有 %1$d 门</item>
-    </plurals>
-    <string name="widget_today_footer">空课 · 今天</string>
+    <!-- 今日课程标题栏：星期后面跟日期与周次；窄尺寸翻页时只留周次 -->
+    <string name="widget_today_date_week">%1$s · 第%2$d周</string>
+    <string name="widget_today_week_short">第%1$d周</string>
 
     <!-- 空状态 -->
     <string name="widget_empty_no_timetable">尚未创建课表</string>
@@ -29,18 +22,14 @@
     <string name="widget_empty_finished_desc">明天的安排可在应用内查看</string>
 
     <!-- 翻页 -->
-    <string name="widget_page_prev">↑ 上页</string>
-    <string name="widget_page_prev_short">↑</string>
     <string name="widget_page_prev_desc">上一页</string>
-    <string name="widget_page_next">↓ 下页</string>
-    <string name="widget_page_next_short">↓</string>
     <string name="widget_page_next_desc">下一页</string>
     <string name="widget_page_indicator_desc">第 %1$d 页，共 %2$d 页</string>
     <string name="widget_action_unavailable">%1$s，不可用</string>
 
     <!-- 课程行 -->
-    <string name="widget_row_in_class">上课中 · 剩%1$d分</string>
-    <string name="widget_row_next">下一节 · %1$s</string>
+    <string name="widget_row_status_in_class">剩%1$d分钟</string>
+    <string name="widget_row_status_next">下一节</string>
     <string name="widget_row_period_range">第%1$d–%2$d节</string>
 
     <!-- 下节课 -->
@@ -50,7 +39,7 @@
     <plurals name="widget_next_remaining">
         <item quantity="other">还剩 %1$d 分钟</item>
     </plurals>
-    <string name="widget_next_time_range">%1$s — %2$s</string>
+    <string name="widget_next_time_range">%1$s – %2$s</string>
     <string name="widget_next_location_unknown">教室待定</string>
 
 </resources>
