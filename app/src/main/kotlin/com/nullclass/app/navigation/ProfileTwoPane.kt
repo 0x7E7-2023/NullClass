@@ -23,6 +23,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import com.nullclass.app.R
+import com.nullclass.feature.schedule.PersonalizationScreen
 import com.nullclass.feature.settings.AboutScreen
 import com.nullclass.feature.settings.NotificationSettingsScreen
 import com.nullclass.feature.settings.ProfileScreen
@@ -37,7 +38,7 @@ import com.nullclass.feature.settings.transfer.TransferScreen
  * 「我的」在宽屏（Expanded，≥840dp：平板横屏 / 大平板竖屏）下的双栏形态：
  * 左边入口列表常驻，右边显示选中的子页。窄屏不走这里，仍是原来的整屏 push。
  *
- * **为什么不用 material3-adaptive 的 ListDetailPaneScaffold**：这一组的 7 个子页
+ * **为什么不用 material3-adaptive 的 ListDetailPaneScaffold**：这一组的 8 个子页
  * 全都不带导航参数，详情侧只是「渲染哪一个 Composable」的单选，Row 就完全等价，
  * 而且没有嵌套返回栈。本项目的返回逻辑相当敏感（见 AppNavHost 里那段退出转场
  * 吞返回的注释），能不叠一层返回栈就不叠。
@@ -65,6 +66,7 @@ internal fun ProfileTwoPane(navController: NavHostController) {
                 onOpenTransfer = { detailRoute = Routes.TRANSFER },
                 onOpenNotificationSettings = { detailRoute = Routes.NOTIFICATION_SETTINGS },
                 onOpenSettings = { detailRoute = Routes.SETTINGS },
+                onOpenPersonalization = { detailRoute = Routes.PERSONALIZATION },
                 onOpenAbout = { detailRoute = Routes.ABOUT },
             )
         }
@@ -78,6 +80,8 @@ internal fun ProfileTwoPane(navController: NavHostController) {
                 )
 
                 Routes.NOTIFICATION_SETTINGS -> NotificationSettingsScreen(onBack = dismiss)
+
+                Routes.PERSONALIZATION -> PersonalizationScreen(onBack = dismiss)
 
                 Routes.QUICK_ACTIONS -> QuickActionsScreen(
                     onBack = dismiss,

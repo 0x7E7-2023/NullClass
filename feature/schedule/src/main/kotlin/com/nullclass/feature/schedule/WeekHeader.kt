@@ -1,8 +1,11 @@
 package com.nullclass.feature.schedule
 
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.padding
@@ -12,6 +15,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clipToBounds
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -28,6 +32,9 @@ import java.time.LocalDate
  * 点一列打开该日的调课（串课）面板；被串过的列在日期下多一行「上 周五」，
  * 与下方格子里画的课对得上。
  *
+ * 个性化设置可以隐藏日期、固定表头高度、改文字颜色（见 [GridStyle]）。固定高度时内容垂直居中，
+ * 放不下的行（例如调课日多出的那一行）被裁掉 —— 这是用户自己把表头调矮的直接结果，预览里看得见。
+ *
  * @param dayOverrides 串课表 date → source date，见 [DayOverrides]
  */
 @Composable
@@ -36,37 +43,51 @@ internal fun WeekHeader(
     week: Int,
     weekDays: List<Int>,
     todayDayOfWeek: Int?,
-    showTimeInCards: Boolean,
+    style: GridStyle,
     modifier: Modifier = Modifier,
     dayOverrides: Map<Long, Long> = emptyMap(),
     onDayClick: ((epochDay: Long) -> Unit)? = null,
 ) {
-    Row(modifier = modifier.fillMaxWidth()) {
-        Spacer(modifier = Modifier.width(periodColumnWidth(showTimeInCards)))
+    val fixedHeight = style.headerHeight
+    val rowModifier = if (fixedHeight != null) {
+        // 固定高度下内容可能比格子高：裁掉，别让它画到下面的网格上
+        modifier.fillMaxWidth().height(fixedHeight).clipToBounds()
+    } else {
+        modifier.fillMaxWidth()
+    }
+    val normalColor = style.pageTextColor ?: MaterialTheme.colorScheme.onSurfaceVariant
+    Row(modifier = rowModifier) {
+        Spacer(modifier = Modifier.width(style.sidebarWidth))
         for (day in weekDays) {
             val epochDay = term.epochDayOf(week, day)
             val date = LocalDate.ofEpochDay(epochDay)
             val isToday = todayDayOfWeek == day
             val sourceEpochDay = dayOverrides[epochDay]
+            // 今天那列始终用主题强调色加粗：自定义文字颜色也不能把「今天」抹平
+            val textColor = if (isToday) MaterialTheme.colorScheme.primary else normalColor
             Column(
                 modifier = Modifier
                     .weight(1f)
+                    .let { if (fixedHeight != null) it.fillMaxHeight() else it }
                     .let { base -> onDayClick?.let { base.clickable { it(epochDay) } } ?: base }
                     .padding(vertical = 4.dp),
                 horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = if (fixedHeight != null) Arrangement.Center else Arrangement.Top,
             ) {
                 Text(
                     text = dayOfWeekShortLabel(day),
                     fontSize = 11.sp,
-                    color = if (isToday) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurfaceVariant,
+                    color = textColor,
                     fontWeight = if (isToday) FontWeight.Bold else FontWeight.Normal,
                 )
-                Text(
-                    text = "${date.monthValue}/${date.dayOfMonth}",
-                    fontSize = 10.sp,
-                    color = if (isToday) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurfaceVariant,
-                    fontWeight = if (isToday) FontWeight.Bold else FontWeight.Normal,
-                )
+                if (style.showHeaderDates) {
+                    Text(
+                        text = "${date.monthValue}/${date.dayOfMonth}",
+                        fontSize = 10.sp,
+                        color = textColor,
+                        fontWeight = if (isToday) FontWeight.Bold else FontWeight.Normal,
+                    )
+                }
                 if (sourceEpochDay != null) {
                     val source = LocalDate.ofEpochDay(sourceEpochDay)
                     Text(

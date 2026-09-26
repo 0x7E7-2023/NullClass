@@ -36,7 +36,7 @@ import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import com.nullclass.core.ui.layout.AdaptiveColumn
 
 /**
- * 「我的」Tab：入口中枢——学期卡片、快捷操作、学期管理、导入/导出、应用设置、关于（子页）。
+ * 「我的」Tab：入口中枢——学期卡片、快捷操作、学期管理、导入/导出、应用设置、个性化设置、关于（子页）。
  * 长表单类内容（WebDAV、提醒、小组件）保留在应用设置子页，中枢只做导航聚合。
  */
 @Composable
@@ -48,6 +48,7 @@ fun ProfileScreen(
     onOpenTransfer: () -> Unit,
     onOpenNotificationSettings: () -> Unit,
     onOpenSettings: () -> Unit,
+    onOpenPersonalization: () -> Unit,
     onOpenAbout: () -> Unit,
     viewModel: ProfileViewModel = hiltViewModel(),
 ) {
@@ -168,6 +169,12 @@ fun ProfileScreen(
                     title = stringResource(R.string.settings_title),
                     subtitle = stringResource(R.string.settings_profile_settings_desc),
                     onClick = onOpenSettings,
+                )
+                EntryRow(
+                    icon = PaletteIcon,
+                    title = stringResource(R.string.settings_profile_personalization),
+                    subtitle = stringResource(R.string.settings_profile_personalization_desc),
+                    onClick = onOpenPersonalization,
                 )
                 EntryRow(
                     icon = Icons.Default.Info,

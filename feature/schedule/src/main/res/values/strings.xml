@@ -23,6 +23,72 @@
     <string name="schedule_show_time_in_cards">在课程卡片上显示上课时间</string>
     <string name="schedule_show_other_week">显示非本周课程</string>
 
+    <!-- 显示设置弹窗底部：进个性化设置 -->
+    <string name="schedule_open_personalization">个性化设置</string>
+
+    <!-- 个性化设置（课表外观） -->
+    <string name="schedule_personalize_title">个性化设置</string>
+    <string name="schedule_personalize_reset">恢复默认</string>
+    <string name="schedule_personalize_reset_item">恢复默认</string>
+    <string name="schedule_personalize_reset_title">恢复默认设置</string>
+    <string name="schedule_personalize_reset_message">个性化设置将恢复为默认，已设置的背景图片也会移除。</string>
+    <string name="schedule_personalize_reset_confirm">恢复</string>
+    <string name="schedule_personalize_section_background">背景</string>
+    <string name="schedule_personalize_background_desc">图片铺满课表页面，并自动调暗，便于看清课程。</string>
+    <string name="schedule_personalize_background_pick">选择图片</string>
+    <string name="schedule_personalize_background_change">更换图片</string>
+    <string name="schedule_personalize_background_remove">移除</string>
+    <string name="schedule_personalize_background_importing">正在处理图片…</string>
+    <string name="schedule_personalize_background_failed">无法读取这张图片，请换一张重试。</string>
+    <string name="schedule_personalize_section_display">显示内容</string>
+    <string name="schedule_personalize_timeline">24 小时时间轴</string>
+    <string name="schedule_personalize_timeline_desc">按一天 24 小时排列，课程卡片的位置和长度与实际上课时间一致。</string>
+    <string name="schedule_personalize_hide_period_times">隐藏节次时间</string>
+    <string name="schedule_personalize_hide_period_times_desc">侧边栏只显示节次，课程卡片上也不显示上课时间。时间轴模式下整点刻度照常显示。</string>
+    <string name="schedule_personalize_hide_dates">隐藏日期</string>
+    <string name="schedule_personalize_hide_dates_desc">表头只显示星期。</string>
+    <string name="schedule_personalize_hide_grid_lines">隐藏网格线</string>
+    <string name="schedule_personalize_section_page">课表页面</string>
+    <string name="schedule_personalize_text_color">文字颜色</string>
+    <string name="schedule_personalize_page_text_color_desc">用于表头与侧边栏；设置了背景图片时也用于顶栏。自定义颜色不随深浅色模式变化。</string>
+    <string name="schedule_personalize_card_text_color_desc">自定义颜色不随深浅色模式变化。</string>
+    <string name="schedule_personalize_row_height">格子高度</string>
+    <string name="schedule_personalize_row_height_timeline_desc">时间轴模式下为每小时的高度。</string>
+    <string name="schedule_personalize_sidebar_width">侧边栏宽度</string>
+    <string name="schedule_personalize_header_height">表头高度</string>
+    <string name="schedule_personalize_section_card">课程卡片</string>
+    <string name="schedule_personalize_text_align">文字对齐</string>
+    <string name="schedule_personalize_align_center">居中</string>
+    <string name="schedule_personalize_align_top_start">顶格</string>
+    <string name="schedule_personalize_border">边框</string>
+    <string name="schedule_personalize_border_none">无</string>
+    <string name="schedule_personalize_border_solid">实线</string>
+    <string name="schedule_personalize_border_dashed">虚线</string>
+    <string name="schedule_personalize_text_scale">文字大小</string>
+    <string name="schedule_personalize_corner_radius">圆角</string>
+    <string name="schedule_personalize_spacing">外边距</string>
+    <string name="schedule_personalize_opacity">不透明度</string>
+    <string name="schedule_personalize_opacity_desc">调低后可透出背景图片；同一时段有两门课时，重叠部分也会互相透出。</string>
+    <string name="schedule_personalize_value_auto">自动</string>
+    <string name="schedule_personalize_value_percent">%1$d%%</string>
+    <string name="schedule_personalize_color_follow_theme">跟随主题</string>
+    <string name="schedule_personalize_color_white">白色</string>
+    <string name="schedule_personalize_color_black">黑色</string>
+    <string name="schedule_personalize_color_dark_gray">深灰</string>
+    <string name="schedule_personalize_color_light_gray">浅灰</string>
+    <string name="schedule_personalize_color_hue">色相</string>
+    <string name="schedule_personalize_color_saturation">饱和度</string>
+    <string name="schedule_personalize_color_brightness">亮度</string>
+    <!-- 预览里的示例课程：还没有学期、或本周没有课时显示 -->
+    <string name="schedule_personalize_sample_course_1">高等数学</string>
+    <string name="schedule_personalize_sample_course_2">大学英语</string>
+    <string name="schedule_personalize_sample_course_3">程序设计</string>
+    <string name="schedule_personalize_sample_course_4">线性代数</string>
+    <string name="schedule_personalize_sample_course_5">体育</string>
+    <string name="schedule_personalize_sample_room_1">教1-101</string>
+    <string name="schedule_personalize_sample_room_2">实验楼 305</string>
+    <string name="schedule_personalize_sample_room_3">教3-210</string>
+
     <!-- 周视图表头：调课标记 -->
     <string name="schedule_header_swap_weekday">调·%1$s</string>
     <string name="schedule_header_swap_date">调·%1$d/%2$d</string>

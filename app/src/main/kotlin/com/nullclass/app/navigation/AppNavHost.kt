@@ -66,6 +66,7 @@ import com.nullclass.feature.exam.ExamEditScreen
 import com.nullclass.feature.exam.ExamScreen
 import com.nullclass.app.R
 import com.nullclass.feature.schedule.EventScreen
+import com.nullclass.feature.schedule.PersonalizationScreen
 import com.nullclass.feature.schedule.ScheduleScreen
 import com.nullclass.feature.schedule.TodayScreen
 import com.nullclass.feature.settings.AboutScreen
@@ -90,6 +91,7 @@ object Routes {
     const val TIMETABLE_LIST = "timetable_list"
     const val TIMETABLE_CREATE = "timetable_create"
     const val SETTINGS = "settings"
+    const val PERSONALIZATION = "personalization"
     const val NOTIFICATION_SETTINGS = "notification_settings"
     const val QUICK_ACTIONS = "quick_actions"
     const val DAY_SWAP = "day_swap"
@@ -368,6 +370,9 @@ fun AppNavHost() {
                     onEditExam = { examId -> navController.navigate(Routes.examEdit(examId = examId)) },
                     onEditTerm = { termId -> navController.navigate(Routes.termEdit(termId)) },
                     onOpenEvents = { navController.navigate(Routes.EVENTS) { launchSingleTop = true } },
+                    onOpenPersonalization = {
+                        navController.navigate(Routes.PERSONALIZATION) { launchSingleTop = true }
+                    },
                 )
             }
             screen(Routes.EXAMS, bottomBar = pageBottomBar, bottomBarHeight = bottomBarHeight, railMode = { useRail }) {
@@ -383,7 +388,7 @@ fun AppNavHost() {
             }
             screen(Routes.PROFILE, bottomBar = pageBottomBar, bottomBarHeight = bottomBarHeight, railMode = { useRail }) {
                 // 宽屏（≥840dp）走双栏：左边入口常驻、右边显示子页。
-                // 这 7 个子页都不带导航参数，所以详情侧能直接渲染，不必嵌套 NavHost。
+                // 这 8 个子页都不带导航参数，所以详情侧能直接渲染，不必嵌套 NavHost。
                 if (twoPaneProfile) {
                     ProfileTwoPane(navController = navController)
                 } else {
@@ -397,6 +402,7 @@ fun AppNavHost() {
                             navController.navigate(Routes.NOTIFICATION_SETTINGS)
                         },
                         onOpenSettings = { navController.navigate(Routes.SETTINGS) },
+                        onOpenPersonalization = { navController.navigate(Routes.PERSONALIZATION) },
                         onOpenAbout = { navController.navigate(Routes.ABOUT) },
                     )
                 }
@@ -456,6 +462,9 @@ fun AppNavHost() {
                     onBack = ::back,
                     onOpenTransfer = { navController.navigate(Routes.TRANSFER) },
                 )
+            }
+            screen(Routes.PERSONALIZATION) {
+                PersonalizationScreen(onBack = ::back)
             }
             screen(Routes.NOTIFICATION_SETTINGS) {
                 NotificationSettingsScreen(onBack = ::back)

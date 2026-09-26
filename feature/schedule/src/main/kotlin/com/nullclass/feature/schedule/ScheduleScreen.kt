@@ -1,6 +1,7 @@
 package com.nullclass.feature.schedule
 
 import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -51,6 +52,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
@@ -61,10 +63,14 @@ import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
+import com.nullclass.core.model.PeriodTime
 import com.nullclass.core.model.PlacedBlock
+import com.nullclass.core.model.ScheduleAppearance
+import com.nullclass.core.model.TimelineGeometry
 import com.nullclass.core.model.WeekLayout
 import com.nullclass.core.ui.theme.courseColor
 import com.nullclass.core.ui.R as CoreR
@@ -76,6 +82,7 @@ import com.nullclass.core.ui.R as CoreR
  * @param onEditCourse 编辑已有课程
  * @param onEditTerm 学期设置（无学期时引导创建）
  * @param onOpenEvents 右上角进日程安排页
+ * @param onOpenPersonalization 「显示设置」弹窗底部进个性化设置页
  */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -86,9 +93,16 @@ fun ScheduleScreen(
     onEditExam: (examId: String) -> Unit,
     onEditTerm: (termId: String?) -> Unit,
     onOpenEvents: () -> Unit,
+    onOpenPersonalization: () -> Unit,
     viewModel: ScheduleViewModel = hiltViewModel(),
 ) {
     val state by viewModel.uiState.collectAsState()
+    val appearance by viewModel.appearance.collectAsState()
+    val wallpaper by viewModel.wallpaper.collectAsState()
+    // 有背景图时 Scaffold 与顶栏都透明、叠在图上，顶栏文字跟随页面文字颜色；
+    // 没有背景图时顶栏有自己的不透明底色，继续跟主题，免得把右上角的入口调得看不见
+    val onWallpaper = wallpaper != null
+    val chromeTextColor = if (onWallpaper) appearance?.pageTextColor?.let(::Color) else null
 
     var detailBlock by remember { mutableStateOf<PlacedBlock?>(null) }
     var showWeekPicker by remember { mutableStateOf(false) }
@@ -120,369 +134,424 @@ fun ScheduleScreen(
             appBarState.contentOffset = 0f
         }
     }
-    Scaffold(
-        modifier = Modifier.nestedScroll(appBarScrollBehavior.nestedScrollConnection),
-        topBar = {
-            TopAppBar(
-                title = {
-                    Column {
-                        val title = when (val s = state) {
-                            is ScheduleUiState.Ready -> s.term.name
-                            else -> stringResource(R.string.schedule_title_default)
-                        }
-                        Text(title, style = MaterialTheme.typography.titleMedium)
-                        if (state is ScheduleUiState.Ready) {
-                            val ready = state as ScheduleUiState.Ready
-                            // 多课表时前缀课表名（单课表用户界面零变化）
-                            val week = if (ready.selectedWeek == ready.todayWeek) {
-                                stringResource(R.string.schedule_week_number_current, ready.selectedWeek)
-                            } else {
-                                stringResource(R.string.schedule_week_number, ready.selectedWeek)
+    Box(Modifier.fillMaxSize()) {
+        wallpaper?.let { ScheduleWallpaper(it) }
+        Scaffold(
+            modifier = Modifier.nestedScroll(appBarScrollBehavior.nestedScrollConnection),
+            topBar = {
+                TopAppBar(
+                    title = {
+                        Column {
+                            val title = when (val s = state) {
+                                is ScheduleUiState.Ready -> s.term.name
+                                else -> stringResource(R.string.schedule_title_default)
                             }
-                            Text(
-                                text = ready.timetableName?.let {
-                                    stringResource(R.string.schedule_subtitle_with_timetable, it, week)
-                                } ?: week,
-                                style = MaterialTheme.typography.labelSmall,
-                                color = MaterialTheme.colorScheme.onSurfaceVariant,
-                            )
+                            Text(title, style = MaterialTheme.typography.titleMedium)
+                            if (state is ScheduleUiState.Ready) {
+                                val ready = state as ScheduleUiState.Ready
+                                // 多课表时前缀课表名（单课表用户界面零变化）
+                                val week = if (ready.selectedWeek == ready.todayWeek) {
+                                    stringResource(R.string.schedule_week_number_current, ready.selectedWeek)
+                                } else {
+                                    stringResource(R.string.schedule_week_number, ready.selectedWeek)
+                                }
+                                Text(
+                                    text = ready.timetableName?.let {
+                                        stringResource(R.string.schedule_subtitle_with_timetable, it, week)
+                                    } ?: week,
+                                    style = MaterialTheme.typography.labelSmall,
+                                    color = chromeTextColor?.copy(alpha = 0.8f)
+                                        ?: MaterialTheme.colorScheme.onSurfaceVariant,
+                                )
+                            }
                         }
-                    }
-                },
-                actions = {
-                    val ready = state as? ScheduleUiState.Ready
-                    // 今天不在学期内时没有「本周」可回（回也是回第 1 周），按钮不显示
-                    if (ready != null && ready.todayWeek != null && ready.selectedWeek != ready.todayWeek) {
-                        TextButton(onClick = { viewModel.backToCurrentWeek() }) {
-                            Text(stringResource(R.string.schedule_back_to_current_week))
+                    },
+                    actions = {
+                        val ready = state as? ScheduleUiState.Ready
+                        // 今天不在学期内时没有「本周」可回（回也是回第 1 周），按钮不显示
+                        if (ready != null && ready.todayWeek != null && ready.selectedWeek != ready.todayWeek) {
+                            TextButton(onClick = { viewModel.backToCurrentWeek() }) {
+                                Text(stringResource(R.string.schedule_back_to_current_week))
+                            }
                         }
-                    }
-                    if (ready != null) {
-                        IconButton(onClick = { showWeekPicker = true }) {
+                        if (ready != null) {
+                            IconButton(onClick = { showWeekPicker = true }) {
+                                Icon(
+                                    Icons.Default.DateRange,
+                                    contentDescription = stringResource(R.string.schedule_pick_week),
+                                )
+                            }
+                        }
+                        if (ready != null) {
+                            IconButton(onClick = { showQuickSettings = true }) {
+                                Icon(
+                                    Icons.Default.Settings,
+                                    contentDescription = stringResource(R.string.schedule_display_settings),
+                                )
+                            }
+                        }
+                        // 日程不依赖学期，无学期时也给入口
+                        IconButton(onClick = onOpenEvents) {
                             Icon(
-                                Icons.Default.DateRange,
-                                contentDescription = stringResource(R.string.schedule_pick_week),
+                                Icons.Default.Notifications,
+                                contentDescription = stringResource(R.string.schedule_event_title),
                             )
                         }
-                    }
-                    if (ready != null) {
-                        IconButton(onClick = { showQuickSettings = true }) {
-                            Icon(
-                                Icons.Default.Settings,
-                                contentDescription = stringResource(R.string.schedule_display_settings),
-                            )
-                        }
-                    }
-                    // 日程不依赖学期，无学期时也给入口
-                    IconButton(onClick = onOpenEvents) {
-                        Icon(
-                            Icons.Default.Notifications,
-                            contentDescription = stringResource(R.string.schedule_event_title),
-                        )
-                    }
-                },
-                colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = MaterialTheme.colorScheme.background,
-                ),
-                scrollBehavior = appBarScrollBehavior,
-            )
-        },
-        floatingActionButton = {
-            if (state is ScheduleUiState.Ready) {
-                FloatingActionButton(onClick = onCreateCourse) {
-                    Icon(Icons.Default.Add, contentDescription = stringResource(R.string.schedule_add_course))
-                }
-            }
-        },
-        // 顶栏自己吃状态栏 inset；底栏在外层 NavHost，这里再垫 navigationBars
-        // 会在课表和底栏之间多出一横条空白。所以垂直方向仍然归零。
-        // 水平方向必须垫 safeDrawing：主题声明了 windowLayoutInDisplayCutoutMode
-        // = shortEdges（内容主动延伸进刘海区），横屏时挖孔转到侧边，不补偿就会
-        // 盖住课表最左或最右一整列。systemBars 不含 displayCutout，只能用 safeDrawing。
-        contentWindowInsets = WindowInsets.safeDrawing.only(WindowInsetsSides.Horizontal),
-        containerColor = MaterialTheme.colorScheme.background,
-    ) { padding ->
-        when (val s = state) {
-            ScheduleUiState.Loading -> Box(
-                Modifier
-                    .fillMaxSize()
-                    .padding(padding),
-                contentAlignment = Alignment.Center,
-            ) { CircularProgressIndicator() }
-
-            ScheduleUiState.NoTerm -> Box(
-                Modifier
-                    .fillMaxSize()
-                    .padding(padding),
-                contentAlignment = Alignment.Center,
-            ) {
-                Column(horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.spacedBy(12.dp)) {
-                    Text(
-                        stringResource(R.string.schedule_no_term_title),
-                        style = MaterialTheme.typography.titleMedium,
-                    )
-                    Text(
-                        stringResource(R.string.schedule_no_term_desc),
-                        style = MaterialTheme.typography.bodyMedium,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant,
-                    )
-                    Button(onClick = { onEditTerm(null) }) {
-                        Text(stringResource(R.string.schedule_create_term))
-                    }
-                }
-            }
-
-            is ScheduleUiState.Ready -> {
-                val ready = s
-                val nowMinute = rememberNowMinute()
-                // 这一屏画的是哪个学期的周次（翻页器写回时连带记下，见 viewModel.selectWeek）
-                val numbering = WeekNumbering.of(ready.term)
-                val pagerState = rememberPagerState(
-                    initialPage = (ready.selectedWeek - 1).coerceIn(0, ready.term.totalWeeks - 1),
-                    pageCount = { ready.term.totalWeeks },
+                    },
+                    colors = TopAppBarDefaults.topAppBarColors(
+                        containerColor = if (onWallpaper) Color.Transparent else MaterialTheme.colorScheme.background,
+                        // 滚动后顶栏默认换一层 surfaceContainer 底色，叠在背景图上会是一条突兀的色带
+                        scrolledContainerColor = if (onWallpaper) Color.Transparent else Color.Unspecified,
+                        titleContentColor = chromeTextColor ?: Color.Unspecified,
+                        actionIconContentColor = chromeTextColor ?: Color.Unspecified,
+                    ),
+                    scrollBehavior = appBarScrollBehavior,
                 )
-
-                // 翻页落定 → VM。用 settledPage 而非 currentPage：动画途中扫过的中间页
-                // 不回写 VM，否则 selectedWeek 抖动会重启下方翻页效果、把动画拦腰取消。
-                //
-                // 首帧那次**不能写回**：翻页器的页码是 rememberSaveable 的，切走再切回这个 Tab
-                // 会从保存态恢复当初那一页（initialPage 被忽略），照单全收就等于把「换课表 /
-                // 换学期后重置翻到的周次」当场撤销——回到课表页仍停在上一个学期的周次上。
-                // 跳过它之后：用户真翻页会来第二次，照常写回；重置成跟随今天时 VM 给的是
-                // 另一个周次，下面那个 LaunchedEffect 会把翻页器滚过去，滚完的落定也照常写回。
-                LaunchedEffect(pagerState, numbering) {
-                    var firstSettleSkipped = false
-                    snapshotFlow { pagerState.settledPage }.collect { page ->
-                        if (!firstSettleSkipped) {
-                            firstSettleSkipped = true
-                            return@collect
-                        }
-                        viewModel.selectWeek(page + 1, numbering)
+            },
+            floatingActionButton = {
+                if (state is ScheduleUiState.Ready) {
+                    FloatingActionButton(onClick = onCreateCourse) {
+                        Icon(Icons.Default.Add, contentDescription = stringResource(R.string.schedule_add_course))
                     }
                 }
-                // 周次选择器/回本周 → 翻页
-                LaunchedEffect(ready.selectedWeek, ready.term.totalWeeks) {
-                    val target = (ready.selectedWeek - 1).coerceIn(0, ready.term.totalWeeks - 1)
-                    if (pagerState.settledPage != target && !pagerState.isScrollInProgress) {
-                        pagerState.animateScrollToPage(target)
-                    }
-                }
-
-                Column(
+            },
+            // 顶栏自己吃状态栏 inset；底栏在外层 NavHost，这里再垫 navigationBars
+            // 会在课表和底栏之间多出一横条空白。所以垂直方向仍然归零。
+            // 水平方向必须垫 safeDrawing：主题声明了 windowLayoutInDisplayCutoutMode
+            // = shortEdges（内容主动延伸进刘海区），横屏时挖孔转到侧边，不补偿就会
+            // 盖住课表最左或最右一整列。systemBars 不含 displayCutout，只能用 safeDrawing。
+            contentWindowInsets = WindowInsets.safeDrawing.only(WindowInsetsSides.Horizontal),
+            containerColor = if (onWallpaper) Color.Transparent else MaterialTheme.colorScheme.background,
+        ) { padding ->
+            // 外观偏好还没读出来时不画网格：按默认外观先画一帧，开了时间轴的用户会看到节次网格一闪再跳
+            val currentAppearance = appearance
+            when (val s = if (currentAppearance == null && state is ScheduleUiState.Ready) ScheduleUiState.Loading else state) {
+                ScheduleUiState.Loading -> Box(
                     Modifier
                         .fillMaxSize()
                         .padding(padding),
+                    contentAlignment = Alignment.Center,
+                ) { CircularProgressIndicator() }
+
+                ScheduleUiState.NoTerm -> Box(
+                    Modifier
+                        .fillMaxSize()
+                        .padding(padding),
+                    contentAlignment = Alignment.Center,
                 ) {
-                    // 表头与网格必须拿同一份列（顺序、可见性都来自它），否则列会错位
-                    val weekDays = ready.term.visibleWeekDays(ready.showWeekend)
-                    WeekHeader(
-                        term = ready.term,
-                        week = ready.selectedWeek,
-                        weekDays = weekDays,
-                        todayDayOfWeek = if (ready.selectedWeek == ready.todayWeek) {
-                            ready.todayDayOfWeek
-                        } else {
-                            null
-                        },
-                        showTimeInCards = ready.showTimeInCards,
-                        // 无水平 padding：与 WeekGrid 总宽严格一致，分栏才能逐列对齐
-                        modifier = Modifier.fillMaxWidth(),
-                        dayOverrides = ready.dayOverrides,
-                        onDayClick = { swapDay = it },
-                    )
-
-                    // 行高按可用高度自适应，但不低于 56dp。
-                    // 必须在 verticalScroll **外面** 量：滚动链路里 maxHeight 是无穷，
-                    // WeekGrid 内部再怎么 BoxWithConstraints 也只会拿到无界约束
-                    // （WeekGrid 自己的注释也记着这件事）。
-                    // 同样放在翻页器**外面**：每页各量一次的话，下面那一下 heightOffset
-                    // 读数会把每一页都拖着跟顶栏动画逐帧重组，顺带重算相邻页的 layout。
-                    // 平板竖屏净高一千多 dp：固定 56dp 会让 12 节只占 672dp，下方空出一大片；
-                    // 手机横屏净高不到 200dp：取 56dp 下限，照旧靠滚动看全。
-                    BoxWithConstraints(Modifier.fillMaxSize()) {
-                        val totalPeriods = ready.periodTimes.size.coerceAtLeast(1)
-                        // 顶栏收起时 Scaffold 的顶部内边距变小，这里的 maxHeight 反倒变大。
-                        // 直接拿它算行高，网格就会跟着顶栏一起伸缩；「够不够滚」的判断也会
-                        // 随之自激（收起→变高→不用滚→展开→又要滚→收起……）。
-                        // heightOffset 是顶栏当前收起的像素数（≤0），加回去正好得到顶栏
-                        // 完全展开时的净高 —— 与顶栏状态无关，行高和判断因此都是恒定的。
-                        val expandedHeight = maxHeight + with(LocalDensity.current) {
-                            appBarState.heightOffset.toDp()
-                        }
-                        val cellHeight = maxOf(PeriodCellHeight, expandedHeight / totalPeriods)
-                        SideEffect { gridScrollable = PeriodCellHeight * totalPeriods > expandedHeight }
-
-                        HorizontalPager(
-                            state = pagerState,
-                            modifier = Modifier.fillMaxSize(),
-                        ) { page ->
-                            val week = page + 1
-                            val layout = if (week == ready.selectedWeek) {
-                                ready.layout
-                            } else {
-                                WeekLayout.layoutForWeek(ready.schedule, week, ready.term, ready.dayOverrides)
-                            }
-                            // 灰块按「当前这一页的周」算：翻页动画里扫过的中间页也得各画各的
-                            val otherWeekLayout = when {
-                                !ready.showOtherWeek -> emptyMap<Int, List<PlacedBlock>>()
-                                week == ready.selectedWeek -> ready.otherWeekLayout
-                                else -> WeekLayout.otherWeekLayout(
-                                    ready.schedule,
-                                    week,
-                                    ready.term,
-                                    ready.dayOverrides,
-                                )
-                            }
-                            Column(
-                                Modifier
-                                    .fillMaxSize()
-                                    .verticalScroll(rememberScrollState()),
-                            ) {
-                                WeekGrid(
-                                    periodTimes = ready.periodTimes,
-                                    layout = layout,
-                                    weekDays = weekDays,
-                                    todayDayOfWeek = if (week == ready.todayWeek) ready.todayDayOfWeek else null,
-                                    showTimeInCards = ready.showTimeInCards,
-                                    showGridLines = ready.showGridLines,
-                                    nowMinuteOfDay = if (week == ready.todayWeek && ready.showNowLine) nowMinute else null,
-                                    onBlockClick = { detailBlock = it },
-                                    otherWeekLayout = otherWeekLayout,
-                                    cellHeight = cellHeight,
-                                )
-                            }
+                    Column(horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.spacedBy(12.dp)) {
+                        Text(
+                            stringResource(R.string.schedule_no_term_title),
+                            style = MaterialTheme.typography.titleMedium,
+                        )
+                        Text(
+                            stringResource(R.string.schedule_no_term_desc),
+                            style = MaterialTheme.typography.bodyMedium,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        )
+                        Button(onClick = { onEditTerm(null) }) {
+                            Text(stringResource(R.string.schedule_create_term))
                         }
                     }
                 }
 
-                detailBlock?.let { placed ->
-                    val courseWithBlocks = ready.schedule.firstOrNull { it.course.id == placed.course.id }
-                    CourseDetailSheet(
-                        placed = placed,
-                        courseWithBlocks = courseWithBlocks,
-                        onAddExam = onAddExam,
-                        onEditExam = onEditExam,
-                        onEdit = { onEditCourse(placed.course.id) },
-                        onDelete = { viewModel.deleteCourse(placed.course.id) },
-                        onDismiss = { detailBlock = null },
+                is ScheduleUiState.Ready -> {
+                    val ready = s
+                    val nowMinute = rememberNowMinute()
+                    // 走到这里 currentAppearance 一定已经读出（见上面 when 的判定），兜底只为让类型收窄
+                    val style = remember(currentAppearance, ready.showTimeInCards, ready.showGridLines) {
+                        gridStyleOf(currentAppearance ?: ScheduleAppearance(), ready.showTimeInCards, ready.showGridLines)
+                    }
+                    // 这一屏画的是哪个学期的周次（翻页器写回时连带记下，见 viewModel.selectWeek）
+                    val numbering = WeekNumbering.of(ready.term)
+                    val pagerState = rememberPagerState(
+                        initialPage = (ready.selectedWeek - 1).coerceIn(0, ready.term.totalWeeks - 1),
+                        pageCount = { ready.term.totalWeeks },
                     )
-                }
 
-                swapDay?.let { day ->
-                    DaySwapDialog(
-                        term = ready.term,
-                        epochDay = day,
-                        sourceEpochDay = ready.dayOverrides[day],
-                        onSelect = { source ->
-                            viewModel.setDayOverride(day, source)
-                            swapDay = null
-                        },
-                        onClear = {
-                            viewModel.clearDayOverride(day)
-                            swapDay = null
-                        },
-                        onDismiss = { swapDay = null },
-                    )
-                }
+                    // 翻页落定 → VM。用 settledPage 而非 currentPage：动画途中扫过的中间页
+                    // 不回写 VM，否则 selectedWeek 抖动会重启下方翻页效果、把动画拦腰取消。
+                    //
+                    // 首帧那次**不能写回**：翻页器的页码是 rememberSaveable 的，切走再切回这个 Tab
+                    // 会从保存态恢复当初那一页（initialPage 被忽略），照单全收就等于把「换课表 /
+                    // 换学期后重置翻到的周次」当场撤销——回到课表页仍停在上一个学期的周次上。
+                    // 跳过它之后：用户真翻页会来第二次，照常写回；重置成跟随今天时 VM 给的是
+                    // 另一个周次，下面那个 LaunchedEffect 会把翻页器滚过去，滚完的落定也照常写回。
+                    LaunchedEffect(pagerState, numbering) {
+                        var firstSettleSkipped = false
+                        snapshotFlow { pagerState.settledPage }.collect { page ->
+                            if (!firstSettleSkipped) {
+                                firstSettleSkipped = true
+                                return@collect
+                            }
+                            viewModel.selectWeek(page + 1, numbering)
+                        }
+                    }
+                    // 周次选择器/回本周 → 翻页
+                    LaunchedEffect(ready.selectedWeek, ready.term.totalWeeks) {
+                        val target = (ready.selectedWeek - 1).coerceIn(0, ready.term.totalWeeks - 1)
+                        if (pagerState.settledPage != target && !pagerState.isScrollInProgress) {
+                            pagerState.animateScrollToPage(target)
+                        }
+                    }
 
-                if (showWeekPicker) {
-                    WeekPickerDialog(
-                        totalWeeks = ready.term.totalWeeks,
-                        currentWeek = ready.todayWeek,
-                        selectedWeek = ready.selectedWeek,
-                        onSelect = {
-                            viewModel.selectWeek(it, numbering)
-                            showWeekPicker = false
-                        },
-                        onDismiss = { showWeekPicker = false },
-                    )
-                }
+                    Column(
+                        Modifier
+                            .fillMaxSize()
+                            .padding(padding),
+                    ) {
+                        // 表头与网格必须拿同一份列（顺序、可见性都来自它），否则列会错位
+                        val weekDays = ready.term.visibleWeekDays(ready.showWeekend)
+                        WeekHeader(
+                            term = ready.term,
+                            week = ready.selectedWeek,
+                            weekDays = weekDays,
+                            todayDayOfWeek = if (ready.selectedWeek == ready.todayWeek) {
+                                ready.todayDayOfWeek
+                            } else {
+                                null
+                            },
+                            style = style,
+                            // 无水平 padding：与 WeekGrid 总宽严格一致，分栏才能逐列对齐
+                            modifier = Modifier.fillMaxWidth(),
+                            dayOverrides = ready.dayOverrides,
+                            onDayClick = { swapDay = it },
+                        )
 
-                if (showQuickSettings) {
-                    AlertDialog(
-                        onDismissRequest = { showQuickSettings = false },
-                        title = { Text(stringResource(R.string.schedule_display_settings)) },
-                        text = {
-                            Column {
-                                Row(
-                                    modifier = Modifier
-                                        .fillMaxWidth()
-                                        .clickable { viewModel.setShowNowLine(!ready.showNowLine) },
-                                    horizontalArrangement = Arrangement.SpaceBetween,
-                                    verticalAlignment = Alignment.CenterVertically,
-                                ) {
-                                    Text(stringResource(R.string.schedule_show_now_line))
-                                    Checkbox(
-                                        checked = ready.showNowLine,
-                                        onCheckedChange = { viewModel.setShowNowLine(it) },
+                        // 行高按可用高度自适应，但不低于 56dp（用户在个性化设置里定了行高、或开了时间轴时用定值，
+                        // 见 GridStyle.rowHeight）。
+                        // 必须在 verticalScroll **外面** 量：滚动链路里 maxHeight 是无穷，
+                        // WeekGrid 内部再怎么 BoxWithConstraints 也只会拿到无界约束
+                        // （WeekGrid 自己的注释也记着这件事）。
+                        // 同样放在翻页器**外面**：每页各量一次的话，下面那一下 heightOffset
+                        // 读数会把每一页都拖着跟顶栏动画逐帧重组，顺带重算相邻页的 layout。
+                        // 平板竖屏净高一千多 dp：固定 56dp 会让 12 节只占 672dp，下方空出一大片；
+                        // 手机横屏净高不到 200dp：取 56dp 下限，照旧靠滚动看全。
+                        BoxWithConstraints(Modifier.fillMaxSize()) {
+                            // 顶栏收起时 Scaffold 的顶部内边距变小，这里的 maxHeight 反倒变大。
+                            // 直接拿它算行高，网格就会跟着顶栏一起伸缩；「够不够滚」的判断也会
+                            // 随之自激（收起→变高→不用滚→展开→又要滚→收起……）。
+                            // heightOffset 是顶栏当前收起的像素数（≤0），加回去正好得到顶栏
+                            // 完全展开时的净高 —— 与顶栏状态无关，行高和判断因此都是恒定的。
+                            val expandedHeight = maxHeight + with(LocalDensity.current) {
+                                appBarState.heightOffset.toDp()
+                            }
+                            val rowHeight = style.rowHeight(ready.periodTimes.size, expandedHeight)
+                            // 自动行高拿 56dp 下限比；定值行高与时间轴高度是死的，直接拿它比
+                            SideEffect { gridScrollable = style.overflows(ready.periodTimes.size, expandedHeight) }
+
+                            HorizontalPager(
+                                state = pagerState,
+                                modifier = Modifier.fillMaxSize(),
+                            ) { page ->
+                                val week = page + 1
+                                val layout = if (week == ready.selectedWeek) {
+                                    ready.layout
+                                } else {
+                                    WeekLayout.layoutForWeek(ready.schedule, week, ready.term, ready.dayOverrides)
+                                }
+                                // 灰块按「当前这一页的周」算：翻页动画里扫过的中间页也得各画各的
+                                val otherWeekLayout = when {
+                                    !ready.showOtherWeek -> emptyMap<Int, List<PlacedBlock>>()
+                                    week == ready.selectedWeek -> ready.otherWeekLayout
+                                    else -> WeekLayout.otherWeekLayout(
+                                        ready.schedule,
+                                        week,
+                                        ready.term,
+                                        ready.dayOverrides,
                                     )
                                 }
-                                Row(
-                                    modifier = Modifier
-                                        .fillMaxWidth()
-                                        .clickable { viewModel.setShowWeekend(!ready.showWeekend) },
-                                    horizontalArrangement = Arrangement.SpaceBetween,
-                                    verticalAlignment = Alignment.CenterVertically,
+                                Column(
+                                    Modifier
+                                        .fillMaxSize()
+                                        .verticalScroll(rememberGridScrollState(style.timeline, ready.periodTimes, rowHeight)),
                                 ) {
-                                    Text(stringResource(R.string.schedule_show_weekend))
-                                    Checkbox(
-                                        checked = ready.showWeekend,
-                                        onCheckedChange = { viewModel.setShowWeekend(it) },
-                                    )
-                                }
-                                Row(
-                                    modifier = Modifier
-                                        .fillMaxWidth()
-                                        .clickable { viewModel.setShowGridLines(!ready.showGridLines) },
-                                    horizontalArrangement = Arrangement.SpaceBetween,
-                                    verticalAlignment = Alignment.CenterVertically,
-                                ) {
-                                    Text(stringResource(R.string.schedule_show_grid_lines))
-                                    Checkbox(
-                                        checked = ready.showGridLines,
-                                        onCheckedChange = { viewModel.setShowGridLines(it) },
-                                    )
-                                }
-                                Row(
-                                    modifier = Modifier
-                                        .fillMaxWidth()
-                                        .clickable { viewModel.setShowTimeInCards(!ready.showTimeInCards) },
-                                    horizontalArrangement = Arrangement.SpaceBetween,
-                                    verticalAlignment = Alignment.CenterVertically,
-                                ) {
-                                    Text(stringResource(R.string.schedule_show_time_in_cards))
-                                    Switch(
-                                        checked = ready.showTimeInCards,
-                                        onCheckedChange = { viewModel.setShowTimeInCards(it) },
-                                    )
-                                }
-                                Row(
-                                    modifier = Modifier
-                                        .fillMaxWidth()
-                                        .clickable { viewModel.setShowOtherWeek(!ready.showOtherWeek) },
-                                    horizontalArrangement = Arrangement.SpaceBetween,
-                                    verticalAlignment = Alignment.CenterVertically,
-                                ) {
-                                    Text(
-                                        stringResource(R.string.schedule_show_other_week),
-                                        modifier = Modifier.weight(1f),
-                                    )
-                                    Switch(
-                                        checked = ready.showOtherWeek,
-                                        onCheckedChange = { viewModel.setShowOtherWeek(it) },
+                                    WeekGrid(
+                                        periodTimes = ready.periodTimes,
+                                        layout = layout,
+                                        weekDays = weekDays,
+                                        todayDayOfWeek = if (week == ready.todayWeek) ready.todayDayOfWeek else null,
+                                        style = style,
+                                        nowMinuteOfDay = if (week == ready.todayWeek && ready.showNowLine) nowMinute else null,
+                                        onBlockClick = { detailBlock = it },
+                                        otherWeekLayout = otherWeekLayout,
+                                        rowHeight = rowHeight,
                                     )
                                 }
                             }
-                        },
-                        confirmButton = {
-                            TextButton(onClick = { showQuickSettings = false }) {
-                                Text(stringResource(CoreR.string.common_done))
-                            }
-                        },
-                    )
+                        }
+                    }
+
+                    detailBlock?.let { placed ->
+                        val courseWithBlocks = ready.schedule.firstOrNull { it.course.id == placed.course.id }
+                        CourseDetailSheet(
+                            placed = placed,
+                            courseWithBlocks = courseWithBlocks,
+                            onAddExam = onAddExam,
+                            onEditExam = onEditExam,
+                            onEdit = { onEditCourse(placed.course.id) },
+                            onDelete = { viewModel.deleteCourse(placed.course.id) },
+                            onDismiss = { detailBlock = null },
+                        )
+                    }
+
+                    swapDay?.let { day ->
+                        DaySwapDialog(
+                            term = ready.term,
+                            epochDay = day,
+                            sourceEpochDay = ready.dayOverrides[day],
+                            onSelect = { source ->
+                                viewModel.setDayOverride(day, source)
+                                swapDay = null
+                            },
+                            onClear = {
+                                viewModel.clearDayOverride(day)
+                                swapDay = null
+                            },
+                            onDismiss = { swapDay = null },
+                        )
+                    }
+
+                    if (showWeekPicker) {
+                        WeekPickerDialog(
+                            totalWeeks = ready.term.totalWeeks,
+                            currentWeek = ready.todayWeek,
+                            selectedWeek = ready.selectedWeek,
+                            onSelect = {
+                                viewModel.selectWeek(it, numbering)
+                                showWeekPicker = false
+                            },
+                            onDismiss = { showWeekPicker = false },
+                        )
+                    }
+
+                    if (showQuickSettings) {
+                        AlertDialog(
+                            onDismissRequest = { showQuickSettings = false },
+                            title = { Text(stringResource(R.string.schedule_display_settings)) },
+                            text = {
+                                Column {
+                                    Row(
+                                        modifier = Modifier
+                                            .fillMaxWidth()
+                                            .clickable { viewModel.setShowNowLine(!ready.showNowLine) },
+                                        horizontalArrangement = Arrangement.SpaceBetween,
+                                        verticalAlignment = Alignment.CenterVertically,
+                                    ) {
+                                        Text(stringResource(R.string.schedule_show_now_line))
+                                        Checkbox(
+                                            checked = ready.showNowLine,
+                                            onCheckedChange = { viewModel.setShowNowLine(it) },
+                                        )
+                                    }
+                                    Row(
+                                        modifier = Modifier
+                                            .fillMaxWidth()
+                                            .clickable { viewModel.setShowWeekend(!ready.showWeekend) },
+                                        horizontalArrangement = Arrangement.SpaceBetween,
+                                        verticalAlignment = Alignment.CenterVertically,
+                                    ) {
+                                        Text(stringResource(R.string.schedule_show_weekend))
+                                        Checkbox(
+                                            checked = ready.showWeekend,
+                                            onCheckedChange = { viewModel.setShowWeekend(it) },
+                                        )
+                                    }
+                                    Row(
+                                        modifier = Modifier
+                                            .fillMaxWidth()
+                                            .clickable { viewModel.setShowGridLines(!ready.showGridLines) },
+                                        horizontalArrangement = Arrangement.SpaceBetween,
+                                        verticalAlignment = Alignment.CenterVertically,
+                                    ) {
+                                        Text(stringResource(R.string.schedule_show_grid_lines))
+                                        Checkbox(
+                                            checked = ready.showGridLines,
+                                            onCheckedChange = { viewModel.setShowGridLines(it) },
+                                        )
+                                    }
+                                    // 个性化设置里隐藏了节次时间时，这一项没有可见效果，置灰
+                                    val timesHidden = currentAppearance?.hidePeriodTimes == true
+                                    Row(
+                                        modifier = Modifier
+                                            .fillMaxWidth()
+                                            .clickable(enabled = !timesHidden) {
+                                                viewModel.setShowTimeInCards(!ready.showTimeInCards)
+                                            },
+                                        horizontalArrangement = Arrangement.SpaceBetween,
+                                        verticalAlignment = Alignment.CenterVertically,
+                                    ) {
+                                        Text(
+                                            stringResource(R.string.schedule_show_time_in_cards),
+                                            color = if (timesHidden) {
+                                                MaterialTheme.colorScheme.onSurface.copy(alpha = 0.38f)
+                                            } else {
+                                                Color.Unspecified
+                                            },
+                                            modifier = Modifier.weight(1f),
+                                        )
+                                        Switch(
+                                            checked = ready.showTimeInCards,
+                                            onCheckedChange = { viewModel.setShowTimeInCards(it) },
+                                            enabled = !timesHidden,
+                                        )
+                                    }
+                                    Row(
+                                        modifier = Modifier
+                                            .fillMaxWidth()
+                                            .clickable { viewModel.setShowOtherWeek(!ready.showOtherWeek) },
+                                        horizontalArrangement = Arrangement.SpaceBetween,
+                                        verticalAlignment = Alignment.CenterVertically,
+                                    ) {
+                                        Text(
+                                            stringResource(R.string.schedule_show_other_week),
+                                            modifier = Modifier.weight(1f),
+                                        )
+                                        Switch(
+                                            checked = ready.showOtherWeek,
+                                            onCheckedChange = { viewModel.setShowOtherWeek(it) },
+                                        )
+                                    }
+                                }
+                            },
+                            confirmButton = {
+                                TextButton(onClick = { showQuickSettings = false }) {
+                                    Text(stringResource(CoreR.string.common_done))
+                                }
+                            },
+                            dismissButton = {
+                                TextButton(
+                                    onClick = {
+                                        showQuickSettings = false
+                                        onOpenPersonalization()
+                                    },
+                                ) {
+                                    Text(stringResource(R.string.schedule_open_personalization))
+                                }
+                            },
+                        )
+                    }
                 }
             }
         }
+    }
+}
+
+/**
+ * 网格的纵向滚动。24 小时时间轴一整天很长，进来先滚到第一节课前一点
+ * （[TimelineGeometry.initialScrollMinute]）；切换模式时按新模式重新定位。
+ * 节次模式从顶端开始，与原先的 rememberScrollState() 一样。
+ */
+@Composable
+internal fun rememberGridScrollState(timeline: Boolean, periodTimes: List<PeriodTime>, rowHeight: Dp): ScrollState {
+    val density = LocalDensity.current
+    return rememberSaveable(timeline, saver = ScrollState.Saver) {
+        val initial = if (timeline) {
+            with(density) { (rowHeight * (TimelineGeometry.initialScrollMinute(periodTimes) / 60f)).roundToPx() }
+        } else {
+            0
+        }
+        ScrollState(initial)
     }
 }
 

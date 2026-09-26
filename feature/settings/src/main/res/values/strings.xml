@@ -73,6 +73,8 @@
     <string name="settings_profile_notification">通知与提醒</string>
     <string name="settings_profile_notification_desc">权限、提醒时间、节假日与跳过日期</string>
     <string name="settings_profile_settings_desc">WebDAV 同步、自动同步、桌面小组件</string>
+    <string name="settings_profile_personalization">个性化设置</string>
+    <string name="settings_profile_personalization_desc">课表背景、布局与课程卡片样式</string>
     <string name="settings_profile_about">关于</string>
     <string name="settings_profile_about_desc">版本、开源许可、反馈</string>
 

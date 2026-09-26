@@ -4,7 +4,10 @@ import android.content.Context
 import androidx.datastore.core.handlers.ReplaceFileCorruptionHandler
 import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.edit
+import androidx.datastore.preferences.core.MutablePreferences
+import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.emptyPreferences
+import androidx.datastore.preferences.core.floatPreferencesKey
 import androidx.datastore.preferences.core.intPreferencesKey
 import androidx.datastore.preferences.core.longPreferencesKey
 import androidx.datastore.preferences.core.stringPreferencesKey
@@ -12,6 +15,9 @@ import androidx.datastore.preferences.core.stringSetPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
 import com.nullclass.core.data.locale.AppLocale
 import com.nullclass.core.model.AppLanguage
+import com.nullclass.core.model.BlockBorderStyle
+import com.nullclass.core.model.BlockTextAlign
+import com.nullclass.core.model.ScheduleAppearance
 import com.nullclass.core.model.ThemeMode
 import com.nullclass.core.model.WidgetFontSize
 import dagger.hilt.android.qualifiers.ApplicationContext
@@ -54,6 +60,34 @@ class UserPreferencesRepository @Inject constructor(
         val HOLIDAY_SYNC_ENABLED = booleanPreferencesKey("holiday_sync_enabled")
         val HOLIDAY_LAST_SYNC_MS = longPreferencesKey("holiday_last_sync_ms")
         val SCHEDULED_ALARM_KEYS = stringSetPreferencesKey("scheduled_alarm_keys")
+
+        // 个性化设置（ScheduleAppearance）。键不存在 = 默认值
+        val APPEARANCE_TIMELINE_MODE = booleanPreferencesKey("appearance_timeline_mode")
+        val APPEARANCE_HIDE_PERIOD_TIMES = booleanPreferencesKey("appearance_hide_period_times")
+        val APPEARANCE_HIDE_HEADER_DATES = booleanPreferencesKey("appearance_hide_header_dates")
+        val APPEARANCE_PAGE_TEXT_COLOR = intPreferencesKey("appearance_page_text_color")
+        val APPEARANCE_PERIOD_CELL_HEIGHT = intPreferencesKey("appearance_period_cell_height")
+        val APPEARANCE_TIMELINE_HOUR_HEIGHT = intPreferencesKey("appearance_timeline_hour_height")
+        val APPEARANCE_SIDEBAR_WIDTH = intPreferencesKey("appearance_sidebar_width")
+        val APPEARANCE_HEADER_HEIGHT = intPreferencesKey("appearance_header_height")
+        val APPEARANCE_BLOCK_TEXT_COLOR = intPreferencesKey("appearance_block_text_color")
+        val APPEARANCE_BLOCK_TEXT_ALIGN = stringPreferencesKey("appearance_block_text_align")
+        val APPEARANCE_BLOCK_BORDER_STYLE = stringPreferencesKey("appearance_block_border_style")
+        val APPEARANCE_BLOCK_TEXT_SCALE = intPreferencesKey("appearance_block_text_scale")
+        val APPEARANCE_BLOCK_CORNER_RADIUS = intPreferencesKey("appearance_block_corner_radius")
+        val APPEARANCE_BLOCK_SPACING = floatPreferencesKey("appearance_block_spacing")
+        val APPEARANCE_BLOCK_OPACITY = intPreferencesKey("appearance_block_opacity")
+
+        /** 当前课表壁纸在 filesDir/wallpaper/ 下的文件名，见 ScheduleWallpaperStore。 */
+        val SCHEDULE_WALLPAPER_FILE = stringPreferencesKey("schedule_wallpaper_file")
+
+        val APPEARANCE_ALL: List<Preferences.Key<*>> = listOf(
+            APPEARANCE_TIMELINE_MODE, APPEARANCE_HIDE_PERIOD_TIMES, APPEARANCE_HIDE_HEADER_DATES,
+            APPEARANCE_PAGE_TEXT_COLOR, APPEARANCE_PERIOD_CELL_HEIGHT, APPEARANCE_TIMELINE_HOUR_HEIGHT,
+            APPEARANCE_SIDEBAR_WIDTH, APPEARANCE_HEADER_HEIGHT, APPEARANCE_BLOCK_TEXT_COLOR,
+            APPEARANCE_BLOCK_TEXT_ALIGN, APPEARANCE_BLOCK_BORDER_STYLE, APPEARANCE_BLOCK_TEXT_SCALE,
+            APPEARANCE_BLOCK_CORNER_RADIUS, APPEARANCE_BLOCK_SPACING, APPEARANCE_BLOCK_OPACITY,
+        )
     }
 
     /**
@@ -128,6 +162,48 @@ class UserPreferencesRepository @Inject constructor(
 
     suspend fun setShowGridLines(value: Boolean) {
         context.userPrefs.edit { it[Keys.SHOW_GRID_LINES] = value }
+    }
+
+    /** 周课表外观（「我的 → 个性化设置」）。读出即过一遍 [ScheduleAppearance.sanitized]。 */
+    val scheduleAppearance: Flow<ScheduleAppearance> =
+        context.userPrefs.data.map { it.toScheduleAppearance() }.distinctUntilChanged()
+
+    /**
+     * 改外观。在同一次 edit 里读出当前值、套上 [transform]、只把**变了的字段**写回 ——
+     * 调用方不必持有完整快照，也就不会拿旧快照把别处刚改的字段盖回去。
+     * 等于默认值的字段直接删键，「没动过」和「改回默认」存成同一个样子。
+     */
+    suspend fun updateScheduleAppearance(transform: (ScheduleAppearance) -> ScheduleAppearance) {
+        context.userPrefs.edit { prefs ->
+            val current = prefs.toScheduleAppearance()
+            val next = transform(current).sanitized()
+            if (next != current) prefs.writeAppearance(current, next)
+        }
+    }
+
+    /** 个性化设置恢复默认：外观全部回到默认，网格线恢复显示。壁纸由 ScheduleWallpaperStore 另行清除。 */
+    suspend fun resetScheduleAppearance() {
+        context.userPrefs.edit { prefs ->
+            Keys.APPEARANCE_ALL.forEach { prefs.remove(it) }
+            prefs.remove(Keys.SHOW_GRID_LINES)
+        }
+    }
+
+    /** 当前课表壁纸的文件名；null = 没有壁纸。只给 [ScheduleWallpaperStore] 用。 */
+    internal val scheduleWallpaperFile: Flow<String?> =
+        context.userPrefs.data.map { it[Keys.SCHEDULE_WALLPAPER_FILE] }.distinctUntilChanged()
+
+    internal suspend fun setScheduleWallpaperFile(name: String?) {
+        context.userPrefs.edit {
+            if (name == null) it.remove(Keys.SCHEDULE_WALLPAPER_FILE) else it[Keys.SCHEDULE_WALLPAPER_FILE] = name
+        }
+    }
+
+    /** 指针仍是 [name] 时才清掉：读坏文件的这段时间里用户可能已经换了新壁纸，不能把新的一起清了。 */
+    internal suspend fun clearScheduleWallpaperFileIf(name: String) {
+        context.userPrefs.edit {
+            if (it[Keys.SCHEDULE_WALLPAPER_FILE] == name) it.remove(Keys.SCHEDULE_WALLPAPER_FILE)
+        }
     }
 
     /** 周视图是否在当周空着的时段里，把「别的周要上」的课以灰色显示。默认关闭。 */
@@ -253,6 +329,76 @@ class UserPreferencesRepository @Inject constructor(
 
     suspend fun setScheduledAlarmKeys(keys: Set<String>) {
         context.userPrefs.edit { it[Keys.SCHEDULED_ALARM_KEYS] = keys }
+    }
+
+    private fun Preferences.toScheduleAppearance(): ScheduleAppearance {
+        val default = ScheduleAppearance()
+        return ScheduleAppearance(
+            timelineMode = this[Keys.APPEARANCE_TIMELINE_MODE] ?: default.timelineMode,
+            hidePeriodTimes = this[Keys.APPEARANCE_HIDE_PERIOD_TIMES] ?: default.hidePeriodTimes,
+            hideHeaderDates = this[Keys.APPEARANCE_HIDE_HEADER_DATES] ?: default.hideHeaderDates,
+            pageTextColor = this[Keys.APPEARANCE_PAGE_TEXT_COLOR],
+            periodCellHeightDp = this[Keys.APPEARANCE_PERIOD_CELL_HEIGHT],
+            timelineHourHeightDp = this[Keys.APPEARANCE_TIMELINE_HOUR_HEIGHT],
+            sidebarWidthDp = this[Keys.APPEARANCE_SIDEBAR_WIDTH],
+            headerHeightDp = this[Keys.APPEARANCE_HEADER_HEIGHT],
+            blockTextColor = this[Keys.APPEARANCE_BLOCK_TEXT_COLOR],
+            blockTextAlign = BlockTextAlign.fromName(this[Keys.APPEARANCE_BLOCK_TEXT_ALIGN]),
+            blockBorderStyle = BlockBorderStyle.fromName(this[Keys.APPEARANCE_BLOCK_BORDER_STYLE]),
+            blockTextScalePercent = this[Keys.APPEARANCE_BLOCK_TEXT_SCALE] ?: default.blockTextScalePercent,
+            blockCornerRadiusDp = this[Keys.APPEARANCE_BLOCK_CORNER_RADIUS] ?: default.blockCornerRadiusDp,
+            blockSpacingDp = this[Keys.APPEARANCE_BLOCK_SPACING] ?: default.blockSpacingDp,
+            blockOpacityPercent = this[Keys.APPEARANCE_BLOCK_OPACITY] ?: default.blockOpacityPercent,
+        ).sanitized()
+    }
+
+    /** 只写 [current] → [next] 之间变了的字段；null 或等于默认值的删键。 */
+    private fun MutablePreferences.writeAppearance(current: ScheduleAppearance, next: ScheduleAppearance) {
+        val default = ScheduleAppearance()
+        fun <T : Any> put(key: Preferences.Key<T>, old: T?, new: T?, defaultValue: T?) {
+            if (old == new) return
+            if (new == null || new == defaultValue) remove(key) else this[key] = new
+        }
+        put(Keys.APPEARANCE_TIMELINE_MODE, current.timelineMode, next.timelineMode, default.timelineMode)
+        put(Keys.APPEARANCE_HIDE_PERIOD_TIMES, current.hidePeriodTimes, next.hidePeriodTimes, default.hidePeriodTimes)
+        put(Keys.APPEARANCE_HIDE_HEADER_DATES, current.hideHeaderDates, next.hideHeaderDates, default.hideHeaderDates)
+        put(Keys.APPEARANCE_PAGE_TEXT_COLOR, current.pageTextColor, next.pageTextColor, null)
+        put(Keys.APPEARANCE_PERIOD_CELL_HEIGHT, current.periodCellHeightDp, next.periodCellHeightDp, null)
+        put(Keys.APPEARANCE_TIMELINE_HOUR_HEIGHT, current.timelineHourHeightDp, next.timelineHourHeightDp, null)
+        put(Keys.APPEARANCE_SIDEBAR_WIDTH, current.sidebarWidthDp, next.sidebarWidthDp, null)
+        put(Keys.APPEARANCE_HEADER_HEIGHT, current.headerHeightDp, next.headerHeightDp, null)
+        put(Keys.APPEARANCE_BLOCK_TEXT_COLOR, current.blockTextColor, next.blockTextColor, null)
+        put(
+            Keys.APPEARANCE_BLOCK_TEXT_ALIGN,
+            current.blockTextAlign.name,
+            next.blockTextAlign.name,
+            default.blockTextAlign.name,
+        )
+        put(
+            Keys.APPEARANCE_BLOCK_BORDER_STYLE,
+            current.blockBorderStyle.name,
+            next.blockBorderStyle.name,
+            default.blockBorderStyle.name,
+        )
+        put(
+            Keys.APPEARANCE_BLOCK_TEXT_SCALE,
+            current.blockTextScalePercent,
+            next.blockTextScalePercent,
+            default.blockTextScalePercent,
+        )
+        put(
+            Keys.APPEARANCE_BLOCK_CORNER_RADIUS,
+            current.blockCornerRadiusDp,
+            next.blockCornerRadiusDp,
+            default.blockCornerRadiusDp,
+        )
+        put(Keys.APPEARANCE_BLOCK_SPACING, current.blockSpacingDp, next.blockSpacingDp, default.blockSpacingDp)
+        put(
+            Keys.APPEARANCE_BLOCK_OPACITY,
+            current.blockOpacityPercent,
+            next.blockOpacityPercent,
+            default.blockOpacityPercent,
+        )
     }
 
     companion object {

@@ -74,6 +74,8 @@
     <string name="settings_profile_notification">Notifications and reminders</string>
     <string name="settings_profile_notification_desc">Permissions, reminder timing, holidays and skipped dates</string>
     <string name="settings_profile_settings_desc">WebDAV sync, auto sync, widgets</string>
+    <string name="settings_profile_personalization">Personalization</string>
+    <string name="settings_profile_personalization_desc">Timetable background, layout and course card style</string>
     <string name="settings_profile_about">About</string>
     <string name="settings_profile_about_desc">Version, license, feedback</string>
 

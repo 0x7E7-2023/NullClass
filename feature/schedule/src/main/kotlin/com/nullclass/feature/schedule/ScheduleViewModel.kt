@@ -1,7 +1,9 @@
 package com.nullclass.feature.schedule
 
+import android.graphics.Bitmap
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.nullclass.core.data.prefs.ScheduleWallpaperStore
 import com.nullclass.core.data.prefs.UserPreferencesRepository
 import com.nullclass.core.data.repository.CourseRepository
 import com.nullclass.core.data.repository.DayOverrideRepository
@@ -10,6 +12,7 @@ import com.nullclass.core.data.repository.TimetableRepository
 import com.nullclass.core.model.CourseWithBlocks
 import com.nullclass.core.model.PeriodTime
 import com.nullclass.core.model.PlacedBlock
+import com.nullclass.core.model.ScheduleAppearance
 import com.nullclass.core.model.Term
 import com.nullclass.core.model.WeekLayout
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -93,6 +96,7 @@ class ScheduleViewModel @Inject constructor(
     private val userPreferencesRepository: UserPreferencesRepository,
     private val dayOverrideRepository: DayOverrideRepository,
     timetableRepository: TimetableRepository,
+    wallpaperStore: ScheduleWallpaperStore,
 ) : ViewModel() {
 
     private val today: LocalDate = LocalDate.now()
@@ -179,6 +183,18 @@ class ScheduleViewModel @Inject constructor(
                 }
             }
             .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), ScheduleUiState.Loading)
+
+    /**
+     * 个性化设置里的外观。null = 偏好还没读出来：这时按默认外观画一帧，开了时间轴的用户
+     * 会先看到节次网格再跳成时间轴，所以界面在它到位前不画网格。
+     *
+     * 不并进 [uiState]：外观变化只需重画，不必重新排课；那条 combine 也已经有四路了。
+     */
+    val appearance: StateFlow<ScheduleAppearance?> = userPreferencesRepository.scheduleAppearance
+        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), null)
+
+    /** 课表背景图片；null = 没有设置（或还没解码完）。单例里解码一次，切 Tab 不重复解码。 */
+    val wallpaper: StateFlow<Bitmap?> = wallpaperStore.wallpaper
 
     /**
      * 翻页或周次选择器触发。[numbering] 是**翻页器所在那一屏**的周次编号（界面手里就有），

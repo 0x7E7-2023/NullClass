@@ -23,6 +23,72 @@
     <string name="schedule_show_time_in_cards">Show class times on course cards</string>
     <string name="schedule_show_other_week">Show classes from other weeks</string>
 
+    <!-- 显示设置弹窗底部：进个性化设置 -->
+    <string name="schedule_open_personalization">Personalize</string>
+
+    <!-- 个性化设置（课表外观） -->
+    <string name="schedule_personalize_title">Personalization</string>
+    <string name="schedule_personalize_reset">Reset</string>
+    <string name="schedule_personalize_reset_item">Reset to default</string>
+    <string name="schedule_personalize_reset_title">Reset personalization?</string>
+    <string name="schedule_personalize_reset_message">All personalization settings will return to their defaults, and the background image will be removed.</string>
+    <string name="schedule_personalize_reset_confirm">Reset</string>
+    <string name="schedule_personalize_section_background">Background</string>
+    <string name="schedule_personalize_background_desc">The image fills the timetable page and is dimmed slightly so your classes stay easy to read.</string>
+    <string name="schedule_personalize_background_pick">Choose image</string>
+    <string name="schedule_personalize_background_change">Change image</string>
+    <string name="schedule_personalize_background_remove">Remove</string>
+    <string name="schedule_personalize_background_importing">Processing image…</string>
+    <string name="schedule_personalize_background_failed">This image could not be read. Try a different one.</string>
+    <string name="schedule_personalize_section_display">Display</string>
+    <string name="schedule_personalize_timeline">24-hour timeline</string>
+    <string name="schedule_personalize_timeline_desc">Lays out the whole day hour by hour. Each course card sits at its actual class time and spans its actual length.</string>
+    <string name="schedule_personalize_hide_period_times">Hide period times</string>
+    <string name="schedule_personalize_hide_period_times_desc">The side column shows period numbers only, and course cards do not show class times. Hour marks stay visible in timeline mode.</string>
+    <string name="schedule_personalize_hide_dates">Hide dates</string>
+    <string name="schedule_personalize_hide_dates_desc">The header shows weekdays only.</string>
+    <string name="schedule_personalize_hide_grid_lines">Hide grid lines</string>
+    <string name="schedule_personalize_section_page">Timetable page</string>
+    <string name="schedule_personalize_text_color">Text color</string>
+    <string name="schedule_personalize_page_text_color_desc">Used for the header and side column, and for the top bar when a background image is set. Custom colors do not change with light or dark mode.</string>
+    <string name="schedule_personalize_card_text_color_desc">Custom colors do not change with light or dark mode.</string>
+    <string name="schedule_personalize_row_height">Row height</string>
+    <string name="schedule_personalize_row_height_timeline_desc">In timeline mode, this is the height of one hour.</string>
+    <string name="schedule_personalize_sidebar_width">Side column width</string>
+    <string name="schedule_personalize_header_height">Header height</string>
+    <string name="schedule_personalize_section_card">Course cards</string>
+    <string name="schedule_personalize_text_align">Text alignment</string>
+    <string name="schedule_personalize_align_center">Center</string>
+    <string name="schedule_personalize_align_top_start">Top left</string>
+    <string name="schedule_personalize_border">Border</string>
+    <string name="schedule_personalize_border_none">None</string>
+    <string name="schedule_personalize_border_solid">Solid</string>
+    <string name="schedule_personalize_border_dashed">Dashed</string>
+    <string name="schedule_personalize_text_scale">Text size</string>
+    <string name="schedule_personalize_corner_radius">Corner radius</string>
+    <string name="schedule_personalize_spacing">Spacing</string>
+    <string name="schedule_personalize_opacity">Opacity</string>
+    <string name="schedule_personalize_opacity_desc">Lower values let the background show through. Where two classes overlap, they also show through each other.</string>
+    <string name="schedule_personalize_value_auto">Auto</string>
+    <string name="schedule_personalize_value_percent">%1$d%%</string>
+    <string name="schedule_personalize_color_follow_theme">Theme</string>
+    <string name="schedule_personalize_color_white">White</string>
+    <string name="schedule_personalize_color_black">Black</string>
+    <string name="schedule_personalize_color_dark_gray">Dark gray</string>
+    <string name="schedule_personalize_color_light_gray">Light gray</string>
+    <string name="schedule_personalize_color_hue">Hue</string>
+    <string name="schedule_personalize_color_saturation">Saturation</string>
+    <string name="schedule_personalize_color_brightness">Brightness</string>
+    <!-- 预览里的示例课程：还没有学期、或本周没有课时显示 -->
+    <string name="schedule_personalize_sample_course_1">Calculus</string>
+    <string name="schedule_personalize_sample_course_2">College English</string>
+    <string name="schedule_personalize_sample_course_3">Programming</string>
+    <string name="schedule_personalize_sample_course_4">Linear Algebra</string>
+    <string name="schedule_personalize_sample_course_5">PE</string>
+    <string name="schedule_personalize_sample_room_1">A-101</string>
+    <string name="schedule_personalize_sample_room_2">Lab 305</string>
+    <string name="schedule_personalize_sample_room_3">C-210</string>
+
     <!-- Week view header: day swap marker -->
     <string name="schedule_header_swap_weekday">→%1$s</string>
     <string name="schedule_header_swap_date">→%1$d/%2$d</string>
