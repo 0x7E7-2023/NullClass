@@ -1,0 +1,592 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Japanese translation of values/strings.xml. Conventions: docs/i18n.md. -->
+<resources>
+
+    <!-- Shared date labels -->
+    <string name="settings_day_label">%1$s · %2$s</string>
+    <string name="settings_day_label_with_year">%1$d年%2$s · %3$s</string>
+    <!-- DateTimeFormatter pattern. Numeric on purpose: see fmt_date in :core:ui. -->
+    <string name="settings_month_day_pattern">M月d日</string>
+    <string name="settings_month_day">%1$d月%2$d日</string>
+
+    <!-- App settings -->
+    <string name="settings_title">設定</string>
+    <string name="settings_transfer_entry">インポート / エクスポート</string>
+    <string name="settings_appearance">外観</string>
+    <string name="settings_appearance_desc">「Material カラー」は壁紙から配色を生成し、ライト / ダークはシステムに従います。「ライト」と「ダーク」は内蔵の配色を使用します。ウィジェットのライト / ダークは常にシステムに従います。</string>
+    <string name="settings_appearance_desc_unsupported">このシステムは壁紙からの配色に対応していないため、「Material カラー」は内蔵の配色を使用し、ライト / ダークはシステムに従います。ウィジェットのライト / ダークは常にシステムに従います。</string>
+    <string name="settings_language">表示言語</string>
+    <string name="settings_language_desc">切り替えるとすぐに反映されます。</string>
+
+    <!-- WebDAV sync -->
+    <string name="settings_webdav">WebDAV 同期</string>
+    <string name="settings_webdav_desc">ご自身の WebDAV ストレージ（Nutstore（坚果云）、NextCloud など）を使って、複数の端末間で時間割を同期します。</string>
+    <string name="settings_webdav_warning">アカウントとパスワードは暗号化されずにこの端末に保存されます。https で始まるサーバーアドレスを使用してください。</string>
+    <string name="settings_webdav_server">サーバーアドレス</string>
+    <string name="settings_webdav_username">ユーザー名</string>
+    <string name="settings_webdav_password">パスワード / アプリパスワード</string>
+    <string name="settings_webdav_save">設定を保存</string>
+    <string name="settings_webdav_test">接続をテスト</string>
+    <string name="settings_webdav_syncing">同期中…</string>
+    <string name="settings_webdav_sync_now">今すぐ同期</string>
+    <string name="settings_webdav_last_sync">前回の同期：%1$s</string>
+    <string name="settings_webdav_merge_desc">同期では、同じ項目は最後に変更された内容が優先されます。いずれかの端末で削除した内容は、他の端末からも削除されます。</string>
+    <string name="settings_webdav_saved">設定を保存しました</string>
+    <string name="settings_webdav_connected">接続に成功しました</string>
+    <plurals name="settings_webdav_sync_done">
+        <item quantity="other">同期が完了しました。他の端末から%1$d件の内容を更新しました</item>
+    </plurals>
+    <string name="settings_auto_sync">自動同期</string>
+    <string name="settings_auto_sync_desc">バックグラウンドで定期的に自動同期します。先に WebDAV の設定を完了してください。</string>
+
+    <!-- Widgets -->
+    <string name="settings_widget">ウィジェット</string>
+    <string name="settings_widget_desc">下の項目をタップし、システムの案内に従って確認するとホーム画面に追加されます。</string>
+    <string name="settings_widget_unsupported">お使いのホームアプリは直接の追加に対応していません。ホーム画面の空いている場所を長押しし、ウィジェットの一覧から NullClass を探して追加してください。</string>
+    <string name="settings_widget_today">今日の授業 3×2</string>
+    <string name="settings_widget_next">次の授業 2×1</string>
+
+    <!-- Timetable display -->
+    <string name="settings_schedule_display">時間割の表示</string>
+    <string name="settings_show_other_week">今週以外の授業を表示</string>
+    <string name="settings_bottom_nav">下部ナビゲーション</string>
+    <string name="settings_show_exam_tab">「試験」タブを表示</string>
+
+    <!-- Me -->
+    <string name="settings_profile_title">マイページ</string>
+    <string name="settings_profile_timetable">時間割 · %1$s</string>
+    <string name="settings_profile_no_term_title">学期がありません</string>
+    <string name="settings_profile_no_term_desc">学期を作成すると、授業を追加できるようになります。</string>
+    <string name="settings_profile_week">第%1$d週 · %2$s</string>
+    <string name="settings_profile_out_of_term">学期外 · %1$s</string>
+    <string name="settings_profile_quick_actions">クイック操作</string>
+    <string name="settings_profile_quick_actions_desc">曜日振替、予定、授業の一括削除</string>
+    <plurals name="settings_profile_quick_actions_desc_with_count">
+        <item quantity="other">曜日振替、予定、授業の一括削除 · 今日以降の曜日振替%1$d件</item>
+    </plurals>
+    <string name="settings_profile_timetables">時間割の管理</string>
+    <string name="settings_profile_timetables_desc">使用中：%1$s · 切り替え、作成、名前の変更</string>
+    <string name="settings_profile_terms">学期の管理</string>
+    <string name="settings_profile_terms_desc">切り替え、作成、削除</string>
+    <string name="settings_profile_transfer_desc">バックアップ、移行、教務システムからのインポート</string>
+    <string name="settings_profile_notification">通知とリマインダー</string>
+    <string name="settings_profile_notification_desc">権限、リマインダーのタイミング、祝日と休講日</string>
+    <string name="settings_profile_settings_desc">WebDAV 同期、自動同期、ウィジェット</string>
+    <string name="settings_profile_personalization">カスタマイズ</string>
+    <string name="settings_profile_personalization_desc">時間割の背景、レイアウト、授業カードのスタイル</string>
+    <string name="settings_profile_about">アプリについて</string>
+    <string name="settings_profile_about_desc">バージョン、オープンソースライセンス、フィードバック</string>
+
+    <!-- Day swap -->
+    <string name="settings_day_swap_title">曜日振替</string>
+    <string name="settings_day_swap_desc">休日の振替などで、ある日に別の日の授業を行うよう設定できます（例：土曜日に金曜日の授業を行う）。「今日」、週表示、ウィジェット、授業前リマインダーにも反映されます。授業の時刻はその日の時限の時刻のままです。</string>
+    <string name="settings_day_swap_hint">週表示で各列の曜日ヘッダーをタップしても、その日を直接変更できます。</string>
+    <string name="settings_day_swap_no_term">曜日振替を設定するには、先に学期を作成してください。</string>
+    <string name="settings_day_swap_add">曜日振替を追加</string>
+    <string name="settings_day_swap_next">次へ</string>
+    <string name="settings_day_swap_step1">ステップ 1 · 振替する日付を選択</string>
+    <string name="settings_day_swap_step2">ステップ 2 · %1$d月%2$d日（%3$s）にどの日の授業を行うか</string>
+    <string name="settings_day_swap_upcoming">今日以降</string>
+    <string name="settings_day_swap_empty">曜日振替はありません</string>
+    <string name="settings_day_swap_source">%1$s の授業を実施</string>
+
+    <!-- Quick actions -->
+    <string name="settings_quick_actions_title">クイック操作</string>
+    <string name="settings_quick_actions_swap_desc">休日の振替などで、ある日に別の日の授業を行うよう設定します</string>
+    <plurals name="settings_quick_actions_swap_desc_with_count">
+        <item quantity="other">休日の振替などで、ある日に別の日の授業を行うよう設定します · 今日以降%1$d件</item>
+    </plurals>
+    <string name="settings_quick_actions_events">予定</string>
+    <string name="settings_quick_actions_events_desc">予定の追加と管理。予定ごとにリマインダーを設定できます</string>
+    <string name="settings_quick_actions_cleanup">授業の一括削除</string>
+    <string name="settings_quick_actions_cleanup_desc">週または日付で授業を絞り込み、選択してまとめて削除します</string>
+
+    <!-- Calendar export (.ics) -->
+    <string name="settings_ics_calendar_name">NullClass · %1$s</string>
+    <string name="settings_ics_term">学期：%1$s</string>
+    <string name="settings_ics_teacher">教員：%1$s</string>
+    <string name="settings_ics_note">メモ：%1$s</string>
+    <string name="settings_ics_course">授業：%1$s</string>
+    <string name="settings_ics_exam">試験：%1$s</string>
+    <string name="settings_ics_time">時間：%1$s</string>
+    <string name="settings_ics_location">試験会場：%1$s</string>
+    <string name="settings_ics_seat">座席：%1$s</string>
+
+    <!-- Holiday sync -->
+    <plurals name="settings_holiday_synced">
+        <item quantity="other">祝日を%2$d件同期しました（データ提供元：%1$s）</item>
+    </plurals>
+    <string name="settings_holiday_skipped">最近同期済みのため、更新の必要はありません</string>
+    <string name="settings_holiday_failed">祝日を同期できませんでした。前回のデータを保持しています（%1$s に現在アクセスできません）</string>
+    <string name="settings_holiday_no_source">祝日を同期できませんでした。利用できるデータ提供元がないため、前回のデータを保持しています</string>
+
+    <!-- SyncError -->
+    <string name="settings_sync_not_configured">WebDAV が設定されていません。</string>
+    <string name="settings_sync_url_empty">サーバーアドレスを入力してください。</string>
+    <string name="settings_sync_url_scheme">サーバーアドレスは http:// または https:// で始まる必要があります。</string>
+    <string name="settings_sync_url_insecure">インターネット上のサーバーには https のアドレスを使用してください。使用しない場合、パスワードが平文で送信されます。</string>
+    <string name="settings_sync_username_empty">ユーザー名を入力してください。</string>
+    <string name="settings_sync_write_test_failed">サーバーにデータを書き込めません。アカウントの権限を確認してください。</string>
+    <string name="settings_sync_read_test_failed">サーバーからデータを読み込めません。</string>
+    <string name="settings_sync_content_mismatch">サーバーから想定外のデータが返されました。このフォルダーを NullClass 専用にしているか確認してください。</string>
+    <string name="settings_sync_cleanup_failed">サーバー上のテストファイルを削除できません。アカウントの権限を確認してください。</string>
+    <string name="settings_sync_connect_failed">サーバーに接続できません。</string>
+    <string name="settings_sync_download_manifest_failed">サーバーから同期データをダウンロードできません。</string>
+    <string name="settings_sync_download_snapshot_failed">サーバーから時間割データをダウンロードできません。</string>
+    <string name="settings_sync_upload_snapshot_failed">サーバーに時間割データをアップロードできません。</string>
+    <string name="settings_sync_upload_manifest_failed">サーバーに同期データをアップロードできません。</string>
+    <string name="settings_sync_create_dir_failed">サーバー上にフォルダーを作成できません。アカウントの権限を確認してください。</string>
+    <string name="settings_sync_unexpected">同期中に問題が発生しました。しばらくしてからもう一度お試しください。</string>
+    <!-- Error details (HTTP status etc.) follow the message to help with reports -->
+    <string name="settings_sync_with_detail">%1$s（%2$s）</string>
+
+    <!-- AutoSyncInterval -->
+    <string name="settings_auto_sync_off">オフ</string>
+    <string name="settings_auto_sync_6h">6時間ごと</string>
+    <string name="settings_auto_sync_daily">毎日</string>
+
+    <!-- Quick course removal -->
+    <string name="settings_cleanup_title">授業の一括削除</string>
+    <plurals name="settings_cleanup_selected">
+        <item quantity="other">%1$d件の授業を選択中</item>
+    </plurals>
+    <string name="settings_cleanup_no_term">授業を削除するには、先に学期を作成してください。</string>
+    <string name="settings_cleanup_hint">削除は授業単位で行われます。ほかの週やほかの曜日の授業日時、関連する試験もあわせて削除されます。</string>
+    <string name="settings_cleanup_hint_alt">特定の日だけ授業がない場合は、「通知とリマインダー → 休講日」を使用してください。</string>
+    <string name="settings_cleanup_by_week">週で選ぶ</string>
+    <string name="settings_cleanup_by_date">日付で選ぶ</string>
+    <string name="settings_cleanup_week">第%1$d週</string>
+    <string name="settings_cleanup_week_current">第%1$d週 · 今週</string>
+    <string name="settings_cleanup_out_of_term">この日は学期外のため、授業はありません。</string>
+    <string name="settings_cleanup_swapped">この日は曜日振替が設定されています：%1$s の授業を実施。</string>
+    <string name="settings_cleanup_week_empty">第%1$d週には授業がありません。</string>
+    <string name="settings_cleanup_day_empty">この日には授業がありません。</string>
+    <plurals name="settings_cleanup_confirm_title">
+        <item quantity="other">%1$d件の授業を削除</item>
+    </plurals>
+    <string name="settings_cleanup_confirm_desc">絞り込んだ週や日だけでなく、これらの授業のすべての授業日時と関連する試験が削除されます。削除後は元に戻せません。同期をオンにしている場合は、他の端末からも削除されます。</string>
+    <plurals name="settings_cleanup_other_blocks">
+        <item quantity="other">ほかの日付の授業日時%1$d件もあわせて削除されます</item>
+    </plurals>
+
+    <!-- About -->
+    <string name="settings_about_title">アプリについて</string>
+    <string name="settings_about_app_name">NullClass</string>
+    <string name="settings_about_tagline">大学生のための時間割アプリ。アカウント登録は不要で、データは標準でこの端末にのみ保存されます。利用状況のデータは一切収集しません。</string>
+    <string name="settings_about_source">ソースコード</string>
+    <string name="settings_about_feedback">問題を報告</string>
+    <string name="settings_about_license">オープンソースライセンス</string>
+    <string name="settings_about_upstream">謝辞 · Shiguang Schedule</string>
+    <string name="settings_about_contributors">%1$s に感謝します</string>
+    <string name="settings_about_upstream_desc">NullClass に内蔵されている教務システムのアダプターの多くは、Shiguang Schedule（拾光课程表）コミュニティのアダプターライブラリ shiguang_warehouse（MIT ライセンス）から移植したものです。「Shiguang Schedule から移行」も、公開されているエクスポート形式に基づいています。Shiguang Schedule とそのコミュニティに感謝します。</string>
+    <string name="settings_about_version">NullClass のバージョン</string>
+    <string name="settings_about_version_copied">%1$s をコピーしました</string>
+    <string name="settings_about_no_browser">リンクを開けるアプリが見つかりません。</string>
+
+    <!-- Notifications and reminders -->
+    <string name="settings_notification_title">通知とリマインダー</string>
+    <string name="settings_notification_permissions">権限とバックグラウンド</string>
+    <string name="settings_notification_permissions_desc">リマインダーには通知とバックグラウンド実行の権限が必要です。許可されていない項目をタップすると、システム設定で有効にできます。</string>
+    <string name="settings_notification_class_title">授業前リマインダー</string>
+    <string name="settings_notification_class_desc">各授業の開始前に通知を送信します。システムの省電力機能により数分遅れることがあります。時間どおりに通知するには、下の「正確なリマインダー」をオンにしてください。</string>
+    <string name="settings_notification_exam_title">試験リマインダー</string>
+    <string name="settings_notification_exam_desc">試験の開始時刻に合わせて通知します。時間が未入力の試験は当日 08:00 を基準にします。試験リマインダーは祝日の影響を受けません。</string>
+    <string name="settings_notification_exact_title">正確なリマインダー</string>
+    <string name="settings_notification_exact_desc">システムのアラームを使って授業前リマインダーを時間どおりに送信します。上の「正確なアラームの権限」が必要です。</string>
+    <string name="settings_notification_bypass_dnd">サイレントモード中も通知</string>
+    <string name="settings_notification_bypass_dnd_desc">オンにすると、サイレントモード中でも授業前リマインダーと試験リマインダーが通常どおり届きます。</string>
+
+    <!-- Permission panel -->
+    <string name="settings_permission_granted">許可済み</string>
+    <string name="settings_permission_denied">未許可</string>
+    <string name="settings_permission_grant_action">許可する</string>
+    <string name="settings_permission_settings_action">設定を開く</string>
+    <string name="settings_permission_notification">通知の権限</string>
+    <string name="settings_permission_notification_denied">未許可のため、リマインダーは一切届きません</string>
+    <string name="settings_permission_battery">電池の最適化を無視</string>
+    <string name="settings_permission_battery_exempt">許可済み</string>
+    <string name="settings_permission_battery_denied">未許可のため、バックグラウンドのリマインダーが遅れることがあります</string>
+    <string name="settings_permission_autostart">自動起動</string>
+    <string name="settings_permission_autostart_hint">機種によっては NullClass の自動起動を個別に許可しないと、リマインダーが届かないことがあります</string>
+    <string name="settings_permission_exact_alarm">正確なアラームの権限</string>
+    <string name="settings_permission_exact_off">「正確なリマインダー」がオフのため、リマインダーが数分遅れることがあります</string>
+    <string name="settings_permission_exact_granted">許可済み。リマインダーは時間どおりに届きます</string>
+    <string name="settings_permission_exact_denied">「正確なリマインダー」はオンですが権限が未許可のため、リマインダーが数分遅れることがあります</string>
+    <string name="settings_permission_dnd">サイレントモードの権限</string>
+
+    <!-- Reminder lead time -->
+    <plurals name="settings_reminder_minutes">
+        <item quantity="other">%1$d分</item>
+    </plurals>
+    <plurals name="settings_reminder_hours">
+        <item quantity="other">%1$d時間</item>
+    </plurals>
+    <plurals name="settings_reminder_days">
+        <item quantity="other">%1$d日</item>
+    </plurals>
+
+    <!-- Holidays and skipped dates -->
+    <string name="settings_holiday_section">祝日と休講日</string>
+    <string name="settings_holiday_section_desc">祝日を自動で取得し、祝日には授業前リマインダーを送信しません。休講日を手動で追加することもできます。振替出勤日は表示のみです。授業を行う場合は「曜日振替」を使用してください。</string>
+    <string name="settings_holiday_sync_title">祝日をオンラインで同期</string>
+    <string name="settings_holiday_sync_desc">現在の学期の祝日を週に1回自動で更新します</string>
+    <string name="settings_holiday_last_sync">前回の同期：%1$s</string>
+    <string name="settings_holiday_never_synced">未同期</string>
+    <string name="settings_holiday_syncing">同期中…</string>
+    <string name="settings_holiday_sync_now">今すぐ同期</string>
+    <string name="settings_holiday_add_skip">休講日を追加</string>
+    <string name="settings_holiday_no_skips">今日以降の休講日はありません</string>
+    <plurals name="settings_holiday_skip_count">
+        <item quantity="other">今日以降（%1$d件、過去の日付は非表示）</item>
+    </plurals>
+    <string name="settings_holiday_type_holiday">祝日</string>
+    <string name="settings_holiday_type_workday">振替出勤日（表示のみ）</string>
+    <string name="settings_holiday_type_manual">手動で指定</string>
+
+    <!-- Import / export -->
+    <string name="settings_transfer_title">インポート / エクスポート</string>
+    <string name="settings_transfer_jw_section">教務システムからインポート</string>
+    <string name="settings_transfer_jw_desc">NullClass 内で大学の教務システムを開いてログインし、時間割のページを表示するとインポートできます。アカウントとパスワードは教務システムのページにのみ入力し、NullClass が取得することはありません。</string>
+    <string name="settings_transfer_jw_pick_school">学校を選択</string>
+    <string name="settings_transfer_jw_running">教務システムからのインポート · %1$s</string>
+    <string name="settings_transfer_jw_running_generic">教務システムからのインポート</string>
+    <string name="settings_transfer_backup_section">バックアップと共有</string>
+    <string name="settings_transfer_backup_desc">すべての時間割と学期をエクスポートします。バックアップ、機種変更、クラスメイトへの共有に使用できます。</string>
+    <string name="settings_transfer_save_file">ファイルに保存</string>
+    <string name="settings_transfer_share">共有</string>
+    <string name="settings_transfer_share_file">時間割ファイルを共有</string>
+    <string name="settings_transfer_qr_generate">QR コードを生成</string>
+    <string name="settings_transfer_qr_desc">現在の学期の授業のみを含みます。相手が読み取ると、授業は相手の使用中の時間割にインポートされ、その学期に切り替わります。完全なバックアップには「ファイルに保存」を使用してください。</string>
+    <string name="settings_transfer_ics_section">カレンダーへのエクスポート</string>
+    <string name="settings_transfer_ics_desc">現在の学期の授業と試験を標準的な .ics ファイルとしてエクスポートします。システムのカレンダーや Google カレンダーなどで開けます。</string>
+    <string name="settings_transfer_ics_once">エクスポートしたカレンダーは自動では更新されません。授業や試験に変更があった場合は、もう一度エクスポートしてください。</string>
+    <string name="settings_transfer_ics_export">現在の学期を .ics でエクスポート</string>
+    <string name="settings_transfer_import_section">インポート</string>
+    <string name="settings_transfer_import_file">バックアップファイルからインポート</string>
+    <string name="settings_transfer_import_qr">QR コードを読み取ってインポート</string>
+    <string name="settings_transfer_import_qr_album">アルバムの QR コードを読み取る</string>
+    <string name="settings_transfer_wakeup_section">WakeUp から移行</string>
+    <string name="settings_transfer_wakeup_desc">WakeUp で時間割をファイルにバックアップし、ここでそのファイルを選択してください。連続した時限、奇数週 / 偶数週、時限の時刻、色はそのまま引き継がれます。</string>
+    <string name="settings_transfer_wakeup_pick">WakeUp のバックアップファイルを選択</string>
+    <string name="settings_transfer_shiguang_section">Shiguang Schedule から移行</string>
+    <string name="settings_transfer_shiguang_desc">Shiguang Schedule（拾光课程表）の「我的 → 高级功能 → 课表导入/导出」で授業ファイルをエクスポートし（ファイル名は shiguangschedule_ で始まります）、ここでそのファイルを選択してください。授業、奇数週 / 偶数週、時限の時刻、学期の開始日はそのまま引き継がれます。</string>
+    <string name="settings_transfer_shiguang_pick">Shiguang のエクスポートファイルを選択</string>
+    <string name="settings_transfer_merge_hint">インポートした内容は既存のデータと統合され、この端末上のより新しい変更は上書きされません。</string>
+    <string name="settings_transfer_processing">処理中…</string>
+    <string name="settings_transfer_preview_title">インポートのプレビュー</string>
+    <string name="settings_transfer_preview_source">インポート元：%1$s</string>
+    <string name="settings_transfer_preview_activate">インポート後は使用中の学期に設定され、「今日」、時間割、ウィジェットがすぐに切り替わります。</string>
+    <string name="settings_transfer_preview_adapter_notes">以下の説明はアダプターの作成者によるもので、NullClass によるものではありません：</string>
+    <string name="settings_transfer_preview_confirm">インポート</string>
+    <string name="settings_transfer_preview_term">学期「%1$s」· %2$s · %3$s · %4$s · %5$s</string>
+    <!-- Counts in import preview, calendar export and recognition review -->
+    <plurals name="settings_count_weeks">
+        <item quantity="other">%1$d週</item>
+    </plurals>
+    <plurals name="settings_count_courses">
+        <item quantity="other">授業%1$d件</item>
+    </plurals>
+    <plurals name="settings_count_blocks">
+        <item quantity="other">授業日時%1$d件</item>
+    </plurals>
+    <plurals name="settings_count_exams">
+        <item quantity="other">試験%1$d件</item>
+    </plurals>
+    <plurals name="settings_transfer_preview_deletions">
+        <item quantity="other">インポートすると、この端末上の既存の内容%1$d件が削除されます。ファイルの提供元が信頼できるか確認してください。</item>
+    </plurals>
+    <string name="settings_transfer_preview_merge_note">この端末のデータと統合したうえで反映されます。</string>
+    <string name="settings_transfer_share_failed">共有できませんでした：%1$s</string>
+    <string name="settings_transfer_ics_failed_to_open">選択した場所に書き込めません：%1$s</string>
+    <string name="settings_transfer_permission_camera">カメラの権限が許可されていません。システム設定で許可してから、もう一度お試しください。</string>
+
+    <!-- Import / export results -->
+    <string name="settings_transfer_export_done">エクスポートしました</string>
+    <string name="settings_transfer_export_failed">エクスポートできませんでした：%1$s</string>
+    <string name="settings_transfer_ics_export_done">カレンダーファイルをエクスポートしました：%1$s、%2$s。</string>
+    <plurals name="settings_transfer_ics_block_count">
+        <item quantity="other">授業日時%1$d件</item>
+    </plurals>
+    <plurals name="settings_transfer_ics_skipped">
+        <item quantity="other">授業日時%1$d件は時限の時刻が設定されていないため、エクスポートされませんでした。</item>
+    </plurals>
+    <string name="settings_transfer_ics_export_failed">カレンダーをエクスポートできませんでした：%1$s</string>
+    <string name="settings_transfer_no_term">学期がありません</string>
+    <string name="settings_transfer_cannot_open_target">選択したファイルを開けません</string>
+    <string name="settings_transfer_no_term_for_qr">学期がないため、QR コードを生成できません。</string>
+    <string name="settings_transfer_qr_failed">QR コードを生成できませんでした：%1$s</string>
+    <string name="settings_transfer_qr_unreadable">この画像は読み込めません。別の画像でもう一度お試しください。</string>
+    <string name="settings_transfer_qr_not_nullclass">これは NullClass の QR コードではありません。</string>
+    <string name="settings_transfer_qr_source">QR コード</string>
+    <string name="settings_transfer_file_source">ファイル %1$s</string>
+    <string name="settings_transfer_wakeup_source">WakeUp %1$s</string>
+    <string name="settings_transfer_shiguang_source">Shiguang Schedule %1$s</string>
+    <string name="settings_transfer_read_failed">読み込めませんでした：%1$s</string>
+    <plurals name="settings_transfer_import_done">
+        <item quantity="other">インポートが完了しました。%1$d件の内容を更新しました。</item>
+    </plurals>
+    <string name="settings_transfer_import_up_to_date">この端末のデータはすでに最新です。</string>
+    <string name="settings_transfer_cannot_read_file">ファイルを読み込めません。</string>
+    <string name="settings_transfer_wakeup_generic">時間割</string>
+    <string name="settings_transfer_shiguang_generic">エクスポートファイル</string>
+    <string name="settings_transfer_import_failed">インポートできませんでした：%1$s</string>
+    <!-- Academic system import: fixed review note added by NullClass for image-recognized payloads -->
+    <string name="settings_transfer_ocr_review_note">この時間割は画像認識で作成されました。授業名、週、時限を重点的に確認してください</string>
+    <string name="settings_transfer_no_terms_in_file">ファイルにインポートできる学期がありません。</string>
+    <string name="settings_transfer_parse_failed">ファイルの内容を読み込めません：%1$s</string>
+    <string name="settings_transfer_new_timetable_one">時間割「%1$s」を追加しました。「マイページ → 時間割の管理」で切り替えられます。</string>
+    <plurals name="settings_transfer_new_timetable_many">
+        <item quantity="other">時間割を%1$d件追加しました。「マイページ → 時間割の管理」で切り替えられます。</item>
+    </plurals>
+
+    <!-- QR sharing / scanning -->
+    <string name="settings_qr_render_failed">QR コードを描画できませんでした</string>
+    <string name="settings_qr_share_entry">時間割の QR コードを共有</string>
+    <string name="settings_qr_share_title">QR コードで時間割をインポート</string>
+    <string name="settings_qr_share_image">画像を共有</string>
+    <string name="settings_qr_image_desc">時間割の QR コード</string>
+    <string name="settings_qr_share_hint">別の端末の NullClass でこの QR コードを読み取ると、現在の学期をインポートできます。</string>
+    <string name="settings_qr_scan_hint">QR コードを枠内に合わせてください。2本の指でズーム、タップでピント調整</string>
+    <string name="settings_qr_scan_zooming">QR コードを検出しました。自動で拡大しています…</string>
+    <string name="settings_qr_scan_decoding">スマートフォンを動かさないでください。読み取り中…</string>
+    <string name="settings_qr_scan_starting">カメラを起動中…</string>
+    <string name="settings_qr_scan_album">アルバムから QR コードを選択</string>
+    <string name="settings_qr_scan_torch_on">ライトをオン</string>
+    <string name="settings_qr_scan_torch_off">ライトをオフ</string>
+    <string name="settings_qr_scan_camera_failed">カメラを起動できません：%1$s</string>
+    <string name="settings_qr_scan_failed">読み取れませんでした：%1$s</string>
+    <string name="settings_qr_scan_failed_retry">前の画面に戻って、もう一度読み取ってください</string>
+    <string name="settings_qr_image_not_found">画像内に QR コードが見つかりません。鮮明で、QR コード全体が写っている画像を選択してください。</string>
+
+    <!-- ImportNotice: notes in the import preview -->
+    <string name="settings_notice_shiguang_row_not_object">%1$d件目の授業のデータに誤りがあるため、スキップしました</string>
+    <string name="settings_notice_shiguang_row_no_name">%1$d件目の授業に名前がないため、スキップしました</string>
+    <string name="settings_notice_shiguang_row_no_day">「%1$s」に曜日がないため、スキップしました</string>
+    <string name="settings_notice_shiguang_row_bad_day">「%1$s」の曜日（%2$s）が無効なため、スキップしました</string>
+    <string name="settings_notice_shiguang_weeks_truncated">学期は全%1$d週で、上限の%2$d週を超えているため、超過分はインポートしていません</string>
+    <string name="settings_notice_shiguang_weeks_exceed_declared">授業に第%1$d週があり、ファイルで設定された%2$d週を超えているため、学期を%1$d週としてインポートしました</string>
+    <string name="settings_notice_shiguang_no_start_date">ファイルに学期の開始日がないため、今週から開始としました。「学期の管理」で確認してください</string>
+    <string name="settings_notice_shiguang_start_date_unreadable">学期の開始日「%1$s」を認識できないため、今週から開始としました。「学期の管理」で確認してください</string>
+    <string name="settings_notice_shiguang_no_period_table">ファイルに時限の時刻がないため、デフォルトの時限の時刻を使用しました。「学期の管理」で確認してください</string>
+    <string name="settings_notice_shiguang_period_row_invalid">時限の時刻の%1$d件目に誤りがあるため、スキップしました</string>
+    <string name="settings_notice_shiguang_period_out_of_range">時限の時刻にある%1$d限は、1日最大%2$d時限の上限を超えているため、スキップしました</string>
+    <string name="settings_notice_shiguang_period_time_invalid">%1$d限の終了時刻が開始時刻より後になっていないため、スキップしました</string>
+    <string name="settings_notice_shiguang_course_beyond_last_period">「%1$s」は%2$d限に配置されており、1日最大%3$d時限の上限を超えているため、スキップしました</string>
+    <string name="settings_notice_shiguang_course_no_time">「%1$s」に授業日時がないため、スキップしました</string>
+    <string name="settings_notice_shiguang_custom_time_no_nearest">「%1$s」はカスタム時刻 %2$s を使用しており、既存のどの時限とも一致しないため、スキップしました</string>
+    <string name="settings_notice_shiguang_custom_time_nearest">「%1$s」はカスタム時刻 %2$s を使用しているため、最も近い%3$d限に配置しました</string>
+    <plurals name="settings_notice_shiguang_custom_time_dropped">
+        <item quantity="other">授業日時%1$d件は Shiguang でカスタムの開始・終了時刻が設定されていたため、時限に合わせてインポートしました。カスタム時刻は引き継がれていません</item>
+    </plurals>
+    <string name="settings_notice_shiguang_periods_extended">授業で%1$d限まで使用されていますが、時限の時刻は%2$d時限分しかないため、1時限%3$d分・休憩%4$d分で補いました。「学期の管理」で確認してください</string>
+    <string name="settings_notice_shiguang_weeks_overflow_dropped">「%1$s」には第%2$d週を超える週があるため、超過分はインポートしていません</string>
+    <string name="settings_notice_shiguang_weeks_missing">「%1$s」に週の情報がないため、第1〜%2$d週としてインポートしました</string>
+    <string name="settings_notice_shiguang_weeks_all_out_of_range">「%1$s」の週（第%2$s週）はすべて学期の全%3$d週の範囲外のため、スキップしました</string>
+    <string name="settings_notice_wakeup_line_unparsable">ファイルの%1$d行目の内容を認識できないため、スキップしました</string>
+    <string name="settings_notice_wakeup_line_not_object">ファイルの%1$d行目の内容を認識できないため、スキップしました</string>
+    <string name="settings_notice_wakeup_line_not_array">ファイルの%1$d行目の内容を認識できないため、スキップしました</string>
+    <string name="settings_notice_wakeup_weeks_truncated">学期は全%1$d週で、上限の%2$d週を超えているため、超過分はインポートしていません</string>
+    <string name="settings_notice_wakeup_period_row_invalid">時限の時刻の%1$d件目に誤りがあるため、スキップしました</string>
+    <string name="settings_notice_wakeup_no_period_table">WakeUp ファイルに時限の時刻がないため、デフォルトの時限の時刻を使用しました</string>
+    <string name="settings_notice_wakeup_course_no_name">名前のない授業があったため、「课程 %1$s」という名前にしました</string>
+    <string name="settings_notice_wakeup_block_missing_field">%1$d件目の授業日時は情報が不完全なため、スキップしました</string>
+    <string name="settings_notice_wakeup_block_bad_step">%1$d件目の授業日時の時限数（%2$s）が無効なため、1時限としてインポートしました</string>
+    <string name="settings_notice_wakeup_block_bad_day">%1$d件目の授業日時の曜日（%2$s）が無効なため、スキップしました</string>
+    <string name="settings_notice_wakeup_block_bad_start">%1$d件目の授業日時の開始時限（%2$s）が無効なため、スキップしました</string>
+    <!-- Academic system: image OCR / rebuilding the table from page text (ImportNotice.OCR_*). Rows and columns count from 1 -->
+    <string name="settings_notice_ocr_no_text">画像から文字を認識できませんでした</string>
+    <string name="settings_notice_ocr_no_day_header">曜日の見出しが見つからないため、各列の曜日を特定できません</string>
+    <plurals name="settings_notice_ocr_day_columns_out_of_range">
+        <item quantity="other">%1$d日分を認識しました（通常は5〜7日）。曜日の見出しが不完全な可能性があります</item>
+    </plurals>
+    <string name="settings_notice_ocr_day_columns_mismatch">認識した曜日の数（%1$d）が想定（%2$d）と一致しません</string>
+    <string name="settings_notice_ocr_day_order_odd">曜日の見出しの順序が不自然です。重点的に確認してください</string>
+    <string name="settings_notice_ocr_periods_by_time">時限は授業の時刻から推定したものです。重点的に確認してください</string>
+    <plurals name="settings_notice_ocr_no_period_column">
+        <item quantity="other">時限の列が見つからないため（%1$d行を認識）、各行の時限を特定できません</item>
+    </plurals>
+    <string name="settings_notice_ocr_period_rows_mismatch">認識した時限の数（%1$d）が想定（%2$d）と一致しません</string>
+    <plurals name="settings_notice_ocr_unassigned_boxes">
+        <item quantity="other">%1$d か所の文字を時間割に割り当てられませんでした（全体の%2$d%%）</item>
+    </plurals>
+    <string name="settings_notice_ocr_no_week_info">時間割に週の情報がないため、学期全体としてインポートしました。確認してください</string>
+    <plurals name="settings_notice_ocr_column_lines_skipped">
+        <item quantity="other">%1$d列目の%2$d行の文字は授業に対応付けられなかったため、スキップしました</item>
+    </plurals>
+    <string name="settings_notice_ocr_cell_no_grid">%1$d行%2$d列目の位置を特定できません</string>
+    <string name="settings_notice_ocr_cell_no_weeks">%1$d行%2$d列目「%3$s」から週を認識できなかったため、学期全体としてインポートしました。確認してください</string>
+    <string name="settings_notice_ocr_no_courses">授業を認識できませんでした</string>
+
+    <!-- Academic system import: choose school / adapter details / library updates -->
+    <!-- Title of the academic system import activity (shown in recent apps) -->
+    <string name="settings_jw_activity_label">教務システムからのインポート</string>
+    <string name="settings_jw_search_hint">学校名またはドメインで検索</string>
+    <string name="settings_jw_search_clear">検索をクリア</string>
+    <string name="settings_jw_tab_schools">学校</string>
+    <string name="settings_jw_tab_generic">汎用</string>
+    <string name="settings_jw_tab_mine">追加済み</string>
+    <string name="settings_jw_import_zip">アダプターパッケージをインポート</string>
+
+    <!-- Academic system import: library updates -->
+    <plurals name="settings_jw_library_version">
+        <item quantity="other">アダプターライブラリのバージョン：%1$s（アダプター%2$d件）</item>
+    </plurals>
+    <string name="settings_jw_library_builtin">内蔵</string>
+    <string name="settings_jw_library_last_check">前回の更新確認：%1$s</string>
+    <string name="settings_jw_library_never_checked">未確認</string>
+    <string name="settings_jw_library_checking">確認中…</string>
+    <string name="settings_jw_library_updating">更新中…</string>
+    <string name="settings_jw_library_check_now">更新を確認</string>
+    <string name="settings_jw_library_update_to">v%1$s に更新</string>
+    <string name="settings_jw_library_check_failed">更新を確認できませんでした。ネットワークを確認してから、もう一度お試しください。</string>
+    <string name="settings_jw_library_found">新しいバージョン v%1$s があります</string>
+    <string name="settings_jw_library_latest">最新バージョンです</string>
+    <string name="settings_jw_library_updated">アダプターライブラリを v%1$s に更新しました。</string>
+    <string name="settings_jw_library_shadowed">公式アダプターライブラリに %1$s が収録されたため、公式版を使用します。</string>
+    <string name="settings_jw_library_update_failed">更新できませんでした：%1$s</string>
+
+    <!-- Academic system import: web page step -->
+    <string name="settings_jw_hint_generic">ログインして時間割のページを開いたら、「時間割を取得」をタップしてください。汎用アダプターがページの内容から時間割を自動で認識します。</string>
+    <string name="settings_jw_hint">ログインして時間割のページを開いたら、「時間割を取得」をタップしてください。</string>
+    <string name="settings_jw_extracting">取得中…</string>
+    <string name="settings_jw_extract">時間割を取得</string>
+    <string name="settings_jw_ocr_running">時間割の画像を認識中…</string>
+    <string name="settings_jw_image_unreadable">時間割の画像を読み込めません。画像が破損しているか、アダプターがアクセスを許可されていないサイトにある可能性があります。スクリーンショットを使う場合は、チャットアプリで圧縮された画像ではなく元の画像を選択してください。</string>
+    <string name="settings_jw_ocr_building">時間割を解析中…</string>
+    <string name="settings_jw_ocr_unreliable">認識結果に誤りがある可能性があります（%1$s）。授業を手動で追加することをおすすめします。</string>
+    <string name="settings_jw_ocr_empty">授業を認識できませんでした。授業を手動で追加することをおすすめします。</string>
+    <string name="settings_jw_ocr_done">認識が完了しました。確認してからインポートしてください</string>
+    <string name="settings_jw_structure_done">認識が完了しました。確認してからインポートしてください</string>
+    <string name="settings_jw_extract_done">取得しました</string>
+    <string name="settings_jw_extract_failed">取得できませんでした：%1$s</string>
+    <string name="settings_jw_page_loaded">ページを読み込みました。自動で取得しています…</string>
+    <string name="settings_jw_no_start_url">教務システムのアドレスがありません。前の画面に戻って、学校をもう一度選択してください。</string>
+    <string name="settings_jw_switch_mobile">モバイル版に切り替え</string>
+    <string name="settings_jw_switch_desktop">PC 版に切り替え</string>
+    <string name="settings_jw_network_frozen_short">取得中はページの通信を一時停止しています。</string>
+    <string name="settings_jw_network_frozen">ページの内容がほかのサイトに送信されないよう、取得中はページの通信を一時停止しています。</string>
+    <string name="settings_jw_network_restored">ページの通信を再開しました</string>
+    <string name="settings_jw_resume_browsing">ページの閲覧を続ける</string>
+    <string name="settings_jw_error_log_title">エラーログ</string>
+    <string name="settings_jw_error_log_copy">エラーログをコピー</string>
+    <string name="settings_jw_error_log_copied">エラーログをコピーしました</string>
+    <string name="settings_jw_image_cancelled">認識結果を破棄しました。もう一度取得するか、授業を手動で追加できます。</string>
+    <string name="settings_jw_structure_missing">このページに時間割が見つかりません（%1$s）。時間割のページを開いていることを確認してから、もう一度お試しください。時間割が途中までしか表示されない場合は、PC 版に切り替えてください。</string>
+    <string name="settings_jw_no_courses">このページから授業を認識できませんでした。時間割のページを開いていることを確認してください。</string>
+    <string name="settings_jw_adapter_ocr">%1$s（画像認識）</string>
+    <string name="settings_jw_adapter_auto">%1$s（自動認識）</string>
+
+    <!-- Academic system import: review recognition result -->
+    <string name="settings_jw_review_title">認識結果の確認</string>
+    <string name="settings_jw_review_count">%1$s、%2$sを認識しました。</string>
+    <plurals name="settings_jw_review_course_count">
+        <item quantity="other">授業%1$d件</item>
+    </plurals>
+    <string name="settings_jw_review_defaults">学期名と学期の開始日は自動で入力されています。インポート後に「学期の管理」で変更できます。</string>
+    <string name="settings_jw_review_warn">以下の内容を重点的に確認してください：</string>
+    <string name="settings_jw_review_hint">認識結果は表内の位置をもとに作成されているため、行全体がずれることがあります。インポート後、時間割でいくつかの授業の時間を確認してください。</string>
+    <!-- Appended directly after the course name -->
+    <string name="settings_jw_review_block">（%1$s %2$d-%3$d限）</string>
+    <string name="settings_jw_review_confirm">インポート</string>
+
+    <!-- Academic system import: script execution and bridge -->
+    <string name="settings_jw_error_title">操作に失敗しました</string>
+    <string name="settings_jw_done_title">完了</string>
+    <string name="settings_jw_ok">OK</string>
+    <string name="settings_jw_unknown_error">不明な問題が発生しました</string>
+    <string name="settings_jw_package_read_failed">アダプターパッケージを読み込めません</string>
+    <string name="settings_jw_cannot_read_file">ファイルを読み込めません</string>
+    <!-- JwErrorCode -->
+    <string name="settings_jw_err_network_failed">ネットワークに接続できませんでした：%1$s</string>
+    <string name="settings_jw_err_http_status">サーバーに一時的にアクセスできません（エラーコード %1$d）</string>
+    <string name="settings_jw_err_insecure_redirect">サーバーが安全でないアドレスにリダイレクトしたため、アクセスを中止しました：%1$s</string>
+    <string name="settings_jw_err_empty_response">サーバーから内容が返されませんでした</string>
+    <string name="settings_jw_err_response_too_large">サーバーから返された内容が大きすぎます（%1$d KB 超）</string>
+    <string name="settings_jw_err_no_newer_version">最新バージョンです</string>
+    <string name="settings_jw_err_index_unreadable">アダプターライブラリを読み込めません：%1$s</string>
+    <string name="settings_jw_err_adapter_file_unreadable">アダプター「%1$s」のファイル %2$s を読み込めません：%3$s</string>
+    <string name="settings_jw_err_library_url_empty">アダプターライブラリのアドレスを入力してください</string>
+    <string name="settings_jw_err_library_url_invalid">アダプターライブラリのアドレスが無効です：%1$s</string>
+    <string name="settings_jw_err_library_url_not_http">アダプターライブラリのアドレスは https:// で始まる必要があります：%1$s</string>
+    <string name="settings_jw_err_library_url_insecure">通信中に内容が改ざんされないよう、アダプターライブラリのアドレスには https を使用してください</string>
+    <string name="settings_jw_err_library_url_no_host">アダプターライブラリのアドレスが不完全です：%1$s</string>
+    <string name="settings_jw_err_library_url_github_shape">GitHub のアドレスは github.com/ユーザー名/リポジトリ名 の形式で入力してください</string>
+    <string name="settings_jw_err_spec_too_new">このアダプターには新しいバージョンの NullClass が必要です（アダプター仕様 v%1$d、このバージョンの対応上限は v%2$d）。先にアプリを更新してください</string>
+    <string name="settings_jw_err_app_too_old">このアダプターには新しいバージョンの NullClass が必要です（必要なバージョン番号 %1$d 以上、現在は %2$d）。先にアプリを更新してください</string>
+    <string name="settings_jw_broken_unreadable">読み込めませんでした</string>
+    <!-- Limits the host sets for adapter scripts -->
+    <string name="settings_jw_script_timeout">アダプターの実行がタイムアウトしました（%1$d 秒）</string>
+    <string name="settings_jw_wait_timeout">入力待ちがタイムアウトしました（%1$d 秒）</string>
+    <string name="settings_jw_result_too_large">取得結果がサイズの上限（%1$d K 文字）を超えています。アダプターの作成者に報告してください</string>
+    <string name="settings_jw_library_read_failed">アダプターライブラリを読み込めません</string>
+    <string name="settings_jw_download_failed">アダプターをダウンロードできませんでした</string>
+    <string name="settings_jw_install_failed">追加できませんでした</string>
+    <string name="settings_jw_installed">追加しました：%1$s</string>
+    <string name="settings_jw_deleted">「%1$s」を削除しました</string>
+    <string name="settings_jw_delete_builtin_denied">内蔵アダプターは削除できません。</string>
+
+    <!-- Academic system import: adapter question dialog -->
+    <string name="settings_jw_ask_title">「%1$s」から追加情報の入力を求められています</string>
+    <string name="settings_jw_ask_safety">NullClass が教務システムのパスワードなどのアカウント情報を求めることはありません。</string>
+
+    <!-- Academic system import: choose school, library and details sheets -->
+    <string name="settings_jw_picker_login_title">教務システムの URL を入力</string>
+    <string name="settings_jw_picker_login_desc">大学の教務システムのログインページまたは時間割ページのアドレスを入力してください（例：jw.example.edu.cn）。ログインと認証は次のページの教務システムで行い、NullClass がアカウントやパスワードを取得することはありません。</string>
+    <string name="settings_jw_picker_login_label">教務システムのアドレス</string>
+    <string name="settings_jw_picker_login_hint">アドレスがわからない場合は、ブラウザで大学の教務システムを開き、アドレスバーの URL をそのままコピーしてください</string>
+    <string name="settings_jw_picker_login_invalid">URL の形式が正しくありません。余分なスペースや全角文字が含まれていないか確認してください</string>
+    <string name="settings_jw_picker_login_preview">%1$s を開きます。教務システムによっては http にしか対応していないため、開けない場合は先頭を http:// に変えてお試しください</string>
+    <string name="settings_jw_picker_login_open">開く</string>
+    <string name="settings_jw_picker_link_title">アダプターライブラリから追加</string>
+    <string name="settings_jw_picker_link_desc">アダプターライブラリの GitHub リポジトリのアドレス、または index.json のリンク（https で始まるもの）を貼り付けてください。アダプターは第三者が管理しています。提供元が信頼できるか確認してください。</string>
+    <string name="settings_jw_picker_link_label">ライブラリのアドレス</string>
+    <string name="settings_jw_picker_link_read">読み込む</string>
+
+    <!-- Academic system import: install confirmation / library list / details -->
+    <plurals name="settings_jw_install_title_many">
+        <item quantity="other">%1$d件のアダプターをインストールしますか？</item>
+    </plurals>
+    <string name="settings_jw_install_title_one">このアダプターを追加しますか？</string>
+    <string name="settings_jw_adapter_line">%1$s（%2$s v%3$s）</string>
+    <string name="settings_jw_adapter_login_url">ログインページ：%1$s</string>
+    <string name="settings_jw_adapter_hosts">アクセスできるサイト：%1$s</string>
+    <string name="settings_jw_adapter_view_script">コードを表示</string>
+    <string name="settings_jw_adapter_source_url">提供元：%1$s</string>
+    <string name="settings_jw_adapter_source_file">提供元ファイル：%1$s</string>
+    <string name="settings_jw_adapter_untrusted">第三者のアダプターは他の人が作成したもので、取得時にはログイン中の教務システムのページ内容を読み取ります。NullClass はその内容を審査していません。提供元が信頼できるか確認するか、先にコードを確認してください。</string>
+    <string name="settings_jw_install_confirm">追加する</string>
+    <string name="settings_jw_library_dialog_title">アダプターライブラリ</string>
+    <string name="settings_jw_library_empty">このライブラリにはまだアダプターがありません。</string>
+    <string name="settings_jw_library_no_match">このライブラリに「%1$s」に一致するアダプターはありません。</string>
+    <string name="settings_jw_library_untrusted">ライブラリ内のアダプターも第三者が管理しており、NullClass は審査していません。</string>
+    <string name="settings_jw_adapter_key">識別子：%1$s</string>
+    <string name="settings_jw_adapter_version">バージョン：v%1$s</string>
+    <string name="settings_jw_adapter_source_builtin">公式</string>
+    <string name="settings_jw_adapter_source_user">自分で追加</string>
+    <string name="settings_jw_adapter_source">提供元：%1$s</string>
+    <string name="settings_jw_adapter_author">作成者：%1$s</string>
+    <string name="settings_jw_adapter_homepage">ホームページ：%1$s</string>
+    <string name="settings_jw_adapter_installed_from">インストール元：%1$s</string>
+    <string name="settings_jw_adapter_checksum">チェックサム：%1$s…</string>
+    <string name="settings_jw_adapter_delete">削除</string>
+    <string name="settings_jw_script_dialog_title">%1$s のコード</string>
+
+    <!-- Academic system import: choose school -->
+    <string name="settings_jw_recent_used">最近使用</string>
+    <string name="settings_jw_recent_refresh_hint">タップすると、前回のログイン状態のまま再インポートできます</string>
+    <string name="settings_jw_no_school_match">「%1$s」に一致する学校が見つかりません。</string>
+    <plurals name="settings_jw_mine_hits">
+        <item quantity="other">「追加済み」に%1$d件の結果があります</item>
+    </plurals>
+    <string name="settings_jw_try_generic">汎用アダプターをお試しください。教務システムのアドレスを入力してログインすると、NullClass がページ内の時間割を自動で認識します。</string>
+    <string name="settings_jw_badge_generic">汎用</string>
+    <string name="settings_jw_no_your_school">学校が見つかりませんか？</string>
+    <string name="settings_jw_use_generic">汎用アダプターを使用</string>
+    <string name="settings_jw_generic_desc">汎用アダプターは特定の学校向けではありません。教務システムのアドレスを入力してログインすると、NullClass がページ内の時間割を認識します（画像形式の時間割はこの端末上で文字認識を行います）。認識結果は、確認していただいたうえでインポートされます。</string>
+    <string name="settings_jw_request_adapter">学校への対応をリクエスト</string>
+    <string name="settings_jw_add_from_link">リンクから追加</string>
+    <string name="settings_jw_mine_empty">追加したアダプターはありません。アダプターパッケージをインポートするか、リンクからアダプターライブラリ経由で追加できます。第三者のアダプターは他の人が管理しており、NullClass は審査していません。</string>
+    <string name="settings_jw_insecure">安全でない接続</string>
+    <string name="settings_jw_details">詳細</string>
+
+</resources>

@@ -1,0 +1,185 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Japanese translation of values/strings.xml. Conventions: docs/i18n.md. -->
+<resources>
+
+    <!-- Week view -->
+    <string name="schedule_title_default">NullClass</string>
+    <string name="schedule_week_number">第%1$d週</string>
+    <string name="schedule_week_number_current">第%1$d週 · 今週</string>
+    <string name="schedule_subtitle_with_timetable">%1$s · %2$s</string>
+    <string name="schedule_back_to_current_week">今週に戻る</string>
+    <string name="schedule_pick_week">週を選択</string>
+    <string name="schedule_display_settings">表示設定</string>
+    <string name="schedule_add_course">授業を追加</string>
+    <string name="schedule_no_term_title">学期がありません</string>
+    <string name="schedule_no_term_desc">学期を作成すると、授業を追加できるようになります。</string>
+    <string name="schedule_create_term">学期を作成</string>
+    <string name="schedule_other_week">他の週</string>
+
+    <!-- Display settings -->
+    <string name="schedule_show_now_line">現在時刻のラインを表示</string>
+    <string name="schedule_show_weekend">週末を表示</string>
+    <string name="schedule_show_grid_lines">グリッド線を表示</string>
+    <string name="schedule_show_time_in_cards">授業カードに時刻を表示</string>
+    <string name="schedule_show_other_week">今週以外の授業を表示</string>
+
+    <!-- Bottom of the display settings sheet: open personalization -->
+    <string name="schedule_open_personalization">カスタマイズ</string>
+
+    <!-- Personalization (timetable appearance) -->
+    <string name="schedule_personalize_title">カスタマイズ</string>
+    <string name="schedule_personalize_reset">リセット</string>
+    <string name="schedule_personalize_reset_item">デフォルトに戻す</string>
+    <string name="schedule_personalize_reset_title">デフォルトに戻す</string>
+    <string name="schedule_personalize_reset_message">カスタマイズの設定をデフォルトに戻します。設定済みの背景画像も削除されます。</string>
+    <string name="schedule_personalize_reset_confirm">戻す</string>
+    <string name="schedule_personalize_section_background">背景</string>
+    <string name="schedule_personalize_background_desc">画像は時間割の画面全体に表示され、授業が見やすいように自動で暗く調整されます。</string>
+    <string name="schedule_personalize_background_pick">画像を選択</string>
+    <string name="schedule_personalize_background_change">画像を変更</string>
+    <string name="schedule_personalize_background_remove">削除</string>
+    <string name="schedule_personalize_background_importing">画像を処理中…</string>
+    <string name="schedule_personalize_background_failed">この画像は読み込めません。別の画像でもう一度お試しください。</string>
+    <string name="schedule_personalize_section_display">表示内容</string>
+    <string name="schedule_personalize_timeline">24時間タイムライン</string>
+    <string name="schedule_personalize_timeline_desc">1日を24時間で表示します。授業カードの位置と長さは実際の授業時刻に合わせて配置されます。</string>
+    <string name="schedule_personalize_hide_period_times">時限の時刻を非表示</string>
+    <string name="schedule_personalize_hide_period_times_desc">サイドバーには時限のみを表示し、授業カードにも時刻を表示しません。タイムラインモードでは正時の目盛りは引き続き表示されます。</string>
+    <string name="schedule_personalize_hide_dates">日付を非表示</string>
+    <string name="schedule_personalize_hide_dates_desc">ヘッダーには曜日のみを表示します。</string>
+    <string name="schedule_personalize_hide_grid_lines">グリッド線を非表示</string>
+    <string name="schedule_personalize_section_page">時間割の画面</string>
+    <string name="schedule_personalize_text_color">文字色</string>
+    <string name="schedule_personalize_page_text_color_desc">ヘッダーとサイドバーに使用します。背景画像を設定している場合は上部バーにも使用します。カスタムカラーはライト / ダークモードで変わりません。</string>
+    <string name="schedule_personalize_card_text_color_desc">カスタムカラーはライト / ダークモードで変わりません。</string>
+    <string name="schedule_personalize_row_height">マスの高さ</string>
+    <string name="schedule_personalize_row_height_timeline_desc">タイムラインモードでは1時間あたりの高さです。</string>
+    <string name="schedule_personalize_sidebar_width">サイドバーの幅</string>
+    <string name="schedule_personalize_header_height">ヘッダーの高さ</string>
+    <string name="schedule_personalize_section_card">授業カード</string>
+    <string name="schedule_personalize_text_align">文字の配置</string>
+    <string name="schedule_personalize_align_center">中央</string>
+    <string name="schedule_personalize_align_top_start">左上</string>
+    <string name="schedule_personalize_border">枠線</string>
+    <string name="schedule_personalize_border_none">なし</string>
+    <string name="schedule_personalize_border_solid">実線</string>
+    <string name="schedule_personalize_border_dashed">破線</string>
+    <string name="schedule_personalize_text_scale">文字サイズ</string>
+    <string name="schedule_personalize_corner_radius">角の丸み</string>
+    <string name="schedule_personalize_spacing">余白</string>
+    <string name="schedule_personalize_opacity">不透明度</string>
+    <string name="schedule_personalize_opacity_desc">下げると背景画像が透けて見えます。同じ時間帯に2つの授業がある場合は、重なった部分も互いに透けて見えます。</string>
+    <string name="schedule_personalize_value_auto">自動</string>
+    <string name="schedule_personalize_value_percent">%1$d%%</string>
+    <string name="schedule_personalize_color_follow_theme">テーマ</string>
+    <string name="schedule_personalize_color_white">白</string>
+    <string name="schedule_personalize_color_black">黒</string>
+    <string name="schedule_personalize_color_dark_gray">ダークグレー</string>
+    <string name="schedule_personalize_color_light_gray">ライトグレー</string>
+    <string name="schedule_personalize_color_hue">色相</string>
+    <string name="schedule_personalize_color_saturation">彩度</string>
+    <string name="schedule_personalize_color_brightness">明るさ</string>
+    <!-- Sample courses in the preview, shown when there is no term or no class this week -->
+    <string name="schedule_personalize_sample_course_1">微分積分学</string>
+    <string name="schedule_personalize_sample_course_2">英語</string>
+    <string name="schedule_personalize_sample_course_3">プログラミング</string>
+    <string name="schedule_personalize_sample_course_4">線形代数</string>
+    <string name="schedule_personalize_sample_course_5">体育</string>
+    <string name="schedule_personalize_sample_room_1">1号館101</string>
+    <string name="schedule_personalize_sample_room_2">実験棟305</string>
+    <string name="schedule_personalize_sample_room_3">3号館210</string>
+
+    <!-- Week header: date (month/day), numeric because the cells are narrow -->
+    <string name="schedule_header_date">%1$d/%2$d</string>
+
+    <!-- Week view header: day swap marker -->
+    <string name="schedule_header_swap_weekday">→%1$s</string>
+    <string name="schedule_header_swap_date">→%1$d/%2$d</string>
+
+    <!-- Today -->
+    <string name="schedule_today_date">%1$s · %2$s</string>
+    <string name="schedule_today_out_of_term">今日は学期外です</string>
+    <string name="schedule_today_next_up">次の授業：%1$s · %2$s 開始</string>
+    <string name="schedule_today_in_class">授業中</string>
+    <string name="schedule_today_remaining">残り %1$s</string>
+    <string name="schedule_today_ongoing">進行中</string>
+    <string name="schedule_today_end_at">%1$s 終了</string>
+    <string name="schedule_today_empty_title">今日の授業はありません</string>
+    <string name="schedule_today_empty_desc">他の日の授業は時間割で確認できます。</string>
+    <string name="schedule_today_out_of_term_desc">学期が始まると、ここにその日の授業が表示されます。</string>
+    <string name="schedule_today_swap_title">今日は曜日振替 · %1$s（%2$s）の時間割で授業</string>
+    <string name="schedule_today_swap_desc">授業の時刻は今日の時限の時刻のままです。授業前リマインダーも合わせて調整されています。</string>
+    <string name="schedule_today_skip_title">今日は休講 · %1$s</string>
+    <string name="schedule_today_skip_manual">手動で指定</string>
+    <string name="schedule_today_skip_desc">授業前リマインダーは送信されませんが、時間割は通常どおり表示されます。別の日の授業を行う場合は「曜日振替」を使用してください。</string>
+
+    <!-- Today: time of day -->
+    <string name="schedule_session_morning">午前</string>
+    <string name="schedule_session_afternoon">午後</string>
+    <string name="schedule_session_evening">夜</string>
+    <string name="schedule_session_other">その他</string>
+
+    <!-- Day swap -->
+    <string name="schedule_day_swap_title">曜日振替 · %1$s %2$s</string>
+    <string name="schedule_day_swap_desc_none">この日は通常の時間割どおりです。休日の振替などがある場合は、別の日の授業を行うように変更できます。「今日」、時間割、ウィジェット、授業前リマインダーにも反映されます。授業の時刻はこの日の時限の時刻のままです。</string>
+    <string name="schedule_day_swap_desc_current">現在の設定：この日は %1$s（%2$s）の授業を行います。</string>
+    <string name="schedule_day_swap_pick_in_week">今週のどの日の授業を行うか</string>
+    <string name="schedule_day_swap_self">%1$s（通常どおり）</string>
+    <string name="schedule_day_swap_other_date">別の日付を選択…</string>
+    <string name="schedule_day_swap_reset">通常の時間割に戻す</string>
+
+    <!-- Course details -->
+    <plurals name="schedule_course_block_count">
+        <item quantity="other">授業日時%1$d件</item>
+    </plurals>
+    <string name="schedule_course_exams">試験</string>
+    <string name="schedule_course_add_exam">試験を追加</string>
+    <string name="schedule_course_no_exam">試験は設定されていません</string>
+    <string name="schedule_course_seat">座席 %1$s</string>
+    <string name="schedule_course_delete">授業を削除</string>
+    <string name="schedule_course_delete_confirm">「%1$s」と、そのすべての授業日時・試験を削除します。削除後は元に戻せません。同期をオンにしている場合は、他の端末からも削除されます。</string>
+
+    <!-- Events -->
+    <string name="schedule_event_title">予定</string>
+    <string name="schedule_event_today">今日</string>
+    <string name="schedule_event_add">予定を追加</string>
+    <string name="schedule_event_edit">予定を編集</string>
+    <string name="schedule_event_delete">予定を削除</string>
+    <string name="schedule_event_delete_confirm">「%1$s」を削除します。削除後は元に戻せません。</string>
+    <string name="schedule_event_day_header">%1$s %2$s</string>
+    <string name="schedule_event_day_empty">この日の予定はありません。右下のボタンから追加できます。</string>
+    <string name="schedule_event_upcoming">今後の予定</string>
+    <string name="schedule_event_month">%1$d年%2$d月</string>
+    <string name="schedule_event_prev_month">前の月</string>
+    <string name="schedule_event_next_month">次の月</string>
+    <string name="schedule_event_field_title">タイトル（必須）</string>
+    <string name="schedule_event_all_day">終日</string>
+    <string name="schedule_event_start_time">開始時刻</string>
+    <string name="schedule_event_start_time_value">開始時刻 %1$s</string>
+    <string name="schedule_event_remind">リマインダー</string>
+    <string name="schedule_event_remind_all_day">リマインダー（当日 8:00）</string>
+    <string name="schedule_event_note">メモ（任意）</string>
+    <string name="schedule_event_summary">%1$s · %2$s</string>
+    <string name="schedule_event_summary_with_date">%1$s %2$s · %3$s · %4$s</string>
+
+    <!-- Event reminder lead time -->
+    <string name="schedule_event_lead_none">通知しない</string>
+    <string name="schedule_event_lead_all_day">当日 8:00</string>
+    <string name="schedule_event_lead_on_time">開始時刻</string>
+    <plurals name="schedule_event_lead_days">
+        <item quantity="other">%1$d日前</item>
+    </plurals>
+    <plurals name="schedule_event_lead_hours">
+        <item quantity="other">%1$d時間前</item>
+    </plurals>
+    <plurals name="schedule_event_lead_minutes">
+        <item quantity="other">%1$d分前</item>
+    </plurals>
+
+    <!-- Events: errors -->
+    <string name="schedule_event_save_failed">保存できませんでした。もう一度お試しください。</string>
+    <string name="schedule_event_save_failed_detail">保存できませんでした：%1$s</string>
+    <string name="schedule_event_delete_failed">削除できませんでした。もう一度お試しください。</string>
+    <string name="schedule_event_delete_failed_detail">削除できませんでした：%1$s</string>
+
+</resources>

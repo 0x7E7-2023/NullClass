@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- French translation of values/strings.xml. Conventions: docs/i18n.md. -->
+<resources>
+
+    <!-- Exam list -->
+    <string name="exam_title">Examens</string>
+    <string name="exam_add">Ajouter un examen</string>
+    <string name="exam_delete">Supprimer l’examen</string>
+    <string name="exam_no_term_title">Aucun semestre</string>
+    <string name="exam_no_term_desc">Créez un semestre avant d’ajouter des examens.</string>
+    <string name="exam_create_term">Créer un semestre</string>
+    <string name="exam_summary_empty">Aucun examen</string>
+    <plurals name="exam_summary_count">
+        <item quantity="one">%1$d examen</item>
+        <item quantity="many">%1$d d’examens</item>
+        <item quantity="other">%1$d examens</item>
+    </plurals>
+    <string name="exam_no_upcoming">Aucun examen à venir</string>
+    <string name="exam_section_upcoming">À venir</string>
+    <string name="exam_section_past">Terminés</string>
+    <string name="exam_next">Prochain examen</string>
+    <string name="exam_time_undecided">Horaire à confirmer</string>
+    <string name="exam_seat">Place %1$s</string>
+    <string name="exam_detail_empty">Aucun détail</string>
+    <string name="exam_delete_confirm">«&#160;%1$s · %2$s&#160;» sera supprimé. Cette action est irréversible. Si la synchronisation est activée, l’élément sera aussi supprimé sur vos autres appareils.</string>
+    <string name="exam_delete_failed">Impossible de supprimer l’examen. Veuillez réessayer.</string>
+    <string name="exam_delete_failed_detail">Impossible de supprimer l’examen&#160;: %1$s</string>
+
+    <!-- Exam editor -->
+    <string name="exam_edit_title_new">Ajouter un examen</string>
+    <string name="exam_edit_title_edit">Modifier l’examen</string>
+    <string name="exam_edit_saving">Enregistrement…</string>
+    <string name="exam_edit_no_term">Veuillez d’abord créer un semestre</string>
+    <string name="exam_edit_no_course_title">Aucun cours</string>
+    <string name="exam_edit_no_course_desc">Un examen doit être rattaché à un cours. Veuillez d’abord ajouter un cours à l’emploi du temps.</string>
+    <string name="exam_edit_course">Cours&#160;: %1$s</string>
+    <string name="exam_edit_course_unselected">Non sélectionné</string>
+    <string name="exam_edit_course_hint">L’examen apparaîtra dans le détail de ce cours.</string>
+    <string name="exam_edit_course_picker">Choisir le cours</string>
+    <string name="exam_edit_name">Nom de l’examen (obligatoire)</string>
+    <string name="exam_edit_date">Date (obligatoire)</string>
+    <string name="exam_edit_date_format">Par exemple 2026-12-20</string>
+    <string name="exam_edit_pick_date">Choisir la date</string>
+    <string name="exam_edit_pick_date_with_value">Choisir la date · %1$s</string>
+    <string name="exam_edit_time_section">Horaire (facultatif)</string>
+    <string name="exam_edit_start_time">Heure de début</string>
+    <string name="exam_edit_start_time_hint">ex. 09:00</string>
+    <string name="exam_edit_end_time">Heure de fin</string>
+    <string name="exam_edit_end_time_hint">ex. 11:00</string>
+    <string name="exam_edit_location">Salle (facultatif)</string>
+    <string name="exam_edit_seat">Numéro de place (facultatif)</string>
+    <string name="exam_edit_note">Remarque (facultatif)</string>
+    <string name="exam_edit_default_title">Examen final</string>
+
+    <!-- Exam editor: validation and errors -->
+    <string name="exam_edit_error_title">Enregistrement impossible</string>
+    <string name="exam_edit_error_time_format">Saisissez l’heure au format heures:minutes, par exemple 09:00.</string>
+    <string name="exam_edit_error_time_order">L’heure de fin doit être postérieure à l’heure de début.</string>
+    <string name="exam_edit_error_no_course">Veuillez choisir un cours.</string>
+    <string name="exam_edit_error_no_name">Veuillez saisir le nom de l’examen.</string>
+    <string name="exam_edit_error_date_format">Saisissez la date au format année-mois-jour, par exemple 2026-12-20.</string>
+    <string name="exam_edit_error_save_failed">Impossible d’enregistrer. Veuillez réessayer.</string>
+
+</resources>

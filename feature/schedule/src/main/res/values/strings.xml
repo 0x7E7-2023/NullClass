@@ -89,6 +89,9 @@
     <string name="schedule_personalize_sample_room_2">实验楼 305</string>
     <string name="schedule_personalize_sample_room_3">教3-210</string>
 
+    <!-- 周视图表头：日期（月/日），格子窄，只用数字 -->
+    <string name="schedule_header_date">%1$d/%2$d</string>
+
     <!-- 周视图表头：调课标记 -->
     <string name="schedule_header_swap_weekday">调·%1$s</string>
     <string name="schedule_header_swap_date">调·%1$d/%2$d</string>

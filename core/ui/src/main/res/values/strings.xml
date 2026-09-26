@@ -42,7 +42,11 @@
     <string name="enum_app_language_system">跟随系统</string>
     <!-- 语言自称：始终以该语言自身书写，不随界面语言翻译（见 docs/i18n.md 第五节） -->
     <string name="enum_app_language_zh_hans" translatable="false">简体中文</string>
+    <string name="enum_app_language_zh_hant" translatable="false">繁體中文</string>
     <string name="enum_app_language_en" translatable="false">English</string>
+    <string name="enum_app_language_ja" translatable="false">日本語</string>
+    <string name="enum_app_language_ko" translatable="false">한국어</string>
+    <string name="enum_app_language_fr" translatable="false">Français</string>
 
     <!-- 课表共用文案（ScheduleText）。课表网格与桌面小组件的格子极窄，
          这些紧凑标签不按常规在数字与中文之间留空格。 -->

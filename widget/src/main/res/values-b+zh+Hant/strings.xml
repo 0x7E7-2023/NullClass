@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- 繁體中文（香港）譯文，原文見 values/strings.xml。:widget 的桌面小工具文案。
+     小工具格子極窄，這裏的緊湊標籤不按常規在數字與中文之間留空格。 -->
+<resources>
+
+    <!-- 小工具選擇器中的名稱與說明（API 31+） -->
+    <string name="widget_today_label">空課 · 今日課程</string>
+    <string name="widget_next_label">空課 · 下節課</string>
+    <string name="widget_today_description">按時間順序顯示今日餘下的課程。</string>
+    <string name="widget_next_description">顯示下一節課的時間與地點。</string>
+
+    <!-- 今日課程標題列：星期後面跟日期與週次；窄尺寸翻頁時只留週次 -->
+    <string name="widget_today_date_week">%1$s · 第%2$d週</string>
+    <string name="widget_today_week_short">第%1$d週</string>
+
+    <!-- 空狀態 -->
+    <string name="widget_empty_no_timetable">尚未建立課表</string>
+    <string name="widget_empty_no_timetable_desc">點按此處建立學期</string>
+    <string name="widget_empty_no_class">今日沒有課程安排</string>
+    <string name="widget_empty_no_class_desc">可在空課中查看其他日期</string>
+    <string name="widget_empty_finished">今日的課程已全部結束</string>
+    <string name="widget_empty_finished_desc">明日的安排可在空課中查看</string>
+
+    <!-- 翻頁 -->
+    <string name="widget_page_prev_desc">上一頁</string>
+    <string name="widget_page_next_desc">下一頁</string>
+    <string name="widget_page_indicator_desc">第 %1$d 頁，共 %2$d 頁</string>
+    <string name="widget_action_unavailable">%1$s，無法使用</string>
+
+    <!-- 課程行 -->
+    <string name="widget_row_status_in_class">剩%1$d分鐘</string>
+    <string name="widget_row_status_next">下一節</string>
+    <string name="widget_row_period_range">第%1$d–%2$d節</string>
+
+    <!-- 下節課 -->
+    <string name="widget_next_empty_finished">今日課程已結束</string>
+    <string name="widget_next_in_class">正在上課</string>
+    <string name="widget_next_upcoming">接下來</string>
+    <plurals name="widget_next_remaining">
+        <item quantity="other">尚餘 %1$d 分鐘</item>
+    </plurals>
+    <string name="widget_next_time_range">%1$s – %2$s</string>
+    <string name="widget_next_location_unknown">課室待定</string>
+
+</resources>

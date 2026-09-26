@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Japanese translation of values/strings.xml. Conventions: docs/i18n.md. -->
+<resources>
+
+    <!-- Exam list -->
+    <string name="exam_title">試験</string>
+    <string name="exam_add">試験を追加</string>
+    <string name="exam_delete">試験を削除</string>
+    <string name="exam_no_term_title">学期がありません</string>
+    <string name="exam_no_term_desc">試験を追加するには、先に学期を作成してください。</string>
+    <string name="exam_create_term">学期を作成</string>
+    <string name="exam_summary_empty">試験はありません</string>
+    <plurals name="exam_summary_count">
+        <item quantity="other">試験%1$d件</item>
+    </plurals>
+    <string name="exam_no_upcoming">今後の試験はありません</string>
+    <string name="exam_section_upcoming">今後</string>
+    <string name="exam_section_past">終了</string>
+    <string name="exam_next">次の試験</string>
+    <string name="exam_time_undecided">時間未定</string>
+    <string name="exam_seat">座席 %1$s</string>
+    <string name="exam_detail_empty">詳細情報はありません</string>
+    <string name="exam_delete_confirm">「%1$s · %2$s」を削除します。削除後は元に戻せません。同期をオンにしている場合は、他の端末からも削除されます。</string>
+    <string name="exam_delete_failed">試験を削除できませんでした。もう一度お試しください。</string>
+    <string name="exam_delete_failed_detail">試験を削除できませんでした：%1$s</string>
+
+    <!-- Exam editor -->
+    <string name="exam_edit_title_new">試験を追加</string>
+    <string name="exam_edit_title_edit">試験を編集</string>
+    <string name="exam_edit_saving">保存中…</string>
+    <string name="exam_edit_no_term">先に学期を作成してください</string>
+    <string name="exam_edit_no_course_title">授業がありません</string>
+    <string name="exam_edit_no_course_desc">試験はいずれかの授業に属します。先に時間割に授業を追加してください。</string>
+    <string name="exam_edit_course">対象の授業：%1$s</string>
+    <string name="exam_edit_course_unselected">未選択</string>
+    <string name="exam_edit_course_hint">試験はこの授業の詳細に表示されます。</string>
+    <string name="exam_edit_course_picker">対象の授業を選択</string>
+    <string name="exam_edit_name">試験名（必須）</string>
+    <string name="exam_edit_date">日付（必須）</string>
+    <string name="exam_edit_date_format">例：2026-12-20</string>
+    <string name="exam_edit_pick_date">日付を選択</string>
+    <string name="exam_edit_pick_date_with_value">日付を選択 · %1$s</string>
+    <string name="exam_edit_time_section">時間（任意）</string>
+    <string name="exam_edit_start_time">開始時刻</string>
+    <string name="exam_edit_start_time_hint">例：09:00</string>
+    <string name="exam_edit_end_time">終了時刻</string>
+    <string name="exam_edit_end_time_hint">例：11:00</string>
+    <string name="exam_edit_location">試験会場（任意）</string>
+    <string name="exam_edit_seat">座席番号（任意）</string>
+    <string name="exam_edit_note">メモ（任意）</string>
+    <string name="exam_edit_default_title">期末試験</string>
+
+    <!-- Exam editor: validation and errors -->
+    <string name="exam_edit_error_title">保存できません</string>
+    <string name="exam_edit_error_time_format">時間は「時:分」の形式で入力してください（例：09:00）。</string>
+    <string name="exam_edit_error_time_order">終了時刻は開始時刻より後にしてください。</string>
+    <string name="exam_edit_error_no_course">対象の授業を選択してください。</string>
+    <string name="exam_edit_error_no_name">試験名を入力してください。</string>
+    <string name="exam_edit_error_date_format">日付は「年-月-日」の形式で入力してください（例：2026-12-20）。</string>
+    <string name="exam_edit_error_save_failed">保存できませんでした。もう一度お試しください。</string>
+
+</resources>

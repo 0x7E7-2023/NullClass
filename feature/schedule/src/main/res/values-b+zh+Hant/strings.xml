@@ -1,0 +1,185 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- 繁體中文（香港）譯文，原文見 values/strings.xml。:feature:schedule 的介面文案。 -->
+<resources>
+
+    <!-- 週視圖 -->
+    <string name="schedule_title_default">空課</string>
+    <string name="schedule_week_number">第 %1$d 週</string>
+    <string name="schedule_week_number_current">第 %1$d 週 · 本週</string>
+    <string name="schedule_subtitle_with_timetable">%1$s · %2$s</string>
+    <string name="schedule_back_to_current_week">回到本週</string>
+    <string name="schedule_pick_week">選擇週次</string>
+    <string name="schedule_display_settings">顯示設定</string>
+    <string name="schedule_add_course">新增課程</string>
+    <string name="schedule_no_term_title">尚未建立學期</string>
+    <string name="schedule_no_term_desc">建立學期後即可開始排課。</string>
+    <string name="schedule_create_term">建立學期</string>
+    <string name="schedule_other_week">非本週</string>
+
+    <!-- 顯示設定 -->
+    <string name="schedule_show_now_line">顯示目前時間線</string>
+    <string name="schedule_show_weekend">顯示週末</string>
+    <string name="schedule_show_grid_lines">顯示格線</string>
+    <string name="schedule_show_time_in_cards">在課程卡片上顯示上課時間</string>
+    <string name="schedule_show_other_week">顯示非本週課程</string>
+
+    <!-- 顯示設定彈出視窗底部：進入個人化設定 -->
+    <string name="schedule_open_personalization">個人化設定</string>
+
+    <!-- 個人化設定（課表外觀） -->
+    <string name="schedule_personalize_title">個人化設定</string>
+    <string name="schedule_personalize_reset">還原預設</string>
+    <string name="schedule_personalize_reset_item">還原預設</string>
+    <string name="schedule_personalize_reset_title">還原預設設定</string>
+    <string name="schedule_personalize_reset_message">個人化設定將還原為預設，已設定的背景圖片也會移除。</string>
+    <string name="schedule_personalize_reset_confirm">還原</string>
+    <string name="schedule_personalize_section_background">背景</string>
+    <string name="schedule_personalize_background_desc">圖片鋪滿課表頁面，並自動調暗，方便看清課程。</string>
+    <string name="schedule_personalize_background_pick">選擇圖片</string>
+    <string name="schedule_personalize_background_change">更換圖片</string>
+    <string name="schedule_personalize_background_remove">移除</string>
+    <string name="schedule_personalize_background_importing">正在處理圖片…</string>
+    <string name="schedule_personalize_background_failed">無法讀取這張圖片，請換一張再試。</string>
+    <string name="schedule_personalize_section_display">顯示內容</string>
+    <string name="schedule_personalize_timeline">24 小時時間軸</string>
+    <string name="schedule_personalize_timeline_desc">按一日 24 小時排列，課程卡片的位置和長度與實際上課時間一致。</string>
+    <string name="schedule_personalize_hide_period_times">隱藏節次時間</string>
+    <string name="schedule_personalize_hide_period_times_desc">側邊欄只顯示節次，課程卡片上也不顯示上課時間。時間軸模式下整點刻度照常顯示。</string>
+    <string name="schedule_personalize_hide_dates">隱藏日期</string>
+    <string name="schedule_personalize_hide_dates_desc">表頭只顯示星期。</string>
+    <string name="schedule_personalize_hide_grid_lines">隱藏格線</string>
+    <string name="schedule_personalize_section_page">課表頁面</string>
+    <string name="schedule_personalize_text_color">文字顏色</string>
+    <string name="schedule_personalize_page_text_color_desc">用於表頭與側邊欄；設定了背景圖片時也用於頂欄。自訂顏色不隨深淺色模式變化。</string>
+    <string name="schedule_personalize_card_text_color_desc">自訂顏色不隨深淺色模式變化。</string>
+    <string name="schedule_personalize_row_height">格子高度</string>
+    <string name="schedule_personalize_row_height_timeline_desc">時間軸模式下為每小時的高度。</string>
+    <string name="schedule_personalize_sidebar_width">側邊欄闊度</string>
+    <string name="schedule_personalize_header_height">表頭高度</string>
+    <string name="schedule_personalize_section_card">課程卡片</string>
+    <string name="schedule_personalize_text_align">文字對齊</string>
+    <string name="schedule_personalize_align_center">置中</string>
+    <string name="schedule_personalize_align_top_start">左上</string>
+    <string name="schedule_personalize_border">邊框</string>
+    <string name="schedule_personalize_border_none">無</string>
+    <string name="schedule_personalize_border_solid">實線</string>
+    <string name="schedule_personalize_border_dashed">虛線</string>
+    <string name="schedule_personalize_text_scale">文字大小</string>
+    <string name="schedule_personalize_corner_radius">圓角</string>
+    <string name="schedule_personalize_spacing">外邊距</string>
+    <string name="schedule_personalize_opacity">不透明度</string>
+    <string name="schedule_personalize_opacity_desc">調低後可透出背景圖片；同一時段有兩個課程時，重疊部分也會互相透出。</string>
+    <string name="schedule_personalize_value_auto">自動</string>
+    <string name="schedule_personalize_value_percent">%1$d%%</string>
+    <string name="schedule_personalize_color_follow_theme">跟隨主題</string>
+    <string name="schedule_personalize_color_white">白色</string>
+    <string name="schedule_personalize_color_black">黑色</string>
+    <string name="schedule_personalize_color_dark_gray">深灰</string>
+    <string name="schedule_personalize_color_light_gray">淺灰</string>
+    <string name="schedule_personalize_color_hue">色相</string>
+    <string name="schedule_personalize_color_saturation">飽和度</string>
+    <string name="schedule_personalize_color_brightness">亮度</string>
+    <!-- 預覽裏的示例課程：還沒有學期、或本週沒有課時顯示 -->
+    <string name="schedule_personalize_sample_course_1">高等數學</string>
+    <string name="schedule_personalize_sample_course_2">大學英文</string>
+    <string name="schedule_personalize_sample_course_3">程式設計</string>
+    <string name="schedule_personalize_sample_course_4">線性代數</string>
+    <string name="schedule_personalize_sample_course_5">體育</string>
+    <string name="schedule_personalize_sample_room_1">教1-101</string>
+    <string name="schedule_personalize_sample_room_2">實驗樓 305</string>
+    <string name="schedule_personalize_sample_room_3">教3-210</string>
+
+    <!-- 週視圖表頭：日期（月/日），格子窄，只用數字 -->
+    <string name="schedule_header_date">%1$d/%2$d</string>
+
+    <!-- 週視圖表頭：調課標記 -->
+    <string name="schedule_header_swap_weekday">調·%1$s</string>
+    <string name="schedule_header_swap_date">調·%1$d/%2$d</string>
+
+    <!-- 今日頁 -->
+    <string name="schedule_today_date">%1$s · %2$s</string>
+    <string name="schedule_today_out_of_term">今日不在學期內</string>
+    <string name="schedule_today_next_up">下一節：%1$s · %2$s 開始</string>
+    <string name="schedule_today_in_class">上課中</string>
+    <string name="schedule_today_remaining">尚餘 %1$s</string>
+    <string name="schedule_today_ongoing">進行中</string>
+    <string name="schedule_today_end_at">%1$s 下課</string>
+    <string name="schedule_today_empty_title">今日沒有課程安排</string>
+    <string name="schedule_today_empty_desc">可在課表中查看其他日期的安排。</string>
+    <string name="schedule_today_out_of_term_desc">學期開始後將在此顯示當日的課程。</string>
+    <string name="schedule_today_swap_title">今日調課 · 按 %1$s（%2$s）的課表上課</string>
+    <string name="schedule_today_swap_desc">上課時間仍按今日的作息時間，課前提醒已同步調整。</string>
+    <string name="schedule_today_skip_title">今日不用上課 · %1$s</string>
+    <string name="schedule_today_skip_manual">手動跳過</string>
+    <string name="schedule_today_skip_desc">課前提醒已跳過，課表內容仍照常顯示。如需改上其他日期的課，請使用「調課」。</string>
+
+    <!-- 今日頁：時段分組 -->
+    <string name="schedule_session_morning">上午</string>
+    <string name="schedule_session_afternoon">下午</string>
+    <string name="schedule_session_evening">晚上</string>
+    <string name="schedule_session_other">其他</string>
+
+    <!-- 調課 -->
+    <string name="schedule_day_swap_title">調課 · %1$s %2$s</string>
+    <string name="schedule_day_swap_desc_none">這一日按原課表上課。遇上調休時，可改為上另一日的課；今日頁、課表、桌面小工具與課前提醒會同步調整，上課時間仍按這一日的作息時間。</string>
+    <string name="schedule_day_swap_desc_current">目前設定：這一日上 %1$s（%2$s）的課。</string>
+    <string name="schedule_day_swap_pick_in_week">上本週哪一日的課</string>
+    <string name="schedule_day_swap_self">%1$s（原課表）</string>
+    <string name="schedule_day_swap_other_date">選擇其他日期…</string>
+    <string name="schedule_day_swap_reset">還原原課表</string>
+
+    <!-- 課程詳情 -->
+    <plurals name="schedule_course_block_count">
+        <item quantity="other">共 %1$d 項安排</item>
+    </plurals>
+    <string name="schedule_course_exams">考試安排</string>
+    <string name="schedule_course_add_exam">新增考試</string>
+    <string name="schedule_course_no_exam">尚未設定考試</string>
+    <string name="schedule_course_seat">座位 %1$s</string>
+    <string name="schedule_course_delete">刪除課程</string>
+    <string name="schedule_course_delete_confirm">將刪除「%1$s」及其全部上課安排與考試。刪除後無法還原；如已開啟同步，其他裝置上也會一併刪除。</string>
+
+    <!-- 日程安排 -->
+    <string name="schedule_event_title">日程安排</string>
+    <string name="schedule_event_today">今日</string>
+    <string name="schedule_event_add">新增日程</string>
+    <string name="schedule_event_edit">編輯日程</string>
+    <string name="schedule_event_delete">刪除日程</string>
+    <string name="schedule_event_delete_confirm">將刪除「%1$s」。刪除後無法還原。</string>
+    <string name="schedule_event_day_header">%1$s %2$s</string>
+    <string name="schedule_event_day_empty">這一日沒有日程。點按右下角的按鈕新增。</string>
+    <string name="schedule_event_upcoming">近期日程</string>
+    <string name="schedule_event_month">%1$d年%2$d月</string>
+    <string name="schedule_event_prev_month">上個月</string>
+    <string name="schedule_event_next_month">下個月</string>
+    <string name="schedule_event_field_title">標題（必填）</string>
+    <string name="schedule_event_all_day">全日</string>
+    <string name="schedule_event_start_time">開始時間</string>
+    <string name="schedule_event_start_time_value">開始時間 %1$s</string>
+    <string name="schedule_event_remind">提醒</string>
+    <string name="schedule_event_remind_all_day">提醒（當日 8:00）</string>
+    <string name="schedule_event_note">備註（選填）</string>
+    <string name="schedule_event_summary">%1$s · %2$s</string>
+    <string name="schedule_event_summary_with_date">%1$s %2$s · %3$s · %4$s</string>
+
+    <!-- 日程提醒提前量 -->
+    <string name="schedule_event_lead_none">不提醒</string>
+    <string name="schedule_event_lead_all_day">當日 8:00</string>
+    <string name="schedule_event_lead_on_time">準時</string>
+    <plurals name="schedule_event_lead_days">
+        <item quantity="other">提前 %1$d 日</item>
+    </plurals>
+    <plurals name="schedule_event_lead_hours">
+        <item quantity="other">提前 %1$d 小時</item>
+    </plurals>
+    <plurals name="schedule_event_lead_minutes">
+        <item quantity="other">提前 %1$d 分鐘</item>
+    </plurals>
+
+    <!-- 日程：錯誤 -->
+    <string name="schedule_event_save_failed">儲存失敗，請再試一次。</string>
+    <string name="schedule_event_save_failed_detail">儲存失敗：%1$s</string>
+    <string name="schedule_event_delete_failed">刪除失敗，請再試一次。</string>
+    <string name="schedule_event_delete_failed_detail">刪除失敗：%1$s</string>
+
+</resources>

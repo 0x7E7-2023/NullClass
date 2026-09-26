@@ -82,7 +82,7 @@ internal fun WeekHeader(
                 )
                 if (style.showHeaderDates) {
                     Text(
-                        text = "${date.monthValue}/${date.dayOfMonth}",
+                        text = stringResource(R.string.schedule_header_date, date.monthValue, date.dayOfMonth),
                         fontSize = 10.sp,
                         color = textColor,
                         fontWeight = if (isToday) FontWeight.Bold else FontWeight.Normal,

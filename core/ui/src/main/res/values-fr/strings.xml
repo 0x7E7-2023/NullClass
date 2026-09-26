@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- French translation of values/strings.xml. Conventions: docs/i18n.md (sections 5 and 6).
+     French typography: a no-break space (&#160;) goes before : ; ? and inside « ». -->
+<resources>
+
+    <!-- Common actions -->
+    <string name="common_confirm">OK</string>
+    <string name="common_cancel">Annuler</string>
+    <string name="common_save">Enregistrer</string>
+    <string name="common_delete">Supprimer</string>
+    <string name="common_edit">Modifier</string>
+    <string name="common_done">Terminé</string>
+    <string name="common_close">Fermer</string>
+    <string name="common_back">Retour</string>
+    <string name="common_undo">Annuler</string>
+    <string name="common_select_all">Tout sélectionner</string>
+    <string name="common_deselect_all">Tout désélectionner</string>
+    <string name="common_create">Nouveau</string>
+
+    <!-- Common states -->
+    <string name="common_loading">Chargement…</string>
+    <string name="common_saving">Enregistrement…</string>
+    <string name="common_failed">Échec de l’opération</string>
+    <string name="common_got_it">J’ai compris</string>
+    <string name="common_unknown_error">Veuillez réessayer plus tard.</string>
+
+    <!-- ThemeMode -->
+    <string name="enum_theme_mode_dynamic">Material You</string>
+    <string name="enum_theme_mode_light">Clair</string>
+    <string name="enum_theme_mode_dark">Sombre</string>
+
+    <!-- WidgetFontSize -->
+    <string name="enum_widget_font_size_small">Petite</string>
+    <string name="enum_widget_font_size_standard">Par défaut</string>
+    <string name="enum_widget_font_size_large">Grande</string>
+    <string name="enum_widget_font_size_xlarge">Très grande</string>
+
+    <!-- AppLanguage -->
+    <string name="enum_app_language_system">Langue du système</string>
+
+    <!-- ScheduleText. Timetable cells and widgets are very narrow, so these labels are compact.
+         Week = S (semaine), period = P (période), block = B (bloc). -->
+    <string-array name="fmt_day_of_week">
+        <item>lun.</item>
+        <item>mar.</item>
+        <item>mer.</item>
+        <item>jeu.</item>
+        <item>ven.</item>
+        <item>sam.</item>
+        <item>dim.</item>
+    </string-array>
+    <string-array name="fmt_day_of_week_short">
+        <item>Lu</item>
+        <item>Ma</item>
+        <item>Me</item>
+        <item>Je</item>
+        <item>Ve</item>
+        <item>Sa</item>
+        <item>Di</item>
+    </string-array>
+    <string name="fmt_day_of_week_unknown">?</string>
+
+    <string name="fmt_week_single">Semaine %1$d</string>
+    <string name="fmt_week_range">Semaines %1$d–%2$d</string>
+    <string name="fmt_week_span_single">S%1$d</string>
+    <string name="fmt_week_span_range">S%1$d–%2$d</string>
+    <string name="fmt_week_type_odd">Semaines impaires</string>
+    <string name="fmt_week_type_even">Semaines paires</string>
+    <string name="fmt_week_span_with_type">%1$s·%2$s</string>
+    <string name="fmt_week_type_odd_short">imp.</string>
+    <string name="fmt_week_type_even_short">pair.</string>
+
+    <string name="fmt_period_single">P%1$d</string>
+    <string name="fmt_period_range">P%1$d–%2$d</string>
+
+    <plurals name="fmt_remaining_minutes">
+        <item quantity="one">%1$d min</item>
+        <item quantity="many">%1$d min</item>
+        <item quantity="other">%1$d min</item>
+    </plurals>
+    <plurals name="fmt_remaining_hours">
+        <item quantity="one">%1$d h</item>
+        <item quantity="many">%1$d h</item>
+        <item quantity="other">%1$d h</item>
+    </plurals>
+    <string name="fmt_remaining_hours_minutes">%1$s %2$s</string>
+    <plurals name="fmt_total_weeks">
+        <item quantity="one">%1$d semaine au total</item>
+        <item quantity="many">%1$d de semaines au total</item>
+        <item quantity="other">%1$d semaines au total</item>
+    </plurals>
+
+    <!-- Separators. Leading and trailing spaces need the surrounding quotes. -->
+    <string name="common_separator">" · "</string>
+    <string name="common_list_separator">", "</string>
+    <string name="common_clause_separator">"&#160;; "</string>
+    <string name="common_sentence_separator">" "</string>
+
+    <!-- DateText. Numeric on purpose (day/month/year): month names would come from Locale.getDefault(),
+         which the in-app language switch does not change on Android 12 and below. -->
+    <string name="fmt_date">%3$d/%2$d/%1$d</string>
+    <string name="fmt_month_day">%2$d/%1$d</string>
+    <string name="fmt_exam_relative_today">Aujourd’hui</string>
+    <string name="fmt_exam_relative_tomorrow">Demain</string>
+    <string name="fmt_exam_relative_yesterday">Hier</string>
+    <string name="fmt_exam_relative_past">Terminé</string>
+    <plurals name="fmt_exam_relative_in_days">
+        <item quantity="one">Dans %1$d jour</item>
+        <item quantity="many">Dans %1$d de jours</item>
+        <item quantity="other">Dans %1$d jours</item>
+    </plurals>
+
+    <!-- DataError -->
+    <string name="error_data_course_not_found">Ce cours n’existe plus. Veuillez en choisir un autre.</string>
+    <string name="error_data_no_timetable">Aucun emploi du temps disponible. Veuillez d’abord en créer un.</string>
+    <string name="error_data_timetable_name_empty">Veuillez saisir le nom de l’emploi du temps.</string>
+
+    <string name="common_off">Désactivé</string>
+
+    <!-- ScheduleFileError -->
+    <string name="error_import_future_version">Ce fichier a été exporté par une version plus récente de NullClass (format de fichier v%1$d, cette version prend en charge jusqu’à v%2$d). Veuillez d’abord mettre à jour NullClass.</string>
+    <string name="error_import_invalid_file">Ce fichier n’est pas reconnu. Veuillez choisir un fichier de sauvegarde exporté depuis NullClass.</string>
+    <string name="error_import_qr_too_large">L’emploi du temps est trop volumineux pour un QR code (%1$d octets, limite de %2$d octets). Utilisez plutôt «&#160;Partager le fichier d’emploi du temps&#160;».</string>
+    <string name="error_import_qr_no_prefix">Ce n’est pas un QR code d’emploi du temps NullClass.</string>
+    <string name="error_import_qr_no_term">Aucun semestre à partager.</string>
+    <string name="error_import_qr_corrupt">Le contenu du QR code est incomplet. Demandez à l’expéditeur de le générer à nouveau, puis scannez-le.</string>
+    <string name="error_import_qr_gunzip_failed">Le contenu du QR code est illisible. Demandez à l’expéditeur de le générer à nouveau, puis scannez-le.</string>
+    <string name="error_import_shiguang_bad_json">Ce fichier n’est pas reconnu. Veuillez choisir un fichier de cours exporté depuis Shiguang Schedule.</string>
+    <string name="error_import_shiguang_not_object">Ce fichier n’est pas reconnu. Veuillez choisir un fichier de cours exporté depuis Shiguang Schedule.</string>
+    <string name="error_import_shiguang_no_courses">Ce fichier n’est pas reconnu. Veuillez choisir un fichier de cours exporté depuis Shiguang Schedule.</string>
+    <string name="error_import_shiguang_empty">Ce fichier ne contient aucun cours.</string>
+    <string name="error_import_shiguang_no_rows">Ce fichier ne contient aucun cours importable.</string>
+    <string name="error_import_shiguang_no_placeable">Aucun cours de ce fichier n’a d’horaire valide&#160;; aucun ne peut être ajouté à l’emploi du temps.</string>
+    <string name="error_import_shiguang_weeks_out_of_range">Toutes les semaines des cours de ce fichier sont en dehors du semestre.</string>
+    <string name="error_import_wakeup_no_schedule">Ce fichier n’est pas reconnu. Veuillez choisir un fichier de sauvegarde exporté depuis WakeUp.</string>
+    <string name="error_import_wakeup_no_courses">Ce fichier WakeUp ne contient pas les informations des cours et est peut-être endommagé. Veuillez l’exporter à nouveau.</string>
+    <string name="error_import_wakeup_empty_courses">Ce fichier WakeUp ne contient aucun cours.</string>
+
+</resources>

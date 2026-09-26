@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Korean translation of values/strings.xml. Conventions: docs/i18n.md. -->
+<resources>
+
+    <!-- Exam list -->
+    <string name="exam_title">시험</string>
+    <string name="exam_add">시험 추가</string>
+    <string name="exam_delete">시험 삭제</string>
+    <string name="exam_no_term_title">아직 학기가 없습니다</string>
+    <string name="exam_no_term_desc">시험을 추가하려면 먼저 학기를 만드세요.</string>
+    <string name="exam_create_term">학기 만들기</string>
+    <string name="exam_summary_empty">예정된 시험 없음</string>
+    <plurals name="exam_summary_count">
+        <item quantity="other">시험 %1$d개</item>
+    </plurals>
+    <string name="exam_no_upcoming">앞으로 볼 시험이 없습니다</string>
+    <string name="exam_section_upcoming">예정</string>
+    <string name="exam_section_past">종료</string>
+    <string name="exam_next">다음 시험</string>
+    <string name="exam_time_undecided">시간 미정</string>
+    <string name="exam_seat">좌석 %1$s</string>
+    <string name="exam_detail_empty">상세 정보 없음</string>
+    <string name="exam_delete_confirm">‘%1$s · %2$s’ 시험을 삭제합니다. 삭제 후에는 복구할 수 없으며, 동기화를 켠 경우 다른 기기에서도 함께 삭제됩니다.</string>
+    <string name="exam_delete_failed">시험을 삭제하지 못했습니다. 다시 시도하세요.</string>
+    <string name="exam_delete_failed_detail">시험을 삭제하지 못했습니다: %1$s</string>
+
+    <!-- Exam editor -->
+    <string name="exam_edit_title_new">시험 추가</string>
+    <string name="exam_edit_title_edit">시험 편집</string>
+    <string name="exam_edit_saving">저장하는 중…</string>
+    <string name="exam_edit_no_term">먼저 학기를 만드세요</string>
+    <string name="exam_edit_no_course_title">아직 강의가 없습니다</string>
+    <string name="exam_edit_no_course_desc">시험은 강의에 속해야 합니다. 먼저 시간표에 강의를 추가하세요.</string>
+    <string name="exam_edit_course">강의: %1$s</string>
+    <string name="exam_edit_course_unselected">선택 안 함</string>
+    <string name="exam_edit_course_hint">시험은 해당 강의의 상세 정보에 표시됩니다.</string>
+    <string name="exam_edit_course_picker">강의 선택</string>
+    <string name="exam_edit_name">시험 이름(필수)</string>
+    <string name="exam_edit_date">날짜(필수)</string>
+    <string name="exam_edit_date_format">예: 2026-12-20</string>
+    <string name="exam_edit_pick_date">날짜 선택</string>
+    <string name="exam_edit_pick_date_with_value">날짜 선택 · %1$s</string>
+    <string name="exam_edit_time_section">시간(선택)</string>
+    <string name="exam_edit_start_time">시작 시간</string>
+    <string name="exam_edit_start_time_hint">예: 09:00</string>
+    <string name="exam_edit_end_time">종료 시간</string>
+    <string name="exam_edit_end_time_hint">예: 11:00</string>
+    <string name="exam_edit_location">시험장(선택)</string>
+    <string name="exam_edit_seat">좌석 번호(선택)</string>
+    <string name="exam_edit_note">메모(선택)</string>
+    <string name="exam_edit_default_title">기말고사</string>
+
+    <!-- Exam editor: validation and errors -->
+    <string name="exam_edit_error_title">저장할 수 없음</string>
+    <string name="exam_edit_error_time_format">시간은 ‘시:분’ 형식으로 입력하세요(예: 09:00).</string>
+    <string name="exam_edit_error_time_order">종료 시간은 시작 시간보다 늦어야 합니다.</string>
+    <string name="exam_edit_error_no_course">강의를 선택하세요.</string>
+    <string name="exam_edit_error_no_name">시험 이름을 입력하세요.</string>
+    <string name="exam_edit_error_date_format">날짜는 ‘연-월-일’ 형식으로 입력하세요(예: 2026-12-20).</string>
+    <string name="exam_edit_error_save_failed">저장하지 못했습니다. 다시 시도하세요.</string>
+
+</resources>

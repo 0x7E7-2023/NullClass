@@ -1,0 +1,185 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Korean translation of values/strings.xml. Conventions: docs/i18n.md. -->
+<resources>
+
+    <!-- Week view -->
+    <string name="schedule_title_default">NullClass</string>
+    <string name="schedule_week_number">%1$d주차</string>
+    <string name="schedule_week_number_current">%1$d주차 · 이번 주</string>
+    <string name="schedule_subtitle_with_timetable">%1$s · %2$s</string>
+    <string name="schedule_back_to_current_week">이번 주로 돌아가기</string>
+    <string name="schedule_pick_week">주차 선택</string>
+    <string name="schedule_display_settings">표시 설정</string>
+    <string name="schedule_add_course">강의 추가</string>
+    <string name="schedule_no_term_title">아직 학기가 없습니다</string>
+    <string name="schedule_no_term_desc">학기를 만들면 강의를 추가할 수 있습니다.</string>
+    <string name="schedule_create_term">학기 만들기</string>
+    <string name="schedule_other_week">이번 주 아님</string>
+
+    <!-- Display settings -->
+    <string name="schedule_show_now_line">현재 시각 선 표시</string>
+    <string name="schedule_show_weekend">주말 표시</string>
+    <string name="schedule_show_grid_lines">격자선 표시</string>
+    <string name="schedule_show_time_in_cards">강의 카드에 수업 시간 표시</string>
+    <string name="schedule_show_other_week">이번 주가 아닌 강의 표시</string>
+
+    <!-- Bottom of the display settings sheet: open personalization -->
+    <string name="schedule_open_personalization">개인화 설정</string>
+
+    <!-- Personalization (timetable appearance) -->
+    <string name="schedule_personalize_title">개인화 설정</string>
+    <string name="schedule_personalize_reset">초기화</string>
+    <string name="schedule_personalize_reset_item">기본값으로 초기화</string>
+    <string name="schedule_personalize_reset_title">기본 설정으로 초기화</string>
+    <string name="schedule_personalize_reset_message">개인화 설정이 기본값으로 돌아가며, 설정한 배경 이미지도 제거됩니다.</string>
+    <string name="schedule_personalize_reset_confirm">초기화</string>
+    <string name="schedule_personalize_section_background">배경</string>
+    <string name="schedule_personalize_background_desc">이미지가 시간표 화면 전체에 표시되며, 강의가 잘 보이도록 자동으로 어둡게 처리됩니다.</string>
+    <string name="schedule_personalize_background_pick">이미지 선택</string>
+    <string name="schedule_personalize_background_change">이미지 변경</string>
+    <string name="schedule_personalize_background_remove">제거</string>
+    <string name="schedule_personalize_background_importing">이미지를 처리하는 중…</string>
+    <string name="schedule_personalize_background_failed">이 이미지를 읽을 수 없습니다. 다른 이미지로 다시 시도하세요.</string>
+    <string name="schedule_personalize_section_display">표시 내용</string>
+    <string name="schedule_personalize_timeline">24시간 타임라인</string>
+    <string name="schedule_personalize_timeline_desc">하루 24시간 기준으로 배치하며, 강의 카드의 위치와 길이가 실제 수업 시간과 일치합니다.</string>
+    <string name="schedule_personalize_hide_period_times">교시 시간 숨기기</string>
+    <string name="schedule_personalize_hide_period_times_desc">사이드바에는 교시만 표시하고, 강의 카드에도 수업 시간을 표시하지 않습니다. 타임라인 모드에서는 정시 눈금이 그대로 표시됩니다.</string>
+    <string name="schedule_personalize_hide_dates">날짜 숨기기</string>
+    <string name="schedule_personalize_hide_dates_desc">머리글에 요일만 표시합니다.</string>
+    <string name="schedule_personalize_hide_grid_lines">격자선 숨기기</string>
+    <string name="schedule_personalize_section_page">시간표 화면</string>
+    <string name="schedule_personalize_text_color">글자 색</string>
+    <string name="schedule_personalize_page_text_color_desc">머리글과 사이드바에 적용되며, 배경 이미지를 설정한 경우 상단 바에도 적용됩니다. 사용자 지정 색은 라이트/다크 모드에 따라 바뀌지 않습니다.</string>
+    <string name="schedule_personalize_card_text_color_desc">사용자 지정 색은 라이트/다크 모드에 따라 바뀌지 않습니다.</string>
+    <string name="schedule_personalize_row_height">칸 높이</string>
+    <string name="schedule_personalize_row_height_timeline_desc">타임라인 모드에서는 1시간의 높이입니다.</string>
+    <string name="schedule_personalize_sidebar_width">사이드바 너비</string>
+    <string name="schedule_personalize_header_height">머리글 높이</string>
+    <string name="schedule_personalize_section_card">강의 카드</string>
+    <string name="schedule_personalize_text_align">글자 정렬</string>
+    <string name="schedule_personalize_align_center">가운데</string>
+    <string name="schedule_personalize_align_top_start">왼쪽 위</string>
+    <string name="schedule_personalize_border">테두리</string>
+    <string name="schedule_personalize_border_none">없음</string>
+    <string name="schedule_personalize_border_solid">실선</string>
+    <string name="schedule_personalize_border_dashed">점선</string>
+    <string name="schedule_personalize_text_scale">글자 크기</string>
+    <string name="schedule_personalize_corner_radius">모서리 둥글기</string>
+    <string name="schedule_personalize_spacing">바깥 여백</string>
+    <string name="schedule_personalize_opacity">불투명도</string>
+    <string name="schedule_personalize_opacity_desc">낮추면 배경 이미지가 비쳐 보입니다. 같은 시간대에 강의가 두 개 있으면 겹친 부분도 서로 비쳐 보입니다.</string>
+    <string name="schedule_personalize_value_auto">자동</string>
+    <string name="schedule_personalize_value_percent">%1$d%%</string>
+    <string name="schedule_personalize_color_follow_theme">테마 따르기</string>
+    <string name="schedule_personalize_color_white">흰색</string>
+    <string name="schedule_personalize_color_black">검은색</string>
+    <string name="schedule_personalize_color_dark_gray">진회색</string>
+    <string name="schedule_personalize_color_light_gray">연회색</string>
+    <string name="schedule_personalize_color_hue">색상</string>
+    <string name="schedule_personalize_color_saturation">채도</string>
+    <string name="schedule_personalize_color_brightness">밝기</string>
+    <!-- Sample courses in the preview: shown when there is no term or no class this week -->
+    <string name="schedule_personalize_sample_course_1">미적분학</string>
+    <string name="schedule_personalize_sample_course_2">대학 영어</string>
+    <string name="schedule_personalize_sample_course_3">프로그래밍</string>
+    <string name="schedule_personalize_sample_course_4">선형대수</string>
+    <string name="schedule_personalize_sample_course_5">체육</string>
+    <string name="schedule_personalize_sample_room_1">A-101</string>
+    <string name="schedule_personalize_sample_room_2">실험관 305</string>
+    <string name="schedule_personalize_sample_room_3">C-210</string>
+
+    <!-- Week header: date (month/day), numeric because the cells are narrow -->
+    <string name="schedule_header_date">%1$d/%2$d</string>
+
+    <!-- Week view header: day swap marker -->
+    <string name="schedule_header_swap_weekday">→%1$s</string>
+    <string name="schedule_header_swap_date">→%1$d/%2$d</string>
+
+    <!-- Today -->
+    <string name="schedule_today_date">%1$s · %2$s</string>
+    <string name="schedule_today_out_of_term">오늘은 학기 기간이 아닙니다</string>
+    <string name="schedule_today_next_up">다음: %1$s · %2$s 시작</string>
+    <string name="schedule_today_in_class">수업 중</string>
+    <string name="schedule_today_remaining">%1$s 남음</string>
+    <string name="schedule_today_ongoing">진행 중</string>
+    <string name="schedule_today_end_at">%1$s 종료</string>
+    <string name="schedule_today_empty_title">오늘은 수업이 없습니다</string>
+    <string name="schedule_today_empty_desc">다른 날짜의 일정은 시간표에서 확인할 수 있습니다.</string>
+    <string name="schedule_today_out_of_term_desc">학기가 시작되면 이곳에 당일 강의가 표시됩니다.</string>
+    <string name="schedule_today_swap_title">요일 대체 · 오늘은 %1$s(%2$s) 시간표대로 수업</string>
+    <string name="schedule_today_swap_desc">수업 시간은 오늘의 교시 시간을 그대로 따르며, 수업 전 알림도 함께 조정되었습니다.</string>
+    <string name="schedule_today_skip_title">오늘은 수업 없음 · %1$s</string>
+    <string name="schedule_today_skip_manual">직접 건너뜀</string>
+    <string name="schedule_today_skip_desc">수업 전 알림은 건너뛰며, 시간표 내용은 평소대로 표시됩니다. 다른 날의 수업을 대신 하려면 ‘요일 대체’를 이용하세요.</string>
+
+    <!-- Today: time of day -->
+    <string name="schedule_session_morning">오전</string>
+    <string name="schedule_session_afternoon">오후</string>
+    <string name="schedule_session_evening">저녁</string>
+    <string name="schedule_session_other">기타</string>
+
+    <!-- Day swap -->
+    <string name="schedule_day_swap_title">요일 대체 · %1$s %2$s</string>
+    <string name="schedule_day_swap_desc_none">이날은 원래 시간표대로 수업합니다. 휴일 대체 수업 등이 있을 때 다른 날의 수업으로 바꿀 수 있으며, 오늘 화면, 시간표, 위젯, 수업 전 알림이 함께 조정됩니다. 수업 시간은 이날의 교시 시간을 그대로 따릅니다.</string>
+    <string name="schedule_day_swap_desc_current">현재 설정: 이날은 %1$s(%2$s)의 수업을 합니다.</string>
+    <string name="schedule_day_swap_pick_in_week">이번 주 중 어느 날의 수업을 할지 선택</string>
+    <string name="schedule_day_swap_self">%1$s(원래 시간표)</string>
+    <string name="schedule_day_swap_other_date">다른 날짜 선택…</string>
+    <string name="schedule_day_swap_reset">원래 시간표로 되돌리기</string>
+
+    <!-- Course details -->
+    <plurals name="schedule_course_block_count">
+        <item quantity="other">수업 시간 %1$d개</item>
+    </plurals>
+    <string name="schedule_course_exams">시험 일정</string>
+    <string name="schedule_course_add_exam">시험 추가</string>
+    <string name="schedule_course_no_exam">설정된 시험 없음</string>
+    <string name="schedule_course_seat">좌석 %1$s</string>
+    <string name="schedule_course_delete">강의 삭제</string>
+    <string name="schedule_course_delete_confirm">‘%1$s’ 강의와 해당 강의의 모든 수업 시간 및 시험이 삭제됩니다. 삭제 후에는 복구할 수 없으며, 동기화를 켠 경우 다른 기기에서도 함께 삭제됩니다.</string>
+
+    <!-- Events -->
+    <string name="schedule_event_title">일정</string>
+    <string name="schedule_event_today">오늘</string>
+    <string name="schedule_event_add">일정 추가</string>
+    <string name="schedule_event_edit">일정 편집</string>
+    <string name="schedule_event_delete">일정 삭제</string>
+    <string name="schedule_event_delete_confirm">‘%1$s’ 일정이 삭제됩니다. 삭제 후에는 복구할 수 없습니다.</string>
+    <string name="schedule_event_day_header">%1$s %2$s</string>
+    <string name="schedule_event_day_empty">이날은 일정이 없습니다. 오른쪽 아래 버튼을 눌러 추가하세요.</string>
+    <string name="schedule_event_upcoming">다가오는 일정</string>
+    <string name="schedule_event_month">%1$d년 %2$d월</string>
+    <string name="schedule_event_prev_month">이전 달</string>
+    <string name="schedule_event_next_month">다음 달</string>
+    <string name="schedule_event_field_title">제목(필수)</string>
+    <string name="schedule_event_all_day">종일</string>
+    <string name="schedule_event_start_time">시작 시간</string>
+    <string name="schedule_event_start_time_value">시작 시간 %1$s</string>
+    <string name="schedule_event_remind">알림</string>
+    <string name="schedule_event_remind_all_day">알림(당일 8:00)</string>
+    <string name="schedule_event_note">메모(선택)</string>
+    <string name="schedule_event_summary">%1$s · %2$s</string>
+    <string name="schedule_event_summary_with_date">%1$s %2$s · %3$s · %4$s</string>
+
+    <!-- Event reminder lead time -->
+    <string name="schedule_event_lead_none">알림 없음</string>
+    <string name="schedule_event_lead_all_day">당일 8:00</string>
+    <string name="schedule_event_lead_on_time">정시</string>
+    <plurals name="schedule_event_lead_days">
+        <item quantity="other">%1$d일 전</item>
+    </plurals>
+    <plurals name="schedule_event_lead_hours">
+        <item quantity="other">%1$d시간 전</item>
+    </plurals>
+    <plurals name="schedule_event_lead_minutes">
+        <item quantity="other">%1$d분 전</item>
+    </plurals>
+
+    <!-- Events: errors -->
+    <string name="schedule_event_save_failed">저장하지 못했습니다. 다시 시도하세요.</string>
+    <string name="schedule_event_save_failed_detail">저장하지 못했습니다: %1$s</string>
+    <string name="schedule_event_delete_failed">삭제하지 못했습니다. 다시 시도하세요.</string>
+    <string name="schedule_event_delete_failed_detail">삭제하지 못했습니다: %1$s</string>
+
+</resources>

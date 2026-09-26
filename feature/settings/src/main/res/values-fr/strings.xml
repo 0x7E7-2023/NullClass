@@ -1,0 +1,649 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- French translation of values/strings.xml. Conventions: docs/i18n.md.
+     French typography: a no-break space (&#160;) goes before : ; ? and inside « ». -->
+<resources>
+
+    <!-- Shared date labels (day/month order) -->
+    <string name="settings_day_label">%2$s %1$s</string>
+    <string name="settings_day_label_with_year">%3$s %2$s/%1$d</string>
+    <!-- DateTimeFormatter pattern. Numeric on purpose: see fmt_date in :core:ui. -->
+    <string name="settings_month_day_pattern">d/M</string>
+    <string name="settings_month_day">%2$d/%1$d</string>
+
+    <!-- App settings -->
+    <string name="settings_title">Paramètres</string>
+    <string name="settings_transfer_entry">Import / export</string>
+    <string name="settings_appearance">Apparence</string>
+    <string name="settings_appearance_desc">Material You reprend les couleurs de votre fond d’écran et suit le mode clair ou sombre du système&#160;; Clair et Sombre utilisent toujours les couleurs intégrées. Les widgets suivent toujours le système.</string>
+    <string name="settings_appearance_desc_unsupported">Ce système ne permet pas de reprendre les couleurs du fond d’écran&#160;: Material You utilise donc les couleurs intégrées et suit le mode clair ou sombre du système. Les widgets suivent toujours le système.</string>
+    <string name="settings_language">Langue</string>
+    <string name="settings_language_desc">Le changement s’applique immédiatement.</string>
+
+    <!-- WebDAV sync -->
+    <string name="settings_webdav">Synchronisation WebDAV</string>
+    <string name="settings_webdav_desc">Synchronisez votre emploi du temps entre vos appareils via votre propre serveur WebDAV (Nutstore (坚果云), NextCloud, etc.).</string>
+    <string name="settings_webdav_warning">Vos identifiants sont enregistrés sans chiffrement sur cet appareil. Utilisez une adresse de serveur commençant par https.</string>
+    <string name="settings_webdav_server">Adresse du serveur</string>
+    <string name="settings_webdav_username">Nom d’utilisateur</string>
+    <string name="settings_webdav_password">Mot de passe / mot de passe d’application</string>
+    <string name="settings_webdav_save">Enregistrer</string>
+    <string name="settings_webdav_test">Tester la connexion</string>
+    <string name="settings_webdav_syncing">Synchronisation…</string>
+    <string name="settings_webdav_sync_now">Synchroniser</string>
+    <string name="settings_webdav_last_sync">Dernière synchronisation&#160;: %1$s</string>
+    <string name="settings_webdav_merge_desc">Lors de la synchronisation, la version modifiée le plus récemment de chaque élément est conservée. Un élément supprimé sur un appareil l’est aussi sur les autres.</string>
+    <string name="settings_webdav_saved">Paramètres enregistrés</string>
+    <string name="settings_webdav_connected">Connexion réussie</string>
+    <plurals name="settings_webdav_sync_done">
+        <item quantity="one">Synchronisation terminée. %1$d élément mis à jour depuis vos autres appareils</item>
+        <item quantity="many">Synchronisation terminée. %1$d d’éléments mis à jour depuis vos autres appareils</item>
+        <item quantity="other">Synchronisation terminée. %1$d éléments mis à jour depuis vos autres appareils</item>
+    </plurals>
+    <string name="settings_auto_sync">Synchronisation automatique</string>
+    <string name="settings_auto_sync_desc">Synchronise automatiquement en arrière-plan. Configurez d’abord WebDAV.</string>
+
+    <!-- Widgets -->
+    <string name="settings_widget">Widgets</string>
+    <string name="settings_widget_desc">Touchez une option ci-dessous, puis confirmez pour l’ajouter à l’écran d’accueil.</string>
+    <string name="settings_widget_unsupported">Votre lanceur ne permet pas d’ajouter directement des widgets. Appuyez de manière prolongée sur une zone vide de l’écran d’accueil, puis ajoutez NullClass depuis la liste des widgets.</string>
+    <string name="settings_widget_today">Aujourd’hui 3×2</string>
+    <string name="settings_widget_next">Prochain cours 2×1</string>
+
+    <!-- Timetable display -->
+    <string name="settings_schedule_display">Affichage de l’emploi du temps</string>
+    <string name="settings_show_other_week">Afficher les cours des autres semaines</string>
+    <string name="settings_bottom_nav">Barre de navigation</string>
+    <string name="settings_show_exam_tab">Afficher l’onglet «&#160;Examens&#160;»</string>
+
+    <!-- Profile -->
+    <string name="settings_profile_title">Profil</string>
+    <string name="settings_profile_timetable">Emploi du temps · %1$s</string>
+    <string name="settings_profile_no_term_title">Aucun semestre</string>
+    <string name="settings_profile_no_term_desc">Créez un semestre pour commencer à ajouter des cours.</string>
+    <string name="settings_profile_week">Semaine %1$d · %2$s</string>
+    <string name="settings_profile_out_of_term">Hors semestre · %1$s</string>
+    <string name="settings_profile_quick_actions">Actions rapides</string>
+    <string name="settings_profile_quick_actions_desc">Échange de jours, événements, suppression rapide de cours</string>
+    <plurals name="settings_profile_quick_actions_desc_with_count">
+        <item quantity="one">Échange de jours, événements, suppression rapide de cours · %1$d échange à partir d’aujourd’hui</item>
+        <item quantity="many">Échange de jours, événements, suppression rapide de cours · %1$d d’échanges à partir d’aujourd’hui</item>
+        <item quantity="other">Échange de jours, événements, suppression rapide de cours · %1$d échanges à partir d’aujourd’hui</item>
+    </plurals>
+    <string name="settings_profile_timetables">Emplois du temps</string>
+    <string name="settings_profile_timetables_desc">Actuel&#160;: %1$s · changer, créer, renommer</string>
+    <string name="settings_profile_terms">Semestres</string>
+    <string name="settings_profile_terms_desc">Changer, créer, supprimer</string>
+    <string name="settings_profile_transfer_desc">Sauvegarde, migration, import depuis le système de scolarité</string>
+    <string name="settings_profile_notification">Notifications et rappels</string>
+    <string name="settings_profile_notification_desc">Autorisations, heure des rappels, jours fériés et jours sans cours</string>
+    <string name="settings_profile_settings_desc">Synchronisation WebDAV, synchronisation automatique, widgets</string>
+    <string name="settings_profile_personalization">Personnalisation</string>
+    <string name="settings_profile_personalization_desc">Fond, mise en page et style des cartes de cours</string>
+    <string name="settings_profile_about">À propos</string>
+    <string name="settings_profile_about_desc">Version, licence, commentaires</string>
+
+    <!-- Day swap -->
+    <string name="settings_day_swap_title">Échange de jours</string>
+    <string name="settings_day_swap_desc">Pour un jour de rattrapage, un jour peut suivre les cours d’un autre jour, par exemple le samedi suit les cours du vendredi. La page Aujourd’hui, la vue semaine, les widgets et les rappels de cours s’ajustent en conséquence, tandis que les horaires restent ceux du jour concerné.</string>
+    <string name="settings_day_swap_hint">Vous pouvez aussi toucher l’en-tête d’un jour dans la vue semaine pour ajuster ce jour.</string>
+    <string name="settings_day_swap_no_term">Veuillez créer un semestre avant de configurer des échanges de jours.</string>
+    <string name="settings_day_swap_add">Ajouter un échange</string>
+    <string name="settings_day_swap_next">Suivant</string>
+    <string name="settings_day_swap_step1">Étape 1 · Choisissez le jour à modifier</string>
+    <string name="settings_day_swap_step2">Étape 2 · Quels cours suivre le %2$d/%1$d (%3$s)</string>
+    <string name="settings_day_swap_upcoming">À partir d’aujourd’hui</string>
+    <string name="settings_day_swap_empty">Aucun échange de jours</string>
+    <string name="settings_day_swap_source">Suit le %1$s</string>
+
+    <!-- Quick actions -->
+    <string name="settings_quick_actions_title">Actions rapides</string>
+    <string name="settings_quick_actions_swap_desc">Faire suivre à un jour les cours d’un autre jour, pour un jour de rattrapage</string>
+    <plurals name="settings_quick_actions_swap_desc_with_count">
+        <item quantity="one">Faire suivre à un jour les cours d’un autre jour, pour un jour de rattrapage · %1$d à partir d’aujourd’hui</item>
+        <item quantity="many">Faire suivre à un jour les cours d’un autre jour, pour un jour de rattrapage · %1$d à partir d’aujourd’hui</item>
+        <item quantity="other">Faire suivre à un jour les cours d’un autre jour, pour un jour de rattrapage · %1$d à partir d’aujourd’hui</item>
+    </plurals>
+    <string name="settings_quick_actions_events">Événements</string>
+    <string name="settings_quick_actions_events_desc">Ajoutez et gérez des événements, chacun avec son propre rappel</string>
+    <string name="settings_quick_actions_cleanup">Suppression rapide de cours</string>
+    <string name="settings_quick_actions_cleanup_desc">Filtrez les cours par semaine ou par date, puis sélectionnez-les pour les supprimer en une fois</string>
+
+    <!-- Calendar export (.ics) -->
+    <string name="settings_ics_calendar_name">NullClass · %1$s</string>
+    <string name="settings_ics_term">Semestre&#160;: %1$s</string>
+    <string name="settings_ics_teacher">Enseignant&#160;: %1$s</string>
+    <string name="settings_ics_note">Remarque&#160;: %1$s</string>
+    <string name="settings_ics_course">Cours&#160;: %1$s</string>
+    <string name="settings_ics_exam">Examen&#160;: %1$s</string>
+    <string name="settings_ics_time">Horaire&#160;: %1$s</string>
+    <string name="settings_ics_location">Salle&#160;: %1$s</string>
+    <string name="settings_ics_seat">Place&#160;: %1$s</string>
+
+    <!-- Holiday sync -->
+    <plurals name="settings_holiday_synced">
+        <item quantity="one">%2$d jour férié synchronisé (source&#160;: %1$s)</item>
+        <item quantity="many">%2$d de jours fériés synchronisés (source&#160;: %1$s)</item>
+        <item quantity="other">%2$d jours fériés synchronisés (source&#160;: %1$s)</item>
+    </plurals>
+    <string name="settings_holiday_skipped">Synchronisation récente, aucune mise à jour nécessaire pour l’instant</string>
+    <string name="settings_holiday_failed">Impossible de synchroniser les jours fériés&#160;; les données précédentes sont conservées (%1$s est indisponible)</string>
+    <string name="settings_holiday_no_source">Impossible de synchroniser les jours fériés, car aucune source de données n’est disponible&#160;; les données précédentes sont conservées</string>
+
+    <!-- SyncError -->
+    <string name="settings_sync_not_configured">WebDAV n’est pas encore configuré.</string>
+    <string name="settings_sync_url_empty">Veuillez saisir l’adresse du serveur.</string>
+    <string name="settings_sync_url_scheme">L’adresse du serveur doit commencer par http:// ou https://.</string>
+    <string name="settings_sync_url_insecure">Les serveurs publics doivent utiliser une adresse https&#160;; sinon, votre mot de passe est transmis en clair.</string>
+    <string name="settings_sync_username_empty">Veuillez saisir un nom d’utilisateur.</string>
+    <string name="settings_sync_write_test_failed">Impossible d’écrire sur le serveur. Vérifiez les autorisations du compte.</string>
+    <string name="settings_sync_read_test_failed">Impossible de lire les données du serveur.</string>
+    <string name="settings_sync_content_mismatch">Le serveur a renvoyé des données inattendues. Assurez-vous que ce dossier est utilisé uniquement par NullClass.</string>
+    <string name="settings_sync_cleanup_failed">Impossible de supprimer le fichier de test sur le serveur. Vérifiez les autorisations du compte.</string>
+    <string name="settings_sync_connect_failed">Impossible de se connecter au serveur.</string>
+    <string name="settings_sync_download_manifest_failed">Impossible de télécharger les données de synchronisation depuis le serveur.</string>
+    <string name="settings_sync_download_snapshot_failed">Impossible de télécharger les données de l’emploi du temps depuis le serveur.</string>
+    <string name="settings_sync_upload_snapshot_failed">Impossible d’envoyer les données de l’emploi du temps au serveur.</string>
+    <string name="settings_sync_upload_manifest_failed">Impossible d’envoyer les données de synchronisation au serveur.</string>
+    <string name="settings_sync_create_dir_failed">Impossible de créer un dossier sur le serveur. Vérifiez les autorisations du compte.</string>
+    <string name="settings_sync_unexpected">Un problème est survenu pendant la synchronisation. Veuillez réessayer plus tard.</string>
+    <string name="settings_sync_with_detail">%1$s (%2$s)</string>
+
+    <!-- AutoSyncInterval -->
+    <string name="settings_auto_sync_off">Désactivée</string>
+    <string name="settings_auto_sync_6h">Toutes les 6 heures</string>
+    <string name="settings_auto_sync_daily">Tous les jours</string>
+
+    <!-- Quick course removal -->
+    <string name="settings_cleanup_title">Suppression rapide de cours</string>
+    <plurals name="settings_cleanup_selected">
+        <item quantity="one">%1$d cours sélectionné</item>
+        <item quantity="many">%1$d de cours sélectionnés</item>
+        <item quantity="other">%1$d cours sélectionnés</item>
+    </plurals>
+    <string name="settings_cleanup_no_term">Veuillez créer un semestre avant de supprimer des cours.</string>
+    <string name="settings_cleanup_hint">Cette action supprime des cours entiers&#160;: leurs créneaux des autres semaines et des autres jours, ainsi que leurs examens, sont aussi supprimés.</string>
+    <string name="settings_cleanup_hint_alt">S’il n’y a simplement pas cours un jour donné, utilisez «&#160;Notifications et rappels → Jours sans cours&#160;».</string>
+    <string name="settings_cleanup_by_week">Par semaine</string>
+    <string name="settings_cleanup_by_date">Par date</string>
+    <string name="settings_cleanup_week">Semaine %1$d</string>
+    <string name="settings_cleanup_week_current">Semaine %1$d · Cette semaine</string>
+    <string name="settings_cleanup_out_of_term">Ce jour est hors semestre et n’a aucun cours.</string>
+    <string name="settings_cleanup_swapped">Ce jour fait l’objet d’un échange&#160;: il suit les cours du %1$s.</string>
+    <string name="settings_cleanup_week_empty">Aucun cours en semaine %1$d.</string>
+    <string name="settings_cleanup_day_empty">Aucun cours ce jour-là.</string>
+    <plurals name="settings_cleanup_confirm_title">
+        <item quantity="one">Supprimer %1$d cours</item>
+        <item quantity="many">Supprimer %1$d de cours</item>
+        <item quantity="other">Supprimer %1$d cours</item>
+    </plurals>
+    <string name="settings_cleanup_confirm_desc">Tous les créneaux et examens de ces cours seront supprimés, et pas seulement ceux de la semaine ou du jour sélectionné. Cette action est irréversible. Si la synchronisation est activée, ils seront aussi supprimés sur vos autres appareils.</string>
+    <plurals name="settings_cleanup_other_blocks">
+        <item quantity="one">%1$d autre créneau à d’autres dates sera aussi supprimé</item>
+        <item quantity="many">%1$d d’autres créneaux à d’autres dates seront aussi supprimés</item>
+        <item quantity="other">%1$d autres créneaux à d’autres dates seront aussi supprimés</item>
+    </plurals>
+
+    <!-- About -->
+    <string name="settings_about_title">À propos</string>
+    <string name="settings_about_app_name">NullClass</string>
+    <string name="settings_about_tagline">Une app d’emploi du temps pour les étudiants. Aucun compte requis&#160;: vos données restent sur cet appareil par défaut, et aucune donnée d’utilisation n’est collectée.</string>
+    <string name="settings_about_source">Code source</string>
+    <string name="settings_about_feedback">Signaler un problème</string>
+    <string name="settings_about_license">Licences</string>
+    <string name="settings_about_upstream">Remerciements · Shiguang Schedule</string>
+    <string name="settings_about_contributors">Merci à %1$s</string>
+    <string name="settings_about_upstream_desc">La plupart des adaptateurs intégrés pour les systèmes de scolarité proviennent de shiguang_warehouse (licence MIT), la bibliothèque d’adaptateurs de la communauté Shiguang Schedule (拾光课程表), et «&#160;Migrer depuis Shiguang Schedule&#160;» repose sur son format d’export public. Merci à Shiguang Schedule et à sa communauté.</string>
+    <string name="settings_about_version">Version de NullClass</string>
+    <string name="settings_about_version_copied">%1$s copié</string>
+    <string name="settings_about_no_browser">Aucune app disponible pour ouvrir le lien.</string>
+
+    <!-- Notifications and reminders -->
+    <string name="settings_notification_title">Notifications et rappels</string>
+    <string name="settings_notification_permissions">Autorisations et arrière-plan</string>
+    <string name="settings_notification_permissions_desc">Les rappels nécessitent les autorisations de notification et d’exécution en arrière-plan. Touchez un élément non autorisé pour ouvrir le réglage système correspondant.</string>
+    <string name="settings_notification_class_title">Rappels de cours</string>
+    <string name="settings_notification_class_desc">Envoie une notification avant chaque cours. L’économie d’énergie du système peut la retarder de quelques minutes&#160;; pour des rappels à l’heure, activez «&#160;Rappels précis&#160;» ci-dessous.</string>
+    <string name="settings_notification_exam_title">Rappels d’examen</string>
+    <string name="settings_notification_exam_desc">Rappel selon l’heure de début de l’examen&#160;; pour un examen sans horaire, 08:00 le jour même est utilisé. Les rappels d’examen ne sont pas suspendus les jours fériés.</string>
+    <string name="settings_notification_exact_title">Rappels précis</string>
+    <string name="settings_notification_exact_desc">Utilise les alarmes du système pour envoyer les rappels de cours à l’heure. Nécessite l’«&#160;Autorisation d’alarme exacte&#160;» ci-dessus.</string>
+    <string name="settings_notification_bypass_dnd">Sonner en mode Ne pas déranger</string>
+    <string name="settings_notification_bypass_dnd_desc">Une fois activé, les rappels de cours et d’examen sont émis normalement même en mode Ne pas déranger.</string>
+
+    <!-- Permission panel -->
+    <string name="settings_permission_granted">Autorisé</string>
+    <string name="settings_permission_denied">Non autorisé</string>
+    <string name="settings_permission_grant_action">Autoriser</string>
+    <string name="settings_permission_settings_action">Réglages</string>
+    <string name="settings_permission_notification">Autorisation de notification</string>
+    <string name="settings_permission_notification_denied">Non autorisé&#160;: aucun rappel ne peut être affiché</string>
+    <string name="settings_permission_battery">Ignorer l’optimisation de la batterie</string>
+    <string name="settings_permission_battery_exempt">Autorisé</string>
+    <string name="settings_permission_battery_denied">Non autorisé. Les rappels peuvent être retardés</string>
+    <string name="settings_permission_autostart">Démarrage automatique</string>
+    <string name="settings_permission_autostart_hint">Sur certains téléphones, il faut autoriser le démarrage automatique de NullClass, sinon les rappels risquent de ne pas arriver</string>
+    <string name="settings_permission_exact_alarm">Autorisation d’alarme exacte</string>
+    <string name="settings_permission_exact_off">«&#160;Rappels précis&#160;» est désactivé. Les rappels peuvent avoir quelques minutes de retard</string>
+    <string name="settings_permission_exact_granted">Autorisé&#160;; les rappels arriveront à l’heure</string>
+    <string name="settings_permission_exact_denied">«&#160;Rappels précis&#160;» est activé mais non autorisé. Les rappels peuvent avoir quelques minutes de retard</string>
+    <string name="settings_permission_dnd">Autorisation Ne pas déranger</string>
+
+    <!-- Reminder lead time -->
+    <plurals name="settings_reminder_minutes">
+        <item quantity="one">%1$d minute</item>
+        <item quantity="many">%1$d de minutes</item>
+        <item quantity="other">%1$d minutes</item>
+    </plurals>
+    <plurals name="settings_reminder_hours">
+        <item quantity="one">%1$d heure</item>
+        <item quantity="many">%1$d d’heures</item>
+        <item quantity="other">%1$d heures</item>
+    </plurals>
+    <plurals name="settings_reminder_days">
+        <item quantity="one">%1$d jour</item>
+        <item quantity="many">%1$d de jours</item>
+        <item quantity="other">%1$d jours</item>
+    </plurals>
+
+    <!-- Holidays and days without classes -->
+    <string name="settings_holiday_section">Jours fériés et jours sans cours</string>
+    <string name="settings_holiday_section_desc">Les jours fériés sont récupérés automatiquement, et aucun rappel de cours n’est envoyé ces jours-là. Vous pouvez aussi ajouter manuellement des jours sans cours. Les jours ouvrés de rattrapage sont affichés à titre indicatif&#160;; pour y avoir cours, utilisez «&#160;Échange de jours&#160;».</string>
+    <string name="settings_holiday_sync_title">Synchroniser les jours fériés en ligne</string>
+    <string name="settings_holiday_sync_desc">Met à jour les jours fériés du semestre en cours une fois par semaine</string>
+    <string name="settings_holiday_last_sync">Dernière synchronisation&#160;: %1$s</string>
+    <string name="settings_holiday_never_synced">Jamais synchronisé</string>
+    <string name="settings_holiday_syncing">Synchronisation…</string>
+    <string name="settings_holiday_sync_now">Synchroniser</string>
+    <string name="settings_holiday_add_skip">Ajouter un jour sans cours</string>
+    <string name="settings_holiday_no_skips">Aucun jour sans cours à partir d’aujourd’hui</string>
+    <plurals name="settings_holiday_skip_count">
+        <item quantity="one">À partir d’aujourd’hui (%1$d, dates passées masquées)</item>
+        <item quantity="many">À partir d’aujourd’hui (%1$d, dates passées masquées)</item>
+        <item quantity="other">À partir d’aujourd’hui (%1$d, dates passées masquées)</item>
+    </plurals>
+    <string name="settings_holiday_type_holiday">Jour férié</string>
+    <string name="settings_holiday_type_workday">Jour ouvré de rattrapage (indicatif)</string>
+    <string name="settings_holiday_type_manual">Ajouté manuellement</string>
+
+    <!-- Import / export -->
+    <string name="settings_transfer_title">Import / export</string>
+    <string name="settings_transfer_jw_section">Importer depuis le système de scolarité</string>
+    <string name="settings_transfer_jw_desc">Ouvrez le système de scolarité de votre établissement dans NullClass et connectez-vous, puis accédez à la page de l’emploi du temps pour l’importer. Vos identifiants ne sont saisis que sur la page de l’établissement&#160;; NullClass ne les récupère jamais.</string>
+    <string name="settings_transfer_jw_pick_school">Choisir l’établissement</string>
+    <string name="settings_transfer_jw_running">Import depuis le système de scolarité · %1$s</string>
+    <string name="settings_transfer_jw_running_generic">Import depuis le système de scolarité</string>
+    <string name="settings_transfer_backup_section">Sauvegarde et partage</string>
+    <string name="settings_transfer_backup_desc">Exporte tous les emplois du temps et semestres, pour une sauvegarde, un changement de téléphone ou un envoi à des camarades.</string>
+    <string name="settings_transfer_save_file">Enregistrer dans un fichier</string>
+    <string name="settings_transfer_share">Partager</string>
+    <string name="settings_transfer_share_file">Partager le fichier d’emploi du temps</string>
+    <string name="settings_transfer_qr_generate">Générer un QR code</string>
+    <string name="settings_transfer_qr_desc">Contient uniquement les cours du semestre actuel. Après le scan, ils sont importés dans l’emploi du temps actuel de l’autre personne, qui passe à ce semestre. Pour une sauvegarde complète, utilisez «&#160;Enregistrer dans un fichier&#160;».</string>
+    <string name="settings_transfer_ics_section">Export vers un agenda</string>
+    <string name="settings_transfer_ics_desc">Exporte les cours et examens du semestre actuel dans un fichier .ics standard, lisible par l’agenda du système, Google Agenda, etc.</string>
+    <string name="settings_transfer_ics_once">L’agenda exporté ne se met pas à jour automatiquement. Exportez-le à nouveau après toute modification des cours ou examens.</string>
+    <string name="settings_transfer_ics_export">Exporter le semestre actuel en .ics</string>
+    <string name="settings_transfer_import_section">Importer</string>
+    <string name="settings_transfer_import_file">Importer un fichier de sauvegarde</string>
+    <string name="settings_transfer_import_qr">Scanner un QR code</string>
+    <string name="settings_transfer_import_qr_album">Lire un QR code depuis la galerie</string>
+    <string name="settings_transfer_wakeup_section">Migrer depuis WakeUp</string>
+    <string name="settings_transfer_wakeup_desc">Dans WakeUp, sauvegardez votre emploi du temps dans un fichier, puis choisissez ce fichier ici. Les périodes consécutives, les semaines paires / impaires, les horaires des périodes et les couleurs sont conservés.</string>
+    <string name="settings_transfer_wakeup_pick">Choisir la sauvegarde WakeUp</string>
+    <string name="settings_transfer_shiguang_section">Migrer depuis Shiguang Schedule</string>
+    <string name="settings_transfer_shiguang_desc">Dans Shiguang Schedule (拾光课程表), exportez vos cours depuis «&#160;我的 → 高级功能 → 课表导入/导出&#160;» (le nom du fichier commence par shiguangschedule_), puis choisissez ce fichier ici. Les cours, les semaines paires / impaires, les horaires des périodes et la date de début du semestre sont conservés.</string>
+    <string name="settings_transfer_shiguang_pick">Choisir le fichier exporté de Shiguang</string>
+    <string name="settings_transfer_merge_hint">Les données importées sont fusionnées avec vos données existantes&#160;; les modifications plus récentes sur cet appareil ne sont pas écrasées.</string>
+    <string name="settings_transfer_processing">Traitement…</string>
+    <string name="settings_transfer_preview_title">Aperçu de l’import</string>
+    <string name="settings_transfer_preview_source">Source&#160;: %1$s</string>
+    <string name="settings_transfer_preview_activate">Après l’import, il devient le semestre actuel&#160;; la page Aujourd’hui, l’emploi du temps et les widgets basculent immédiatement dessus.</string>
+    <string name="settings_transfer_preview_adapter_notes">Les notes suivantes proviennent de l’auteur de l’adaptateur, et non de NullClass&#160;:</string>
+    <string name="settings_transfer_preview_confirm">Importer</string>
+    <string name="settings_transfer_preview_term">Semestre «&#160;%1$s&#160;» · %2$s · %3$s · %4$s · %5$s</string>
+    <!-- Counts in import preview, calendar export and recognition review -->
+    <plurals name="settings_count_weeks">
+        <item quantity="one">%1$d semaine</item>
+        <item quantity="many">%1$d de semaines</item>
+        <item quantity="other">%1$d semaines</item>
+    </plurals>
+    <plurals name="settings_count_courses">
+        <item quantity="one">%1$d cours</item>
+        <item quantity="many">%1$d de cours</item>
+        <item quantity="other">%1$d cours</item>
+    </plurals>
+    <plurals name="settings_count_blocks">
+        <item quantity="one">%1$d créneau</item>
+        <item quantity="many">%1$d de créneaux</item>
+        <item quantity="other">%1$d créneaux</item>
+    </plurals>
+    <plurals name="settings_count_exams">
+        <item quantity="one">%1$d examen</item>
+        <item quantity="many">%1$d d’examens</item>
+        <item quantity="other">%1$d examens</item>
+    </plurals>
+    <plurals name="settings_transfer_preview_deletions">
+        <item quantity="one">L’import supprimera %1$d élément existant sur cet appareil. Assurez-vous que le fichier provient d’une source fiable.</item>
+        <item quantity="many">L’import supprimera %1$d d’éléments existants sur cet appareil. Assurez-vous que le fichier provient d’une source fiable.</item>
+        <item quantity="other">L’import supprimera %1$d éléments existants sur cet appareil. Assurez-vous que le fichier provient d’une source fiable.</item>
+    </plurals>
+    <string name="settings_transfer_preview_merge_note">Prend effet après fusion avec les données locales.</string>
+    <string name="settings_transfer_share_failed">Impossible de partager&#160;: %1$s</string>
+    <string name="settings_transfer_ics_failed_to_open">Impossible d’écrire à l’emplacement choisi&#160;: %1$s</string>
+    <string name="settings_transfer_permission_camera">L’autorisation d’accès à l’appareil photo n’a pas été accordée. Accordez-la dans les réglages du système, puis réessayez.</string>
+
+    <!-- Import / export results -->
+    <string name="settings_transfer_export_done">Exporté</string>
+    <string name="settings_transfer_export_failed">Échec de l’export&#160;: %1$s</string>
+    <string name="settings_transfer_ics_export_done">Fichier d’agenda exporté&#160;: %1$s, %2$s.</string>
+    <plurals name="settings_transfer_ics_block_count">
+        <item quantity="one">%1$d créneau</item>
+        <item quantity="many">%1$d de créneaux</item>
+        <item quantity="other">%1$d créneaux</item>
+    </plurals>
+    <plurals name="settings_transfer_ics_skipped">
+        <item quantity="one">%1$d créneau n’a pas d’horaire de période et n’a pas été exporté.</item>
+        <item quantity="many">%1$d de créneaux n’ont pas d’horaire de période et n’ont pas été exportés.</item>
+        <item quantity="other">%1$d créneaux n’ont pas d’horaire de période et n’ont pas été exportés.</item>
+    </plurals>
+    <string name="settings_transfer_ics_export_failed">Échec de l’export de l’agenda&#160;: %1$s</string>
+    <string name="settings_transfer_no_term">Aucun semestre actuel</string>
+    <string name="settings_transfer_cannot_open_target">Impossible d’ouvrir le fichier choisi</string>
+    <string name="settings_transfer_no_term_for_qr">Aucun semestre actuel&#160;: impossible de générer un QR code.</string>
+    <string name="settings_transfer_qr_failed">Impossible de générer le QR code&#160;: %1$s</string>
+    <string name="settings_transfer_qr_unreadable">Impossible de lire cette image. Essayez-en une autre.</string>
+    <string name="settings_transfer_qr_not_nullclass">Ce n’est pas un QR code NullClass.</string>
+    <string name="settings_transfer_qr_source">QR code</string>
+    <string name="settings_transfer_file_source">Fichier %1$s</string>
+    <string name="settings_transfer_wakeup_source">WakeUp %1$s</string>
+    <string name="settings_transfer_shiguang_source">Shiguang Schedule %1$s</string>
+    <string name="settings_transfer_read_failed">Échec de la lecture&#160;: %1$s</string>
+    <plurals name="settings_transfer_import_done">
+        <item quantity="one">Import terminé. %1$d élément mis à jour.</item>
+        <item quantity="many">Import terminé. %1$d d’éléments mis à jour.</item>
+        <item quantity="other">Import terminé. %1$d éléments mis à jour.</item>
+    </plurals>
+    <string name="settings_transfer_import_up_to_date">Vos données sont déjà à jour.</string>
+    <string name="settings_transfer_cannot_read_file">Impossible de lire le fichier.</string>
+    <string name="settings_transfer_wakeup_generic">emploi du temps</string>
+    <string name="settings_transfer_shiguang_generic">fichier exporté</string>
+    <string name="settings_transfer_import_failed">Échec de l’import&#160;: %1$s</string>
+    <string name="settings_transfer_ocr_review_note">Cet emploi du temps a été reconnu à partir d’une image. Vérifiez attentivement les noms des cours, les semaines et les périodes</string>
+    <string name="settings_transfer_no_terms_in_file">Le fichier ne contient aucun semestre à importer.</string>
+    <string name="settings_transfer_parse_failed">Impossible de lire le contenu du fichier&#160;: %1$s</string>
+    <string name="settings_transfer_new_timetable_one">Emploi du temps «&#160;%1$s&#160;» ajouté. Vous pouvez y accéder dans «&#160;Profil → Emplois du temps&#160;».</string>
+    <plurals name="settings_transfer_new_timetable_many">
+        <item quantity="one">%1$d emploi du temps ajouté. Vous pouvez y accéder dans «&#160;Profil → Emplois du temps&#160;».</item>
+        <item quantity="many">%1$d d’emplois du temps ajoutés. Vous pouvez passer de l’un à l’autre dans «&#160;Profil → Emplois du temps&#160;».</item>
+        <item quantity="other">%1$d emplois du temps ajoutés. Vous pouvez passer de l’un à l’autre dans «&#160;Profil → Emplois du temps&#160;».</item>
+    </plurals>
+
+    <!-- QR sharing / scanning -->
+    <string name="settings_qr_render_failed">Impossible d’afficher le QR code</string>
+    <string name="settings_qr_share_entry">Partager le QR code de l’emploi du temps</string>
+    <string name="settings_qr_share_title">Scanner pour importer l’emploi du temps</string>
+    <string name="settings_qr_share_image">Partager l’image</string>
+    <string name="settings_qr_image_desc">QR code de l’emploi du temps</string>
+    <string name="settings_qr_share_hint">Scannez ce QR code avec NullClass sur un autre appareil pour importer le semestre actuel.</string>
+    <string name="settings_qr_scan_hint">Placez le QR code dans le cadre. Pincez pour zoomer, touchez pour faire la mise au point</string>
+    <string name="settings_qr_scan_zooming">QR code détecté. Zoom automatique…</string>
+    <string name="settings_qr_scan_decoding">Gardez le téléphone immobile. Lecture en cours…</string>
+    <string name="settings_qr_scan_starting">Démarrage de l’appareil photo…</string>
+    <string name="settings_qr_scan_album">Choisir un QR code dans la galerie</string>
+    <string name="settings_qr_scan_torch_on">Allumer la lampe</string>
+    <string name="settings_qr_scan_torch_off">Éteindre la lampe</string>
+    <string name="settings_qr_scan_camera_failed">Impossible d’ouvrir l’appareil photo&#160;: %1$s</string>
+    <string name="settings_qr_scan_failed">Échec de la lecture&#160;: %1$s</string>
+    <string name="settings_qr_scan_failed_retry">Revenez en arrière et scannez à nouveau</string>
+    <string name="settings_qr_image_not_found">Aucun QR code trouvé dans l’image. Choisissez une image nette montrant le QR code en entier.</string>
+
+    <!-- ImportNotice: notes in the import preview -->
+    <string name="settings_notice_shiguang_row_not_object">Le cours n°&#160;%1$d contient des données incorrectes et a été ignoré</string>
+    <string name="settings_notice_shiguang_row_no_name">Le cours n°&#160;%1$d n’a pas de nom et a été ignoré</string>
+    <string name="settings_notice_shiguang_row_no_day">«&#160;%1$s&#160;» n’a pas de jour de la semaine et a été ignoré</string>
+    <string name="settings_notice_shiguang_row_bad_day">«&#160;%1$s&#160;» a un jour de la semaine incorrect (%2$s) et a été ignoré</string>
+    <string name="settings_notice_shiguang_weeks_truncated">Le semestre compte %1$d semaines, au-delà de la limite de %2$d. Les semaines en trop n’ont pas été importées</string>
+    <string name="settings_notice_shiguang_weeks_exceed_declared">Des cours ont lieu en semaine %1$d, au-delà des %2$d semaines définies dans le fichier. Le semestre a été importé avec %1$d semaines</string>
+    <string name="settings_notice_shiguang_no_start_date">Le fichier n’indique pas de date de début du semestre&#160;; la semaine actuelle a été utilisée. Vérifiez-la dans «&#160;Semestres&#160;»</string>
+    <string name="settings_notice_shiguang_start_date_unreadable">La date de début du semestre «&#160;%1$s&#160;» est illisible&#160;; la semaine actuelle a été utilisée. Vérifiez-la dans «&#160;Semestres&#160;»</string>
+    <string name="settings_notice_shiguang_no_period_table">Le fichier ne contient pas d’horaires des périodes&#160;; les horaires par défaut ont été utilisés. Vérifiez-les dans «&#160;Semestres&#160;»</string>
+    <string name="settings_notice_shiguang_period_row_invalid">L’horaire de période n°&#160;%1$d est incorrect et a été ignoré</string>
+    <string name="settings_notice_shiguang_period_out_of_range">La période %1$d dépasse la limite de %2$d périodes par jour et a été ignorée</string>
+    <string name="settings_notice_shiguang_period_time_invalid">La période %1$d ne se termine pas après son début et a été ignorée</string>
+    <string name="settings_notice_shiguang_course_beyond_last_period">«&#160;%1$s&#160;» est placé en période %2$d, au-delà de la limite de %3$d périodes par jour, et a été ignoré</string>
+    <string name="settings_notice_shiguang_course_no_time">«&#160;%1$s&#160;» n’a pas d’horaire et a été ignoré</string>
+    <string name="settings_notice_shiguang_custom_time_no_nearest">«&#160;%1$s&#160;» utilise un horaire personnalisé (%2$s) qui ne correspond à aucune période, et a été ignoré</string>
+    <string name="settings_notice_shiguang_custom_time_nearest">«&#160;%1$s&#160;» utilise un horaire personnalisé (%2$s) et a été placé dans la période la plus proche, P%3$d</string>
+    <plurals name="settings_notice_shiguang_custom_time_dropped">
+        <item quantity="one">%1$d créneau avait un horaire personnalisé dans Shiguang. Il a été importé par période, sans l’horaire personnalisé</item>
+        <item quantity="many">%1$d de créneaux avaient un horaire personnalisé dans Shiguang. Ils ont été importés par période, sans les horaires personnalisés</item>
+        <item quantity="other">%1$d créneaux avaient un horaire personnalisé dans Shiguang. Ils ont été importés par période, sans les horaires personnalisés</item>
+    </plurals>
+    <string name="settings_notice_shiguang_periods_extended">Des cours utilisent la période %1$d, mais seules %2$d périodes ont un horaire. Les autres ont été complétées avec des périodes de %3$d minutes et des pauses de %4$d minutes. Vérifiez-les dans «&#160;Semestres&#160;»</string>
+    <string name="settings_notice_shiguang_weeks_overflow_dropped">«&#160;%1$s&#160;» a des semaines au-delà de la semaine %2$d. Ces semaines n’ont pas été importées</string>
+    <string name="settings_notice_shiguang_weeks_missing">«&#160;%1$s&#160;» n’a pas d’information de semaine et a été importé pour les semaines 1–%2$d</string>
+    <string name="settings_notice_shiguang_weeks_all_out_of_range">«&#160;%1$s&#160;» n’a que des semaines hors du semestre de %3$d semaines (semaine %2$s) et a été ignoré</string>
+    <string name="settings_notice_wakeup_line_unparsable">La ligne %1$d du fichier est illisible et a été ignorée</string>
+    <string name="settings_notice_wakeup_line_not_object">La ligne %1$d du fichier est illisible et a été ignorée</string>
+    <string name="settings_notice_wakeup_line_not_array">La ligne %1$d du fichier est illisible et a été ignorée</string>
+    <string name="settings_notice_wakeup_weeks_truncated">Le semestre compte %1$d semaines, au-delà de la limite de %2$d. Les semaines en trop n’ont pas été importées</string>
+    <string name="settings_notice_wakeup_period_row_invalid">L’horaire de période n°&#160;%1$d est incorrect et a été ignoré</string>
+    <string name="settings_notice_wakeup_no_period_table">Le fichier WakeUp ne contient pas d’horaires des périodes&#160;; les horaires par défaut ont été utilisés</string>
+    <string name="settings_notice_wakeup_course_no_name">Un cours n’a pas de nom et a été importé sous le nom «&#160;课程 %1$s&#160;»</string>
+    <string name="settings_notice_wakeup_block_missing_field">Le créneau n°&#160;%1$d est incomplet et a été ignoré</string>
+    <string name="settings_notice_wakeup_block_bad_step">Le créneau n°&#160;%1$d a une durée incorrecte (%2$s) et a été importé sur 1 période</string>
+    <string name="settings_notice_wakeup_block_bad_day">Le créneau n°&#160;%1$d a un jour de la semaine incorrect (%2$s) et a été ignoré</string>
+    <string name="settings_notice_wakeup_block_bad_start">Le créneau n°&#160;%1$d a une période de début incorrecte (%2$s) et a été ignoré</string>
+    <!-- Academic system: image OCR / rebuilding the table from page text (ImportNotice.OCR_*). Rows and columns count from 1 -->
+    <string name="settings_notice_ocr_no_text">Aucun texte n’a été reconnu dans l’image</string>
+    <string name="settings_notice_ocr_no_day_header">Aucun en-tête de jour trouvé&#160;: impossible d’associer les colonnes aux jours de la semaine</string>
+    <plurals name="settings_notice_ocr_day_columns_out_of_range">
+        <item quantity="one">%1$d jour détecté (généralement 5 à 7). Les en-têtes de jour sont peut-être incomplets</item>
+        <item quantity="many">%1$d de jours détectés (généralement 5 à 7). Les en-têtes de jour sont peut-être incomplets</item>
+        <item quantity="other">%1$d jours détectés (généralement 5 à 7). Les en-têtes de jour sont peut-être incomplets</item>
+    </plurals>
+    <string name="settings_notice_ocr_day_columns_mismatch">%1$d jours détectés, mais %2$d attendus</string>
+    <string name="settings_notice_ocr_day_order_odd">Les en-têtes de jour ne sont pas dans l’ordre. Vérifiez attentivement</string>
+    <string name="settings_notice_ocr_periods_by_time">Les périodes ont été déduites des horaires de cours. Vérifiez attentivement</string>
+    <plurals name="settings_notice_ocr_no_period_column">
+        <item quantity="one">Aucune colonne de périodes trouvée (%1$d ligne reconnue)&#160;: impossible d’associer les lignes aux périodes</item>
+        <item quantity="many">Aucune colonne de périodes trouvée (%1$d de lignes reconnues)&#160;: impossible d’associer les lignes aux périodes</item>
+        <item quantity="other">Aucune colonne de périodes trouvée (%1$d lignes reconnues)&#160;: impossible d’associer les lignes aux périodes</item>
+    </plurals>
+    <string name="settings_notice_ocr_period_rows_mismatch">%1$d périodes détectées, mais %2$d attendues</string>
+    <plurals name="settings_notice_ocr_unassigned_boxes">
+        <item quantity="one">%1$d bloc de texte n’a pas pu être placé dans l’emploi du temps (%2$d&#160;%%)</item>
+        <item quantity="many">%1$d de blocs de texte n’ont pas pu être placés dans l’emploi du temps (%2$d&#160;%%)</item>
+        <item quantity="other">%1$d blocs de texte n’ont pas pu être placés dans l’emploi du temps (%2$d&#160;%%)</item>
+    </plurals>
+    <string name="settings_notice_ocr_no_week_info">L’emploi du temps ne contient pas d’information de semaine&#160;; les cours ont été importés pour tout le semestre. Veuillez vérifier</string>
+    <plurals name="settings_notice_ocr_column_lines_skipped">
+        <item quantity="one">Colonne %1$d&#160;: %2$d ligne de texte ne correspond à aucun cours et a été ignorée</item>
+        <item quantity="many">Colonne %1$d&#160;: %2$d de lignes de texte ne correspondent à aucun cours et ont été ignorées</item>
+        <item quantity="other">Colonne %1$d&#160;: %2$d lignes de texte ne correspondent à aucun cours et ont été ignorées</item>
+    </plurals>
+    <string name="settings_notice_ocr_cell_no_grid">Ligne %1$d, colonne %2$d&#160;: position indéterminée</string>
+    <string name="settings_notice_ocr_cell_no_weeks">Ligne %1$d, colonne %2$d («&#160;%3$s&#160;»)&#160;: aucune semaine reconnue, importé pour tout le semestre. Veuillez vérifier</string>
+    <string name="settings_notice_ocr_no_courses">Aucun cours n’a été reconnu</string>
+
+    <!-- Academic system import: choose school / adapter details / library updates -->
+    <!-- Title of the import activity (shown in the recent apps list) -->
+    <string name="settings_jw_activity_label">Import depuis le système de scolarité</string>
+    <string name="settings_jw_search_hint">Rechercher un établissement ou un domaine</string>
+    <string name="settings_jw_search_clear">Effacer la recherche</string>
+    <string name="settings_jw_tab_schools">Établissements</string>
+    <string name="settings_jw_tab_generic">Universel</string>
+    <string name="settings_jw_tab_mine">Mes ajouts</string>
+    <string name="settings_jw_import_zip">Importer un paquet d’adaptateurs</string>
+
+    <!-- Academic system import: library updates -->
+    <plurals name="settings_jw_library_version">
+        <item quantity="one">Version de la bibliothèque d’adaptateurs&#160;: %1$s (%2$d adaptateur)</item>
+        <item quantity="many">Version de la bibliothèque d’adaptateurs&#160;: %1$s (%2$d d’adaptateurs)</item>
+        <item quantity="other">Version de la bibliothèque d’adaptateurs&#160;: %1$s (%2$d adaptateurs)</item>
+    </plurals>
+    <string name="settings_jw_library_builtin">intégrée</string>
+    <string name="settings_jw_library_last_check">Dernière recherche de mises à jour&#160;: %1$s</string>
+    <string name="settings_jw_library_never_checked">jamais</string>
+    <string name="settings_jw_library_checking">Recherche…</string>
+    <string name="settings_jw_library_updating">Mise à jour…</string>
+    <string name="settings_jw_library_check_now">Rechercher des mises à jour</string>
+    <string name="settings_jw_library_update_to">Mettre à jour vers v%1$s</string>
+    <string name="settings_jw_library_check_failed">Impossible de rechercher des mises à jour. Vérifiez votre connexion, puis réessayez.</string>
+    <string name="settings_jw_library_found">Nouvelle version v%1$s disponible</string>
+    <string name="settings_jw_library_latest">Déjà à jour</string>
+    <string name="settings_jw_library_updated">Bibliothèque d’adaptateurs mise à jour vers v%1$s.</string>
+    <string name="settings_jw_library_shadowed">La bibliothèque officielle inclut désormais %1$s&#160;; la version officielle sera utilisée.</string>
+    <string name="settings_jw_library_update_failed">Échec de la mise à jour&#160;: %1$s</string>
+
+    <!-- Academic system import: web page step -->
+    <string name="settings_jw_hint_generic">Une fois connecté et la page de l’emploi du temps ouverte, touchez «&#160;Extraire l’emploi du temps&#160;». L’adaptateur universel reconnaît l’emploi du temps à partir du contenu de la page.</string>
+    <string name="settings_jw_hint">Une fois connecté et la page de l’emploi du temps ouverte, touchez «&#160;Extraire l’emploi du temps&#160;».</string>
+    <string name="settings_jw_extracting">Extraction…</string>
+    <string name="settings_jw_extract">Extraire l’emploi du temps</string>
+    <string name="settings_jw_ocr_running">Reconnaissance de l’image de l’emploi du temps…</string>
+    <string name="settings_jw_image_unreadable">L’image de l’emploi du temps est illisible. Elle est peut-être endommagée ou hébergée sur un site auquel l’adaptateur n’a pas accès. Si vous utilisez une capture d’écran, choisissez l’original, et non une copie compressée par une messagerie.</string>
+    <string name="settings_jw_ocr_building">Analyse de l’emploi du temps…</string>
+    <string name="settings_jw_ocr_unreliable">Le résultat de la reconnaissance est peut-être erroné (%1$s). Il est conseillé d’ajouter les cours manuellement.</string>
+    <string name="settings_jw_ocr_empty">Aucun cours n’a été reconnu. Il est conseillé d’ajouter les cours manuellement.</string>
+    <string name="settings_jw_ocr_done">Reconnaissance terminée. Vérifiez avant d’importer</string>
+    <string name="settings_jw_structure_done">Reconnaissance terminée. Vérifiez avant d’importer</string>
+    <string name="settings_jw_extract_done">Extraction réussie</string>
+    <string name="settings_jw_extract_failed">Échec de l’extraction&#160;: %1$s</string>
+    <string name="settings_jw_page_loaded">Page chargée, extraction automatique…</string>
+    <string name="settings_jw_no_start_url">L’adresse du système de scolarité est manquante. Revenez en arrière et choisissez à nouveau votre établissement.</string>
+    <string name="settings_jw_switch_mobile">Version mobile</string>
+    <string name="settings_jw_switch_desktop">Version ordinateur</string>
+    <string name="settings_jw_network_frozen_short">L’accès réseau de la page est suspendu pendant l’extraction.</string>
+    <string name="settings_jw_network_frozen">L’accès réseau de la page est suspendu pendant l’extraction, afin que son contenu ne puisse pas être envoyé à d’autres sites.</string>
+    <string name="settings_jw_network_restored">Accès réseau de la page rétabli</string>
+    <string name="settings_jw_resume_browsing">Continuer la navigation</string>
+    <string name="settings_jw_error_log_title">Journal d’erreurs</string>
+    <string name="settings_jw_error_log_copy">Copier le journal d’erreurs</string>
+    <string name="settings_jw_error_log_copied">Journal d’erreurs copié</string>
+    <string name="settings_jw_image_cancelled">Le résultat de la reconnaissance a été abandonné. Vous pouvez relancer l’extraction ou ajouter les cours manuellement.</string>
+    <string name="settings_jw_structure_missing">Aucun emploi du temps trouvé sur cette page (%1$s). Vérifiez que la page de l’emploi du temps est ouverte, puis réessayez&#160;; si l’emploi du temps est incomplet, passez à la version ordinateur.</string>
+    <string name="settings_jw_no_courses">Aucun cours reconnu sur cette page. Vérifiez que la page de l’emploi du temps est ouverte.</string>
+    <string name="settings_jw_adapter_ocr">%1$s (reconnaissance d’image)</string>
+    <string name="settings_jw_adapter_auto">%1$s (détection automatique)</string>
+
+    <!-- Academic system import: review recognition result -->
+    <string name="settings_jw_review_title">Vérifier le résultat</string>
+    <string name="settings_jw_review_count">%1$s et %2$s reconnus.</string>
+    <plurals name="settings_jw_review_course_count">
+        <item quantity="one">%1$d cours</item>
+        <item quantity="many">%1$d de cours</item>
+        <item quantity="other">%1$d cours</item>
+    </plurals>
+    <string name="settings_jw_review_defaults">Le nom du semestre et la date de début ont été renseignés automatiquement. Vous pourrez les modifier dans «&#160;Semestres&#160;» après l’import.</string>
+    <string name="settings_jw_review_warn">Vérifiez attentivement les éléments suivants&#160;:</string>
+    <string name="settings_jw_review_hint">Le résultat est établi d’après la position dans le tableau&#160;; une ligne entière peut être décalée. Après l’import, contrôlez l’horaire de quelques cours dans l’emploi du temps.</string>
+    <!-- Appended directly after the course name, hence the leading space inside the quotes -->
+    <string name="settings_jw_review_block">" (%1$s, P%2$d–%3$d)"</string>
+    <string name="settings_jw_review_confirm">Importer</string>
+
+    <!-- Academic system import: script execution and bridge -->
+    <string name="settings_jw_error_title">Échec de l’opération</string>
+    <string name="settings_jw_done_title">Terminé</string>
+    <string name="settings_jw_ok">OK</string>
+    <string name="settings_jw_unknown_error">Erreur inconnue</string>
+    <string name="settings_jw_package_read_failed">Impossible de lire le paquet d’adaptateurs</string>
+    <string name="settings_jw_cannot_read_file">Impossible de lire le fichier</string>
+    <!-- JwErrorCode -->
+    <string name="settings_jw_err_network_failed">Échec de la connexion réseau&#160;: %1$s</string>
+    <string name="settings_jw_err_http_status">Le serveur est momentanément inaccessible (code d’erreur %1$d)</string>
+    <string name="settings_jw_err_insecure_redirect">Le serveur a redirigé vers une adresse non sécurisée&#160;; l’accès a été interrompu&#160;: %1$s</string>
+    <string name="settings_jw_err_empty_response">Le serveur n’a renvoyé aucun contenu</string>
+    <string name="settings_jw_err_response_too_large">La réponse du serveur est trop volumineuse (plus de %1$d Ko)</string>
+    <string name="settings_jw_err_no_newer_version">Déjà à jour</string>
+    <string name="settings_jw_err_index_unreadable">Impossible de lire la bibliothèque d’adaptateurs&#160;: %1$s</string>
+    <string name="settings_jw_err_adapter_file_unreadable">Impossible de lire le fichier %2$s de l’adaptateur «&#160;%1$s&#160;»&#160;: %3$s</string>
+    <string name="settings_jw_err_library_url_empty">Saisissez l’adresse de la bibliothèque d’adaptateurs</string>
+    <string name="settings_jw_err_library_url_invalid">Adresse de bibliothèque d’adaptateurs incorrecte&#160;: %1$s</string>
+    <string name="settings_jw_err_library_url_not_http">L’adresse de la bibliothèque d’adaptateurs doit commencer par https://&#160;: %1$s</string>
+    <string name="settings_jw_err_library_url_insecure">L’adresse de la bibliothèque d’adaptateurs doit utiliser https, afin que son contenu ne puisse pas être modifié pendant le transfert</string>
+    <string name="settings_jw_err_library_url_no_host">Adresse de bibliothèque d’adaptateurs incomplète&#160;: %1$s</string>
+    <string name="settings_jw_err_library_url_github_shape">Une adresse GitHub doit être de la forme github.com/utilisateur/dépôt</string>
+    <string name="settings_jw_err_spec_too_new">Cet adaptateur nécessite une version plus récente de NullClass (spécification d’adaptateur v%1$d, cette version prend en charge jusqu’à v%2$d). Veuillez mettre à jour l’app</string>
+    <string name="settings_jw_err_app_too_old">Cet adaptateur nécessite une version plus récente de NullClass (build %1$d ou ultérieur requis, build actuel %2$d). Veuillez mettre à jour l’app</string>
+    <string name="settings_jw_broken_unreadable">Lecture impossible</string>
+    <!-- Limits the host sets for adapter scripts -->
+    <string name="settings_jw_script_timeout">Délai d’exécution de l’adaptateur dépassé (%1$d s)</string>
+    <string name="settings_jw_wait_timeout">Délai d’attente de saisie dépassé (%1$d s)</string>
+    <string name="settings_jw_result_too_large">Le résultat extrait dépasse la taille maximale (%1$d k caractères). Veuillez le signaler à l’auteur de l’adaptateur</string>
+    <string name="settings_jw_library_read_failed">Impossible de lire la bibliothèque d’adaptateurs</string>
+    <string name="settings_jw_download_failed">Échec du téléchargement de l’adaptateur</string>
+    <string name="settings_jw_install_failed">Échec de l’ajout</string>
+    <string name="settings_jw_installed">Ajouté&#160;: %1$s</string>
+    <string name="settings_jw_deleted">«&#160;%1$s&#160;» supprimé</string>
+    <string name="settings_jw_delete_builtin_denied">Les adaptateurs intégrés ne peuvent pas être supprimés.</string>
+
+    <!-- Academic system import: adapter question dialog -->
+    <string name="settings_jw_ask_title">«&#160;%1$s&#160;» a besoin d’informations complémentaires</string>
+    <string name="settings_jw_ask_safety">NullClass ne vous demandera jamais le mot de passe de votre système de scolarité ni d’autres informations de compte.</string>
+
+    <!-- Academic system import: choose school, library and details sheets -->
+    <string name="settings_jw_picker_login_title">Saisir l’adresse du système de scolarité</string>
+    <string name="settings_jw_picker_login_desc">Saisissez l’adresse de la page de connexion ou de la page d’emploi du temps du système de scolarité de votre établissement, par exemple jw.example.edu.cn. La connexion et la vérification se font sur la page suivante&#160;; NullClass ne récupère jamais vos identifiants.</string>
+    <string name="settings_jw_picker_login_label">Adresse du système de scolarité</string>
+    <string name="settings_jw_picker_login_hint">En cas de doute, ouvrez le système de scolarité de votre établissement dans un navigateur et copiez l’adresse complète affichée dans la barre d’adresse</string>
+    <string name="settings_jw_picker_login_invalid">Adresse incorrecte. Vérifiez qu’elle ne contient pas d’espaces superflus ni de caractères non latins</string>
+    <string name="settings_jw_picker_login_preview">Adresse qui sera ouverte&#160;: %1$s. Certains établissements ne prennent en charge que http&#160;; si la page ne s’ouvre pas, essayez de remplacer le début par http://</string>
+    <string name="settings_jw_picker_login_open">Ouvrir</string>
+    <string name="settings_jw_picker_link_title">Ajouter depuis une bibliothèque d’adaptateurs</string>
+    <string name="settings_jw_picker_link_desc">Collez l’adresse d’un dépôt GitHub ou un lien vers un fichier index.json (https uniquement). Les adaptateurs sont maintenus par des tiers&#160;; assurez-vous que la source est fiable.</string>
+    <string name="settings_jw_picker_link_label">Adresse de la bibliothèque</string>
+    <string name="settings_jw_picker_link_read">Charger</string>
+
+    <!-- Academic system import: install confirmation / library list / details -->
+    <plurals name="settings_jw_install_title_many">
+        <item quantity="one">Installer %1$d adaptateur&#160;?</item>
+        <item quantity="many">Installer %1$d d’adaptateurs&#160;?</item>
+        <item quantity="other">Installer %1$d adaptateurs&#160;?</item>
+    </plurals>
+    <string name="settings_jw_install_title_one">Ajouter cet adaptateur&#160;?</string>
+    <string name="settings_jw_adapter_line">%1$s (%2$s v%3$s)</string>
+    <string name="settings_jw_adapter_login_url">Page de connexion&#160;: %1$s</string>
+    <string name="settings_jw_adapter_hosts">Sites accessibles&#160;: %1$s</string>
+    <string name="settings_jw_adapter_view_script">Voir le code</string>
+    <string name="settings_jw_adapter_source_url">Source&#160;: %1$s</string>
+    <string name="settings_jw_adapter_source_file">Fichier source&#160;: %1$s</string>
+    <string name="settings_jw_adapter_untrusted">Les adaptateurs tiers sont écrits par d’autres personnes et lisent les pages du système de scolarité sur lesquelles vous êtes connecté. NullClass ne les vérifie pas. Assurez-vous que la source est fiable, ou consultez d’abord le code.</string>
+    <string name="settings_jw_install_confirm">Ajouter</string>
+    <string name="settings_jw_library_dialog_title">Bibliothèque d’adaptateurs</string>
+    <string name="settings_jw_library_empty">Cette bibliothèque ne contient encore aucun adaptateur.</string>
+    <string name="settings_jw_library_no_match">Aucun adaptateur de cette bibliothèque ne correspond à «&#160;%1$s&#160;».</string>
+    <string name="settings_jw_library_untrusted">Les adaptateurs de cette bibliothèque sont également maintenus par des tiers et ne sont pas vérifiés par NullClass.</string>
+    <string name="settings_jw_adapter_key">Identifiant&#160;: %1$s</string>
+    <string name="settings_jw_adapter_version">Version&#160;: v%1$s</string>
+    <string name="settings_jw_adapter_source_builtin">Officiel</string>
+    <string name="settings_jw_adapter_source_user">Ajouté par vous</string>
+    <string name="settings_jw_adapter_source">Source&#160;: %1$s</string>
+    <string name="settings_jw_adapter_author">Auteur&#160;: %1$s</string>
+    <string name="settings_jw_adapter_homepage">Page d’accueil&#160;: %1$s</string>
+    <string name="settings_jw_adapter_installed_from">Installé depuis&#160;: %1$s</string>
+    <string name="settings_jw_adapter_checksum">Somme de contrôle&#160;: %1$s…</string>
+    <string name="settings_jw_adapter_delete">Supprimer</string>
+    <string name="settings_jw_script_dialog_title">Code de %1$s</string>
+
+    <!-- Academic system import: choose school -->
+    <string name="settings_jw_recent_used">Utilisés récemment</string>
+    <string name="settings_jw_recent_refresh_hint">Touchez pour importer à nouveau avec votre dernière connexion</string>
+    <string name="settings_jw_no_school_match">Aucun établissement ne correspond à «&#160;%1$s&#160;».</string>
+    <plurals name="settings_jw_mine_hits">
+        <item quantity="one">%1$d résultat dans «&#160;Mes ajouts&#160;»</item>
+        <item quantity="many">%1$d de résultats dans «&#160;Mes ajouts&#160;»</item>
+        <item quantity="other">%1$d résultats dans «&#160;Mes ajouts&#160;»</item>
+    </plurals>
+    <string name="settings_jw_try_generic">Essayez l’adaptateur universel&#160;: saisissez l’adresse de votre système de scolarité et connectez-vous, et NullClass reconnaîtra l’emploi du temps affiché sur la page.</string>
+    <string name="settings_jw_badge_generic">Universel</string>
+    <string name="settings_jw_no_your_school">Votre établissement est introuvable&#160;?</string>
+    <string name="settings_jw_use_generic">Utiliser l’adaptateur universel</string>
+    <string name="settings_jw_generic_desc">L’adaptateur universel n’est pas lié à un établissement particulier&#160;: saisissez l’adresse de votre système de scolarité et connectez-vous, et NullClass reconnaît l’emploi du temps affiché sur la page (les emplois du temps sous forme d’image sont reconnus sur cet appareil). Vous vérifiez le résultat avant tout import.</string>
+    <string name="settings_jw_request_adapter">Demander la prise en charge de votre établissement</string>
+    <string name="settings_jw_add_from_link">Ajouter depuis un lien</string>
+    <string name="settings_jw_mine_empty">Aucun adaptateur ajouté. Importez un paquet d’adaptateurs ou ajoutez-en un depuis le lien d’une bibliothèque. Les adaptateurs tiers sont maintenus par d’autres personnes et ne sont pas vérifiés par NullClass.</string>
+    <string name="settings_jw_insecure">Connexion non sécurisée</string>
+    <string name="settings_jw_details">Détails</string>
+
+</resources>

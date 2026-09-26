@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Japanese translation of values/strings.xml. Conventions: docs/i18n.md. -->
+<resources>
+    <string name="ocr_engine_unavailable">画像認識機能は現在利用できません。</string>
+    <string name="ocr_model_load_failed">画像認識機能を読み込めませんでした。NullClass を再起動してからもう一度お試しください（%1$s）。</string>
+</resources>

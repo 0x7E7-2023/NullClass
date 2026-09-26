@@ -89,6 +89,9 @@
     <string name="schedule_personalize_sample_room_2">Lab 305</string>
     <string name="schedule_personalize_sample_room_3">C-210</string>
 
+    <!-- Week header: date (month/day), numeric because the cells are narrow -->
+    <string name="schedule_header_date">%1$d/%2$d</string>
+
     <!-- Week view header: day swap marker -->
     <string name="schedule_header_swap_weekday">→%1$s</string>
     <string name="schedule_header_swap_date">→%1$d/%2$d</string>

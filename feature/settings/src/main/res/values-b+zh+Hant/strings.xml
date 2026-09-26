@@ -1,0 +1,592 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- 繁體中文（香港）譯文，原文見 values/strings.xml。:feature:settings 的介面文案。 -->
+<resources>
+
+    <!-- 共用日期文案 -->
+    <string name="settings_day_label">%1$s · %2$s</string>
+    <string name="settings_day_label_with_year">%1$d年%2$s · %3$s</string>
+    <!-- DateTimeFormatter 的 pattern（TermDatePicking 用），不是格式字串 -->
+    <string name="settings_month_day_pattern">M月d日</string>
+    <string name="settings_month_day">%1$d月%2$d日</string>
+
+    <!-- 應用程式設定 -->
+    <string name="settings_title">設定</string>
+    <string name="settings_transfer_entry">匯入 / 匯出</string>
+    <string name="settings_appearance">外觀</string>
+    <string name="settings_appearance_desc">「Material 取色」會根據桌布產生配色，並跟隨系統切換深淺色；「淺色」與「深色」使用內置配色。桌面小工具的深淺色一律跟隨系統。</string>
+    <string name="settings_appearance_desc_unsupported">目前系統不支援根據桌布取色，「Material 取色」將使用內置配色，並跟隨系統切換深淺色。桌面小工具的深淺色一律跟隨系統。</string>
+    <string name="settings_language">介面語言</string>
+    <string name="settings_language_desc">切換後立即生效。</string>
+
+    <!-- WebDAV 同步 -->
+    <string name="settings_webdav">WebDAV 同步</string>
+    <string name="settings_webdav_desc">透過你自己的 WebDAV 雲端硬碟（如堅果雲、NextCloud）在多部裝置之間同步課表。</string>
+    <string name="settings_webdav_warning">帳戶和密碼以未加密形式儲存在本機，請使用以 https 開頭的伺服器網址。</string>
+    <string name="settings_webdav_server">伺服器網址</string>
+    <string name="settings_webdav_username">用戶名稱</string>
+    <string name="settings_webdav_password">密碼 / 應用程式密碼</string>
+    <string name="settings_webdav_save">儲存設定</string>
+    <string name="settings_webdav_test">測試連線</string>
+    <string name="settings_webdav_syncing">正在同步…</string>
+    <string name="settings_webdav_sync_now">立即同步</string>
+    <string name="settings_webdav_last_sync">上次同步：%1$s</string>
+    <string name="settings_webdav_merge_desc">同步時，同一項內容以最後修改的版本為準；在任何一部裝置上刪除的內容，其他裝置上也會刪除。</string>
+    <string name="settings_webdav_saved">設定已儲存</string>
+    <string name="settings_webdav_connected">連線成功</string>
+    <plurals name="settings_webdav_sync_done">
+        <item quantity="other">同步完成，從其他裝置更新了 %1$d 項內容</item>
+    </plurals>
+    <string name="settings_auto_sync">自動同步</string>
+    <string name="settings_auto_sync_desc">在背景定期自動同步，需先完成 WebDAV 設定。</string>
+
+    <!-- 桌面小工具 -->
+    <string name="settings_widget">桌面小工具</string>
+    <string name="settings_widget_desc">點按下方選項，按系統提示確認即可新增至桌面。</string>
+    <string name="settings_widget_unsupported">目前的桌面不支援直接新增。請長按桌面空白處，在小工具列表中找到空課後新增。</string>
+    <string name="settings_widget_today">今日課程 3×2</string>
+    <string name="settings_widget_next">下節課 2×1</string>
+
+    <!-- 課表顯示 -->
+    <string name="settings_schedule_display">課表顯示</string>
+    <string name="settings_show_other_week">顯示非本週課程</string>
+    <string name="settings_bottom_nav">底部導覽列</string>
+    <string name="settings_show_exam_tab">顯示「考試」分頁</string>
+
+    <!-- 我的 -->
+    <string name="settings_profile_title">我的</string>
+    <string name="settings_profile_timetable">課表 · %1$s</string>
+    <string name="settings_profile_no_term_title">尚未建立學期</string>
+    <string name="settings_profile_no_term_desc">建立學期後即可開始排課。</string>
+    <string name="settings_profile_week">第 %1$d 週 · %2$s</string>
+    <string name="settings_profile_out_of_term">不在學期內 · %1$s</string>
+    <string name="settings_profile_quick_actions">快捷操作</string>
+    <string name="settings_profile_quick_actions_desc">調課、日程安排、快速刪課</string>
+    <plurals name="settings_profile_quick_actions_desc_with_count">
+        <item quantity="other">調課、日程安排、快速刪課 · 今日及以後有 %1$d 項調課</item>
+    </plurals>
+    <string name="settings_profile_timetables">課表管理</string>
+    <string name="settings_profile_timetables_desc">目前：%1$s · 切換、新增、重新命名</string>
+    <string name="settings_profile_terms">學期管理</string>
+    <string name="settings_profile_terms_desc">切換、新增、刪除</string>
+    <string name="settings_profile_transfer_desc">備份、轉移、教務系統匯入</string>
+    <string name="settings_profile_notification">通知與提醒</string>
+    <string name="settings_profile_notification_desc">權限、提醒時間、公眾假期與跳過日期</string>
+    <string name="settings_profile_settings_desc">WebDAV 同步、自動同步、桌面小工具</string>
+    <string name="settings_profile_personalization">個人化設定</string>
+    <string name="settings_profile_personalization_desc">課表背景、版面與課程卡片樣式</string>
+    <string name="settings_profile_about">關於</string>
+    <string name="settings_profile_about_desc">版本、開源授權、意見回饋</string>
+
+    <!-- 調課 -->
+    <string name="settings_day_swap_title">調課</string>
+    <string name="settings_day_swap_desc">調休時可將某一日設為上另一日的課，例如星期六上星期五的課。今日頁、週視圖、桌面小工具與課前提醒會一併調整，上課時間仍按這一日的作息時間。</string>
+    <string name="settings_day_swap_hint">在週視圖中點按某一欄的星期表頭，也可直接調整該日。</string>
+    <string name="settings_day_swap_no_term">請先建立學期，然後再設定調課。</string>
+    <string name="settings_day_swap_add">新增調課</string>
+    <string name="settings_day_swap_next">下一步</string>
+    <string name="settings_day_swap_step1">第 1 步 · 選擇需要調課的日期</string>
+    <string name="settings_day_swap_step2">第 2 步 · %1$d月%2$d日（%3$s）上哪一日的課</string>
+    <string name="settings_day_swap_upcoming">今日及以後</string>
+    <string name="settings_day_swap_empty">暫無調課</string>
+    <string name="settings_day_swap_source">上 %1$s 的課</string>
+
+    <!-- 快捷操作 -->
+    <string name="settings_quick_actions_title">快捷操作</string>
+    <string name="settings_quick_actions_swap_desc">調休時將某一日設為上另一日的課</string>
+    <plurals name="settings_quick_actions_swap_desc_with_count">
+        <item quantity="other">調休時將某一日設為上另一日的課 · 今日及以後有 %1$d 項</item>
+    </plurals>
+    <string name="settings_quick_actions_events">日程安排</string>
+    <string name="settings_quick_actions_events_desc">新增與管理日程，可為每項日程單獨設定提醒</string>
+    <string name="settings_quick_actions_cleanup">快速刪課</string>
+    <string name="settings_quick_actions_cleanup_desc">按週次或日期篩選課程，勾選後批量刪除</string>
+
+    <!-- 日曆匯出（.ics） -->
+    <string name="settings_ics_calendar_name">空課 · %1$s</string>
+    <string name="settings_ics_term">學期：%1$s</string>
+    <string name="settings_ics_teacher">老師：%1$s</string>
+    <string name="settings_ics_note">備註：%1$s</string>
+    <string name="settings_ics_course">課程：%1$s</string>
+    <string name="settings_ics_exam">考試：%1$s</string>
+    <string name="settings_ics_time">時間：%1$s</string>
+    <string name="settings_ics_location">試場：%1$s</string>
+    <string name="settings_ics_seat">座位：%1$s</string>
+
+    <!-- 公眾假期同步 -->
+    <plurals name="settings_holiday_synced">
+        <item quantity="other">已同步 %2$d 個公眾假期（資料來源：%1$s）</item>
+    </plurals>
+    <string name="settings_holiday_skipped">近期已同步，暫時無需更新</string>
+    <string name="settings_holiday_failed">公眾假期同步失敗，已保留上次的資料（%1$s 暫時無法連線）</string>
+    <string name="settings_holiday_no_source">公眾假期同步失敗，暫無可用的資料來源，已保留上次的資料</string>
+
+    <!-- 同步失敗原因（SyncError） -->
+    <string name="settings_sync_not_configured">尚未設定 WebDAV。</string>
+    <string name="settings_sync_url_empty">請填寫伺服器網址。</string>
+    <string name="settings_sync_url_scheme">伺服器網址須以 http:// 或 https:// 開頭。</string>
+    <string name="settings_sync_url_insecure">公共網絡上的伺服器請使用 https 網址，否則密碼會以明文傳送。</string>
+    <string name="settings_sync_username_empty">請填寫用戶名稱。</string>
+    <string name="settings_sync_write_test_failed">無法向伺服器寫入資料，請檢查帳戶權限。</string>
+    <string name="settings_sync_read_test_failed">無法從伺服器讀取資料。</string>
+    <string name="settings_sync_content_mismatch">伺服器傳回的資料異常，請確認該資料夾僅供空課使用。</string>
+    <string name="settings_sync_cleanup_failed">無法刪除伺服器上的測試檔案，請檢查帳戶權限。</string>
+    <string name="settings_sync_connect_failed">無法連線至伺服器。</string>
+    <string name="settings_sync_download_manifest_failed">無法從伺服器下載同步資料。</string>
+    <string name="settings_sync_download_snapshot_failed">無法從伺服器下載課表資料。</string>
+    <string name="settings_sync_upload_snapshot_failed">無法向伺服器上載課表資料。</string>
+    <string name="settings_sync_upload_manifest_failed">無法向伺服器上載同步資料。</string>
+    <string name="settings_sync_create_dir_failed">無法在伺服器上建立資料夾，請檢查帳戶權限。</string>
+    <string name="settings_sync_unexpected">同步時出現問題，請稍後再試。</string>
+    <!-- 錯誤詳情（HTTP 狀態碼等）附在結論後面，方便回報問題 -->
+    <string name="settings_sync_with_detail">%1$s（%2$s）</string>
+
+    <!-- 自動同步週期（AutoSyncInterval） -->
+    <string name="settings_auto_sync_off">關閉</string>
+    <string name="settings_auto_sync_6h">每 6 小時</string>
+    <string name="settings_auto_sync_daily">每日</string>
+
+    <!-- 快速刪課 -->
+    <string name="settings_cleanup_title">快速刪課</string>
+    <plurals name="settings_cleanup_selected">
+        <item quantity="other">已選 %1$d 個課程</item>
+    </plurals>
+    <string name="settings_cleanup_no_term">請先建立學期，然後再刪除課程。</string>
+    <string name="settings_cleanup_hint">刪除的是整個課程：它在其他週次、其他星期的安排以及相關的考試會一併刪除。</string>
+    <string name="settings_cleanup_hint_alt">如果只是某一日不用上課，請使用「通知與提醒 → 跳過日期」。</string>
+    <string name="settings_cleanup_by_week">按週次</string>
+    <string name="settings_cleanup_by_date">按日期</string>
+    <string name="settings_cleanup_week">第%1$d週</string>
+    <string name="settings_cleanup_week_current">第%1$d週 · 本週</string>
+    <string name="settings_cleanup_out_of_term">這一日不在學期內，沒有課程。</string>
+    <string name="settings_cleanup_swapped">這一日已調課：上 %1$s 的課。</string>
+    <string name="settings_cleanup_week_empty">第%1$d週沒有課程。</string>
+    <string name="settings_cleanup_day_empty">這一日沒有課程。</string>
+    <plurals name="settings_cleanup_confirm_title">
+        <item quantity="other">刪除 %1$d 個課程</item>
+    </plurals>
+    <string name="settings_cleanup_confirm_desc">這些課程的全部上課安排與相關考試將一併刪除，而不僅是目前篩選的這一週或這一日。刪除後無法還原；如已開啟同步，其他裝置上也會一併刪除。</string>
+    <plurals name="settings_cleanup_other_blocks">
+        <item quantity="other">另有 %1$d 項上課安排在其他日期，將一併刪除</item>
+    </plurals>
+
+    <!-- 關於 -->
+    <string name="settings_about_title">關於</string>
+    <string name="settings_about_app_name">空課</string>
+    <string name="settings_about_tagline">大學課程表。無需註冊帳戶，資料預設只儲存在本機，不收集任何使用資料。</string>
+    <string name="settings_about_source">原始碼</string>
+    <string name="settings_about_feedback">意見回饋</string>
+    <string name="settings_about_license">開源授權</string>
+    <string name="settings_about_upstream">致謝 · 拾光課程表</string>
+    <string name="settings_about_contributors">鳴謝 %1$s</string>
+    <string name="settings_about_upstream_desc">空課內置的教務系統適配器大多移植自拾光課程表社群的適配器庫 shiguang_warehouse（MIT 授權），「從拾光課程表轉移」也基於其公開的匯出格式。感謝拾光課程表及其社群。</string>
+    <string name="settings_about_version">空課版本</string>
+    <string name="settings_about_version_copied">已複製 %1$s</string>
+    <string name="settings_about_no_browser">找不到可開啟連結的應用程式。</string>
+
+    <!-- 通知與提醒 -->
+    <string name="settings_notification_title">通知與提醒</string>
+    <string name="settings_notification_permissions">權限與背景執行</string>
+    <string name="settings_notification_permissions_desc">提醒需要通知與背景執行權限。未授權的項目可點按前往系統設定開啟。</string>
+    <string name="settings_notification_class_title">課前提醒</string>
+    <string name="settings_notification_class_desc">在每節課開始前發出通知。受系統省電策略影響，通知可能延遲幾分鐘；如需準時提醒，請開啟下方的「精確提醒」。</string>
+    <string name="settings_notification_exam_title">考試提醒</string>
+    <string name="settings_notification_exam_desc">按考試開始時間提醒；未填寫時間的考試以當日 08:00 為準。考試提醒不受公眾假期影響。</string>
+    <string name="settings_notification_exact_title">精確提醒</string>
+    <string name="settings_notification_exact_desc">使用系統鬧鐘準時發出課前提醒，需授予上方的「精確鬧鐘權限」。</string>
+    <string name="settings_notification_bypass_dnd">請勿騷擾模式下響鈴</string>
+    <string name="settings_notification_bypass_dnd_desc">開啟後，課前提醒與考試提醒在請勿騷擾模式下也會照常發出。</string>
+
+    <!-- 權限面板 -->
+    <string name="settings_permission_granted">已授權</string>
+    <string name="settings_permission_denied">未授權</string>
+    <string name="settings_permission_grant_action">前往授權</string>
+    <string name="settings_permission_settings_action">前往設定</string>
+    <string name="settings_permission_notification">通知權限</string>
+    <string name="settings_permission_notification_denied">未授權，無法收到任何提醒</string>
+    <string name="settings_permission_battery">忽略電池優化</string>
+    <string name="settings_permission_battery_exempt">已允許</string>
+    <string name="settings_permission_battery_denied">未允許，背景提醒可能延遲</string>
+    <string name="settings_permission_autostart">自動啟動</string>
+    <string name="settings_permission_autostart_hint">部分手機需要另外允許空課自動啟動，否則可能收不到提醒</string>
+    <string name="settings_permission_exact_alarm">精確鬧鐘權限</string>
+    <string name="settings_permission_exact_off">未開啟「精確提醒」，提醒可能延遲幾分鐘</string>
+    <string name="settings_permission_exact_granted">已授權，提醒將準時發出</string>
+    <string name="settings_permission_exact_denied">已開啟「精確提醒」但未授權，提醒可能延遲幾分鐘</string>
+    <string name="settings_permission_dnd">請勿騷擾模式權限</string>
+
+    <!-- 提醒提前量 -->
+    <plurals name="settings_reminder_minutes">
+        <item quantity="other">%1$d 分鐘</item>
+    </plurals>
+    <plurals name="settings_reminder_hours">
+        <item quantity="other">%1$d 小時</item>
+    </plurals>
+    <plurals name="settings_reminder_days">
+        <item quantity="other">%1$d 日</item>
+    </plurals>
+
+    <!-- 公眾假期與跳過日期 -->
+    <string name="settings_holiday_section">公眾假期與跳過日期</string>
+    <string name="settings_holiday_section_desc">自動取得法定公眾假期，假期當日不發出課前提醒；也可以手動新增跳過日期。調休上班日僅作提示，如需上課請使用「調課」。</string>
+    <string name="settings_holiday_sync_title">網上同步公眾假期</string>
+    <string name="settings_holiday_sync_desc">每週自動更新一次目前學期的公眾假期</string>
+    <string name="settings_holiday_last_sync">上次同步：%1$s</string>
+    <string name="settings_holiday_never_synced">從未同步</string>
+    <string name="settings_holiday_syncing">正在同步…</string>
+    <string name="settings_holiday_sync_now">立即同步</string>
+    <string name="settings_holiday_add_skip">新增跳過日期</string>
+    <string name="settings_holiday_no_skips">今日及以後暫無跳過日期</string>
+    <plurals name="settings_holiday_skip_count">
+        <item quantity="other">今日及以後（%1$d 個，已隱藏過去的日期）</item>
+    </plurals>
+    <string name="settings_holiday_type_holiday">公眾假期</string>
+    <string name="settings_holiday_type_workday">調休上班（僅作提示）</string>
+    <string name="settings_holiday_type_manual">手動跳過</string>
+
+    <!-- 匯入 / 匯出 -->
+    <string name="settings_transfer_title">匯入 / 匯出</string>
+    <string name="settings_transfer_jw_section">從教務系統匯入</string>
+    <string name="settings_transfer_jw_desc">在空課中開啟學校教務系統並登入，進入課表頁面後即可匯入。帳戶和密碼只在教務系統網頁中填寫，空課不會取得。</string>
+    <string name="settings_transfer_jw_pick_school">選擇學校</string>
+    <string name="settings_transfer_jw_running">教務系統匯入 · %1$s</string>
+    <string name="settings_transfer_jw_running_generic">教務系統匯入</string>
+    <string name="settings_transfer_backup_section">備份與分享</string>
+    <string name="settings_transfer_backup_desc">匯出全部課表與學期，可用於備份、更換手機，或傳送給同學匯入。</string>
+    <string name="settings_transfer_save_file">儲存為檔案</string>
+    <string name="settings_transfer_share">分享</string>
+    <string name="settings_transfer_share_file">分享課表檔案</string>
+    <string name="settings_transfer_qr_generate">產生二維碼</string>
+    <string name="settings_transfer_qr_desc">僅包含目前學期的課程。對方掃碼後，課程會匯入至其目前的課表並切換至該學期。如需完整備份，請使用「儲存為檔案」。</string>
+    <string name="settings_transfer_ics_section">日曆匯出</string>
+    <string name="settings_transfer_ics_desc">將目前學期的課程與考試匯出為標準 .ics 檔案，可用系統日曆、Google 日曆等開啟。</string>
+    <string name="settings_transfer_ics_once">匯出的日曆不會自動更新，課程或考試有變動時需重新匯出。</string>
+    <string name="settings_transfer_ics_export">匯出目前學期 .ics</string>
+    <string name="settings_transfer_import_section">匯入</string>
+    <string name="settings_transfer_import_file">從備份檔案匯入</string>
+    <string name="settings_transfer_import_qr">掃碼匯入</string>
+    <string name="settings_transfer_import_qr_album">從相簿識別二維碼</string>
+    <string name="settings_transfer_wakeup_section">從 WakeUp 轉移</string>
+    <string name="settings_transfer_wakeup_desc">在 WakeUp 課程表中將課表備份為檔案，然後在此選擇該檔案。連堂、單雙週、節次時間與顏色都會保留。</string>
+    <string name="settings_transfer_wakeup_pick">選擇 WakeUp 備份檔案</string>
+    <string name="settings_transfer_shiguang_section">從拾光課程表轉移</string>
+    <string name="settings_transfer_shiguang_desc">在拾光課程表的「我的 → 高級功能 → 課表導入/導出」中匯出課程檔案（檔案名稱以 shiguangschedule_ 開頭），然後在此選擇該檔案。課程、單雙週、節次時間與開學日期都會保留。</string>
+    <string name="settings_transfer_shiguang_pick">選擇拾光匯出檔案</string>
+    <string name="settings_transfer_merge_hint">匯入的內容會與現有資料合併，本機上較新的修改不會被覆蓋。</string>
+    <string name="settings_transfer_processing">正在處理…</string>
+    <string name="settings_transfer_preview_title">匯入預覽</string>
+    <string name="settings_transfer_preview_source">來源：%1$s</string>
+    <string name="settings_transfer_preview_activate">匯入後將設為目前學期，今日頁、課表與桌面小工具會立即切換。</string>
+    <string name="settings_transfer_preview_adapter_notes">以下說明由適配器作者提供，並非由空課提供：</string>
+    <string name="settings_transfer_preview_confirm">匯入</string>
+    <string name="settings_transfer_preview_term">學期「%1$s」· %2$s · %3$s · %4$s · %5$s</string>
+    <!-- 匯入預覽、日曆匯出、識別核對裏的計數 -->
+    <plurals name="settings_count_weeks">
+        <item quantity="other">%1$d 週</item>
+    </plurals>
+    <plurals name="settings_count_courses">
+        <item quantity="other">%1$d 個課程</item>
+    </plurals>
+    <plurals name="settings_count_blocks">
+        <item quantity="other">%1$d 項安排</item>
+    </plurals>
+    <plurals name="settings_count_exams">
+        <item quantity="other">%1$d 場考試</item>
+    </plurals>
+    <plurals name="settings_transfer_preview_deletions">
+        <item quantity="other">匯入後將刪除本機上的 %1$d 項現有內容，請確認檔案來源可信。</item>
+    </plurals>
+    <string name="settings_transfer_preview_merge_note">與本機資料合併後生效。</string>
+    <string name="settings_transfer_share_failed">分享失敗：%1$s</string>
+    <string name="settings_transfer_ics_failed_to_open">無法寫入所選位置：%1$s</string>
+    <string name="settings_transfer_permission_camera">未取得相機權限，請在系統設定中授予後再試。</string>
+
+    <!-- 匯入 / 匯出的操作結果 -->
+    <string name="settings_transfer_export_done">已匯出</string>
+    <string name="settings_transfer_export_failed">匯出失敗：%1$s</string>
+    <string name="settings_transfer_ics_export_done">已匯出日曆檔案：%1$s、%2$s。</string>
+    <plurals name="settings_transfer_ics_block_count">
+        <item quantity="other">%1$d 項上課安排</item>
+    </plurals>
+    <plurals name="settings_transfer_ics_skipped">
+        <item quantity="other">%1$d 項上課安排缺少節次時間，未匯出。</item>
+    </plurals>
+    <string name="settings_transfer_ics_export_failed">日曆匯出失敗：%1$s</string>
+    <string name="settings_transfer_no_term">目前沒有學期</string>
+    <string name="settings_transfer_cannot_open_target">無法開啟所選檔案</string>
+    <string name="settings_transfer_no_term_for_qr">目前沒有學期，無法產生二維碼。</string>
+    <string name="settings_transfer_qr_failed">二維碼產生失敗：%1$s</string>
+    <string name="settings_transfer_qr_unreadable">無法讀取這張圖片，請換一張再試。</string>
+    <string name="settings_transfer_qr_not_nullclass">這不是空課的二維碼。</string>
+    <string name="settings_transfer_qr_source">二維碼</string>
+    <string name="settings_transfer_file_source">檔案 %1$s</string>
+    <string name="settings_transfer_wakeup_source">WakeUp %1$s</string>
+    <string name="settings_transfer_shiguang_source">拾光課程表 %1$s</string>
+    <string name="settings_transfer_read_failed">讀取失敗：%1$s</string>
+    <!-- 結尾的「新增課表…」那句由呼叫方另外連接 -->
+    <plurals name="settings_transfer_import_done">
+        <item quantity="other">匯入完成，更新了 %1$d 項內容。</item>
+    </plurals>
+    <string name="settings_transfer_import_up_to_date">本機資料已是最新，無需更新。</string>
+    <string name="settings_transfer_cannot_read_file">無法讀取檔案。</string>
+    <string name="settings_transfer_wakeup_generic">課表</string>
+    <string name="settings_transfer_shiguang_generic">匯出檔案</string>
+    <string name="settings_transfer_import_failed">匯入失敗：%1$s</string>
+    <!-- 教務匯入：由圖片識別生成時，空課自己補上的固定核對提示 -->
+    <string name="settings_transfer_ocr_review_note">此課表由圖片識別產生，請重點核對課程名稱、週次與節次</string>
+    <string name="settings_transfer_no_terms_in_file">檔案中沒有可匯入的學期。</string>
+    <string name="settings_transfer_parse_failed">無法讀取檔案內容：%1$s</string>
+    <string name="settings_transfer_new_timetable_one">新增了課表「%1$s」，可在「我的 → 課表管理」中切換。</string>
+    <plurals name="settings_transfer_new_timetable_many">
+        <item quantity="other">新增了 %1$d 個課表，可在「我的 → 課表管理」中切換。</item>
+    </plurals>
+
+    <!-- 二維碼分享 / 掃碼 -->
+    <string name="settings_qr_render_failed">二維碼繪製失敗</string>
+    <string name="settings_qr_share_entry">分享課表二維碼</string>
+    <string name="settings_qr_share_title">掃碼匯入課表</string>
+    <string name="settings_qr_share_image">分享圖片</string>
+    <string name="settings_qr_image_desc">課表二維碼</string>
+    <string name="settings_qr_share_hint">用另一部裝置上的空課掃描此二維碼，即可匯入目前學期。</string>
+    <string name="settings_qr_scan_hint">將二維碼放入框內，雙指縮放、點按對焦</string>
+    <string name="settings_qr_scan_zooming">已偵測到二維碼，正在自動放大…</string>
+    <string name="settings_qr_scan_decoding">請保持手機穩定，正在識別…</string>
+    <string name="settings_qr_scan_starting">正在啟動相機…</string>
+    <string name="settings_qr_scan_album">從相簿選擇二維碼</string>
+    <string name="settings_qr_scan_torch_on">開啟閃光燈</string>
+    <string name="settings_qr_scan_torch_off">關閉閃光燈</string>
+    <string name="settings_qr_scan_camera_failed">無法開啟相機：%1$s</string>
+    <string name="settings_qr_scan_failed">識別失敗：%1$s</string>
+    <string name="settings_qr_scan_failed_retry">請返回後重新掃碼</string>
+    <string name="settings_qr_image_not_found">圖片中找不到二維碼，請選擇清晰、完整的二維碼圖片。</string>
+
+    <!-- 匯入預覽裏的提示（:importer 的 ImportNotice） -->
+    <string name="settings_notice_shiguang_row_not_object">第 %1$d 個課程的資料有誤，已略過</string>
+    <string name="settings_notice_shiguang_row_no_name">第 %1$d 個課程缺少名稱，已略過</string>
+    <string name="settings_notice_shiguang_row_no_day">「%1$s」缺少上課星期，已略過</string>
+    <string name="settings_notice_shiguang_row_bad_day">「%1$s」的上課星期（%2$s）無效，已略過</string>
+    <string name="settings_notice_shiguang_weeks_truncated">學期共 %1$d 週，超過最多 %2$d 週的限制，超出部分未匯入</string>
+    <string name="settings_notice_shiguang_weeks_exceed_declared">課程中出現了第 %1$d 週，超過檔案中設定的 %2$d 週，學期已按 %1$d 週匯入</string>
+    <string name="settings_notice_shiguang_no_start_date">檔案中沒有開學日期，已預設從本週開始，請在「學期管理」中核對</string>
+    <string name="settings_notice_shiguang_start_date_unreadable">無法識別開學日期「%1$s」，已預設從本週開始，請在「學期管理」中核對</string>
+    <string name="settings_notice_shiguang_no_period_table">檔案中沒有節次時間，已使用預設節次時間，請在「學期管理」中核對</string>
+    <string name="settings_notice_shiguang_period_row_invalid">節次時間第 %1$d 項有誤，已略過</string>
+    <string name="settings_notice_shiguang_period_out_of_range">節次時間中的第 %1$d 節超出每日最多 %2$d 節的限制，已略過</string>
+    <string name="settings_notice_shiguang_period_time_invalid">第 %1$d 節的下課時間不晚於上課時間，已略過</string>
+    <string name="settings_notice_shiguang_course_beyond_last_period">「%1$s」排在第 %2$d 節，超出每日最多 %3$d 節的限制，已略過</string>
+    <string name="settings_notice_shiguang_course_no_time">「%1$s」缺少上課時間，已略過</string>
+    <string name="settings_notice_shiguang_custom_time_no_nearest">「%1$s」使用自訂時間 %2$s，與現有節次都對不上，已略過</string>
+    <string name="settings_notice_shiguang_custom_time_nearest">「%1$s」使用自訂時間 %2$s，已放入最接近的第 %3$d 節</string>
+    <plurals name="settings_notice_shiguang_custom_time_dropped">
+        <item quantity="other">有 %1$d 項上課安排在拾光中設定了自訂上下課時間，已按節次匯入，自訂時間未保留</item>
+    </plurals>
+    <string name="settings_notice_shiguang_periods_extended">課程用到了第 %1$d 節，但節次時間只有 %2$d 節，已按每節 %3$d 分鐘、課間 %4$d 分鐘補齊，請在「學期管理」中核對</string>
+    <string name="settings_notice_shiguang_weeks_overflow_dropped">「%1$s」有超過第 %2$d 週的週次，超出部分未匯入</string>
+    <string name="settings_notice_shiguang_weeks_missing">「%1$s」缺少週次資料，已按第 1~%2$d 週匯入</string>
+    <string name="settings_notice_shiguang_weeks_all_out_of_range">「%1$s」的週次（第 %2$s 週）均超出學期的 %3$d 週，已略過</string>
+    <string name="settings_notice_wakeup_line_unparsable">檔案第 %1$d 行內容無法識別，已略過</string>
+    <string name="settings_notice_wakeup_line_not_object">檔案第 %1$d 行內容無法識別，已略過</string>
+    <string name="settings_notice_wakeup_line_not_array">檔案第 %1$d 行內容無法識別，已略過</string>
+    <string name="settings_notice_wakeup_weeks_truncated">學期共 %1$d 週，超過最多 %2$d 週的限制，超出部分未匯入</string>
+    <string name="settings_notice_wakeup_period_row_invalid">節次時間第 %1$d 項有誤，已略過</string>
+    <string name="settings_notice_wakeup_no_period_table">WakeUp 檔案中沒有節次時間，已使用預設節次時間</string>
+    <string name="settings_notice_wakeup_course_no_name">有一個課程缺少名稱，已命名為「課程 %1$s」</string>
+    <string name="settings_notice_wakeup_block_missing_field">第 %1$d 項上課安排資料不完整，已略過</string>
+    <string name="settings_notice_wakeup_block_bad_step">第 %1$d 項上課安排的節數（%2$s）無效，已按 1 節匯入</string>
+    <string name="settings_notice_wakeup_block_bad_day">第 %1$d 項上課安排的星期（%2$s）無效，已略過</string>
+    <string name="settings_notice_wakeup_block_bad_start">第 %1$d 項上課安排的開始節次（%2$s）無效，已略過</string>
+    <!-- 教務：圖片 OCR / 頁面文字還原表格（:importer 的 ImportNotice.OCR_*）。行號、欄號從 1 起 -->
+    <string name="settings_notice_ocr_no_text">圖片中沒有識別到文字</string>
+    <string name="settings_notice_ocr_no_day_header">找不到星期標題，無法確定每一欄對應的星期</string>
+    <plurals name="settings_notice_ocr_day_columns_out_of_range">
+        <item quantity="other">識別到 %1$d 日（通常為 5~7 日），星期標題可能不完整</item>
+    </plurals>
+    <string name="settings_notice_ocr_day_columns_mismatch">識別到的星期數（%1$d）與預期（%2$d）不符</string>
+    <string name="settings_notice_ocr_day_order_odd">星期標題的次序異常，請重點核對</string>
+    <string name="settings_notice_ocr_periods_by_time">節次是根據上課時間推斷的，請重點核對</string>
+    <plurals name="settings_notice_ocr_no_period_column">
+        <item quantity="other">找不到節次欄（共識別到 %1$d 行），無法確定每一行對應的節次</item>
+    </plurals>
+    <string name="settings_notice_ocr_period_rows_mismatch">識別到的節次數（%1$d）與預期（%2$d）不符</string>
+    <plurals name="settings_notice_ocr_unassigned_boxes">
+        <item quantity="other">有 %1$d 處文字未能歸入課表（佔 %2$d%%）</item>
+    </plurals>
+    <string name="settings_notice_ocr_no_week_info">課表中沒有週次資料，已按整個學期匯入，請核對</string>
+    <plurals name="settings_notice_ocr_column_lines_skipped">
+        <item quantity="other">第 %1$d 欄有 %2$d 行文字未能對應到課程，已略過</item>
+    </plurals>
+    <string name="settings_notice_ocr_cell_no_grid">第 %1$d 行第 %2$d 欄的位置無法確定</string>
+    <string name="settings_notice_ocr_cell_no_weeks">第 %1$d 行第 %2$d 欄「%3$s」未識別出週次，已按整個學期匯入，請核對</string>
+    <string name="settings_notice_ocr_no_courses">未識別出任何課程</string>
+
+    <!-- 教務匯入：選擇學校 / 適配器詳情 / 庫更新 -->
+    <!-- 教務匯入 Activity 的標題（最近使用的應用程式列表裏顯示） -->
+    <string name="settings_jw_activity_label">教務系統匯入</string>
+    <string name="settings_jw_search_hint">搜尋學校名稱或網域</string>
+    <string name="settings_jw_search_clear">清除搜尋</string>
+    <string name="settings_jw_tab_schools">學校</string>
+    <string name="settings_jw_tab_generic">通用適配</string>
+    <string name="settings_jw_tab_mine">我新增的</string>
+    <string name="settings_jw_import_zip">匯入適配器套件</string>
+
+    <!-- 教務匯入：庫線上更新 -->
+    <plurals name="settings_jw_library_version">
+        <item quantity="other">適配器庫版本：%1$s（共 %2$d 個適配器）</item>
+    </plurals>
+    <string name="settings_jw_library_builtin">內置</string>
+    <string name="settings_jw_library_last_check">上次檢查更新：%1$s</string>
+    <string name="settings_jw_library_never_checked">從未</string>
+    <string name="settings_jw_library_checking">正在檢查…</string>
+    <string name="settings_jw_library_updating">正在更新…</string>
+    <string name="settings_jw_library_check_now">檢查更新</string>
+    <string name="settings_jw_library_update_to">更新至 v%1$s</string>
+    <string name="settings_jw_library_check_failed">檢查更新失敗，請檢查網絡後再試。</string>
+    <string name="settings_jw_library_found">有新版本 v%1$s</string>
+    <string name="settings_jw_library_latest">已是最新版本</string>
+    <string name="settings_jw_library_updated">適配器庫已更新至 v%1$s。</string>
+    <string name="settings_jw_library_shadowed">官方適配器庫已收錄 %1$s，將改用官方版本。</string>
+    <string name="settings_jw_library_update_failed">更新失敗：%1$s</string>
+
+    <!-- 教務匯入：網頁步驟 -->
+    <string name="settings_jw_hint_generic">登入並開啟課表頁面後，點按「提取課表」。通用適配器會根據頁面內容自動識別課表。</string>
+    <string name="settings_jw_hint">登入並開啟課表頁面後，點按「提取課表」。</string>
+    <string name="settings_jw_extracting">正在提取…</string>
+    <string name="settings_jw_extract">提取課表</string>
+    <string name="settings_jw_ocr_running">正在識別課表圖片…</string>
+    <string name="settings_jw_image_unreadable">無法讀取課表圖片。圖片可能已損壞，或不在適配器允許存取的網站上。如使用截圖，請選擇原圖，不要使用經通訊軟件壓縮過的圖片。</string>
+    <string name="settings_jw_ocr_building">正在分析課表…</string>
+    <string name="settings_jw_ocr_unreliable">識別結果可能有誤（%1$s），建議改為手動新增課程。</string>
+    <string name="settings_jw_ocr_empty">未識別出課程，建議改為手動新增課程。</string>
+    <string name="settings_jw_ocr_done">識別完成，請核對後匯入</string>
+    <string name="settings_jw_structure_done">識別完成，請核對後匯入</string>
+    <string name="settings_jw_extract_done">提取成功</string>
+    <string name="settings_jw_extract_failed">提取失敗：%1$s</string>
+    <string name="settings_jw_page_loaded">頁面已載入，正在自動提取…</string>
+    <string name="settings_jw_no_start_url">缺少教務系統網址，請返回重新選擇學校。</string>
+    <string name="settings_jw_switch_mobile">切換手機版</string>
+    <string name="settings_jw_switch_desktop">切換電腦版</string>
+    <string name="settings_jw_network_frozen_short">提取期間已暫停網頁連線。</string>
+    <string name="settings_jw_network_frozen">提取期間已暫停網頁連線，以防頁面內容被傳送到其他網站。</string>
+    <string name="settings_jw_network_restored">已恢復網頁連線</string>
+    <string name="settings_jw_resume_browsing">繼續瀏覽網頁</string>
+    <string name="settings_jw_error_log_title">錯誤記錄</string>
+    <string name="settings_jw_error_log_copy">複製錯誤記錄</string>
+    <string name="settings_jw_error_log_copied">已複製錯誤記錄</string>
+    <string name="settings_jw_image_cancelled">已放棄識別結果，可重新提取或手動新增課程。</string>
+    <string name="settings_jw_structure_missing">目前頁面中找不到課表（%1$s）。請確認已開啟課表頁面後再試；如課表顯示不完整，可切換為電腦版。</string>
+    <string name="settings_jw_no_courses">目前頁面中未識別出課程，請確認已開啟課表頁面。</string>
+    <string name="settings_jw_adapter_ocr">%1$s（圖片識別）</string>
+    <string name="settings_jw_adapter_auto">%1$s（自動識別）</string>
+
+    <!-- 教務匯入：識別結果核對 -->
+    <string name="settings_jw_review_title">核對識別結果</string>
+    <string name="settings_jw_review_count">識別到 %1$s、%2$s。</string>
+    <plurals name="settings_jw_review_course_count">
+        <item quantity="other">%1$d 個課程</item>
+    </plurals>
+    <string name="settings_jw_review_defaults">學期名稱與開學日期為自動填寫，匯入後可在「學期管理」中修改。</string>
+    <string name="settings_jw_review_warn">請重點核對以下內容：</string>
+    <string name="settings_jw_review_hint">識別結果是根據表格位置產生的，可能出現整行錯位。匯入後請在課表中抽查幾個課程的時間。</string>
+    <string name="settings_jw_review_block">（%1$s 第 %2$d-%3$d 節）</string>
+    <string name="settings_jw_review_confirm">確認匯入</string>
+
+    <!-- 教務匯入：適配器執行 -->
+    <string name="settings_jw_error_title">操作失敗</string>
+    <string name="settings_jw_done_title">完成</string>
+    <string name="settings_jw_ok">確定</string>
+    <string name="settings_jw_unknown_error">出現未知問題</string>
+    <string name="settings_jw_package_read_failed">無法讀取適配器套件</string>
+    <string name="settings_jw_cannot_read_file">無法讀取檔案</string>
+    <!-- 教務：用戶會遇到的失敗原因（:importer 的 JwErrorCode） -->
+    <string name="settings_jw_err_network_failed">網絡連線失敗：%1$s</string>
+    <string name="settings_jw_err_http_status">伺服器暫時無法連線（錯誤碼 %1$d）</string>
+    <string name="settings_jw_err_insecure_redirect">伺服器轉向了不安全的網址，已停止存取：%1$s</string>
+    <string name="settings_jw_err_empty_response">伺服器沒有傳回內容</string>
+    <string name="settings_jw_err_response_too_large">伺服器傳回的內容過大（超過 %1$d KB）</string>
+    <string name="settings_jw_err_no_newer_version">已是最新版本</string>
+    <string name="settings_jw_err_index_unreadable">無法讀取適配器庫：%1$s</string>
+    <string name="settings_jw_err_adapter_file_unreadable">無法讀取適配器「%1$s」的檔案 %2$s：%3$s</string>
+    <string name="settings_jw_err_library_url_empty">請填寫適配器庫網址</string>
+    <string name="settings_jw_err_library_url_invalid">適配器庫網址無效：%1$s</string>
+    <string name="settings_jw_err_library_url_not_http">適配器庫網址須以 https:// 開頭：%1$s</string>
+    <string name="settings_jw_err_library_url_insecure">適配器庫網址須使用 https，以防內容在傳送途中被竄改</string>
+    <string name="settings_jw_err_library_url_no_host">適配器庫網址不完整：%1$s</string>
+    <string name="settings_jw_err_library_url_github_shape">GitHub 網址格式應為 github.com/用戶名稱/儲存庫名稱</string>
+    <string name="settings_jw_err_spec_too_new">此適配器需要較新版本的空課（適配器規範 v%1$d，目前最高支援 v%2$d），請先更新應用程式</string>
+    <string name="settings_jw_err_app_too_old">此適配器需要較新版本的空課（需要版本號 %1$d 或以上，目前為 %2$d），請先更新應用程式</string>
+    <string name="settings_jw_broken_unreadable">讀取失敗</string>
+    <!-- 應用程式給適配器設的限額 -->
+    <string name="settings_jw_script_timeout">適配器執行逾時（%1$d 秒）</string>
+    <string name="settings_jw_wait_timeout">等待輸入逾時（%1$d 秒）</string>
+    <string name="settings_jw_result_too_large">提取結果超出大小限制（%1$d K 字元），請向適配器作者回報</string>
+    <string name="settings_jw_library_read_failed">無法讀取適配器庫</string>
+    <string name="settings_jw_download_failed">適配器下載失敗</string>
+    <string name="settings_jw_install_failed">新增失敗</string>
+    <string name="settings_jw_installed">已新增：%1$s</string>
+    <string name="settings_jw_deleted">已刪除「%1$s」</string>
+    <string name="settings_jw_delete_builtin_denied">內置適配器無法刪除。</string>
+
+    <!-- 教務匯入：適配器提問對話框 -->
+    <string name="settings_jw_ask_title">「%1$s」需要你補充資料</string>
+    <string name="settings_jw_ask_safety">空課不會向你索取教務系統密碼等帳戶資料。</string>
+
+    <!-- 教務匯入：選擇學校頁與庫 / 詳情彈出層 -->
+    <string name="settings_jw_picker_login_title">輸入教務系統網址</string>
+    <string name="settings_jw_picker_login_desc">請填寫學校教務系統的登入頁或課表頁網址，例如 jw.example.edu.cn。登入與驗證都在下一頁的教務網頁中完成，空課不會取得你的帳戶和密碼。</string>
+    <string name="settings_jw_picker_login_label">教務系統網址</string>
+    <string name="settings_jw_picker_login_hint">不確定網址時，可在瀏覽器中開啟學校教務系統，複製網址列中的完整網址</string>
+    <string name="settings_jw_picker_login_invalid">網址格式有誤，請檢查是否有多餘的空格或中文字元</string>
+    <string name="settings_jw_picker_login_preview">將開啟：%1$s。部分學校的教務系統僅支援 http，如無法開啟，可嘗試將開頭改為 http://</string>
+    <string name="settings_jw_picker_login_open">開啟</string>
+    <string name="settings_jw_picker_link_title">從適配器庫新增</string>
+    <string name="settings_jw_picker_link_desc">貼上適配器庫的 GitHub 儲存庫網址或 index.json 連結（須以 https 開頭）。適配器由第三方維護，請確認來源可信。</string>
+    <string name="settings_jw_picker_link_label">庫網址</string>
+    <string name="settings_jw_picker_link_read">讀取</string>
+
+    <!-- 教務匯入：安裝確認 / 庫列表 / 詳情 -->
+    <plurals name="settings_jw_install_title_many">
+        <item quantity="other">安裝 %1$d 個適配器？</item>
+    </plurals>
+    <string name="settings_jw_install_title_one">新增這個適配器？</string>
+    <string name="settings_jw_adapter_line">%1$s（%2$s v%3$s）</string>
+    <string name="settings_jw_adapter_login_url">登入頁：%1$s</string>
+    <string name="settings_jw_adapter_hosts">可存取的網站：%1$s</string>
+    <string name="settings_jw_adapter_view_script">查看程式碼</string>
+    <string name="settings_jw_adapter_source_url">來源：%1$s</string>
+    <string name="settings_jw_adapter_source_file">來源檔案：%1$s</string>
+    <string name="settings_jw_adapter_untrusted">第三方適配器由他人編寫，提取時會讀取你已登入的教務網頁內容，空課不會對其進行審核。請確認來源可信，或先查看程式碼。</string>
+    <string name="settings_jw_install_confirm">確認新增</string>
+    <string name="settings_jw_library_dialog_title">適配器庫</string>
+    <string name="settings_jw_library_empty">這個庫裏還沒有適配器。</string>
+    <string name="settings_jw_library_no_match">這個庫裏沒有符合「%1$s」的適配器。</string>
+    <string name="settings_jw_library_untrusted">庫中的適配器同樣由第三方維護，空課不會對其進行審核。</string>
+    <string name="settings_jw_adapter_key">識別碼：%1$s</string>
+    <string name="settings_jw_adapter_version">版本：v%1$s</string>
+    <string name="settings_jw_adapter_source_builtin">官方</string>
+    <string name="settings_jw_adapter_source_user">自行新增</string>
+    <string name="settings_jw_adapter_source">來源：%1$s</string>
+    <string name="settings_jw_adapter_author">作者：%1$s</string>
+    <string name="settings_jw_adapter_homepage">主頁：%1$s</string>
+    <string name="settings_jw_adapter_installed_from">安裝來源：%1$s</string>
+    <string name="settings_jw_adapter_checksum">校驗碼：%1$s…</string>
+    <string name="settings_jw_adapter_delete">刪除</string>
+    <string name="settings_jw_script_dialog_title">%1$s 的程式碼</string>
+
+    <!-- 教務匯入：選擇學校頁 -->
+    <string name="settings_jw_recent_used">最近使用</string>
+    <string name="settings_jw_recent_refresh_hint">點按可沿用上次的登入狀態重新匯入</string>
+    <string name="settings_jw_no_school_match">找不到符合「%1$s」的學校。</string>
+    <plurals name="settings_jw_mine_hits">
+        <item quantity="other">「我新增的」中有 %1$d 個結果</item>
+    </plurals>
+    <string name="settings_jw_try_generic">可嘗試使用通用適配器：填寫教務系統網址並登入後，空課會自動識別頁面中的課表。</string>
+    <string name="settings_jw_badge_generic">通用</string>
+    <string name="settings_jw_no_your_school">找不到你的學校？</string>
+    <string name="settings_jw_use_generic">使用通用適配器</string>
+    <string name="settings_jw_generic_desc">通用適配器不針對特定學校：填寫教務系統網址並登入後，空課會識別頁面中的課表（圖片形式的課表會在本機進行文字識別）。識別結果需經你核對確認後才會匯入。</string>
+    <string name="settings_jw_request_adapter">申請支援你的學校</string>
+    <string name="settings_jw_add_from_link">從連結新增</string>
+    <string name="settings_jw_mine_empty">尚未新增適配器。可以匯入適配器套件，或透過連結從適配器庫新增。第三方適配器由他人維護，空課不會對其進行審核。</string>
+    <string name="settings_jw_insecure">不安全連線</string>
+    <string name="settings_jw_details">詳情</string>
+
+</resources>

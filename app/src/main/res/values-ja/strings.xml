@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Japanese translation of values/strings.xml. Conventions: docs/i18n.md. -->
+<resources>
+
+    <string name="app_name">NullClass</string>
+
+    <!-- Bottom navigation -->
+    <string name="app_tab_today">今日</string>
+    <string name="app_tab_schedule">時間割</string>
+    <string name="app_tab_exams">試験</string>
+    <string name="app_tab_profile">マイページ</string>
+
+    <!-- Two-pane placeholders -->
+    <string name="app_detail_placeholder_profile_title">左側から項目を選択してください</string>
+    <string name="app_detail_placeholder_profile_desc">設定、インポート / エクスポート、アプリ情報がここに表示されます。</string>
+    <string name="app_detail_placeholder_exam_title">試験を選択してください</string>
+    <string name="app_detail_placeholder_exam_desc">左側で試験を選択すると編集できます。右上から追加することもできます。</string>
+
+    <!-- Notification channels -->
+    <string name="app_channel_class">授業前リマインダー</string>
+    <string name="app_channel_class_desc">授業の開始前に届く通知</string>
+    <string name="app_channel_exam">試験リマインダー</string>
+    <string name="app_channel_exam_desc">試験の開始前に届く通知</string>
+    <string name="app_channel_event">予定リマインダー</string>
+    <string name="app_channel_event_desc">予定についての通知</string>
+
+    <!-- Reminder content -->
+    <string name="app_class_started">開始済み · %1$s</string>
+    <string name="app_exam_time_undecided">時間未定</string>
+    <string name="app_exam_seat">座席 %1$s</string>
+    <string name="app_event_reminder_text">%1$s %2$s</string>
+    <string name="app_event_all_day">終日</string>
+
+</resources>

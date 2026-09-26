@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  繁體中文（香港）譯文，原文見 values/strings.xml。
+  全應用通用的文案：按鈕、通用狀態、共用列舉的名稱。
+-->
+<resources>
+
+    <!-- 通用操作 -->
+    <string name="common_confirm">確定</string>
+    <string name="common_cancel">取消</string>
+    <string name="common_save">儲存</string>
+    <string name="common_delete">刪除</string>
+    <string name="common_edit">編輯</string>
+    <string name="common_done">完成</string>
+    <string name="common_close">關閉</string>
+    <string name="common_back">返回</string>
+    <string name="common_undo">復原</string>
+    <string name="common_select_all">全選</string>
+    <string name="common_deselect_all">取消全選</string>
+    <string name="common_create">新增</string>
+
+    <!-- 通用狀態 -->
+    <string name="common_loading">正在載入…</string>
+    <string name="common_saving">正在儲存…</string>
+    <string name="common_failed">操作失敗</string>
+    <string name="common_got_it">知道了</string>
+    <string name="common_unknown_error">請稍後再試</string>
+
+    <!-- 配色模式（ThemeMode） -->
+    <string name="enum_theme_mode_dynamic">Material 取色</string>
+    <string name="enum_theme_mode_light">淺色</string>
+    <string name="enum_theme_mode_dark">深色</string>
+
+    <!-- 桌面小工具字型大小（WidgetFontSize） -->
+    <string name="enum_widget_font_size_small">小</string>
+    <string name="enum_widget_font_size_standard">標準</string>
+    <string name="enum_widget_font_size_large">大</string>
+    <string name="enum_widget_font_size_xlarge">特大</string>
+
+    <!-- 介面語言（AppLanguage）。語言自稱不隨介面語言翻譯，不在譯文中出現 -->
+    <string name="enum_app_language_system">跟隨系統</string>
+
+    <!-- 課表共用文案（ScheduleText）。課表網格與桌面小工具的格子極窄，
+         這些緊湊標籤不按常規在數字與中文之間留空格。 -->
+    <string-array name="fmt_day_of_week">
+        <item>週一</item>
+        <item>週二</item>
+        <item>週三</item>
+        <item>週四</item>
+        <item>週五</item>
+        <item>週六</item>
+        <item>週日</item>
+    </string-array>
+    <string-array name="fmt_day_of_week_short">
+        <item>一</item>
+        <item>二</item>
+        <item>三</item>
+        <item>四</item>
+        <item>五</item>
+        <item>六</item>
+        <item>日</item>
+    </string-array>
+    <string name="fmt_day_of_week_unknown">?</string>
+
+    <string name="fmt_week_single">第%1$d週</string>
+    <string name="fmt_week_range">第%1$d-%2$d週</string>
+    <string name="fmt_week_span_single">%1$d週</string>
+    <string name="fmt_week_span_range">%1$d-%2$d週</string>
+    <string name="fmt_week_type_odd">單週</string>
+    <string name="fmt_week_type_even">雙週</string>
+    <!-- 緊湊處的單雙週：接在週次後面，如「1-16週·單」 -->
+    <string name="fmt_week_span_with_type">%1$s·%2$s</string>
+    <string name="fmt_week_type_odd_short">單</string>
+    <string name="fmt_week_type_even_short">雙</string>
+
+    <string name="fmt_period_single">%1$d節</string>
+    <string name="fmt_period_range">%1$d-%2$d節</string>
+
+    <plurals name="fmt_remaining_minutes">
+        <item quantity="other">%1$d 分鐘</item>
+    </plurals>
+    <plurals name="fmt_remaining_hours">
+        <item quantity="other">%1$d 小時</item>
+    </plurals>
+    <!-- 「1 小時 20 分鐘」：%1$s 是 fmt_remaining_hours，%2$s 是 fmt_remaining_minutes -->
+    <string name="fmt_remaining_hours_minutes">%1$s %2$s</string>
+    <!-- 學期總週數，如「第 3 週 · 共 18 週」的後半 -->
+    <plurals name="fmt_total_weeks">
+        <item quantity="other">共 %1$d 週</item>
+    </plurals>
+
+    <!-- 並列資訊之間的分隔符，兩側空格有意義，必須用引號包住 -->
+    <string name="common_separator">" · "</string>
+    <!-- 列舉同類名詞時的分隔符 -->
+    <string name="common_list_separator">、</string>
+    <!-- 並列幾句話之間的分隔符 -->
+    <string name="common_clause_separator">；</string>
+    <!-- 兩個完整句子之間的分隔符。中文句末已有「。」，不需要再加 -->
+    <string name="common_sentence_separator"></string>
+
+    <!-- 日期共用文案（DateText） -->
+    <string name="fmt_date">%1$d年%2$d月%3$d日</string>
+    <string name="fmt_month_day">%1$d月%2$d日</string>
+    <string name="fmt_exam_relative_today">今日</string>
+    <string name="fmt_exam_relative_tomorrow">明日</string>
+    <string name="fmt_exam_relative_yesterday">昨日</string>
+    <string name="fmt_exam_relative_past">已結束</string>
+    <plurals name="fmt_exam_relative_in_days">
+        <item quantity="other">%1$d 日後</item>
+    </plurals>
+
+    <!-- 資料層錯誤（DataError） -->
+    <string name="error_data_course_not_found">所屬課程已不存在，請重新選擇。</string>
+    <string name="error_data_no_timetable">沒有可用的課表，請先建立課表。</string>
+    <string name="error_data_timetable_name_empty">請填寫課表名稱。</string>
+
+    <!-- 通用：關閉（提前量選擇等「不限」語義） -->
+    <string name="common_off">關閉</string>
+
+    <!-- 課表檔案 / 二維碼（:importer 的 ScheduleFileError） -->
+    <string name="error_import_future_version">此檔案由較新版本的空課匯出（檔案格式 v%1$d，目前最高支援 v%2$d），請先將空課更新至最新版本。</string>
+    <string name="error_import_invalid_file">無法識別此檔案，請確認選擇的是空課匯出的備份檔案。</string>
+    <string name="error_import_qr_too_large">課表內容過多，超出二維碼容量（%1$d 位元組，上限 %2$d 位元組），請改用「分享課表檔案」。</string>
+    <string name="error_import_qr_no_prefix">這不是空課的課表二維碼。</string>
+    <string name="error_import_qr_no_term">找不到可分享的學期。</string>
+    <string name="error_import_qr_corrupt">二維碼內容不完整，請對方重新產生後再掃描。</string>
+    <string name="error_import_qr_gunzip_failed">無法讀取二維碼內容，請對方重新產生後再掃描。</string>
+    <string name="error_import_shiguang_bad_json">無法識別此檔案，請確認選擇的是拾光課程表匯出的課程檔案。</string>
+    <string name="error_import_shiguang_not_object">無法識別此檔案，請確認選擇的是拾光課程表匯出的課程檔案。</string>
+    <string name="error_import_shiguang_no_courses">無法識別此檔案，請確認選擇的是拾光課程表匯出的課程檔案。</string>
+    <string name="error_import_shiguang_empty">此檔案中沒有課程。</string>
+    <string name="error_import_shiguang_no_rows">此檔案中沒有可匯入的課程。</string>
+    <string name="error_import_shiguang_no_placeable">此檔案中的課程都缺少有效的上課時間，無法放入課表。</string>
+    <string name="error_import_shiguang_weeks_out_of_range">此檔案中課程的週次都超出了學期範圍。</string>
+    <string name="error_import_wakeup_no_schedule">無法識別此檔案，請確認選擇的是 WakeUp 課程表匯出的備份檔案。</string>
+    <string name="error_import_wakeup_no_courses">此 WakeUp 檔案缺少課程資料，可能已損壞，請重新匯出。</string>
+    <string name="error_import_wakeup_empty_courses">此 WakeUp 檔案中沒有課程。</string>
+
+</resources>

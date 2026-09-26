@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- 繁體中文（香港）譯文，原文見 values/strings.xml。:feature:exam 的介面文案。 -->
+<resources>
+
+    <!-- 考試列表 -->
+    <string name="exam_title">考試</string>
+    <string name="exam_add">新增考試</string>
+    <string name="exam_delete">刪除考試</string>
+    <string name="exam_no_term_title">尚未建立學期</string>
+    <string name="exam_no_term_desc">新增考試前需先建立學期。</string>
+    <string name="exam_create_term">建立學期</string>
+    <string name="exam_summary_empty">暫無考試安排</string>
+    <plurals name="exam_summary_count">
+        <item quantity="other">共 %1$d 場考試</item>
+    </plurals>
+    <string name="exam_no_upcoming">沒有待考的考試</string>
+    <string name="exam_section_upcoming">待考</string>
+    <string name="exam_section_past">已結束</string>
+    <string name="exam_next">下一場考試</string>
+    <string name="exam_time_undecided">時間待定</string>
+    <string name="exam_seat">座位 %1$s</string>
+    <string name="exam_detail_empty">暫無詳細資料</string>
+    <string name="exam_delete_confirm">將刪除「%1$s · %2$s」。刪除後無法還原；如已開啟同步，其他裝置上也會一併刪除。</string>
+    <string name="exam_delete_failed">刪除考試失敗，請再試一次。</string>
+    <string name="exam_delete_failed_detail">刪除考試失敗：%1$s</string>
+
+    <!-- 考試編輯 -->
+    <string name="exam_edit_title_new">新增考試</string>
+    <string name="exam_edit_title_edit">編輯考試</string>
+    <string name="exam_edit_saving">正在儲存…</string>
+    <string name="exam_edit_no_term">請先建立學期</string>
+    <string name="exam_edit_no_course_title">尚未新增課程</string>
+    <string name="exam_edit_no_course_desc">考試需歸屬於某個課程，請先在課表中新增課程。</string>
+    <string name="exam_edit_course">所屬課程：%1$s</string>
+    <string name="exam_edit_course_unselected">未選擇</string>
+    <string name="exam_edit_course_hint">考試將顯示在該課程的詳情中。</string>
+    <string name="exam_edit_course_picker">選擇所屬課程</string>
+    <string name="exam_edit_name">考試名稱（必填）</string>
+    <string name="exam_edit_date">日期（必填）</string>
+    <string name="exam_edit_date_format">例如 2026-12-20</string>
+    <string name="exam_edit_pick_date">選擇日期</string>
+    <string name="exam_edit_pick_date_with_value">選擇日期 · %1$s</string>
+    <string name="exam_edit_time_section">時間（選填）</string>
+    <string name="exam_edit_start_time">開始時間</string>
+    <string name="exam_edit_start_time_hint">例如 09:00</string>
+    <string name="exam_edit_end_time">結束時間</string>
+    <string name="exam_edit_end_time_hint">例如 11:00</string>
+    <string name="exam_edit_location">試場（選填）</string>
+    <string name="exam_edit_seat">座位號碼（選填）</string>
+    <string name="exam_edit_note">備註（選填）</string>
+    <string name="exam_edit_default_title">期末考試</string>
+
+    <!-- 考試編輯：檢查與錯誤 -->
+    <string name="exam_edit_error_title">無法儲存</string>
+    <string name="exam_edit_error_time_format">請按「時:分」填寫時間，例如 09:00。</string>
+    <string name="exam_edit_error_time_order">結束時間須晚於開始時間。</string>
+    <string name="exam_edit_error_no_course">請選擇所屬課程。</string>
+    <string name="exam_edit_error_no_name">請填寫考試名稱。</string>
+    <string name="exam_edit_error_date_format">請按「年-月-日」填寫日期，例如 2026-12-20。</string>
+    <string name="exam_edit_error_save_failed">儲存失敗，請再試一次。</string>
+
+</resources>

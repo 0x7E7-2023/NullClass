@@ -9,7 +9,8 @@
 - plurals 补齐该语言需要的数量档（见 REQUIRED_QUANTITIES）；string-array 条目数一致；
 - 文件里没有换行、回车、制表符以外的控制字符（写文件时转义序列被落成真字符的老坑）。
 
-用法：python tools/check_translations.py      退出码 1 表示有问题。
+用法：python tools/check_translations.py            退出码 1 表示有问题。
+      python tools/check_translations.py ja fr      只查给出的语言（登记进 locales_config 之前先自检）。
 """
 from __future__ import annotations
 
@@ -26,6 +27,8 @@ LOCALES_CONFIG = "app/src/main/res/xml/locales_config.xml"
 # 各语言 plurals 必须写出的数量档（CLDR 基数规则）。没列出的语言只要求 other。
 REQUIRED_QUANTITIES: dict[str, set[str]] = {
     "en": {"one", "other"},
+    # CLDR 42 起法语多了 many 档（整百万：1 000 000 de cours），lint 也按此要求
+    "fr": {"one", "many", "other"},
 }
 
 PLACEHOLDER = re.compile("%(?:([0-9]+)[$])?[-#+ 0,(]*[0-9]*(?:[.][0-9]+)?([a-zA-Z])")
@@ -96,6 +99,8 @@ def main() -> int:
         for element in ET.parse(LOCALES_CONFIG).getroot()
     ]
     languages = [tag for tag in tags if tag != DEFAULT_TAG]
+    if len(sys.argv) > 1:
+        languages = sys.argv[1:]
 
     defaults = sorted(
         path.replace(os.sep, "/")

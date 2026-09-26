@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Korean translation of values/strings.xml. Conventions: docs/i18n.md. -->
+<resources>
+    <string name="ocr_engine_unavailable">지금은 이미지 인식 기능을 사용할 수 없습니다.</string>
+    <string name="ocr_model_load_failed">이미지 인식 기능을 불러오지 못했습니다. NullClass를 다시 시작한 후 다시 시도하세요(%1$s).</string>
+</resources>

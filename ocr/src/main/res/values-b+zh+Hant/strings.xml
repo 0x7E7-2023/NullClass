@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- 繁體中文（香港）譯文，原文見 values/strings.xml。:ocr 的用戶可見文案。 -->
+<resources>
+    <string name="ocr_engine_unavailable">圖片識別功能暫時無法使用。</string>
+    <string name="ocr_model_load_failed">圖片識別功能載入失敗，請重新啟動空課後再試（%1$s）。</string>
+</resources>

@@ -37,7 +37,11 @@ val AppLanguage.labelRes: Int
     get() = when (this) {
         AppLanguage.SYSTEM -> R.string.enum_app_language_system
         AppLanguage.SIMPLIFIED_CHINESE -> R.string.enum_app_language_zh_hans
+        AppLanguage.TRADITIONAL_CHINESE -> R.string.enum_app_language_zh_hant
         AppLanguage.ENGLISH -> R.string.enum_app_language_en
+        AppLanguage.JAPANESE -> R.string.enum_app_language_ja
+        AppLanguage.KOREAN -> R.string.enum_app_language_ko
+        AppLanguage.FRENCH -> R.string.enum_app_language_fr
     }
 
 @Composable

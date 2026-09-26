@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- French translation of values/strings.xml. Widget cells are very narrow: keep labels short. -->
+<resources>
+
+    <!-- Widget picker (API 31+) -->
+    <string name="widget_today_label">NullClass · Aujourd’hui</string>
+    <string name="widget_next_label">NullClass · Prochain cours</string>
+    <string name="widget_today_description">Affiche les cours restants de la journée dans l’ordre chronologique.</string>
+    <string name="widget_next_description">Affiche l’horaire et la salle de votre prochain cours.</string>
+
+    <!-- Today header: the weekday is followed by the date and week; narrow sizes keep only the week while paging -->
+    <string name="widget_today_date_week">%1$s · S%2$d</string>
+    <string name="widget_today_week_short">S%1$d</string>
+
+    <!-- Empty states -->
+    <string name="widget_empty_no_timetable">Aucun emploi du temps</string>
+    <string name="widget_empty_no_timetable_desc">Touchez ici pour créer un semestre</string>
+    <string name="widget_empty_no_class">Aucun cours aujourd’hui</string>
+    <string name="widget_empty_no_class_desc">Ouvrez l’app pour voir les autres jours</string>
+    <string name="widget_empty_finished">Les cours du jour sont terminés</string>
+    <string name="widget_empty_finished_desc">Ouvrez l’app pour voir demain</string>
+
+    <!-- Paging -->
+    <string name="widget_page_prev_desc">Page précédente</string>
+    <string name="widget_page_next_desc">Page suivante</string>
+    <string name="widget_page_indicator_desc">Page %1$d sur %2$d</string>
+    <string name="widget_action_unavailable">%1$s, indisponible</string>
+
+    <!-- Class rows -->
+    <string name="widget_row_status_in_class">Encore %1$d min</string>
+    <string name="widget_row_status_next">Suivant</string>
+    <string name="widget_row_period_range">P%1$d–%2$d</string>
+
+    <!-- Next class -->
+    <string name="widget_next_empty_finished">Cours du jour terminés</string>
+    <string name="widget_next_in_class">En cours</string>
+    <string name="widget_next_upcoming">À suivre</string>
+    <plurals name="widget_next_remaining">
+        <item quantity="one">Encore %1$d min</item>
+        <item quantity="many">Encore %1$d min</item>
+        <item quantity="other">Encore %1$d min</item>
+    </plurals>
+    <string name="widget_next_time_range">%1$s – %2$s</string>
+    <string name="widget_next_location_unknown">Salle à confirmer</string>
+
+</resources>

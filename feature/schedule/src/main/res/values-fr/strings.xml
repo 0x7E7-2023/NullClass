@@ -1,0 +1,193 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- French translation of values/strings.xml. Conventions: docs/i18n.md. -->
+<resources>
+
+    <!-- Week view -->
+    <string name="schedule_title_default">NullClass</string>
+    <string name="schedule_week_number">Semaine %1$d</string>
+    <string name="schedule_week_number_current">Semaine %1$d · Cette semaine</string>
+    <string name="schedule_subtitle_with_timetable">%1$s · %2$s</string>
+    <string name="schedule_back_to_current_week">Revenir à cette semaine</string>
+    <string name="schedule_pick_week">Choisir la semaine</string>
+    <string name="schedule_display_settings">Options d’affichage</string>
+    <string name="schedule_add_course">Ajouter un cours</string>
+    <string name="schedule_no_term_title">Aucun semestre</string>
+    <string name="schedule_no_term_desc">Créez un semestre pour commencer à ajouter des cours.</string>
+    <string name="schedule_create_term">Créer un semestre</string>
+    <string name="schedule_other_week">Autre semaine</string>
+
+    <!-- Display settings -->
+    <string name="schedule_show_now_line">Afficher la ligne de l’heure actuelle</string>
+    <string name="schedule_show_weekend">Afficher le week-end</string>
+    <string name="schedule_show_grid_lines">Afficher la grille</string>
+    <string name="schedule_show_time_in_cards">Afficher les horaires sur les cartes de cours</string>
+    <string name="schedule_show_other_week">Afficher les cours des autres semaines</string>
+
+    <!-- Bottom of the display settings sheet: open personalization -->
+    <string name="schedule_open_personalization">Personnaliser</string>
+
+    <!-- Personalization (timetable appearance) -->
+    <string name="schedule_personalize_title">Personnalisation</string>
+    <string name="schedule_personalize_reset">Réinitialiser</string>
+    <string name="schedule_personalize_reset_item">Rétablir les valeurs par défaut</string>
+    <string name="schedule_personalize_reset_title">Réinitialiser la personnalisation&#160;?</string>
+    <string name="schedule_personalize_reset_message">Tous les réglages de personnalisation reviendront à leurs valeurs par défaut, et l’image de fond sera retirée.</string>
+    <string name="schedule_personalize_reset_confirm">Réinitialiser</string>
+    <string name="schedule_personalize_section_background">Fond</string>
+    <string name="schedule_personalize_background_desc">L’image couvre toute la page de l’emploi du temps et est légèrement assombrie pour que les cours restent lisibles.</string>
+    <string name="schedule_personalize_background_pick">Choisir une image</string>
+    <string name="schedule_personalize_background_change">Changer d’image</string>
+    <string name="schedule_personalize_background_remove">Retirer</string>
+    <string name="schedule_personalize_background_importing">Traitement de l’image…</string>
+    <string name="schedule_personalize_background_failed">Impossible de lire cette image. Essayez-en une autre.</string>
+    <string name="schedule_personalize_section_display">Affichage</string>
+    <string name="schedule_personalize_timeline">Vue 24 heures</string>
+    <string name="schedule_personalize_timeline_desc">Présente la journée heure par heure. Chaque carte de cours est placée à son horaire réel et en occupe la durée réelle.</string>
+    <string name="schedule_personalize_hide_period_times">Masquer les horaires des périodes</string>
+    <string name="schedule_personalize_hide_period_times_desc">La colonne latérale n’affiche que les numéros de période, et les cartes de cours n’affichent pas les horaires. En vue 24 heures, les repères horaires restent visibles.</string>
+    <string name="schedule_personalize_hide_dates">Masquer les dates</string>
+    <string name="schedule_personalize_hide_dates_desc">L’en-tête n’affiche que les jours de la semaine.</string>
+    <string name="schedule_personalize_hide_grid_lines">Masquer la grille</string>
+    <string name="schedule_personalize_section_page">Page de l’emploi du temps</string>
+    <string name="schedule_personalize_text_color">Couleur du texte</string>
+    <string name="schedule_personalize_page_text_color_desc">S’applique à l’en-tête et à la colonne latérale, ainsi qu’à la barre supérieure lorsqu’une image de fond est définie. Les couleurs personnalisées ne changent pas avec le mode clair ou sombre.</string>
+    <string name="schedule_personalize_card_text_color_desc">Les couleurs personnalisées ne changent pas avec le mode clair ou sombre.</string>
+    <string name="schedule_personalize_row_height">Hauteur des lignes</string>
+    <string name="schedule_personalize_row_height_timeline_desc">En vue 24 heures, il s’agit de la hauteur d’une heure.</string>
+    <string name="schedule_personalize_sidebar_width">Largeur de la colonne latérale</string>
+    <string name="schedule_personalize_header_height">Hauteur de l’en-tête</string>
+    <string name="schedule_personalize_section_card">Cartes de cours</string>
+    <string name="schedule_personalize_text_align">Alignement du texte</string>
+    <string name="schedule_personalize_align_center">Centré</string>
+    <string name="schedule_personalize_align_top_start">En haut à gauche</string>
+    <string name="schedule_personalize_border">Bordure</string>
+    <string name="schedule_personalize_border_none">Aucune</string>
+    <string name="schedule_personalize_border_solid">Pleine</string>
+    <string name="schedule_personalize_border_dashed">Tirets</string>
+    <string name="schedule_personalize_text_scale">Taille du texte</string>
+    <string name="schedule_personalize_corner_radius">Arrondi des angles</string>
+    <string name="schedule_personalize_spacing">Espacement</string>
+    <string name="schedule_personalize_opacity">Opacité</string>
+    <string name="schedule_personalize_opacity_desc">Une valeur plus faible laisse transparaître l’image de fond. Lorsque deux cours se chevauchent, ils transparaissent aussi l’un à travers l’autre.</string>
+    <string name="schedule_personalize_value_auto">Auto</string>
+    <string name="schedule_personalize_value_percent">%1$d&#160;%%</string>
+    <string name="schedule_personalize_color_follow_theme">Thème</string>
+    <string name="schedule_personalize_color_white">Blanc</string>
+    <string name="schedule_personalize_color_black">Noir</string>
+    <string name="schedule_personalize_color_dark_gray">Gris foncé</string>
+    <string name="schedule_personalize_color_light_gray">Gris clair</string>
+    <string name="schedule_personalize_color_hue">Teinte</string>
+    <string name="schedule_personalize_color_saturation">Saturation</string>
+    <string name="schedule_personalize_color_brightness">Luminosité</string>
+    <!-- Sample courses in the preview: shown when there is no term yet or no class this week -->
+    <string name="schedule_personalize_sample_course_1">Analyse</string>
+    <string name="schedule_personalize_sample_course_2">Anglais</string>
+    <string name="schedule_personalize_sample_course_3">Programmation</string>
+    <string name="schedule_personalize_sample_course_4">Algèbre linéaire</string>
+    <string name="schedule_personalize_sample_course_5">Sport</string>
+    <string name="schedule_personalize_sample_room_1">A-101</string>
+    <string name="schedule_personalize_sample_room_2">Labo 305</string>
+    <string name="schedule_personalize_sample_room_3">C-210</string>
+
+    <!-- Week header: date (day/month), numeric because the cells are narrow -->
+    <string name="schedule_header_date">%2$d/%1$d</string>
+
+    <!-- Week view header: day swap marker -->
+    <string name="schedule_header_swap_weekday">→%1$s</string>
+    <string name="schedule_header_swap_date">→%2$d/%1$d</string>
+
+    <!-- Today -->
+    <string name="schedule_today_date">%2$s %1$s</string>
+    <string name="schedule_today_out_of_term">Aujourd’hui est hors semestre</string>
+    <string name="schedule_today_next_up">Prochain cours&#160;: %1$s · à %2$s</string>
+    <string name="schedule_today_in_class">En cours</string>
+    <string name="schedule_today_remaining">Encore %1$s</string>
+    <string name="schedule_today_ongoing">Maintenant</string>
+    <string name="schedule_today_end_at">Fin à %1$s</string>
+    <string name="schedule_today_empty_title">Aucun cours aujourd’hui</string>
+    <string name="schedule_today_empty_desc">Consultez l’emploi du temps pour les autres jours.</string>
+    <string name="schedule_today_out_of_term_desc">Une fois le semestre commencé, les cours du jour s’afficheront ici.</string>
+    <string name="schedule_today_swap_title">Échange de jours · Emploi du temps du %2$s %1$s</string>
+    <string name="schedule_today_swap_desc">Les horaires restent ceux d’aujourd’hui. Les rappels de cours ont été ajustés.</string>
+    <string name="schedule_today_skip_title">Pas de cours aujourd’hui · %1$s</string>
+    <string name="schedule_today_skip_manual">Défini manuellement</string>
+    <string name="schedule_today_skip_desc">Les rappels de cours sont désactivés pour ce jour&#160;; l’emploi du temps reste affiché normalement. Pour suivre les cours d’un autre jour, utilisez «&#160;Échange de jours&#160;».</string>
+
+    <!-- Today: time of day -->
+    <string name="schedule_session_morning">Matin</string>
+    <string name="schedule_session_afternoon">Après-midi</string>
+    <string name="schedule_session_evening">Soir</string>
+    <string name="schedule_session_other">Autre</string>
+
+    <!-- Day swap -->
+    <string name="schedule_day_swap_title">Échange de jours · %2$s %1$s</string>
+    <string name="schedule_day_swap_desc_none">Ce jour suit l’emploi du temps habituel. Pour un jour de rattrapage, vous pouvez lui faire suivre les cours d’un autre jour&#160;; la page Aujourd’hui, l’emploi du temps, les widgets et les rappels de cours s’ajustent en conséquence, tandis que les horaires restent ceux de ce jour.</string>
+    <string name="schedule_day_swap_desc_current">Réglage actuel&#160;: ce jour suit les cours du %2$s %1$s.</string>
+    <string name="schedule_day_swap_pick_in_week">Suivre quel jour de cette semaine</string>
+    <string name="schedule_day_swap_self">%1$s (habituel)</string>
+    <string name="schedule_day_swap_other_date">Choisir une autre date…</string>
+    <string name="schedule_day_swap_reset">Rétablir l’emploi du temps habituel</string>
+
+    <!-- Course details -->
+    <plurals name="schedule_course_block_count">
+        <item quantity="one">%1$d créneau</item>
+        <item quantity="many">%1$d de créneaux</item>
+        <item quantity="other">%1$d créneaux</item>
+    </plurals>
+    <string name="schedule_course_exams">Examens</string>
+    <string name="schedule_course_add_exam">Ajouter un examen</string>
+    <string name="schedule_course_no_exam">Aucun examen prévu</string>
+    <string name="schedule_course_seat">Place %1$s</string>
+    <string name="schedule_course_delete">Supprimer le cours</string>
+    <string name="schedule_course_delete_confirm">«&#160;%1$s&#160;» sera supprimé, ainsi que tous ses créneaux et examens. Cette action est irréversible. Si la synchronisation est activée, ils seront aussi supprimés sur vos autres appareils.</string>
+
+    <!-- Events -->
+    <string name="schedule_event_title">Événements</string>
+    <string name="schedule_event_today">Aujourd’hui</string>
+    <string name="schedule_event_add">Ajouter un événement</string>
+    <string name="schedule_event_edit">Modifier l’événement</string>
+    <string name="schedule_event_delete">Supprimer l’événement</string>
+    <string name="schedule_event_delete_confirm">«&#160;%1$s&#160;» sera supprimé. Cette action est irréversible.</string>
+    <string name="schedule_event_day_header">%2$s %1$s</string>
+    <string name="schedule_event_day_empty">Aucun événement ce jour-là. Touchez le bouton en bas à droite pour en ajouter un.</string>
+    <string name="schedule_event_upcoming">Événements à venir</string>
+    <string name="schedule_event_month">%2$02d/%1$d</string>
+    <string name="schedule_event_prev_month">Mois précédent</string>
+    <string name="schedule_event_next_month">Mois suivant</string>
+    <string name="schedule_event_field_title">Titre (obligatoire)</string>
+    <string name="schedule_event_all_day">Toute la journée</string>
+    <string name="schedule_event_start_time">Heure de début</string>
+    <string name="schedule_event_start_time_value">Heure de début %1$s</string>
+    <string name="schedule_event_remind">Rappel</string>
+    <string name="schedule_event_remind_all_day">Rappel (le jour même à 8:00)</string>
+    <string name="schedule_event_note">Remarque (facultatif)</string>
+    <string name="schedule_event_summary">%1$s · %2$s</string>
+    <string name="schedule_event_summary_with_date">%2$s %1$s · %3$s · %4$s</string>
+
+    <!-- Event reminder lead time -->
+    <string name="schedule_event_lead_none">Aucun rappel</string>
+    <string name="schedule_event_lead_all_day">Le jour même à 8:00</string>
+    <string name="schedule_event_lead_on_time">À l’heure de début</string>
+    <plurals name="schedule_event_lead_days">
+        <item quantity="one">%1$d jour avant</item>
+        <item quantity="many">%1$d de jours avant</item>
+        <item quantity="other">%1$d jours avant</item>
+    </plurals>
+    <plurals name="schedule_event_lead_hours">
+        <item quantity="one">%1$d heure avant</item>
+        <item quantity="many">%1$d d’heures avant</item>
+        <item quantity="other">%1$d heures avant</item>
+    </plurals>
+    <plurals name="schedule_event_lead_minutes">
+        <item quantity="one">%1$d minute avant</item>
+        <item quantity="many">%1$d de minutes avant</item>
+        <item quantity="other">%1$d minutes avant</item>
+    </plurals>
+
+    <!-- Events: errors -->
+    <string name="schedule_event_save_failed">Impossible d’enregistrer. Veuillez réessayer.</string>
+    <string name="schedule_event_save_failed_detail">Impossible d’enregistrer&#160;: %1$s</string>
+    <string name="schedule_event_delete_failed">Impossible de supprimer. Veuillez réessayer.</string>
+    <string name="schedule_event_delete_failed_detail">Impossible de supprimer&#160;: %1$s</string>
+
+</resources>

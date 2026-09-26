@@ -1,0 +1,162 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- 繁體中文（香港）譯文，原文見 values/strings.xml。:feature:edit 的介面文案。 -->
+<resources>
+
+    <!-- 上課安排編輯器 -->
+    <string name="edit_block_section">上課安排</string>
+    <string name="edit_block_remove">刪除此上課安排</string>
+    <string name="edit_block_week_prefix">第</string>
+    <string name="edit_block_week_suffix">週</string>
+    <string name="edit_block_range_separator">—</string>
+    <string name="edit_block_week_type_all">每週</string>
+    <string name="edit_block_week_type_odd">單週</string>
+    <string name="edit_block_week_type_even">雙週</string>
+    <string name="edit_block_location">課室（選填）</string>
+    <string name="edit_block_period">節次</string>
+    <string name="edit_block_period_by_period">按節</string>
+    <string name="edit_block_period_by_section">按大節</string>
+    <string name="edit_block_period_prefix">第</string>
+    <string name="edit_block_period_suffix">節</string>
+    <string name="edit_block_section_chip">大%1$d</string>
+    <string name="edit_stepper_decrease">減少</string>
+    <string name="edit_stepper_increase">增加</string>
+
+    <!-- 課程編輯 -->
+    <string name="edit_course_title_new">新增課程</string>
+    <string name="edit_course_title_edit">編輯課程</string>
+    <string name="edit_course_no_term">請先建立學期</string>
+    <string name="edit_course_name">課程名稱（必填）</string>
+    <string name="edit_course_teacher">任教老師（選填）</string>
+    <string name="edit_course_note">備註（選填）</string>
+    <string name="edit_course_color">顏色</string>
+    <string name="edit_course_add_block">新增上課安排</string>
+    <string name="edit_course_error_title">無法儲存</string>
+    <string name="edit_course_error_no_name">請填寫課程名稱。</string>
+    <string name="edit_course_error_no_block">請至少新增一項上課安排。</string>
+    <string name="edit_course_error_overlap">有兩項上課安排的時間重疊，請調整或刪除其中一項。</string>
+    <string name="edit_course_error_save_failed">儲存失敗，請再試一次。</string>
+    <string name="edit_course_conflict_header">時間衝突，請調整後再儲存：</string>
+    <string name="edit_course_conflict_line">與「%1$s」衝突：%2$s</string>
+    <plurals name="edit_course_conflict_more">
+        <item quantity="other">另有 %1$d 處衝突</item>
+    </plurals>
+
+    <!-- 學期編輯 -->
+    <string name="edit_term_title_new">建立學期</string>
+    <string name="edit_term_title_edit">編輯學期</string>
+    <string name="edit_term_name">學期名稱（必填）</string>
+    <string name="edit_term_name_hint">例如 2026 秋季學期</string>
+    <string name="edit_term_week_start">每週起始日</string>
+    <string name="edit_term_week_start_monday">週一</string>
+    <string name="edit_term_week_start_sunday">週日</string>
+    <string name="edit_term_week_start_custom">目前每週從%1$s開始。保持不變即可；如選擇上方選項，第 1 週的起始日期會調整至最近的週一或週日。</string>
+    <string name="edit_term_first_day">第 1 週第 1 日：%1$s</string>
+    <string name="edit_term_first_day_unset">第 1 週第 1 日</string>
+    <string name="edit_term_first_week_range">第 1 週：%1$s – %2$s</string>
+    <string name="edit_term_day_with_weekday">%1$s（%2$s）</string>
+    <string name="edit_term_week_start_hint">決定課表每週從哪一日開始排列，第 1 週也從這一日開始計算。選擇上方選項後，第 1 週的起始日期會調整至最近的對應日期。</string>
+    <string name="edit_term_total_weeks">總週數</string>
+    <string name="edit_term_total_weeks_unit">週</string>
+    <string name="edit_term_copy_previous">從上一個學期複製課程</string>
+    <string name="edit_term_copy_previous_source">來源：%1$s</string>
+
+    <!-- 學期編輯：節次時間 -->
+    <string name="edit_term_quick_section">快速設定</string>
+    <string name="edit_term_quick_lesson">單節課</string>
+    <string name="edit_term_quick_break">課間休息</string>
+    <string name="edit_term_quick_minutes">分鐘</string>
+    <string name="edit_term_quick_hint">課間休息指同一大節內兩節課之間的間隔，大節之間的休息時間不受影響。套用後，各大節的開始時間保持不變，只重新計算大節內每節課的時間。</string>
+    <string name="edit_term_quick_apply">套用</string>
+    <string name="edit_term_quick_invalid">單節課請填 %1$d~%2$d 分鐘，課間休息請填 %3$d~%4$d 分鐘。</string>
+    <string name="edit_term_periods">節次時間（%1$s · %2$s）</string>
+    <!-- edit_term_periods 的兩段 -->
+    <plurals name="edit_term_period_count">
+        <item quantity="other">%1$d 節</item>
+    </plurals>
+    <plurals name="edit_term_section_count">
+        <item quantity="other">%1$d 大節</item>
+    </plurals>
+    <string name="edit_term_reset_periods">還原預設節次時間</string>
+    <string name="edit_term_add_period">新增節次</string>
+    <string name="edit_term_period_index">第%1$d節</string>
+    <string name="edit_term_remove_period">刪除節次</string>
+    <string name="edit_term_session_morning">上午</string>
+    <string name="edit_term_session_afternoon">下午</string>
+    <string name="edit_term_session_evening">晚上</string>
+
+    <!-- 學期編輯：清除課程 -->
+    <string name="edit_term_clear_hint">刪除本學期的全部課程，學期資料與節次時間保留。如已開啟同步，其他裝置上也會一併刪除。</string>
+    <string name="edit_term_clearing">正在清除…</string>
+    <string name="edit_term_clear_empty">本學期沒有課程</string>
+    <string name="edit_term_clear">清除本學期課程</string>
+    <plurals name="edit_term_clear_confirm">
+        <item quantity="other">將刪除本學期的全部 %1$d 個課程，學期資料與節次時間保留。刪除後無法還原；如已開啟同步，其他裝置上也會一併刪除。</item>
+    </plurals>
+    <string name="edit_term_clear_action">清除</string>
+
+    <!-- 學期編輯：錯誤 -->
+    <string name="edit_term_error_title">無法儲存</string>
+    <string name="edit_term_error_no_name">請填寫學期名稱。</string>
+    <string name="edit_term_error_keep_one_period">請至少保留一個節次。</string>
+    <string name="edit_term_error_invalid_input">部分內容填寫有誤，請檢查後再試。</string>
+    <string name="edit_term_quick_period_invalid">第 %1$d 節的時間有誤（開始時間須早於結束時間），請先修改後再使用快速設定。</string>
+    <string name="edit_term_quick_overflow">按每節 %1$s、課間 %2$s計算，第 %3$d 大節將在 %4$s 結束，晚於下一大節的開始時間 %5$s。請縮短單節課或課間休息的時長。</string>
+    <string name="edit_term_quick_out_of_day">按每節 %1$s、課間 %2$s計算，第 %3$d 大節將持續至翌日 %4$s。請縮短單節課或課間休息的時長。</string>
+    <!-- 快速排節提示裏的時長，如「45 分鐘」 -->
+    <plurals name="edit_minutes">
+        <item quantity="other">%1$d 分鐘</item>
+    </plurals>
+    <string name="edit_term_error_period_format">第 %1$d 節的時間格式有誤，請按「時:分」填寫，例如 08:00。</string>
+    <string name="edit_term_error_period_order">第 %1$d 節的開始時間須早於結束時間。</string>
+
+    <!-- 學期管理 -->
+    <string name="edit_term_list_title">學期管理</string>
+    <string name="edit_term_list_empty_title">尚未建立學期</string>
+    <string name="edit_term_list_empty_desc">建立學期後即可開始排課。</string>
+    <string name="edit_term_list_create">建立學期</string>
+    <string name="edit_term_list_current">目前</string>
+    <string name="edit_term_list_owner">所屬課表：%1$s</string>
+    <string name="edit_term_list_week">第 %1$d 週 · %2$s</string>
+    <string name="edit_term_list_out_of_term">不在學期內 · %1$s</string>
+    <string name="edit_term_list_edit">編輯學期</string>
+    <string name="edit_term_list_delete">刪除學期</string>
+    <string name="edit_term_list_delete_confirm">將刪除「%1$s」及其全部課程與考試。刪除後無法還原；如已開啟同步，其他裝置上也會一併刪除。</string>
+
+    <!-- 課表管理 -->
+    <string name="edit_timetable_list_title">課表管理</string>
+    <string name="edit_timetable_list_empty_title">尚未建立課表</string>
+    <string name="edit_timetable_list_empty_desc">建立課表後即可開始排課。</string>
+    <string name="edit_timetable_list_create">建立課表</string>
+    <string name="edit_timetable_list_current">目前</string>
+    <plurals name="edit_timetable_term_count">
+        <item quantity="other">%1$d 個學期</item>
+    </plurals>
+    <string name="edit_timetable_delete">刪除課表</string>
+    <plurals name="edit_timetable_delete_confirm">
+        <item quantity="other">將刪除「%1$s」及其 %2$d 個學期，以及其中的全部課程與考試。刪除後無法還原；如已開啟同步，其他裝置上也會一併刪除。</item>
+    </plurals>
+    <string name="edit_timetable_delete_blocked_title">無法刪除</string>
+    <string name="edit_timetable_delete_blocked_desc">請至少保留一個課表。如需清除內容，請在學期管理中刪除其中的學期。</string>
+    <string name="edit_timetable_rename">重新命名課表</string>
+    <string name="edit_timetable_name">課表名稱</string>
+
+    <!-- 新增課表 -->
+    <string name="edit_timetable_create_title">新增課表</string>
+    <string name="edit_timetable_welcome">歡迎使用空課</string>
+    <string name="edit_timetable_welcome_desc">請先建立一個課表。不同課表的課程與節次時間互相獨立，可按需要建立多個。</string>
+    <string name="edit_timetable_create_name">課表名稱（必填）</string>
+    <string name="edit_timetable_create_first_term">第一個學期</string>
+    <string name="edit_timetable_create_term_name">學期名稱（必填）</string>
+    <string name="edit_timetable_creating">正在建立…</string>
+    <string name="edit_timetable_create_action">建立課表</string>
+    <string name="edit_timetable_create_first_week">第 1 週從 %1$s（%2$s）開始。節次時間將先使用預設設定，之後可在「學期管理」中調整。</string>
+    <string name="edit_timetable_create_hint">建立後將自動切換至這個課表，之後可在「我的 → 課表管理」中切換。</string>
+    <string name="edit_timetable_create_error_title">無法建立</string>
+    <string name="edit_timetable_create_error_no_name">請填寫課表名稱。</string>
+    <string name="edit_timetable_create_error_no_term_name">請填寫學期名稱。</string>
+    <string name="edit_timetable_create_error_failed">建立失敗，請再試一次。</string>
+    <string name="edit_timetable_default_name">我的課表</string>
+    <string name="edit_term_default_name_spring">%1$d 春</string>
+    <string name="edit_term_default_name_autumn">%1$d 秋</string>
+
+</resources>

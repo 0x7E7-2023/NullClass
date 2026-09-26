@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Korean translation of values/strings.xml. Conventions: docs/i18n.md. -->
+<resources>
+
+    <string name="app_name">NullClass</string>
+
+    <!-- Bottom navigation -->
+    <string name="app_tab_today">오늘</string>
+    <string name="app_tab_schedule">시간표</string>
+    <string name="app_tab_exams">시험</string>
+    <string name="app_tab_profile">내 정보</string>
+
+    <!-- Two-pane placeholders -->
+    <string name="app_detail_placeholder_profile_title">왼쪽에서 항목을 선택하세요</string>
+    <string name="app_detail_placeholder_profile_desc">설정, 가져오기/내보내기, 앱 정보가 여기에 표시됩니다.</string>
+    <string name="app_detail_placeholder_exam_title">시험을 선택하세요</string>
+    <string name="app_detail_placeholder_exam_desc">왼쪽에서 시험을 선택하면 편집할 수 있으며, 오른쪽 위에서 새로 추가할 수도 있습니다.</string>
+
+    <!-- Notification channels -->
+    <string name="app_channel_class">수업 전 알림</string>
+    <string name="app_channel_class_desc">강의가 시작되기 전에 보내는 알림</string>
+    <string name="app_channel_exam">시험 알림</string>
+    <string name="app_channel_exam_desc">시험이 시작되기 전에 보내는 알림</string>
+    <string name="app_channel_event">일정 알림</string>
+    <string name="app_channel_event_desc">일정에 대한 알림</string>
+
+    <!-- Reminder content -->
+    <string name="app_class_started">시작됨 · %1$s</string>
+    <string name="app_exam_time_undecided">시간 미정</string>
+    <string name="app_exam_seat">좌석 %1$s</string>
+    <string name="app_event_reminder_text">%1$s %2$s</string>
+    <string name="app_event_all_day">종일</string>
+
+</resources>

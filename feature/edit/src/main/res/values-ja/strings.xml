@@ -1,0 +1,162 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Japanese translation of values/strings.xml. Conventions: docs/i18n.md. -->
+<resources>
+
+    <!-- Class time editor -->
+    <string name="edit_block_section">授業日時</string>
+    <string name="edit_block_remove">この授業日時を削除</string>
+    <string name="edit_block_week_prefix">第</string>
+    <string name="edit_block_week_suffix">週</string>
+    <string name="edit_block_range_separator">—</string>
+    <string name="edit_block_week_type_all">毎週</string>
+    <string name="edit_block_week_type_odd">奇数週</string>
+    <string name="edit_block_week_type_even">偶数週</string>
+    <string name="edit_block_location">教室（任意）</string>
+    <string name="edit_block_period">時限</string>
+    <string name="edit_block_period_by_period">時限ごと</string>
+    <string name="edit_block_period_by_section">ブロックごと</string>
+    <string name="edit_block_period_prefix">第</string>
+    <string name="edit_block_period_suffix">限</string>
+    <string name="edit_block_section_chip">B%1$d</string>
+    <string name="edit_stepper_decrease">減らす</string>
+    <string name="edit_stepper_increase">増やす</string>
+
+    <!-- Course editor -->
+    <string name="edit_course_title_new">授業を追加</string>
+    <string name="edit_course_title_edit">授業を編集</string>
+    <string name="edit_course_no_term">先に学期を作成してください</string>
+    <string name="edit_course_name">授業名（必須）</string>
+    <string name="edit_course_teacher">担当教員（任意）</string>
+    <string name="edit_course_note">メモ（任意）</string>
+    <string name="edit_course_color">色</string>
+    <string name="edit_course_add_block">授業日時を追加</string>
+    <string name="edit_course_error_title">保存できません</string>
+    <string name="edit_course_error_no_name">授業名を入力してください。</string>
+    <string name="edit_course_error_no_block">授業日時を1件以上追加してください。</string>
+    <string name="edit_course_error_overlap">2件の授業日時が重なっています。どちらかを調整するか削除してください。</string>
+    <string name="edit_course_error_save_failed">保存できませんでした。もう一度お試しください。</string>
+    <string name="edit_course_conflict_header">時間が重複しています。調整してから保存してください：</string>
+    <string name="edit_course_conflict_line">「%1$s」と重複：%2$s</string>
+    <plurals name="edit_course_conflict_more">
+        <item quantity="other">ほかに%1$d件の重複があります</item>
+    </plurals>
+
+    <!-- Term editor -->
+    <string name="edit_term_title_new">学期を作成</string>
+    <string name="edit_term_title_edit">学期を編集</string>
+    <string name="edit_term_name">学期名（必須）</string>
+    <string name="edit_term_name_hint">例：2026 秋学期</string>
+    <string name="edit_term_week_start">週の開始日</string>
+    <string name="edit_term_week_start_monday">月曜日</string>
+    <string name="edit_term_week_start_sunday">日曜日</string>
+    <string name="edit_term_week_start_custom">現在、週は%1$sから始まります。このままでも問題ありません。上の選択肢を選ぶと、第1週の開始日が直近の月曜日または日曜日に調整されます。</string>
+    <string name="edit_term_first_day">第1週の1日目：%1$s</string>
+    <string name="edit_term_first_day_unset">第1週の1日目</string>
+    <string name="edit_term_first_week_range">第1週：%1$s – %2$s</string>
+    <string name="edit_term_day_with_weekday">%1$s（%2$s）</string>
+    <string name="edit_term_week_start_hint">時間割の各週をどの曜日から並べるかを決めます。第1週もこの曜日から数えます。上の選択肢を選ぶと、第1週の開始日が直近の該当する日に調整されます。</string>
+    <string name="edit_term_total_weeks">総週数</string>
+    <string name="edit_term_total_weeks_unit">週</string>
+    <string name="edit_term_copy_previous">前の学期から授業をコピー</string>
+    <string name="edit_term_copy_previous_source">コピー元：%1$s</string>
+
+    <!-- Term editor: period times -->
+    <string name="edit_term_quick_section">クイック設定</string>
+    <string name="edit_term_quick_lesson">1時限の長さ</string>
+    <string name="edit_term_quick_break">休憩</string>
+    <string name="edit_term_quick_minutes">分</string>
+    <string name="edit_term_quick_hint">休憩とは、同じブロック内の時限と時限の間の時間です。ブロック間の休憩には影響しません。適用すると、各ブロックの開始時刻はそのままで、ブロック内の各時限の時刻だけが再計算されます。</string>
+    <string name="edit_term_quick_apply">適用</string>
+    <string name="edit_term_quick_invalid">1時限の長さは%1$d〜%2$d分、休憩は%3$d〜%4$d分の範囲で入力してください。</string>
+    <string name="edit_term_periods">時限の時刻（%1$s · %2$s）</string>
+    <!-- The two parts of edit_term_periods -->
+    <plurals name="edit_term_period_count">
+        <item quantity="other">%1$d時限</item>
+    </plurals>
+    <plurals name="edit_term_section_count">
+        <item quantity="other">%1$dブロック</item>
+    </plurals>
+    <string name="edit_term_reset_periods">時限の時刻をデフォルトに戻す</string>
+    <string name="edit_term_add_period">時限を追加</string>
+    <string name="edit_term_period_index">%1$d限</string>
+    <string name="edit_term_remove_period">時限を削除</string>
+    <string name="edit_term_session_morning">午前</string>
+    <string name="edit_term_session_afternoon">午後</string>
+    <string name="edit_term_session_evening">夜</string>
+
+    <!-- Term editor: clear courses -->
+    <string name="edit_term_clear_hint">この学期のすべての授業を削除します。学期の情報と時限の時刻は残ります。同期をオンにしている場合は、他の端末からも削除されます。</string>
+    <string name="edit_term_clearing">削除中…</string>
+    <string name="edit_term_clear_empty">この学期には授業がありません</string>
+    <string name="edit_term_clear">この学期の授業をすべて削除</string>
+    <plurals name="edit_term_clear_confirm">
+        <item quantity="other">この学期の授業%1$d件をすべて削除します。学期の情報と時限の時刻は残ります。削除後は元に戻せません。同期をオンにしている場合は、他の端末からも削除されます。</item>
+    </plurals>
+    <string name="edit_term_clear_action">削除</string>
+
+    <!-- Term editor: errors -->
+    <string name="edit_term_error_title">保存できません</string>
+    <string name="edit_term_error_no_name">学期名を入力してください。</string>
+    <string name="edit_term_error_keep_one_period">時限を1つ以上残してください。</string>
+    <string name="edit_term_error_invalid_input">入力内容に誤りがあります。確認してからもう一度お試しください。</string>
+    <string name="edit_term_quick_period_invalid">%1$d限の時刻に誤りがあります（開始時刻は終了時刻より前にしてください）。修正してからクイック設定を使用してください。</string>
+    <string name="edit_term_quick_overflow">1時限%1$s、休憩%2$sで計算すると、第%3$dブロックは%4$sに終了し、次のブロックの開始時刻%5$sより遅くなります。1時限または休憩の長さを短くしてください。</string>
+    <string name="edit_term_quick_out_of_day">1時限%1$s、休憩%2$sで計算すると、第%3$dブロックは翌日の%4$sまで続きます。1時限または休憩の長さを短くしてください。</string>
+    <!-- Duration in the quick setup messages, e.g. 45分 -->
+    <plurals name="edit_minutes">
+        <item quantity="other">%1$d分</item>
+    </plurals>
+    <string name="edit_term_error_period_format">%1$d限の時刻の形式が正しくありません。「時:分」の形式で入力してください（例：08:00）。</string>
+    <string name="edit_term_error_period_order">%1$d限の開始時刻は終了時刻より前にしてください。</string>
+
+    <!-- Terms -->
+    <string name="edit_term_list_title">学期の管理</string>
+    <string name="edit_term_list_empty_title">学期がありません</string>
+    <string name="edit_term_list_empty_desc">学期を作成すると、授業を追加できるようになります。</string>
+    <string name="edit_term_list_create">学期を作成</string>
+    <string name="edit_term_list_current">使用中</string>
+    <string name="edit_term_list_owner">時間割：%1$s</string>
+    <string name="edit_term_list_week">第%1$d週 · %2$s</string>
+    <string name="edit_term_list_out_of_term">学期外 · %1$s</string>
+    <string name="edit_term_list_edit">学期を編集</string>
+    <string name="edit_term_list_delete">学期を削除</string>
+    <string name="edit_term_list_delete_confirm">「%1$s」と、そのすべての授業・試験を削除します。削除後は元に戻せません。同期をオンにしている場合は、他の端末からも削除されます。</string>
+
+    <!-- Timetables -->
+    <string name="edit_timetable_list_title">時間割の管理</string>
+    <string name="edit_timetable_list_empty_title">時間割がありません</string>
+    <string name="edit_timetable_list_empty_desc">時間割を作成すると、授業を追加できるようになります。</string>
+    <string name="edit_timetable_list_create">時間割を作成</string>
+    <string name="edit_timetable_list_current">使用中</string>
+    <plurals name="edit_timetable_term_count">
+        <item quantity="other">%1$d学期</item>
+    </plurals>
+    <string name="edit_timetable_delete">時間割を削除</string>
+    <plurals name="edit_timetable_delete_confirm">
+        <item quantity="other">「%1$s」と、その%2$d件の学期、および含まれるすべての授業・試験を削除します。削除後は元に戻せません。同期をオンにしている場合は、他の端末からも削除されます。</item>
+    </plurals>
+    <string name="edit_timetable_delete_blocked_title">削除できません</string>
+    <string name="edit_timetable_delete_blocked_desc">時間割は1つ以上残す必要があります。内容を空にしたい場合は、「学期の管理」で学期を削除してください。</string>
+    <string name="edit_timetable_rename">時間割の名前を変更</string>
+    <string name="edit_timetable_name">時間割名</string>
+
+    <!-- New timetable -->
+    <string name="edit_timetable_create_title">新しい時間割</string>
+    <string name="edit_timetable_welcome">NullClass へようこそ</string>
+    <string name="edit_timetable_welcome_desc">まず時間割を1つ作成してください。時間割ごとに授業と時限の時刻は独立しており、必要に応じて複数作成できます。</string>
+    <string name="edit_timetable_create_name">時間割名（必須）</string>
+    <string name="edit_timetable_create_first_term">最初の学期</string>
+    <string name="edit_timetable_create_term_name">学期名（必須）</string>
+    <string name="edit_timetable_creating">作成中…</string>
+    <string name="edit_timetable_create_action">時間割を作成</string>
+    <string name="edit_timetable_create_first_week">第1週は%1$s（%2$s）から始まります。時限の時刻はひとまずデフォルトの設定を使用し、あとで「学期の管理」で調整できます。</string>
+    <string name="edit_timetable_create_hint">作成後はこの時間割に自動で切り替わります。あとで「マイページ → 時間割の管理」から切り替えられます。</string>
+    <string name="edit_timetable_create_error_title">作成できません</string>
+    <string name="edit_timetable_create_error_no_name">時間割名を入力してください。</string>
+    <string name="edit_timetable_create_error_no_term_name">学期名を入力してください。</string>
+    <string name="edit_timetable_create_error_failed">作成できませんでした。もう一度お試しください。</string>
+    <string name="edit_timetable_default_name">マイ時間割</string>
+    <string name="edit_term_default_name_spring">%1$d 春学期</string>
+    <string name="edit_term_default_name_autumn">%1$d 秋学期</string>
+
+</resources>

@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Japanese translation of values/strings.xml. Widget cells are very narrow: keep labels short. -->
+<resources>
+
+    <!-- Widget picker (API 31+) -->
+    <string name="widget_today_label">NullClass · 今日の授業</string>
+    <string name="widget_next_label">NullClass · 次の授業</string>
+    <string name="widget_today_description">今日の残りの授業を時間順に表示します。</string>
+    <string name="widget_next_description">次の授業の時間と場所を表示します。</string>
+
+    <!-- Today header: the weekday is followed by the date and week; narrow sizes keep only the week while paging -->
+    <string name="widget_today_date_week">%1$s · 第%2$d週</string>
+    <string name="widget_today_week_short">第%1$d週</string>
+
+    <!-- Empty states -->
+    <string name="widget_empty_no_timetable">時間割がありません</string>
+    <string name="widget_empty_no_timetable_desc">タップして学期を作成</string>
+    <string name="widget_empty_no_class">今日の授業はありません</string>
+    <string name="widget_empty_no_class_desc">他の日はアプリで確認できます</string>
+    <string name="widget_empty_finished">今日の授業はすべて終了しました</string>
+    <string name="widget_empty_finished_desc">明日の予定はアプリで確認できます</string>
+
+    <!-- Paging -->
+    <string name="widget_page_prev_desc">前のページ</string>
+    <string name="widget_page_next_desc">次のページ</string>
+    <string name="widget_page_indicator_desc">%2$dページ中%1$dページ目</string>
+    <string name="widget_action_unavailable">%1$s、利用不可</string>
+
+    <!-- Class rows -->
+    <string name="widget_row_status_in_class">残り%1$d分</string>
+    <string name="widget_row_status_next">次</string>
+    <string name="widget_row_period_range">%1$d–%2$d限</string>
+
+    <!-- Next class -->
+    <string name="widget_next_empty_finished">今日の授業は終了しました</string>
+    <string name="widget_next_in_class">授業中</string>
+    <string name="widget_next_upcoming">次の授業</string>
+    <plurals name="widget_next_remaining">
+        <item quantity="other">残り%1$d分</item>
+    </plurals>
+    <string name="widget_next_time_range">%1$s – %2$s</string>
+    <string name="widget_next_location_unknown">教室未定</string>
+
+</resources>

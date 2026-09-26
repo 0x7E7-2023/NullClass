@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Japanese translation of values/strings.xml. Conventions: docs/i18n.md (sections 5 and 6). -->
+<resources>
+
+    <!-- Common actions -->
+    <string name="common_confirm">OK</string>
+    <string name="common_cancel">キャンセル</string>
+    <string name="common_save">保存</string>
+    <string name="common_delete">削除</string>
+    <string name="common_edit">編集</string>
+    <string name="common_done">完了</string>
+    <string name="common_close">閉じる</string>
+    <string name="common_back">戻る</string>
+    <string name="common_undo">元に戻す</string>
+    <string name="common_select_all">すべて選択</string>
+    <string name="common_deselect_all">選択を解除</string>
+    <string name="common_create">新規作成</string>
+
+    <!-- Common states -->
+    <string name="common_loading">読み込み中…</string>
+    <string name="common_saving">保存中…</string>
+    <string name="common_failed">操作に失敗しました</string>
+    <string name="common_got_it">わかりました</string>
+    <string name="common_unknown_error">しばらくしてからもう一度お試しください。</string>
+
+    <!-- ThemeMode -->
+    <string name="enum_theme_mode_dynamic">Material カラー</string>
+    <string name="enum_theme_mode_light">ライト</string>
+    <string name="enum_theme_mode_dark">ダーク</string>
+
+    <!-- WidgetFontSize -->
+    <string name="enum_widget_font_size_small">小</string>
+    <string name="enum_widget_font_size_standard">標準</string>
+    <string name="enum_widget_font_size_large">大</string>
+    <string name="enum_widget_font_size_xlarge">特大</string>
+
+    <!-- AppLanguage -->
+    <string name="enum_app_language_system">システムに従う</string>
+
+    <!-- ScheduleText. Timetable cells and widgets are very narrow, so these labels are compact. -->
+    <string-array name="fmt_day_of_week">
+        <item>月曜</item>
+        <item>火曜</item>
+        <item>水曜</item>
+        <item>木曜</item>
+        <item>金曜</item>
+        <item>土曜</item>
+        <item>日曜</item>
+    </string-array>
+    <string-array name="fmt_day_of_week_short">
+        <item>月</item>
+        <item>火</item>
+        <item>水</item>
+        <item>木</item>
+        <item>金</item>
+        <item>土</item>
+        <item>日</item>
+    </string-array>
+    <string name="fmt_day_of_week_unknown">?</string>
+
+    <string name="fmt_week_single">第%1$d週</string>
+    <string name="fmt_week_range">第%1$d-%2$d週</string>
+    <string name="fmt_week_span_single">%1$d週</string>
+    <string name="fmt_week_span_range">%1$d-%2$d週</string>
+    <string name="fmt_week_type_odd">奇数週</string>
+    <string name="fmt_week_type_even">偶数週</string>
+    <!-- Compact odd/even marker appended to the week span, e.g. 1-16週·奇 -->
+    <string name="fmt_week_span_with_type">%1$s·%2$s</string>
+    <string name="fmt_week_type_odd_short">奇</string>
+    <string name="fmt_week_type_even_short">偶</string>
+
+    <string name="fmt_period_single">%1$d限</string>
+    <string name="fmt_period_range">%1$d-%2$d限</string>
+
+    <plurals name="fmt_remaining_minutes">
+        <item quantity="other">%1$d分</item>
+    </plurals>
+    <plurals name="fmt_remaining_hours">
+        <item quantity="other">%1$d時間</item>
+    </plurals>
+    <!-- 1時間20分: %1$s is fmt_remaining_hours, %2$s is fmt_remaining_minutes -->
+    <string name="fmt_remaining_hours_minutes">%1$s%2$s</string>
+    <plurals name="fmt_total_weeks">
+        <item quantity="other">全%1$d週</item>
+    </plurals>
+
+    <!-- Separators. Leading and trailing spaces need the surrounding quotes. -->
+    <string name="common_separator">" · "</string>
+    <string name="common_list_separator">、</string>
+    <!-- Joins short notices inside parentheses; Japanese rarely uses a semicolon -->
+    <string name="common_clause_separator">／</string>
+    <!-- Japanese sentences already end with 。, so nothing is needed between them -->
+    <string name="common_sentence_separator"></string>
+
+    <!-- DateText. Numeric on purpose: month names would come from Locale.getDefault(),
+         which the in-app language switch does not change on Android 12 and below. -->
+    <string name="fmt_date">%1$d年%2$d月%3$d日</string>
+    <string name="fmt_month_day">%1$d月%2$d日</string>
+    <string name="fmt_exam_relative_today">今日</string>
+    <string name="fmt_exam_relative_tomorrow">明日</string>
+    <string name="fmt_exam_relative_yesterday">昨日</string>
+    <string name="fmt_exam_relative_past">終了</string>
+    <plurals name="fmt_exam_relative_in_days">
+        <item quantity="other">%1$d日後</item>
+    </plurals>
+
+    <!-- DataError -->
+    <string name="error_data_course_not_found">対象の授業はすでに存在しません。もう一度選択してください。</string>
+    <string name="error_data_no_timetable">利用できる時間割がありません。先に時間割を作成してください。</string>
+    <string name="error_data_timetable_name_empty">時間割名を入力してください。</string>
+
+    <string name="common_off">オフ</string>
+
+    <!-- ScheduleFileError -->
+    <string name="error_import_future_version">このファイルは新しいバージョンの NullClass でエクスポートされています（ファイル形式 v%1$d、このバージョンの対応上限は v%2$d）。先に NullClass を最新版に更新してください。</string>
+    <string name="error_import_invalid_file">このファイルは認識できません。NullClass でエクスポートしたバックアップファイルを選択してください。</string>
+    <string name="error_import_qr_too_large">時間割の内容が多すぎて QR コードに収まりません（%1$d バイト、上限 %2$d バイト）。「時間割ファイルを共有」をご利用ください。</string>
+    <string name="error_import_qr_no_prefix">これは NullClass の時間割 QR コードではありません。</string>
+    <string name="error_import_qr_no_term">共有できる学期が見つかりません。</string>
+    <string name="error_import_qr_corrupt">QR コードの内容が不完全です。相手に再生成してもらってから、もう一度読み取ってください。</string>
+    <string name="error_import_qr_gunzip_failed">QR コードの内容を読み取れません。相手に再生成してもらってから、もう一度読み取ってください。</string>
+    <string name="error_import_shiguang_bad_json">このファイルは認識できません。Shiguang Schedule（拾光课程表）でエクスポートした授業ファイルを選択してください。</string>
+    <string name="error_import_shiguang_not_object">このファイルは認識できません。Shiguang Schedule（拾光课程表）でエクスポートした授業ファイルを選択してください。</string>
+    <string name="error_import_shiguang_no_courses">このファイルは認識できません。Shiguang Schedule（拾光课程表）でエクスポートした授業ファイルを選択してください。</string>
+    <string name="error_import_shiguang_empty">このファイルには授業がありません。</string>
+    <string name="error_import_shiguang_no_rows">このファイルにはインポートできる授業がありません。</string>
+    <string name="error_import_shiguang_no_placeable">このファイルの授業にはいずれも有効な授業日時がないため、時間割に追加できません。</string>
+    <string name="error_import_shiguang_weeks_out_of_range">このファイルの授業の週はすべて学期の範囲外です。</string>
+    <string name="error_import_wakeup_no_schedule">このファイルは認識できません。WakeUp でエクスポートしたバックアップファイルを選択してください。</string>
+    <string name="error_import_wakeup_no_courses">この WakeUp ファイルには授業の情報がありません。破損している可能性があるため、もう一度エクスポートしてください。</string>
+    <string name="error_import_wakeup_empty_courses">この WakeUp ファイルには授業がありません。</string>
+
+</resources>

@@ -15,7 +15,12 @@ enum class AppLanguage(val tag: String?) {
     /** 跟随系统语言；系统语言无对应译文时回落到默认资源（简体中文）。 */
     SYSTEM(null),
     SIMPLIFIED_CHINESE("zh-Hans"),
-    ENGLISH("en");
+    /** 繁体中文，按香港用语翻译；台湾、澳门的系统语言也会命中这份资源。 */
+    TRADITIONAL_CHINESE("zh-Hant"),
+    ENGLISH("en"),
+    JAPANESE("ja"),
+    KOREAN("ko"),
+    FRENCH("fr");
 
     /** 该语言的译文是否已就绪。未就绪的语言不会出现在语言选择项中。 */
     val isTranslated: Boolean get() = this in TRANSLATED
@@ -27,7 +32,9 @@ enum class AppLanguage(val tag: String?) {
          * 须与 `app/src/main/res/xml/locales_config.xml` 一致；新增前先让
          * `tools/check_translations.py` 通过（它按该清单检查各模块译文是否齐全）。
          */
-        private val TRANSLATED = setOf(SYSTEM, SIMPLIFIED_CHINESE, ENGLISH)
+        private val TRANSLATED = setOf(
+            SYSTEM, SIMPLIFIED_CHINESE, TRADITIONAL_CHINESE, ENGLISH, JAPANESE, KOREAN, FRENCH,
+        )
 
         /** 可供用户选择的语言，顺序与枚举声明一致。 */
         val selectable: List<AppLanguage> get() = entries.filter { it.isTranslated }

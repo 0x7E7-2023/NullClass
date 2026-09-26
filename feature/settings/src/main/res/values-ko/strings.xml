@@ -1,0 +1,589 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Korean translation of values/strings.xml. Conventions: docs/i18n.md. -->
+<resources>
+
+    <!-- Shared date labels -->
+    <string name="settings_day_label">%1$s · %2$s</string>
+    <string name="settings_day_label_with_year">%1$d년 %2$s · %3$s</string>
+    <!-- DateTimeFormatter pattern. Numeric on purpose: see fmt_date in :core:ui. -->
+    <string name="settings_month_day_pattern">M월 d일</string>
+    <string name="settings_month_day">%1$d월 %2$d일</string>
+
+    <!-- App settings -->
+    <string name="settings_title">설정</string>
+    <string name="settings_transfer_entry">가져오기/내보내기</string>
+    <string name="settings_appearance">화면 스타일</string>
+    <string name="settings_appearance_desc">‘Material 색상’은 배경화면에서 색상을 추출하고 시스템의 라이트/다크 모드를 따릅니다. ‘라이트’와 ‘다크’는 기본 제공 색상을 사용합니다. 위젯의 라이트/다크 모드는 항상 시스템을 따릅니다.</string>
+    <string name="settings_appearance_desc_unsupported">현재 시스템은 배경화면 색상 추출을 지원하지 않으므로, ‘Material 색상’은 기본 제공 색상을 사용하고 시스템의 라이트/다크 모드를 따릅니다. 위젯의 라이트/다크 모드는 항상 시스템을 따릅니다.</string>
+    <string name="settings_language">언어</string>
+    <string name="settings_language_desc">변경 즉시 적용됩니다.</string>
+
+    <!-- WebDAV sync -->
+    <string name="settings_webdav">WebDAV 동기화</string>
+    <string name="settings_webdav_desc">Nutstore(坚果云), NextCloud 등 직접 사용하는 WebDAV 저장소를 통해 여러 기기 간에 시간표를 동기화합니다.</string>
+    <string name="settings_webdav_warning">계정과 비밀번호는 이 기기에 암호화되지 않은 상태로 저장됩니다. https로 시작하는 서버 주소를 사용하세요.</string>
+    <string name="settings_webdav_server">서버 주소</string>
+    <string name="settings_webdav_username">사용자 이름</string>
+    <string name="settings_webdav_password">비밀번호/앱 비밀번호</string>
+    <string name="settings_webdav_save">설정 저장</string>
+    <string name="settings_webdav_test">연결 테스트</string>
+    <string name="settings_webdav_syncing">동기화하는 중…</string>
+    <string name="settings_webdav_sync_now">지금 동기화</string>
+    <string name="settings_webdav_last_sync">마지막 동기화: %1$s</string>
+    <string name="settings_webdav_merge_desc">동기화할 때 같은 항목은 마지막으로 수정한 버전이 유지되며, 한 기기에서 삭제한 내용은 다른 기기에서도 삭제됩니다.</string>
+    <string name="settings_webdav_saved">설정을 저장했습니다</string>
+    <string name="settings_webdav_connected">연결되었습니다</string>
+    <plurals name="settings_webdav_sync_done">
+        <item quantity="other">동기화 완료. 다른 기기의 변경 사항 %1$d건을 반영했습니다</item>
+    </plurals>
+    <string name="settings_auto_sync">자동 동기화</string>
+    <string name="settings_auto_sync_desc">백그라운드에서 정기적으로 자동 동기화합니다. 먼저 WebDAV 설정을 완료해야 합니다.</string>
+
+    <!-- Widgets -->
+    <string name="settings_widget">위젯</string>
+    <string name="settings_widget_desc">아래 옵션을 누르고 시스템 안내에 따라 확인하면 홈 화면에 추가됩니다.</string>
+    <string name="settings_widget_unsupported">현재 홈 화면 앱은 직접 추가를 지원하지 않습니다. 홈 화면의 빈 곳을 길게 누른 후 위젯 목록에서 NullClass를 찾아 추가하세요.</string>
+    <string name="settings_widget_today">오늘 강의 3×2</string>
+    <string name="settings_widget_next">다음 수업 2×1</string>
+
+    <!-- Timetable display -->
+    <string name="settings_schedule_display">시간표 표시</string>
+    <string name="settings_show_other_week">이번 주가 아닌 강의 표시</string>
+    <string name="settings_bottom_nav">하단 탭</string>
+    <string name="settings_show_exam_tab">‘시험’ 탭 표시</string>
+
+    <!-- Me -->
+    <string name="settings_profile_title">내 정보</string>
+    <string name="settings_profile_timetable">시간표 · %1$s</string>
+    <string name="settings_profile_no_term_title">아직 학기가 없습니다</string>
+    <string name="settings_profile_no_term_desc">학기를 만들면 강의를 추가할 수 있습니다.</string>
+    <string name="settings_profile_week">%1$d주차 · %2$s</string>
+    <string name="settings_profile_out_of_term">학기 기간 아님 · %1$s</string>
+    <string name="settings_profile_quick_actions">빠른 작업</string>
+    <string name="settings_profile_quick_actions_desc">요일 대체, 일정, 빠른 강의 삭제</string>
+    <plurals name="settings_profile_quick_actions_desc_with_count">
+        <item quantity="other">요일 대체, 일정, 빠른 강의 삭제 · 오늘 이후 요일 대체 %1$d건</item>
+    </plurals>
+    <string name="settings_profile_timetables">시간표 관리</string>
+    <string name="settings_profile_timetables_desc">현재: %1$s · 전환, 만들기, 이름 변경</string>
+    <string name="settings_profile_terms">학기 관리</string>
+    <string name="settings_profile_terms_desc">전환, 만들기, 삭제</string>
+    <string name="settings_profile_transfer_desc">백업, 이전, 학사 시스템 가져오기</string>
+    <string name="settings_profile_notification">알림</string>
+    <string name="settings_profile_notification_desc">권한, 알림 시간, 공휴일 및 건너뛸 날짜</string>
+    <string name="settings_profile_settings_desc">WebDAV 동기화, 자동 동기화, 위젯</string>
+    <string name="settings_profile_personalization">개인화 설정</string>
+    <string name="settings_profile_personalization_desc">시간표 배경, 레이아웃, 강의 카드 스타일</string>
+    <string name="settings_profile_about">앱 정보</string>
+    <string name="settings_profile_about_desc">버전, 오픈소스 라이선스, 문제 신고</string>
+
+    <!-- Day swap -->
+    <string name="settings_day_swap_title">요일 대체</string>
+    <string name="settings_day_swap_desc">휴일 대체 수업 등이 있을 때 특정 날짜에 다른 날의 수업을 하도록 설정할 수 있습니다(예: 토요일에 금요일 수업). 오늘 화면, 주간 보기, 위젯, 수업 전 알림이 함께 조정되며, 수업 시간은 해당 날짜의 교시 시간을 그대로 따릅니다.</string>
+    <string name="settings_day_swap_hint">주간 보기에서 요일 머리글을 눌러도 해당 날짜를 바로 조정할 수 있습니다.</string>
+    <string name="settings_day_swap_no_term">먼저 학기를 만든 후 요일 대체를 설정하세요.</string>
+    <string name="settings_day_swap_add">요일 대체 추가</string>
+    <string name="settings_day_swap_next">다음</string>
+    <string name="settings_day_swap_step1">1단계 · 요일을 대체할 날짜 선택</string>
+    <string name="settings_day_swap_step2">2단계 · %1$d월 %2$d일(%3$s)에 어느 날의 수업을 할지 선택</string>
+    <string name="settings_day_swap_upcoming">오늘 이후</string>
+    <string name="settings_day_swap_empty">요일 대체 없음</string>
+    <string name="settings_day_swap_source">%1$s 수업</string>
+
+    <!-- Quick actions -->
+    <string name="settings_quick_actions_title">빠른 작업</string>
+    <string name="settings_quick_actions_swap_desc">휴일 대체 수업 등이 있을 때 특정 날짜에 다른 날의 수업 적용</string>
+    <plurals name="settings_quick_actions_swap_desc_with_count">
+        <item quantity="other">휴일 대체 수업 등이 있을 때 특정 날짜에 다른 날의 수업 적용 · 오늘 이후 %1$d건</item>
+    </plurals>
+    <string name="settings_quick_actions_events">일정</string>
+    <string name="settings_quick_actions_events_desc">일정을 추가하고 관리하며, 일정마다 알림을 따로 설정할 수 있습니다</string>
+    <string name="settings_quick_actions_cleanup">빠른 강의 삭제</string>
+    <string name="settings_quick_actions_cleanup_desc">주차나 날짜로 강의를 골라 선택한 강의를 한꺼번에 삭제합니다</string>
+
+    <!-- Calendar export (.ics) -->
+    <string name="settings_ics_calendar_name">NullClass · %1$s</string>
+    <string name="settings_ics_term">학기: %1$s</string>
+    <string name="settings_ics_teacher">교수: %1$s</string>
+    <string name="settings_ics_note">메모: %1$s</string>
+    <string name="settings_ics_course">강의: %1$s</string>
+    <string name="settings_ics_exam">시험: %1$s</string>
+    <string name="settings_ics_time">시간: %1$s</string>
+    <string name="settings_ics_location">시험장: %1$s</string>
+    <string name="settings_ics_seat">좌석: %1$s</string>
+
+    <!-- Holiday sync -->
+    <plurals name="settings_holiday_synced">
+        <item quantity="other">공휴일 %2$d개를 동기화했습니다(데이터 출처: %1$s)</item>
+    </plurals>
+    <string name="settings_holiday_skipped">최근에 동기화했으므로 지금은 업데이트할 필요가 없습니다</string>
+    <string name="settings_holiday_failed">공휴일을 동기화하지 못해 이전 데이터를 유지합니다(%1$s에 일시적으로 접속할 수 없음)</string>
+    <string name="settings_holiday_no_source">사용할 수 있는 데이터 출처가 없어 공휴일을 동기화하지 못했습니다. 이전 데이터를 유지합니다</string>
+
+    <!-- SyncError -->
+    <string name="settings_sync_not_configured">아직 WebDAV를 설정하지 않았습니다.</string>
+    <string name="settings_sync_url_empty">서버 주소를 입력하세요.</string>
+    <string name="settings_sync_url_scheme">서버 주소는 http:// 또는 https://로 시작해야 합니다.</string>
+    <string name="settings_sync_url_insecure">공용 인터넷 서버에는 https 주소를 사용하세요. 그렇지 않으면 비밀번호가 암호화되지 않은 채 전송됩니다.</string>
+    <string name="settings_sync_username_empty">사용자 이름을 입력하세요.</string>
+    <string name="settings_sync_write_test_failed">서버에 데이터를 쓸 수 없습니다. 계정 권한을 확인하세요.</string>
+    <string name="settings_sync_read_test_failed">서버에서 데이터를 읽을 수 없습니다.</string>
+    <string name="settings_sync_content_mismatch">서버에서 예상과 다른 데이터를 받았습니다. 이 폴더를 NullClass 전용으로 사용하고 있는지 확인하세요.</string>
+    <string name="settings_sync_cleanup_failed">서버의 테스트 파일을 삭제할 수 없습니다. 계정 권한을 확인하세요.</string>
+    <string name="settings_sync_connect_failed">서버에 연결할 수 없습니다.</string>
+    <string name="settings_sync_download_manifest_failed">서버에서 동기화 데이터를 내려받을 수 없습니다.</string>
+    <string name="settings_sync_download_snapshot_failed">서버에서 시간표 데이터를 내려받을 수 없습니다.</string>
+    <string name="settings_sync_upload_snapshot_failed">서버에 시간표 데이터를 올릴 수 없습니다.</string>
+    <string name="settings_sync_upload_manifest_failed">서버에 동기화 데이터를 올릴 수 없습니다.</string>
+    <string name="settings_sync_create_dir_failed">서버에 폴더를 만들 수 없습니다. 계정 권한을 확인하세요.</string>
+    <string name="settings_sync_unexpected">동기화 중 문제가 발생했습니다. 잠시 후 다시 시도하세요.</string>
+    <string name="settings_sync_with_detail">%1$s(%2$s)</string>
+
+    <!-- AutoSyncInterval -->
+    <string name="settings_auto_sync_off">끄기</string>
+    <string name="settings_auto_sync_6h">6시간마다</string>
+    <string name="settings_auto_sync_daily">매일</string>
+
+    <!-- Quick course removal -->
+    <string name="settings_cleanup_title">빠른 강의 삭제</string>
+    <plurals name="settings_cleanup_selected">
+        <item quantity="other">강의 %1$d개 선택됨</item>
+    </plurals>
+    <string name="settings_cleanup_no_term">먼저 학기를 만든 후 강의를 삭제하세요.</string>
+    <string name="settings_cleanup_hint">강의 전체가 삭제됩니다. 다른 주차와 다른 요일의 수업 시간, 연결된 시험도 함께 삭제됩니다.</string>
+    <string name="settings_cleanup_hint_alt">특정 날짜에만 수업이 없다면 ‘알림 → 건너뛸 날짜’를 이용하세요.</string>
+    <string name="settings_cleanup_by_week">주차별</string>
+    <string name="settings_cleanup_by_date">날짜별</string>
+    <string name="settings_cleanup_week">%1$d주차</string>
+    <string name="settings_cleanup_week_current">%1$d주차 · 이번 주</string>
+    <string name="settings_cleanup_out_of_term">이날은 학기 기간이 아니어서 강의가 없습니다.</string>
+    <string name="settings_cleanup_swapped">이날은 요일 대체가 설정되어 있습니다: %1$s 수업.</string>
+    <string name="settings_cleanup_week_empty">%1$d주차에는 강의가 없습니다.</string>
+    <string name="settings_cleanup_day_empty">이날은 강의가 없습니다.</string>
+    <plurals name="settings_cleanup_confirm_title">
+        <item quantity="other">강의 %1$d개 삭제</item>
+    </plurals>
+    <string name="settings_cleanup_confirm_desc">현재 선택한 주나 날짜뿐 아니라 이 강의들의 모든 수업 시간과 연결된 시험이 함께 삭제됩니다. 삭제 후에는 복구할 수 없으며, 동기화를 켠 경우 다른 기기에서도 함께 삭제됩니다.</string>
+    <plurals name="settings_cleanup_other_blocks">
+        <item quantity="other">다른 날짜의 수업 시간 %1$d개도 함께 삭제됩니다</item>
+    </plurals>
+
+    <!-- About -->
+    <string name="settings_about_title">앱 정보</string>
+    <string name="settings_about_app_name">NullClass</string>
+    <string name="settings_about_tagline">대학 시간표 앱입니다. 계정 가입이 필요 없고, 데이터는 기본적으로 이 기기에만 저장되며, 사용 데이터를 수집하지 않습니다.</string>
+    <string name="settings_about_source">소스 코드</string>
+    <string name="settings_about_feedback">문제 신고</string>
+    <string name="settings_about_license">오픈소스 라이선스</string>
+    <string name="settings_about_upstream">감사의 말 · Shiguang Schedule</string>
+    <string name="settings_about_contributors">도움 주신 분: %1$s</string>
+    <string name="settings_about_upstream_desc">NullClass에 내장된 학사 시스템 어댑터는 대부분 Shiguang Schedule(拾光课程表) 커뮤니티의 어댑터 저장소 shiguang_warehouse(MIT 라이선스)에서 이식했으며, ‘Shiguang Schedule에서 이전’ 기능도 공개된 내보내기 형식을 바탕으로 합니다. Shiguang Schedule과 커뮤니티에 감사드립니다.</string>
+    <string name="settings_about_version">NullClass 버전</string>
+    <string name="settings_about_version_copied">%1$s 복사됨</string>
+    <string name="settings_about_no_browser">링크를 열 수 있는 앱이 없습니다.</string>
+
+    <!-- Notifications and reminders -->
+    <string name="settings_notification_title">알림</string>
+    <string name="settings_notification_permissions">권한 및 백그라운드</string>
+    <string name="settings_notification_permissions_desc">알림을 받으려면 알림 권한과 백그라운드 실행 권한이 필요합니다. 허용되지 않은 항목을 누르면 시스템 설정으로 이동합니다.</string>
+    <string name="settings_notification_class_title">수업 전 알림</string>
+    <string name="settings_notification_class_desc">수업이 시작되기 전에 알림을 보냅니다. 시스템 절전 정책에 따라 몇 분 늦게 도착할 수 있으며, 정시에 받으려면 아래의 ‘정확한 알림’을 켜세요.</string>
+    <string name="settings_notification_exam_title">시험 알림</string>
+    <string name="settings_notification_exam_desc">시험 시작 시간을 기준으로 알립니다. 시간을 입력하지 않은 시험은 당일 08:00을 기준으로 합니다. 시험 알림은 공휴일의 영향을 받지 않습니다.</string>
+    <string name="settings_notification_exact_title">정확한 알림</string>
+    <string name="settings_notification_exact_desc">시스템 알람을 사용해 수업 전 알림을 정시에 보냅니다. 위의 ‘정확한 알람 권한’을 허용해야 합니다.</string>
+    <string name="settings_notification_bypass_dnd">방해 금지 모드에서도 울림</string>
+    <string name="settings_notification_bypass_dnd_desc">켜면 방해 금지 모드에서도 수업 전 알림과 시험 알림이 평소처럼 울립니다.</string>
+
+    <!-- Permission panel -->
+    <string name="settings_permission_granted">허용됨</string>
+    <string name="settings_permission_denied">허용 안 됨</string>
+    <string name="settings_permission_grant_action">허용하기</string>
+    <string name="settings_permission_settings_action">설정으로 이동</string>
+    <string name="settings_permission_notification">알림 권한</string>
+    <string name="settings_permission_notification_denied">허용되지 않아 알림을 받을 수 없습니다</string>
+    <string name="settings_permission_battery">배터리 최적화 제외</string>
+    <string name="settings_permission_battery_exempt">허용됨</string>
+    <string name="settings_permission_battery_denied">허용되지 않아 백그라운드 알림이 늦어질 수 있습니다</string>
+    <string name="settings_permission_autostart">자동 실행</string>
+    <string name="settings_permission_autostart_hint">일부 휴대폰에서는 NullClass의 자동 실행을 따로 허용해야 알림을 받을 수 있습니다</string>
+    <string name="settings_permission_exact_alarm">정확한 알람 권한</string>
+    <string name="settings_permission_exact_off">‘정확한 알림’이 꺼져 있어 알림이 몇 분 늦어질 수 있습니다</string>
+    <string name="settings_permission_exact_granted">허용됨. 알림이 정시에 전송됩니다</string>
+    <string name="settings_permission_exact_denied">‘정확한 알림’이 켜져 있지만 권한이 없어 알림이 몇 분 늦어질 수 있습니다</string>
+    <string name="settings_permission_dnd">방해 금지 모드 권한</string>
+
+    <!-- Reminder lead time -->
+    <plurals name="settings_reminder_minutes">
+        <item quantity="other">%1$d분</item>
+    </plurals>
+    <plurals name="settings_reminder_hours">
+        <item quantity="other">%1$d시간</item>
+    </plurals>
+    <plurals name="settings_reminder_days">
+        <item quantity="other">%1$d일</item>
+    </plurals>
+
+    <!-- Holidays and skipped dates -->
+    <string name="settings_holiday_section">공휴일 및 건너뛸 날짜</string>
+    <string name="settings_holiday_section_desc">법정 공휴일을 자동으로 가져오며, 공휴일에는 수업 전 알림을 보내지 않습니다. 건너뛸 날짜를 직접 추가할 수도 있습니다. 대체 근무일은 참고용으로만 표시되며, 그날 수업을 하려면 ‘요일 대체’를 이용하세요.</string>
+    <string name="settings_holiday_sync_title">공휴일 온라인 동기화</string>
+    <string name="settings_holiday_sync_desc">현재 학기의 공휴일을 매주 한 번 자동으로 업데이트합니다</string>
+    <string name="settings_holiday_last_sync">마지막 동기화: %1$s</string>
+    <string name="settings_holiday_never_synced">동기화한 적 없음</string>
+    <string name="settings_holiday_syncing">동기화하는 중…</string>
+    <string name="settings_holiday_sync_now">지금 동기화</string>
+    <string name="settings_holiday_add_skip">건너뛸 날짜 추가</string>
+    <string name="settings_holiday_no_skips">오늘 이후 건너뛸 날짜가 없습니다</string>
+    <plurals name="settings_holiday_skip_count">
+        <item quantity="other">오늘 이후(%1$d개, 지난 날짜는 숨김)</item>
+    </plurals>
+    <string name="settings_holiday_type_holiday">공휴일</string>
+    <string name="settings_holiday_type_workday">대체 근무일(참고용)</string>
+    <string name="settings_holiday_type_manual">직접 건너뜀</string>
+
+    <!-- Import / export -->
+    <string name="settings_transfer_title">가져오기/내보내기</string>
+    <string name="settings_transfer_jw_section">학사 시스템에서 가져오기</string>
+    <string name="settings_transfer_jw_desc">NullClass에서 학교 학사 시스템을 열어 로그인한 후 시간표 페이지로 이동하면 가져올 수 있습니다. 계정과 비밀번호는 학사 시스템 웹페이지에만 입력하며, NullClass는 이를 수집하지 않습니다.</string>
+    <string name="settings_transfer_jw_pick_school">학교 선택</string>
+    <string name="settings_transfer_jw_running">학사 시스템 가져오기 · %1$s</string>
+    <string name="settings_transfer_jw_running_generic">학사 시스템 가져오기</string>
+    <string name="settings_transfer_backup_section">백업 및 공유</string>
+    <string name="settings_transfer_backup_desc">모든 시간표와 학기를 내보냅니다. 백업, 휴대폰 교체, 친구에게 보내 가져오게 할 때 사용할 수 있습니다.</string>
+    <string name="settings_transfer_save_file">파일로 저장</string>
+    <string name="settings_transfer_share">공유</string>
+    <string name="settings_transfer_share_file">시간표 파일 공유</string>
+    <string name="settings_transfer_qr_generate">QR 코드 만들기</string>
+    <string name="settings_transfer_qr_desc">현재 학기의 강의만 포함됩니다. 상대방이 스캔하면 강의가 상대방의 현재 시간표로 가져와지고 해당 학기로 전환됩니다. 전체 백업이 필요하면 ‘파일로 저장’을 이용하세요.</string>
+    <string name="settings_transfer_ics_section">캘린더 내보내기</string>
+    <string name="settings_transfer_ics_desc">현재 학기의 강의와 시험을 표준 .ics 파일로 내보냅니다. 시스템 캘린더, Google 캘린더 등에서 열 수 있습니다.</string>
+    <string name="settings_transfer_ics_once">내보낸 캘린더는 자동으로 업데이트되지 않습니다. 강의나 시험이 바뀌면 다시 내보내세요.</string>
+    <string name="settings_transfer_ics_export">현재 학기를 .ics로 내보내기</string>
+    <string name="settings_transfer_import_section">가져오기</string>
+    <string name="settings_transfer_import_file">백업 파일에서 가져오기</string>
+    <string name="settings_transfer_import_qr">QR 코드 스캔으로 가져오기</string>
+    <string name="settings_transfer_import_qr_album">갤러리에서 QR 코드 인식</string>
+    <string name="settings_transfer_wakeup_section">WakeUp에서 이전</string>
+    <string name="settings_transfer_wakeup_desc">WakeUp 앱에서 시간표를 파일로 백업한 후 여기에서 해당 파일을 선택하세요. 연강, 홀수/짝수 주, 교시 시간, 색상이 모두 유지됩니다.</string>
+    <string name="settings_transfer_wakeup_pick">WakeUp 백업 파일 선택</string>
+    <string name="settings_transfer_shiguang_section">Shiguang Schedule에서 이전</string>
+    <string name="settings_transfer_shiguang_desc">Shiguang Schedule(拾光课程表)의 ‘我的 → 高级功能 → 课表导入/导出’에서 강의 파일(파일 이름이 shiguangschedule_로 시작)을 내보낸 후 여기에서 해당 파일을 선택하세요. 강의, 홀수/짝수 주, 교시 시간, 개강일이 모두 유지됩니다.</string>
+    <string name="settings_transfer_shiguang_pick">Shiguang 내보내기 파일 선택</string>
+    <string name="settings_transfer_merge_hint">가져온 내용은 기존 데이터와 병합되며, 이 기기에서 더 최근에 수정한 내용은 덮어쓰지 않습니다.</string>
+    <string name="settings_transfer_processing">처리하는 중…</string>
+    <string name="settings_transfer_preview_title">가져오기 미리보기</string>
+    <string name="settings_transfer_preview_source">출처: %1$s</string>
+    <string name="settings_transfer_preview_activate">가져온 후 현재 학기로 설정되며, 오늘 화면, 시간표, 위젯이 바로 전환됩니다.</string>
+    <string name="settings_transfer_preview_adapter_notes">다음 안내는 어댑터 작성자가 제공한 것이며 NullClass에서 작성한 것이 아닙니다:</string>
+    <string name="settings_transfer_preview_confirm">가져오기</string>
+    <string name="settings_transfer_preview_term">학기 ‘%1$s’ · %2$s · %3$s · %4$s · %5$s</string>
+    <!-- Counts in import preview, calendar export and recognition review -->
+    <plurals name="settings_count_weeks">
+        <item quantity="other">%1$d주</item>
+    </plurals>
+    <plurals name="settings_count_courses">
+        <item quantity="other">강의 %1$d개</item>
+    </plurals>
+    <plurals name="settings_count_blocks">
+        <item quantity="other">수업 시간 %1$d개</item>
+    </plurals>
+    <plurals name="settings_count_exams">
+        <item quantity="other">시험 %1$d개</item>
+    </plurals>
+    <plurals name="settings_transfer_preview_deletions">
+        <item quantity="other">가져오면 이 기기의 기존 항목 %1$d개가 삭제됩니다. 신뢰할 수 있는 파일인지 확인하세요.</item>
+    </plurals>
+    <string name="settings_transfer_preview_merge_note">이 기기의 데이터와 병합된 후 적용됩니다.</string>
+    <string name="settings_transfer_share_failed">공유하지 못했습니다: %1$s</string>
+    <string name="settings_transfer_ics_failed_to_open">선택한 위치에 저장할 수 없습니다: %1$s</string>
+    <string name="settings_transfer_permission_camera">카메라 권한이 없습니다. 시스템 설정에서 권한을 허용한 후 다시 시도하세요.</string>
+
+    <!-- Import / export results -->
+    <string name="settings_transfer_export_done">내보냈습니다</string>
+    <string name="settings_transfer_export_failed">내보내지 못했습니다: %1$s</string>
+    <string name="settings_transfer_ics_export_done">캘린더 파일을 내보냈습니다: %1$s, %2$s.</string>
+    <plurals name="settings_transfer_ics_block_count">
+        <item quantity="other">수업 시간 %1$d개</item>
+    </plurals>
+    <plurals name="settings_transfer_ics_skipped">
+        <item quantity="other">수업 시간 %1$d개는 교시 시간이 없어 내보내지 않았습니다.</item>
+    </plurals>
+    <string name="settings_transfer_ics_export_failed">캘린더를 내보내지 못했습니다: %1$s</string>
+    <string name="settings_transfer_no_term">현재 학기가 없습니다</string>
+    <string name="settings_transfer_cannot_open_target">선택한 파일을 열 수 없습니다</string>
+    <string name="settings_transfer_no_term_for_qr">현재 학기가 없어 QR 코드를 만들 수 없습니다.</string>
+    <string name="settings_transfer_qr_failed">QR 코드를 만들지 못했습니다: %1$s</string>
+    <string name="settings_transfer_qr_unreadable">이 이미지를 읽을 수 없습니다. 다른 이미지로 다시 시도하세요.</string>
+    <string name="settings_transfer_qr_not_nullclass">NullClass QR 코드가 아닙니다.</string>
+    <string name="settings_transfer_qr_source">QR 코드</string>
+    <string name="settings_transfer_file_source">파일 %1$s</string>
+    <string name="settings_transfer_wakeup_source">WakeUp %1$s</string>
+    <string name="settings_transfer_shiguang_source">Shiguang Schedule %1$s</string>
+    <string name="settings_transfer_read_failed">읽지 못했습니다: %1$s</string>
+    <plurals name="settings_transfer_import_done">
+        <item quantity="other">가져오기를 완료했습니다. 항목 %1$d개를 업데이트했습니다.</item>
+    </plurals>
+    <string name="settings_transfer_import_up_to_date">이 기기의 데이터가 이미 최신 상태입니다.</string>
+    <string name="settings_transfer_cannot_read_file">파일을 읽을 수 없습니다.</string>
+    <string name="settings_transfer_wakeup_generic">시간표</string>
+    <string name="settings_transfer_shiguang_generic">내보내기 파일</string>
+    <string name="settings_transfer_import_failed">가져오지 못했습니다: %1$s</string>
+    <string name="settings_transfer_ocr_review_note">이미지 인식으로 만든 시간표입니다. 강의 이름, 주차, 교시를 꼼꼼히 확인하세요</string>
+    <string name="settings_transfer_no_terms_in_file">파일에 가져올 수 있는 학기가 없습니다.</string>
+    <string name="settings_transfer_parse_failed">파일 내용을 읽을 수 없습니다: %1$s</string>
+    <string name="settings_transfer_new_timetable_one">‘%1$s’ 시간표를 추가했습니다. ‘내 정보 → 시간표 관리’에서 전환할 수 있습니다.</string>
+    <plurals name="settings_transfer_new_timetable_many">
+        <item quantity="other">시간표 %1$d개를 추가했습니다. ‘내 정보 → 시간표 관리’에서 전환할 수 있습니다.</item>
+    </plurals>
+
+    <!-- QR sharing / scanning -->
+    <string name="settings_qr_render_failed">QR 코드를 그리지 못했습니다</string>
+    <string name="settings_qr_share_entry">시간표 QR 코드 공유</string>
+    <string name="settings_qr_share_title">스캔하여 시간표 가져오기</string>
+    <string name="settings_qr_share_image">이미지 공유</string>
+    <string name="settings_qr_image_desc">시간표 QR 코드</string>
+    <string name="settings_qr_share_hint">다른 기기의 NullClass에서 이 QR 코드를 스캔하면 현재 학기를 가져올 수 있습니다.</string>
+    <string name="settings_qr_scan_hint">QR 코드를 프레임 안에 맞추세요. 두 손가락으로 확대/축소하고, 탭하여 초점을 맞출 수 있습니다</string>
+    <string name="settings_qr_scan_zooming">QR 코드를 감지했습니다. 자동으로 확대하는 중…</string>
+    <string name="settings_qr_scan_decoding">휴대폰을 움직이지 마세요. 인식하는 중…</string>
+    <string name="settings_qr_scan_starting">카메라를 시작하는 중…</string>
+    <string name="settings_qr_scan_album">갤러리에서 QR 코드 선택</string>
+    <string name="settings_qr_scan_torch_on">플래시 켜기</string>
+    <string name="settings_qr_scan_torch_off">플래시 끄기</string>
+    <string name="settings_qr_scan_camera_failed">카메라를 열 수 없습니다: %1$s</string>
+    <string name="settings_qr_scan_failed">인식하지 못했습니다: %1$s</string>
+    <string name="settings_qr_scan_failed_retry">뒤로 돌아가 다시 스캔하세요</string>
+    <string name="settings_qr_image_not_found">이미지에서 QR 코드를 찾지 못했습니다. 선명하고 잘리지 않은 QR 코드 이미지를 선택하세요.</string>
+
+    <!-- ImportNotice: notes in the import preview -->
+    <string name="settings_notice_shiguang_row_not_object">%1$d번째 강의의 데이터가 잘못되어 건너뛰었습니다</string>
+    <string name="settings_notice_shiguang_row_no_name">%1$d번째 강의에 이름이 없어 건너뛰었습니다</string>
+    <string name="settings_notice_shiguang_row_no_day">‘%1$s’ 강의에 수업 요일이 없어 건너뛰었습니다</string>
+    <string name="settings_notice_shiguang_row_bad_day">‘%1$s’ 강의의 수업 요일(%2$s)이 올바르지 않아 건너뛰었습니다</string>
+    <string name="settings_notice_shiguang_weeks_truncated">학기가 총 %1$d주로 최대 %2$d주 제한을 넘어, 초과한 부분은 가져오지 않았습니다</string>
+    <string name="settings_notice_shiguang_weeks_exceed_declared">강의에 %1$d주차가 있어 파일에 설정된 %2$d주를 넘으므로, 학기를 %1$d주로 가져왔습니다</string>
+    <string name="settings_notice_shiguang_no_start_date">파일에 개강일이 없어 이번 주부터 시작하도록 설정했습니다. ‘학기 관리’에서 확인하세요</string>
+    <string name="settings_notice_shiguang_start_date_unreadable">개강일 ‘%1$s’을(를) 인식할 수 없어 이번 주부터 시작하도록 설정했습니다. ‘학기 관리’에서 확인하세요</string>
+    <string name="settings_notice_shiguang_no_period_table">파일에 교시 시간이 없어 기본 교시 시간을 사용했습니다. ‘학기 관리’에서 확인하세요</string>
+    <string name="settings_notice_shiguang_period_row_invalid">교시 시간의 %1$d번째 항목이 잘못되어 건너뛰었습니다</string>
+    <string name="settings_notice_shiguang_period_out_of_range">교시 시간 중 %1$d교시가 하루 최대 %2$d교시 제한을 넘어 건너뛰었습니다</string>
+    <string name="settings_notice_shiguang_period_time_invalid">%1$d교시의 종료 시간이 시작 시간보다 늦지 않아 건너뛰었습니다</string>
+    <string name="settings_notice_shiguang_course_beyond_last_period">‘%1$s’ 강의가 %2$d교시에 있어 하루 최대 %3$d교시 제한을 넘으므로 건너뛰었습니다</string>
+    <string name="settings_notice_shiguang_course_no_time">‘%1$s’ 강의에 수업 시간이 없어 건너뛰었습니다</string>
+    <string name="settings_notice_shiguang_custom_time_no_nearest">‘%1$s’ 강의는 사용자 지정 시간 %2$s을(를) 사용하며, 기존 교시와 맞지 않아 건너뛰었습니다</string>
+    <string name="settings_notice_shiguang_custom_time_nearest">‘%1$s’ 강의는 사용자 지정 시간 %2$s을(를) 사용하므로, 가장 가까운 %3$d교시에 배치했습니다</string>
+    <plurals name="settings_notice_shiguang_custom_time_dropped">
+        <item quantity="other">Shiguang에서 사용자 지정 수업 시간을 설정한 수업 시간 %1$d개를 교시 기준으로 가져왔으며, 사용자 지정 시간은 유지되지 않았습니다</item>
+    </plurals>
+    <string name="settings_notice_shiguang_periods_extended">강의에 %1$d교시가 있지만 교시 시간은 %2$d교시까지만 있어, 교시당 %3$d분, 쉬는 시간 %4$d분으로 나머지를 채웠습니다. ‘학기 관리’에서 확인하세요</string>
+    <string name="settings_notice_shiguang_weeks_overflow_dropped">‘%1$s’ 강의에 %2$d주차를 넘는 주차가 있어, 초과한 부분은 가져오지 않았습니다</string>
+    <string name="settings_notice_shiguang_weeks_missing">‘%1$s’ 강의에 주차 정보가 없어 1~%2$d주차로 가져왔습니다</string>
+    <string name="settings_notice_shiguang_weeks_all_out_of_range">‘%1$s’ 강의의 주차(%2$s주차)가 모두 학기의 %3$d주를 벗어나 건너뛰었습니다</string>
+    <string name="settings_notice_wakeup_line_unparsable">파일의 %1$d번째 줄을 인식할 수 없어 건너뛰었습니다</string>
+    <string name="settings_notice_wakeup_line_not_object">파일의 %1$d번째 줄을 인식할 수 없어 건너뛰었습니다</string>
+    <string name="settings_notice_wakeup_line_not_array">파일의 %1$d번째 줄을 인식할 수 없어 건너뛰었습니다</string>
+    <string name="settings_notice_wakeup_weeks_truncated">학기가 총 %1$d주로 최대 %2$d주 제한을 넘어, 초과한 부분은 가져오지 않았습니다</string>
+    <string name="settings_notice_wakeup_period_row_invalid">교시 시간의 %1$d번째 항목이 잘못되어 건너뛰었습니다</string>
+    <string name="settings_notice_wakeup_no_period_table">WakeUp 파일에 교시 시간이 없어 기본 교시 시간을 사용했습니다</string>
+    <string name="settings_notice_wakeup_course_no_name">이름이 없는 강의가 있어 이름을 ‘课程 %1$s’ 형식으로 지정했습니다</string>
+    <string name="settings_notice_wakeup_block_missing_field">%1$d번째 수업 시간의 정보가 불완전하여 건너뛰었습니다</string>
+    <string name="settings_notice_wakeup_block_bad_step">%1$d번째 수업 시간의 교시 수(%2$s)가 올바르지 않아 1교시로 가져왔습니다</string>
+    <string name="settings_notice_wakeup_block_bad_day">%1$d번째 수업 시간의 요일(%2$s)이 올바르지 않아 건너뛰었습니다</string>
+    <string name="settings_notice_wakeup_block_bad_start">%1$d번째 수업 시간의 시작 교시(%2$s)가 올바르지 않아 건너뛰었습니다</string>
+    <!-- Academic system: image OCR / rebuilding the table from page text (ImportNotice.OCR_*). Rows and columns count from 1 -->
+    <string name="settings_notice_ocr_no_text">이미지에서 글자를 인식하지 못했습니다</string>
+    <string name="settings_notice_ocr_no_day_header">요일 제목을 찾지 못해 각 열이 어느 요일인지 알 수 없습니다</string>
+    <plurals name="settings_notice_ocr_day_columns_out_of_range">
+        <item quantity="other">%1$d일을 인식했습니다(보통 5~7일). 요일 제목이 불완전할 수 있습니다</item>
+    </plurals>
+    <string name="settings_notice_ocr_day_columns_mismatch">인식한 요일 수(%1$d)가 예상(%2$d)과 다릅니다</string>
+    <string name="settings_notice_ocr_day_order_odd">요일 제목의 순서가 올바르지 않습니다. 꼼꼼히 확인하세요</string>
+    <string name="settings_notice_ocr_periods_by_time">교시는 수업 시간을 바탕으로 추정했습니다. 꼼꼼히 확인하세요</string>
+    <plurals name="settings_notice_ocr_no_period_column">
+        <item quantity="other">교시 열을 찾지 못해(총 %1$d행 인식) 각 행이 몇 교시인지 알 수 없습니다</item>
+    </plurals>
+    <string name="settings_notice_ocr_period_rows_mismatch">인식한 교시 수(%1$d)가 예상(%2$d)과 다릅니다</string>
+    <plurals name="settings_notice_ocr_unassigned_boxes">
+        <item quantity="other">글자 %1$d곳을 시간표에 넣지 못했습니다(%2$d%%)</item>
+    </plurals>
+    <string name="settings_notice_ocr_no_week_info">시간표에 주차 정보가 없어 학기 전체로 가져왔습니다. 확인하세요</string>
+    <plurals name="settings_notice_ocr_column_lines_skipped">
+        <item quantity="other">%1$d열의 글자 %2$d줄이 강의와 대응되지 않아 건너뛰었습니다</item>
+    </plurals>
+    <string name="settings_notice_ocr_cell_no_grid">%1$d행 %2$d열의 위치를 확인할 수 없습니다</string>
+    <string name="settings_notice_ocr_cell_no_weeks">%1$d행 %2$d열 ‘%3$s’에서 주차를 인식하지 못해 학기 전체로 가져왔습니다. 확인하세요</string>
+    <string name="settings_notice_ocr_no_courses">인식된 강의가 없습니다</string>
+
+    <!-- Academic system import: choose school / adapter details / library updates -->
+    <string name="settings_jw_activity_label">학사 시스템 가져오기</string>
+    <string name="settings_jw_search_hint">학교 이름 또는 도메인 검색</string>
+    <string name="settings_jw_search_clear">검색어 지우기</string>
+    <string name="settings_jw_tab_schools">학교</string>
+    <string name="settings_jw_tab_generic">범용</string>
+    <string name="settings_jw_tab_mine">내가 추가함</string>
+    <string name="settings_jw_import_zip">어댑터 패키지 가져오기</string>
+
+    <!-- Academic system import: library updates -->
+    <plurals name="settings_jw_library_version">
+        <item quantity="other">어댑터 저장소 버전: %1$s(어댑터 %2$d개)</item>
+    </plurals>
+    <string name="settings_jw_library_builtin">기본 제공</string>
+    <string name="settings_jw_library_last_check">마지막 업데이트 확인: %1$s</string>
+    <string name="settings_jw_library_never_checked">없음</string>
+    <string name="settings_jw_library_checking">확인하는 중…</string>
+    <string name="settings_jw_library_updating">업데이트하는 중…</string>
+    <string name="settings_jw_library_check_now">업데이트 확인</string>
+    <string name="settings_jw_library_update_to">v%1$s 버전으로 업데이트</string>
+    <string name="settings_jw_library_check_failed">업데이트를 확인하지 못했습니다. 네트워크를 확인한 후 다시 시도하세요.</string>
+    <string name="settings_jw_library_found">새 버전 v%1$s 있음</string>
+    <string name="settings_jw_library_latest">최신 버전입니다</string>
+    <string name="settings_jw_library_updated">어댑터 저장소를 v%1$s 버전으로 업데이트했습니다.</string>
+    <string name="settings_jw_library_shadowed">공식 어댑터 저장소에 %1$s 어댑터가 포함되어 공식 버전을 사용합니다.</string>
+    <string name="settings_jw_library_update_failed">업데이트하지 못했습니다: %1$s</string>
+
+    <!-- Academic system import: web page step -->
+    <string name="settings_jw_hint_generic">로그인하고 시간표 페이지를 연 후 ‘시간표 추출’을 누르세요. 범용 어댑터가 페이지 내용을 바탕으로 시간표를 자동 인식합니다.</string>
+    <string name="settings_jw_hint">로그인하고 시간표 페이지를 연 후 ‘시간표 추출’을 누르세요.</string>
+    <string name="settings_jw_extracting">추출하는 중…</string>
+    <string name="settings_jw_extract">시간표 추출</string>
+    <string name="settings_jw_ocr_running">시간표 이미지를 인식하는 중…</string>
+    <string name="settings_jw_image_unreadable">시간표 이미지를 읽을 수 없습니다. 이미지가 손상되었거나 어댑터가 접근할 수 없는 사이트에 있을 수 있습니다. 스크린숏을 사용한다면 메신저 앱에서 압축된 이미지가 아닌 원본을 선택하세요.</string>
+    <string name="settings_jw_ocr_building">시간표를 분석하는 중…</string>
+    <string name="settings_jw_ocr_unreliable">인식 결과가 정확하지 않을 수 있습니다(%1$s). 강의를 직접 추가하는 것을 권장합니다.</string>
+    <string name="settings_jw_ocr_empty">인식된 강의가 없습니다. 강의를 직접 추가하는 것을 권장합니다.</string>
+    <string name="settings_jw_ocr_done">인식이 완료되었습니다. 확인한 후 가져오세요</string>
+    <string name="settings_jw_structure_done">인식이 완료되었습니다. 확인한 후 가져오세요</string>
+    <string name="settings_jw_extract_done">추출했습니다</string>
+    <string name="settings_jw_extract_failed">추출하지 못했습니다: %1$s</string>
+    <string name="settings_jw_page_loaded">페이지를 불러왔습니다. 자동으로 추출하는 중…</string>
+    <string name="settings_jw_no_start_url">학사 시스템 주소가 없습니다. 뒤로 돌아가 학교를 다시 선택하세요.</string>
+    <string name="settings_jw_switch_mobile">모바일 버전</string>
+    <string name="settings_jw_switch_desktop">PC 버전</string>
+    <string name="settings_jw_network_frozen_short">추출하는 동안 웹페이지의 네트워크 연결을 일시 중지했습니다.</string>
+    <string name="settings_jw_network_frozen">페이지 내용이 다른 사이트로 전송되지 않도록 추출하는 동안 웹페이지의 네트워크 연결을 일시 중지했습니다.</string>
+    <string name="settings_jw_network_restored">웹페이지의 네트워크 연결을 복원했습니다</string>
+    <string name="settings_jw_resume_browsing">웹페이지 계속 보기</string>
+    <string name="settings_jw_error_log_title">오류 로그</string>
+    <string name="settings_jw_error_log_copy">오류 로그 복사</string>
+    <string name="settings_jw_error_log_copied">오류 로그를 복사했습니다</string>
+    <string name="settings_jw_image_cancelled">인식 결과를 취소했습니다. 다시 추출하거나 강의를 직접 추가할 수 있습니다.</string>
+    <string name="settings_jw_structure_missing">현재 페이지에서 시간표를 찾지 못했습니다(%1$s). 시간표 페이지를 열었는지 확인한 후 다시 시도하세요. 시간표가 일부만 보이면 PC 버전으로 전환해 보세요.</string>
+    <string name="settings_jw_no_courses">현재 페이지에서 강의를 인식하지 못했습니다. 시간표 페이지를 열었는지 확인하세요.</string>
+    <string name="settings_jw_adapter_ocr">%1$s(이미지 인식)</string>
+    <string name="settings_jw_adapter_auto">%1$s(자동 인식)</string>
+
+    <!-- Academic system import: review recognition result -->
+    <string name="settings_jw_review_title">인식 결과 확인</string>
+    <string name="settings_jw_review_count">%1$s, %2$s을(를) 인식했습니다.</string>
+    <plurals name="settings_jw_review_course_count">
+        <item quantity="other">강의 %1$d개</item>
+    </plurals>
+    <string name="settings_jw_review_defaults">학기 이름과 개강일은 자동으로 입력되었으며, 가져온 후 ‘학기 관리’에서 수정할 수 있습니다.</string>
+    <string name="settings_jw_review_warn">다음 내용을 꼼꼼히 확인하세요:</string>
+    <string name="settings_jw_review_hint">인식 결과는 표의 위치를 바탕으로 만들어져 행 전체가 어긋날 수 있습니다. 가져온 후 시간표에서 몇 개 강의의 시간을 확인해 보세요.</string>
+    <!-- Appended directly after the course name -->
+    <string name="settings_jw_review_block">(%1$s %2$d~%3$d교시)</string>
+    <string name="settings_jw_review_confirm">가져오기</string>
+
+    <!-- Academic system import: script execution and bridge -->
+    <string name="settings_jw_error_title">작업 실패</string>
+    <string name="settings_jw_done_title">완료</string>
+    <string name="settings_jw_ok">확인</string>
+    <string name="settings_jw_unknown_error">알 수 없는 문제가 발생했습니다</string>
+    <string name="settings_jw_package_read_failed">어댑터 패키지를 읽을 수 없습니다</string>
+    <string name="settings_jw_cannot_read_file">파일을 읽을 수 없습니다</string>
+    <!-- JwErrorCode -->
+    <string name="settings_jw_err_network_failed">네트워크 연결 실패: %1$s</string>
+    <string name="settings_jw_err_http_status">지금은 서버에 접속할 수 없습니다(오류 코드 %1$d)</string>
+    <string name="settings_jw_err_insecure_redirect">서버가 안전하지 않은 주소로 이동하려 하여 접속을 중단했습니다: %1$s</string>
+    <string name="settings_jw_err_empty_response">서버에서 받은 내용이 없습니다</string>
+    <string name="settings_jw_err_response_too_large">서버에서 받은 내용이 너무 큽니다(%1$d KB 초과)</string>
+    <string name="settings_jw_err_no_newer_version">최신 버전입니다</string>
+    <string name="settings_jw_err_index_unreadable">어댑터 저장소를 읽을 수 없습니다: %1$s</string>
+    <string name="settings_jw_err_adapter_file_unreadable">‘%1$s’ 어댑터의 파일 %2$s을(를) 읽을 수 없습니다: %3$s</string>
+    <string name="settings_jw_err_library_url_empty">어댑터 저장소 주소를 입력하세요</string>
+    <string name="settings_jw_err_library_url_invalid">어댑터 저장소 주소가 올바르지 않습니다: %1$s</string>
+    <string name="settings_jw_err_library_url_not_http">어댑터 저장소 주소는 https://로 시작해야 합니다: %1$s</string>
+    <string name="settings_jw_err_library_url_insecure">전송 중 내용이 변조되지 않도록 어댑터 저장소 주소는 https를 사용해야 합니다</string>
+    <string name="settings_jw_err_library_url_no_host">어댑터 저장소 주소가 완전하지 않습니다: %1$s</string>
+    <string name="settings_jw_err_library_url_github_shape">GitHub 주소는 github.com/사용자명/저장소명 형식이어야 합니다</string>
+    <string name="settings_jw_err_spec_too_new">이 어댑터를 사용하려면 더 최신 버전의 NullClass가 필요합니다(어댑터 규격 v%1$d, 현재 버전은 v%2$d까지 지원). 먼저 앱을 업데이트하세요</string>
+    <string name="settings_jw_err_app_too_old">이 어댑터를 사용하려면 더 최신 버전의 NullClass가 필요합니다(빌드 번호 %1$d 이상 필요, 현재 %2$d). 먼저 앱을 업데이트하세요</string>
+    <string name="settings_jw_broken_unreadable">읽기 실패</string>
+    <!-- Limits the host sets for adapter scripts -->
+    <string name="settings_jw_script_timeout">어댑터 실행 시간이 초과되었습니다(%1$d초)</string>
+    <string name="settings_jw_wait_timeout">입력 대기 시간이 초과되었습니다(%1$d초)</string>
+    <string name="settings_jw_result_too_large">추출 결과가 크기 제한(%1$dK자)을 넘었습니다. 어댑터 작성자에게 알려 주세요</string>
+    <string name="settings_jw_library_read_failed">어댑터 저장소를 읽을 수 없습니다</string>
+    <string name="settings_jw_download_failed">어댑터를 내려받지 못했습니다</string>
+    <string name="settings_jw_install_failed">추가하지 못했습니다</string>
+    <string name="settings_jw_installed">추가됨: %1$s</string>
+    <string name="settings_jw_deleted">‘%1$s’ 삭제됨</string>
+    <string name="settings_jw_delete_builtin_denied">기본 제공 어댑터는 삭제할 수 없습니다.</string>
+
+    <!-- Academic system import: adapter question dialog -->
+    <string name="settings_jw_ask_title">‘%1$s’에서 추가 정보가 필요합니다</string>
+    <string name="settings_jw_ask_safety">NullClass는 학사 시스템 비밀번호 등 계정 정보를 요구하지 않습니다.</string>
+
+    <!-- Academic system import: choose school, library and details sheets -->
+    <string name="settings_jw_picker_login_title">학사 시스템 주소 입력</string>
+    <string name="settings_jw_picker_login_desc">학교 학사 시스템의 로그인 페이지 또는 시간표 페이지 주소를 입력하세요(예: jw.example.edu.cn). 로그인과 인증은 다음 화면의 학사 시스템 웹페이지에서 진행되며, NullClass는 계정과 비밀번호를 수집하지 않습니다.</string>
+    <string name="settings_jw_picker_login_label">학사 시스템 주소</string>
+    <string name="settings_jw_picker_login_hint">주소를 모른다면 브라우저에서 학교 학사 시스템을 열고 주소 표시줄의 전체 주소를 복사하세요</string>
+    <string name="settings_jw_picker_login_invalid">주소 형식이 올바르지 않습니다. 불필요한 공백이나 한글 등 라틴 문자가 아닌 글자가 있는지 확인하세요</string>
+    <string name="settings_jw_picker_login_preview">열릴 주소: %1$s. 일부 학교의 학사 시스템은 http만 지원하므로, 열리지 않으면 주소 앞부분을 http://로 바꿔 보세요</string>
+    <string name="settings_jw_picker_login_open">열기</string>
+    <string name="settings_jw_picker_link_title">어댑터 저장소에서 추가</string>
+    <string name="settings_jw_picker_link_desc">어댑터 저장소의 GitHub 저장소 주소 또는 index.json 링크(https로 시작)를 붙여 넣으세요. 어댑터는 제3자가 관리하므로 신뢰할 수 있는 출처인지 확인하세요.</string>
+    <string name="settings_jw_picker_link_label">저장소 주소</string>
+    <string name="settings_jw_picker_link_read">불러오기</string>
+
+    <!-- Academic system import: install confirmation / library list / details -->
+    <plurals name="settings_jw_install_title_many">
+        <item quantity="other">어댑터 %1$d개를 설치할까요?</item>
+    </plurals>
+    <string name="settings_jw_install_title_one">이 어댑터를 추가할까요?</string>
+    <string name="settings_jw_adapter_line">%1$s(%2$s v%3$s)</string>
+    <string name="settings_jw_adapter_login_url">로그인 페이지: %1$s</string>
+    <string name="settings_jw_adapter_hosts">접근 가능한 사이트: %1$s</string>
+    <string name="settings_jw_adapter_view_script">코드 보기</string>
+    <string name="settings_jw_adapter_source_url">출처: %1$s</string>
+    <string name="settings_jw_adapter_source_file">출처 파일: %1$s</string>
+    <string name="settings_jw_adapter_untrusted">제3자 어댑터는 다른 사람이 작성한 것으로, 추출할 때 로그인한 학사 시스템 웹페이지의 내용을 읽습니다. NullClass는 이를 검토하지 않습니다. 신뢰할 수 있는 출처인지 확인하거나 먼저 코드를 확인하세요.</string>
+    <string name="settings_jw_install_confirm">추가</string>
+    <string name="settings_jw_library_dialog_title">어댑터 저장소</string>
+    <string name="settings_jw_library_empty">이 저장소에는 아직 어댑터가 없습니다.</string>
+    <string name="settings_jw_library_no_match">이 저장소에 ‘%1$s’와(과) 일치하는 어댑터가 없습니다.</string>
+    <string name="settings_jw_library_untrusted">저장소의 어댑터도 제3자가 관리하며, NullClass는 이를 검토하지 않습니다.</string>
+    <string name="settings_jw_adapter_key">식별자: %1$s</string>
+    <string name="settings_jw_adapter_version">버전: v%1$s</string>
+    <string name="settings_jw_adapter_source_builtin">공식</string>
+    <string name="settings_jw_adapter_source_user">직접 추가</string>
+    <string name="settings_jw_adapter_source">출처: %1$s</string>
+    <string name="settings_jw_adapter_author">작성자: %1$s</string>
+    <string name="settings_jw_adapter_homepage">홈페이지: %1$s</string>
+    <string name="settings_jw_adapter_installed_from">설치 출처: %1$s</string>
+    <string name="settings_jw_adapter_checksum">체크섬: %1$s…</string>
+    <string name="settings_jw_adapter_delete">삭제</string>
+    <string name="settings_jw_script_dialog_title">%1$s 코드</string>
+
+    <!-- Academic system import: choose school -->
+    <string name="settings_jw_recent_used">최근 사용</string>
+    <string name="settings_jw_recent_refresh_hint">누르면 지난번 로그인 상태로 다시 가져옵니다</string>
+    <string name="settings_jw_no_school_match">‘%1$s’와(과) 일치하는 학교가 없습니다.</string>
+    <plurals name="settings_jw_mine_hits">
+        <item quantity="other">‘내가 추가함’에 결과 %1$d개</item>
+    </plurals>
+    <string name="settings_jw_try_generic">범용 어댑터를 사용해 보세요. 학사 시스템 주소를 입력하고 로그인하면 NullClass가 페이지의 시간표를 자동으로 인식합니다.</string>
+    <string name="settings_jw_badge_generic">범용</string>
+    <string name="settings_jw_no_your_school">학교를 찾을 수 없나요?</string>
+    <string name="settings_jw_use_generic">범용 어댑터 사용</string>
+    <string name="settings_jw_generic_desc">범용 어댑터는 특정 학교용이 아닙니다. 학사 시스템 주소를 입력하고 로그인하면 NullClass가 페이지의 시간표를 인식합니다(이미지 형태의 시간표는 이 기기에서 글자를 인식합니다). 인식 결과는 직접 확인한 후에만 가져옵니다.</string>
+    <string name="settings_jw_request_adapter">우리 학교 지원 요청</string>
+    <string name="settings_jw_add_from_link">링크로 추가</string>
+    <string name="settings_jw_mine_empty">아직 추가한 어댑터가 없습니다. 어댑터 패키지를 가져오거나 링크를 통해 어댑터 저장소에서 추가할 수 있습니다. 제3자 어댑터는 다른 사람이 관리하며, NullClass는 이를 검토하지 않습니다.</string>
+    <string name="settings_jw_insecure">안전하지 않은 연결</string>
+    <string name="settings_jw_details">상세 정보</string>
+
+</resources>

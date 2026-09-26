@@ -1,0 +1,174 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- French translation of values/strings.xml. Conventions: docs/i18n.md. -->
+<resources>
+
+    <!-- Class time editor -->
+    <string name="edit_block_section">Créneaux</string>
+    <string name="edit_block_remove">Supprimer ce créneau</string>
+    <string name="edit_block_week_prefix">Semaine</string>
+    <string name="edit_block_week_suffix"></string>
+    <string name="edit_block_range_separator">—</string>
+    <string name="edit_block_week_type_all">Chaque semaine</string>
+    <string name="edit_block_week_type_odd">Impaires</string>
+    <string name="edit_block_week_type_even">Paires</string>
+    <string name="edit_block_location">Salle (facultatif)</string>
+    <string name="edit_block_period">Périodes</string>
+    <string name="edit_block_period_by_period">Par période</string>
+    <string name="edit_block_period_by_section">Par bloc</string>
+    <string name="edit_block_period_prefix">Période</string>
+    <string name="edit_block_period_suffix"></string>
+    <string name="edit_block_section_chip">B%1$d</string>
+    <string name="edit_stepper_decrease">Diminuer</string>
+    <string name="edit_stepper_increase">Augmenter</string>
+
+    <!-- Course editor -->
+    <string name="edit_course_title_new">Ajouter un cours</string>
+    <string name="edit_course_title_edit">Modifier le cours</string>
+    <string name="edit_course_no_term">Veuillez d’abord créer un semestre</string>
+    <string name="edit_course_name">Nom du cours (obligatoire)</string>
+    <string name="edit_course_teacher">Enseignant (facultatif)</string>
+    <string name="edit_course_note">Remarque (facultatif)</string>
+    <string name="edit_course_color">Couleur</string>
+    <string name="edit_course_add_block">Ajouter un créneau</string>
+    <string name="edit_course_error_title">Enregistrement impossible</string>
+    <string name="edit_course_error_no_name">Veuillez saisir le nom du cours.</string>
+    <string name="edit_course_error_no_block">Ajoutez au moins un créneau.</string>
+    <string name="edit_course_error_overlap">Deux créneaux se chevauchent. Veuillez modifier ou supprimer l’un d’eux.</string>
+    <string name="edit_course_error_save_failed">Impossible d’enregistrer. Veuillez réessayer.</string>
+    <string name="edit_course_conflict_header">Conflit d’horaire. Veuillez corriger avant d’enregistrer&#160;:</string>
+    <string name="edit_course_conflict_line">En conflit avec «&#160;%1$s&#160;»&#160;: %2$s</string>
+    <plurals name="edit_course_conflict_more">
+        <item quantity="one">%1$d autre conflit</item>
+        <item quantity="many">%1$d d’autres conflits</item>
+        <item quantity="other">%1$d autres conflits</item>
+    </plurals>
+
+    <!-- Term editor -->
+    <string name="edit_term_title_new">Créer un semestre</string>
+    <string name="edit_term_title_edit">Modifier le semestre</string>
+    <string name="edit_term_name">Nom du semestre (obligatoire)</string>
+    <string name="edit_term_name_hint">Par exemple Automne 2026</string>
+    <string name="edit_term_week_start">Premier jour de la semaine</string>
+    <string name="edit_term_week_start_monday">Lundi</string>
+    <string name="edit_term_week_start_sunday">Dimanche</string>
+    <string name="edit_term_week_start_custom">Les semaines commencent actuellement le %1$s. Vous pouvez conserver ce réglage&#160;; choisir une option ci-dessus déplace le début de la semaine 1 au lundi ou au dimanche le plus proche.</string>
+    <string name="edit_term_first_day">Jour 1 de la semaine 1&#160;: %1$s</string>
+    <string name="edit_term_first_day_unset">Jour 1 de la semaine 1</string>
+    <string name="edit_term_first_week_range">Semaine 1&#160;: %1$s – %2$s</string>
+    <string name="edit_term_day_with_weekday">%1$s (%2$s)</string>
+    <string name="edit_term_week_start_hint">Détermine le jour par lequel commence chaque semaine de l’emploi du temps&#160;; la semaine 1 commence aussi ce jour-là. Choisir une option ci-dessus déplace le début de la semaine 1 au jour correspondant le plus proche.</string>
+    <string name="edit_term_total_weeks">Nombre de semaines</string>
+    <string name="edit_term_total_weeks_unit">semaines</string>
+    <string name="edit_term_copy_previous">Copier les cours du semestre précédent</string>
+    <string name="edit_term_copy_previous_source">Source&#160;: %1$s</string>
+
+    <!-- Term editor: period times -->
+    <string name="edit_term_quick_section">Réglage rapide</string>
+    <string name="edit_term_quick_lesson">Durée d’une période</string>
+    <string name="edit_term_quick_break">Pause</string>
+    <string name="edit_term_quick_minutes">min</string>
+    <string name="edit_term_quick_hint">La pause est l’intervalle entre deux périodes d’un même bloc&#160;; les pauses entre blocs ne sont pas modifiées. L’application conserve l’heure de début de chaque bloc et recalcule les périodes qu’il contient.</string>
+    <string name="edit_term_quick_apply">Appliquer</string>
+    <string name="edit_term_quick_invalid">La durée d’une période doit être comprise entre %1$d et %2$d minutes, et la pause entre %3$d et %4$d minutes.</string>
+    <string name="edit_term_periods">Horaires des périodes (%1$s · %2$s)</string>
+    <plurals name="edit_term_period_count">
+        <item quantity="one">%1$d période</item>
+        <item quantity="many">%1$d de périodes</item>
+        <item quantity="other">%1$d périodes</item>
+    </plurals>
+    <plurals name="edit_term_section_count">
+        <item quantity="one">%1$d bloc</item>
+        <item quantity="many">%1$d de blocs</item>
+        <item quantity="other">%1$d blocs</item>
+    </plurals>
+    <string name="edit_term_reset_periods">Rétablir les horaires par défaut</string>
+    <string name="edit_term_add_period">Ajouter une période</string>
+    <string name="edit_term_period_index">P%1$d</string>
+    <string name="edit_term_remove_period">Supprimer la période</string>
+    <string name="edit_term_session_morning">Matin</string>
+    <string name="edit_term_session_afternoon">Après-midi</string>
+    <string name="edit_term_session_evening">Soir</string>
+
+    <!-- Term editor: clear courses -->
+    <string name="edit_term_clear_hint">Supprime tous les cours de ce semestre. Le semestre et ses horaires des périodes sont conservés. Si la synchronisation est activée, les cours seront aussi supprimés sur vos autres appareils.</string>
+    <string name="edit_term_clearing">Suppression…</string>
+    <string name="edit_term_clear_empty">Ce semestre ne contient aucun cours</string>
+    <string name="edit_term_clear">Vider les cours de ce semestre</string>
+    <plurals name="edit_term_clear_confirm">
+        <item quantity="one">Le %1$d cours de ce semestre sera supprimé. Le semestre et ses horaires des périodes sont conservés. Cette action est irréversible. Si la synchronisation est activée, il sera aussi supprimé sur vos autres appareils.</item>
+        <item quantity="many">Les %1$d de cours de ce semestre seront tous supprimés. Le semestre et ses horaires des périodes sont conservés. Cette action est irréversible. Si la synchronisation est activée, ils seront aussi supprimés sur vos autres appareils.</item>
+        <item quantity="other">Les %1$d cours de ce semestre seront tous supprimés. Le semestre et ses horaires des périodes sont conservés. Cette action est irréversible. Si la synchronisation est activée, ils seront aussi supprimés sur vos autres appareils.</item>
+    </plurals>
+    <string name="edit_term_clear_action">Vider</string>
+
+    <!-- Term editor: errors -->
+    <string name="edit_term_error_title">Enregistrement impossible</string>
+    <string name="edit_term_error_no_name">Veuillez saisir le nom du semestre.</string>
+    <string name="edit_term_error_keep_one_period">Veuillez conserver au moins une période.</string>
+    <string name="edit_term_error_invalid_input">Certains champs sont incorrects. Vérifiez-les, puis réessayez.</string>
+    <string name="edit_term_quick_period_invalid">L’horaire de la période %1$d est incorrect (le début doit précéder la fin). Corrigez-le avant d’utiliser le réglage rapide.</string>
+    <string name="edit_term_quick_overflow">Avec des périodes de %1$s et des pauses de %2$s, le bloc %3$d se terminerait à %4$s, après le début du bloc suivant à %5$s. Réduisez la durée des périodes ou des pauses.</string>
+    <string name="edit_term_quick_out_of_day">Avec des périodes de %1$s et des pauses de %2$s, le bloc %3$d se prolongerait après minuit, jusqu’à %4$s. Réduisez la durée des périodes ou des pauses.</string>
+    <plurals name="edit_minutes">
+        <item quantity="one">%1$d min</item>
+        <item quantity="many">%1$d min</item>
+        <item quantity="other">%1$d min</item>
+    </plurals>
+    <string name="edit_term_error_period_format">L’horaire de la période %1$d est incorrect. Saisissez-le au format heures:minutes, par exemple 08:00.</string>
+    <string name="edit_term_error_period_order">L’heure de début de la période %1$d doit précéder son heure de fin.</string>
+
+    <!-- Terms -->
+    <string name="edit_term_list_title">Semestres</string>
+    <string name="edit_term_list_empty_title">Aucun semestre</string>
+    <string name="edit_term_list_empty_desc">Créez un semestre pour commencer à ajouter des cours.</string>
+    <string name="edit_term_list_create">Créer un semestre</string>
+    <string name="edit_term_list_current">Actuel</string>
+    <string name="edit_term_list_owner">Emploi du temps&#160;: %1$s</string>
+    <string name="edit_term_list_week">Semaine %1$d · %2$s</string>
+    <string name="edit_term_list_out_of_term">Hors semestre · %1$s</string>
+    <string name="edit_term_list_edit">Modifier le semestre</string>
+    <string name="edit_term_list_delete">Supprimer le semestre</string>
+    <string name="edit_term_list_delete_confirm">«&#160;%1$s&#160;» sera supprimé, ainsi que tous ses cours et examens. Cette action est irréversible. Si la synchronisation est activée, ils seront aussi supprimés sur vos autres appareils.</string>
+
+    <!-- Timetables -->
+    <string name="edit_timetable_list_title">Emplois du temps</string>
+    <string name="edit_timetable_list_empty_title">Aucun emploi du temps</string>
+    <string name="edit_timetable_list_empty_desc">Créez un emploi du temps pour commencer à ajouter des cours.</string>
+    <string name="edit_timetable_list_create">Créer un emploi du temps</string>
+    <string name="edit_timetable_list_current">Actuel</string>
+    <plurals name="edit_timetable_term_count">
+        <item quantity="one">%1$d semestre</item>
+        <item quantity="many">%1$d de semestres</item>
+        <item quantity="other">%1$d semestres</item>
+    </plurals>
+    <string name="edit_timetable_delete">Supprimer l’emploi du temps</string>
+    <plurals name="edit_timetable_delete_confirm">
+        <item quantity="one">«&#160;%1$s&#160;», son %2$d semestre et tous les cours et examens qu’il contient seront supprimés. Cette action est irréversible. Si la synchronisation est activée, ils seront aussi supprimés sur vos autres appareils.</item>
+        <item quantity="many">«&#160;%1$s&#160;», ses %2$d de semestres et tous les cours et examens qu’ils contiennent seront supprimés. Cette action est irréversible. Si la synchronisation est activée, ils seront aussi supprimés sur vos autres appareils.</item>
+        <item quantity="other">«&#160;%1$s&#160;», ses %2$d semestres et tous les cours et examens qu’ils contiennent seront supprimés. Cette action est irréversible. Si la synchronisation est activée, ils seront aussi supprimés sur vos autres appareils.</item>
+    </plurals>
+    <string name="edit_timetable_delete_blocked_title">Suppression impossible</string>
+    <string name="edit_timetable_delete_blocked_desc">Au moins un emploi du temps doit être conservé. Pour en vider le contenu, supprimez ses semestres dans «&#160;Semestres&#160;».</string>
+    <string name="edit_timetable_rename">Renommer l’emploi du temps</string>
+    <string name="edit_timetable_name">Nom de l’emploi du temps</string>
+
+    <!-- New timetable -->
+    <string name="edit_timetable_create_title">Nouvel emploi du temps</string>
+    <string name="edit_timetable_welcome">Bienvenue dans NullClass</string>
+    <string name="edit_timetable_welcome_desc">Commencez par créer un emploi du temps. Chaque emploi du temps a ses propres cours et horaires des périodes, et vous pouvez en créer autant que nécessaire.</string>
+    <string name="edit_timetable_create_name">Nom de l’emploi du temps (obligatoire)</string>
+    <string name="edit_timetable_create_first_term">Premier semestre</string>
+    <string name="edit_timetable_create_term_name">Nom du semestre (obligatoire)</string>
+    <string name="edit_timetable_creating">Création…</string>
+    <string name="edit_timetable_create_action">Créer l’emploi du temps</string>
+    <string name="edit_timetable_create_first_week">La semaine 1 commence le %2$s %1$s. Les horaires des périodes par défaut sont utilisés pour l’instant&#160;; vous pourrez les modifier dans «&#160;Semestres&#160;».</string>
+    <string name="edit_timetable_create_hint">L’app passe à cet emploi du temps une fois créé. Vous pourrez en changer plus tard dans «&#160;Profil → Emplois du temps&#160;».</string>
+    <string name="edit_timetable_create_error_title">Création impossible</string>
+    <string name="edit_timetable_create_error_no_name">Veuillez saisir le nom de l’emploi du temps.</string>
+    <string name="edit_timetable_create_error_no_term_name">Veuillez saisir le nom du semestre.</string>
+    <string name="edit_timetable_create_error_failed">Impossible de créer l’emploi du temps. Veuillez réessayer.</string>
+    <string name="edit_timetable_default_name">Mon emploi du temps</string>
+    <string name="edit_term_default_name_spring">Printemps %1$d</string>
+    <string name="edit_term_default_name_autumn">Automne %1$d</string>
+
+</resources>
