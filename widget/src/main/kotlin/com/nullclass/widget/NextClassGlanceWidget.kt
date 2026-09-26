@@ -49,6 +49,7 @@ import java.time.LocalDateTime
  * - 完整（≥150dp 高）：状态标签、课名、时间段、地点，上课中再加一条进度条；
  * - 中等（≥100dp 高）：状态标签、课名，时间段与地点并一行；
  * - 紧凑：色条 + 课名 + 开始时间（或剩余分钟）。
+ * 课程颜色只落在一处：完整 / 中等档是状态标签的底色（进度条同色），紧凑档是色条。
  */
 class NextClassGlanceWidget : GlanceAppWidget() {
     override val sizeMode = SizeMode.Exact
@@ -122,6 +123,7 @@ private fun ColumnScope.NextClassDetailed(
 ) {
     val context = LocalContext.current
     val inProgress = snapshot.inProgress(next, nowMinuteOfDay)
+    val colorIndex = next.placed.course.colorIndex
     val timeRange = context.getString(R.string.widget_next_time_range, next.startTime, next.endTime)
     val location = next.placed.block.location?.takeIf { it.isNotBlank() }
         ?: context.getString(R.string.widget_next_location_unknown)
@@ -131,6 +133,7 @@ private fun ColumnScope.NextClassDetailed(
     Row(GlanceModifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
         StatusChip(
             context.getString(if (inProgress) R.string.widget_next_in_class else R.string.widget_next_upcoming),
+            colorIndex,
             fontSize,
         )
         Spacer(GlanceModifier.defaultWeight())
@@ -146,24 +149,16 @@ private fun ColumnScope.NextClassDetailed(
     // 状态标签贴顶、课程信息沉底：小组件拉高时空白留在中间，而不是上下各空一截
     Spacer(GlanceModifier.defaultWeight())
     Column(GlanceModifier.fillMaxWidth()) {
-        // 色条只陪着课名：在自适应高度的 Row 里用 fillMaxHeight 会把整行撑满，挤掉上下的内容
-        Row(GlanceModifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
-            Box(
-                GlanceModifier.width(4.dp).height(fontSize.dp(if (full) 18 else 16))
-                    .background(courseAccent(next.placed.course.colorIndex)).cornerRadius(2.dp),
-            ) {}
-            Spacer(GlanceModifier.width(8.dp))
-            Text(
-                next.placed.course.name,
-                modifier = GlanceModifier.defaultWeight(),
-                style = TextStyle(
-                    color = WidgetColors.text,
-                    fontSize = fontSize.sp(if (full) 17 else 15),
-                    fontWeight = FontWeight.Bold,
-                ),
-                maxLines = if (full && LocalSize.current.height >= 180.dp) 2 else 1,
-            )
-        }
+        Text(
+            next.placed.course.name,
+            modifier = GlanceModifier.fillMaxWidth(),
+            style = TextStyle(
+                color = WidgetColors.text,
+                fontSize = fontSize.sp(if (full) 17 else 15),
+                fontWeight = FontWeight.Bold,
+            ),
+            maxLines = if (full && LocalSize.current.height >= 180.dp) 2 else 1,
+        )
         if (full) {
             Spacer(GlanceModifier.height(4.dp))
             Text(timeRange, style = timeStyle, maxLines = 1)
@@ -193,8 +188,8 @@ private fun ColumnScope.NextClassDetailed(
         LinearProgressIndicator(
             progress = ((nowMinuteOfDay - next.startMinuteOfDay).toFloat() / length).coerceIn(0f, 1f),
             modifier = GlanceModifier.fillMaxWidth().height(4.dp),
-            color = WidgetColors.primary,
-            backgroundColor = WidgetColors.highlight,
+            color = courseAccent(colorIndex),
+            backgroundColor = courseCardColor(colorIndex, emphasized = true),
         )
     }
 }
@@ -313,14 +308,14 @@ private fun NextClassEmpty(snapshot: TodaySnapshot, layout: NextClassLayout, fon
 }
 
 @Composable
-private fun StatusChip(text: String, fontSize: WidgetFontSize) {
+private fun StatusChip(text: String, colorIndex: Int, fontSize: WidgetFontSize) {
     Box(
-        GlanceModifier.roundedBackground(WidgetColors.highlight, WidgetCorner.Chip)
+        GlanceModifier.roundedBackground(courseCardColor(colorIndex, emphasized = true), WidgetCorner.Chip)
             .padding(horizontal = 8.dp, vertical = 3.dp),
     ) {
         Text(
             text,
-            style = TextStyle(color = WidgetColors.onHighlight, fontSize = fontSize.sp(10), fontWeight = FontWeight.Bold),
+            style = TextStyle(color = WidgetColors.text, fontSize = fontSize.sp(10), fontWeight = FontWeight.Bold),
             maxLines = 1,
         )
     }

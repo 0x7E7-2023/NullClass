@@ -22,16 +22,13 @@ import androidx.glance.appwidget.GlanceAppWidget
 import androidx.glance.appwidget.SizeMode
 import androidx.glance.appwidget.action.actionRunCallback
 import androidx.glance.appwidget.appWidgetBackground
-import androidx.glance.appwidget.cornerRadius
 import androidx.glance.appwidget.provideContent
-import androidx.glance.background
 import androidx.glance.currentState
 import androidx.glance.layout.Alignment
 import androidx.glance.layout.Box
 import androidx.glance.layout.Column
 import androidx.glance.layout.Row
 import androidx.glance.layout.Spacer
-import androidx.glance.layout.fillMaxHeight
 import androidx.glance.layout.fillMaxSize
 import androidx.glance.layout.fillMaxWidth
 import androidx.glance.layout.height
@@ -305,7 +302,7 @@ private fun PageButton(
 }
 
 /**
- * 一门课一张卡片：课程色条 | 时间 | 课名与地点。上课中 / 下一节的卡片换强调底色，
+ * 一门课一张卡片：时间 | 课名与地点，底色直接取课程色。上课中 / 下一节的卡片同色加深，
  * 并标出状态（剩几分钟 / 下一节）：窄尺寸写在地点前面，宽尺寸和单行卡片放在行尾。
  */
 @Composable
@@ -333,25 +330,20 @@ private fun CourseCard(
         isNext -> context.getString(R.string.widget_row_status_next)
         else -> null
     }
-    val strong = if (highlighted) WidgetColors.onHighlight else WidgetColors.text
-    val nameStyle = TextStyle(color = strong, fontSize = fontSize.sp(13), fontWeight = FontWeight.Bold)
-    val statusStyle = TextStyle(color = WidgetColors.primary, fontSize = fontSize.sp(10), fontWeight = FontWeight.Bold)
+    val nameStyle = TextStyle(color = WidgetColors.text, fontSize = fontSize.sp(13), fontWeight = FontWeight.Bold)
+    // 状态字不用主题强调色：卡片已经是课程色，再叠一种颜色就花了
+    val statusStyle = TextStyle(color = WidgetColors.text, fontSize = fontSize.sp(10), fontWeight = FontWeight.Bold)
     Row(
         modifier.fillMaxWidth()
-            .roundedBackground(if (highlighted) WidgetColors.highlight else WidgetColors.card, WidgetCorner.Card)
-            .padding(start = 8.dp, end = 10.dp, top = layout.rowPaddingDp.dp, bottom = layout.rowPaddingDp.dp)
+            .roundedBackground(courseCardColor(entry.placed.course.colorIndex, highlighted), WidgetCorner.Card)
+            .padding(start = 12.dp, end = 10.dp, top = layout.rowPaddingDp.dp, bottom = layout.rowPaddingDp.dp)
             .clickable(actionRunCallback<OpenAppAction>()),
         verticalAlignment = Alignment.CenterVertically,
     ) {
-        Box(
-            GlanceModifier.width(4.dp).fillMaxHeight()
-                .background(courseAccent(entry.placed.course.colorIndex)).cornerRadius(2.dp),
-        ) {}
-        Spacer(GlanceModifier.width(8.dp))
         Column(GlanceModifier.width(fontSize.dp(40))) {
             Text(
                 entry.startTime,
-                style = TextStyle(color = strong, fontSize = fontSize.sp(13), fontWeight = FontWeight.Medium),
+                style = TextStyle(color = WidgetColors.text, fontSize = fontSize.sp(13), fontWeight = FontWeight.Medium),
                 maxLines = 1,
             )
             if (layout.showDetails) {

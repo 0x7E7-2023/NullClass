@@ -4,6 +4,7 @@ import android.os.Build
 import androidx.annotation.DrawableRes
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.compositeOver
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.glance.ColorFilter
@@ -60,12 +61,8 @@ internal object WidgetColors {
     /** 小组件底色。 */
     val background: ColorProvider @Composable get() = GlanceTheme.colors.widgetBackground
 
-    /** 普通课程卡片、空状态卡片。 */
+    /** 空状态卡片。课程卡片直接取课程色，见 [courseCardColor]。 */
     val card: ColorProvider @Composable get() = GlanceTheme.colors.surface
-
-    /** 上课中 / 下一节的卡片与状态标签。 */
-    val highlight: ColorProvider @Composable get() = GlanceTheme.colors.primaryContainer
-    val onHighlight: ColorProvider @Composable get() = GlanceTheme.colors.onPrimaryContainer
 
     /** 强调文字：时间、剩余分钟、图标。 */
     val primary: ColorProvider @Composable get() = GlanceTheme.colors.primary
@@ -77,6 +74,9 @@ internal object WidgetColors {
     val onButton: ColorProvider @Composable get() = GlanceTheme.colors.onSecondaryContainer
     val disabled: ColorProvider @Composable get() = GlanceTheme.colors.outline
 }
+
+private val FallbackWidgetBackgroundDay = Color(0xFFEFF0FB)
+private val FallbackWidgetBackgroundNight = Color(0xFF15161C)
 
 /** Android 11 及以下的配色：与应用内置色板同源（见 core:ui 的 Color.kt）。 */
 private val FallbackColors = colorProviders(
@@ -106,12 +106,33 @@ private val FallbackColors = colorProviders(
     inverseOnSurface = ColorProvider(day = Gray95, night = Gray10),
     inverseSurface = ColorProvider(day = Gray20, night = Gray90),
     inversePrimary = ColorProvider(day = DarkPrimary, night = LightPrimary),
-    widgetBackground = ColorProvider(day = Color(0xFFEFF0FB), night = Color(0xFF15161C)),
+    widgetBackground = ColorProvider(day = FallbackWidgetBackgroundDay, night = FallbackWidgetBackgroundNight),
 )
 
-/** 课程色条用全饱和原色：深浅底上都认得出，与应用内课块的边框同色。 */
+/** 课程原色（全饱和）：紧凑档的色条、进度条。深浅底上都认得出，与应用内课块的边框同色。 */
 internal fun courseAccent(colorIndex: Int): ColorProvider =
     CoursePalette[colorIndex.mod(CoursePalette.size)].let { ColorProvider(day = it, night = it) }
+
+/**
+ * 课程卡片、状态标签的底色，直接取课程色：原色压低透明度铺在小组件底色上（与应用内课块同一做法），
+ * 不再另配色条或主题强调色，一块上只有一种颜色。[emphasized]（上课中 / 下一节）同色加深一档。
+ * 深色底更暗，透明度相应高一些，否则卡片融进底色。
+ */
+internal fun courseCardColor(colorIndex: Int, emphasized: Boolean = false): ColorProvider {
+    val base = CoursePalette[colorIndex.mod(CoursePalette.size)]
+    val day = base.copy(alpha = if (emphasized) 0.32f else 0.16f)
+    val night = base.copy(alpha = if (emphasized) 0.40f else 0.22f)
+    return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+        ColorProvider(day = day, night = night)
+    } else {
+        // Android 11 及以下的圆角底色是给形状图片着色（SRC_ATOP），半透明色会和图片的白底混成不透明的浅色，
+        // 深色模式下成了亮块。那边的小组件底色是固定的，先叠上去算成不透明色。
+        ColorProvider(
+            day = day.compositeOver(FallbackWidgetBackgroundDay),
+            night = night.compositeOver(FallbackWidgetBackgroundNight),
+        )
+    }
+}
 
 internal enum class WidgetCorner(val radius: Dp, @DrawableRes val shape: Int) {
     Root(22.dp, R.drawable.widget_corner_22),
