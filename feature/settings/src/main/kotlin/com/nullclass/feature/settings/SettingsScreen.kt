@@ -16,9 +16,14 @@ import androidx.compose.foundation.layout.safeDrawing
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.filled.Check
 import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.ExposedDropdownMenuAnchorType
+import androidx.compose.material3.ExposedDropdownMenuBox
+import androidx.compose.material3.ExposedDropdownMenuDefaults
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -37,12 +42,16 @@ import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.selected
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
@@ -51,6 +60,7 @@ import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import com.nullclass.core.model.AppLanguage
 import com.nullclass.core.model.ThemeMode
 import com.nullclass.core.model.WidgetFontSize
+import com.nullclass.core.ui.i18n.label
 import com.nullclass.core.ui.i18n.labelRes
 import com.nullclass.core.ui.i18n.resolve
 import com.nullclass.core.ui.layout.AdaptiveColumn
@@ -153,12 +163,7 @@ fun SettingsScreen(
                     style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                 )
-                SegmentedSelector(
-                    options = AppLanguage.selectable,
-                    selected = appLanguage,
-                    label = { stringResource(it.labelRes) },
-                    onSelect = viewModel::setAppLanguage,
-                )
+                LanguageDropdown(selected = appLanguage, onSelect = viewModel::setAppLanguage)
             }
 
             HorizontalDivider(modifier = Modifier.padding(vertical = 8.dp))
@@ -384,6 +389,47 @@ private fun <T> SegmentedSelector(
                 shape = SegmentedButtonDefaults.itemShape(index, options.size),
             ) {
                 Text(label(option), fontSize = 13.sp)
+            }
+        }
+    }
+}
+
+/**
+ * 界面语言下拉框：语言会陆续增加，分段按钮一行放不下，所以用下拉。
+ * 选项名称用各语言自身书写（见 [AppLanguage.label]），当前选中项带勾。
+ */
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+private fun LanguageDropdown(selected: AppLanguage, onSelect: (AppLanguage) -> Unit) {
+    var expanded by remember { mutableStateOf(false) }
+    ExposedDropdownMenuBox(expanded = expanded, onExpandedChange = { expanded = it }) {
+        OutlinedTextField(
+            value = selected.label(),
+            onValueChange = {},
+            readOnly = true,
+            singleLine = true,
+            trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded) },
+            modifier = Modifier
+                .menuAnchor(ExposedDropdownMenuAnchorType.PrimaryNotEditable)
+                .fillMaxWidth(),
+        )
+        ExposedDropdownMenu(expanded = expanded, onDismissRequest = { expanded = false }) {
+            AppLanguage.selectable.forEach { language ->
+                val isSelected = language == selected
+                DropdownMenuItem(
+                    text = { Text(language.label()) },
+                    onClick = {
+                        expanded = false
+                        if (!isSelected) onSelect(language)
+                    },
+                    modifier = Modifier.semantics { this.selected = isSelected },
+                    trailingIcon = if (isSelected) {
+                        { Icon(Icons.Filled.Check, contentDescription = null) }
+                    } else {
+                        null
+                    },
+                    contentPadding = ExposedDropdownMenuDefaults.ItemContentPadding,
+                )
             }
         }
     }
