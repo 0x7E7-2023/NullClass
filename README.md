@@ -3,11 +3,9 @@
 [![CI](https://github.com/0x7E7-2023/NullClass/actions/workflows/ci.yml/badge.svg)](../../actions/workflows/ci.yml)
 [![License: GPL-3.0](https://img.shields.io/badge/License-GPL--3.0-blue.svg)](LICENSE)
 
-开源的 Android 大学课表应用。**本地优先**：课表数据仅存储在设备上，无账号、无云端、无追踪
-（联网仅限你主动配置的 WebDAV 同步、教务导入，以及节假日公开数据拉取，均不经任何空课服务器）。
+开源的 Android 大学课表应用。**本地优先**：课表数据保存在设备上，无需注册账号。
 
-An open-source class schedule app for Android universities. Local-first: no accounts, no cloud, no tracking
-(networking is limited to user-configured WebDAV sync, JW import, and public holiday data fetching).
+An open-source class schedule app for Android universities. Local-first: your schedule stays on your device, no account required.
 
 ## 功能 / Features
 
@@ -20,8 +18,7 @@ An open-source class schedule app for Android universities. Local-first: no acco
   - 🧩 桌面小组件：Jetpack Glance（今日课程 / 下节课），课程卡片支持上下按钮分页、独立页码与更新时间，上课中状态带分钟级倒计时，随课节边界自动刷新
 - 🔔 提醒（「通知与提醒」页集中管理）：课前提醒提前量可配；可选精确闹钟（到点准时，默认关）；
   授权后可勿扰下响铃；权限状态一站式引导（通知/自启动/电池/精确闹钟/勿扰）
-- 📅 节假日与跳过日期：法定节假日在线同步（timor.tech → holiday-cn → Nager.Date 逐年多源自动降级，
-  仅拉公开假日数据、不含任何个人信息），跳过日的课前提醒自动静音；也可手动添加跳过日期
+- 📅 节假日与跳过日期：法定节假日在线同步（timor.tech → holiday-cn → Nager.Date 逐年多源自动降级），跳过日的课前提醒自动静音；也可手动添加跳过日期
 - 🔁 调课（串课）：调休时把某一天设成上另一天的课（「周六上周五的课」），
   周视图点星期表头即可设置；今日页、周视图、小组件与课前提醒一起跟着改
 - ✂️ 快速删课：「我的 → 快捷操作」里按周次或某一天筛出课，勾选批量删除
@@ -32,7 +29,7 @@ An open-source class schedule app for Android universities. Local-first: no acco
 - 🔄 WebDAV 同步（坚果云/NextCloud 自建，端到端属于你；支持定时自动同步）
 - 🎨 Material 3 + 动态取色（Material You），可选跟随取色 / 浅色 / 深色
 - 📱 平板与横屏适配：宽屏下「我的」「考试」左右双栏，手机横屏改用侧边导航，课表行高随屏幕自适应
-- 💚 纯本地存储（Room），隐私干净：无账号、无云端、无埋点
+- 💚 本地存储（Room），无需注册账号
 
 ## 技术栈 / Tech Stack
 
