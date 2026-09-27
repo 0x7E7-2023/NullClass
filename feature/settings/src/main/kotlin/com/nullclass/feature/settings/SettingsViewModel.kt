@@ -6,6 +6,7 @@ import com.nullclass.core.data.prefs.UserPreferencesRepository
 import android.content.Context
 import com.nullclass.core.data.locale.AppLocale
 import com.nullclass.core.model.AppLanguage
+import com.nullclass.core.model.StartPage
 import com.nullclass.core.model.ThemeMode
 import com.nullclass.core.model.WidgetFontSize
 import com.nullclass.sync.AutoSyncInterval
@@ -79,6 +80,10 @@ class SettingsViewModel @Inject constructor(
     val showExamTab: StateFlow<Boolean> = userPreferences.showExamTab
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), true)
 
+    /** 打开应用时显示的标签页。 */
+    val startPage: StateFlow<StartPage> = userPreferences.startPage
+        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), StartPage.SCHEDULE)
+
     fun setThemeMode(value: ThemeMode) {
         viewModelScope.launch { userPreferences.setThemeMode(value) }
     }
@@ -98,6 +103,10 @@ class SettingsViewModel @Inject constructor(
 
     fun setShowExamTab(value: Boolean) {
         viewModelScope.launch { userPreferences.setShowExamTab(value) }
+    }
+
+    fun setStartPage(value: StartPage) {
+        viewModelScope.launch { userPreferences.setStartPage(value) }
     }
 
     fun setShowOtherWeekCourses(value: Boolean) {

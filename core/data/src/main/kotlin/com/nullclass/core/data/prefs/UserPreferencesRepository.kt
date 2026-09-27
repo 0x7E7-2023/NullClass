@@ -18,6 +18,7 @@ import com.nullclass.core.model.AppLanguage
 import com.nullclass.core.model.BlockBorderStyle
 import com.nullclass.core.model.BlockTextAlign
 import com.nullclass.core.model.ScheduleAppearance
+import com.nullclass.core.model.StartPage
 import com.nullclass.core.model.ThemeMode
 import com.nullclass.core.model.WidgetFontSize
 import dagger.hilt.android.qualifiers.ApplicationContext
@@ -51,6 +52,7 @@ class UserPreferencesRepository @Inject constructor(
         val SHOW_GRID_LINES = booleanPreferencesKey("show_grid_lines")
         val SHOW_OTHER_WEEK_COURSES = booleanPreferencesKey("show_other_week_courses")
         val SHOW_EXAM_TAB = booleanPreferencesKey("show_exam_tab")
+        val START_PAGE = stringPreferencesKey("start_page")
         val WIDGET_FONT_SIZE = stringPreferencesKey("widget_font_size")
         val THEME_MODE = stringPreferencesKey("theme_mode")
         val APP_LANGUAGE = stringPreferencesKey("app_language")
@@ -220,6 +222,14 @@ class UserPreferencesRepository @Inject constructor(
 
     suspend fun setShowExamTab(value: Boolean) {
         context.userPrefs.edit { it[Keys.SHOW_EXAM_TAB] = value }
+    }
+
+    /** 打开应用时显示的标签页。默认周课表；未知值回落默认。 */
+    val startPage: Flow<StartPage> =
+        context.userPrefs.data.map { StartPage.fromName(it[Keys.START_PAGE]) }
+
+    suspend fun setStartPage(value: StartPage) {
+        context.userPrefs.edit { it[Keys.START_PAGE] = value.name }
     }
 
     /** 桌面小组件字号档。默认标准；未知值回落标准。 */

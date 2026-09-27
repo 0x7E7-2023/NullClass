@@ -38,6 +38,10 @@
     <string name="enum_widget_font_size_large">大</string>
     <string name="enum_widget_font_size_xlarge">特大</string>
 
+    <!-- 开屏页面（StartPage） -->
+    <string name="enum_start_page_today">今日</string>
+    <string name="enum_start_page_schedule">课表</string>
+
     <!-- 界面语言（AppLanguage） -->
     <string name="enum_app_language_system">跟随系统</string>
     <!-- 语言自称：始终以该语言自身书写，不随界面语言翻译（见 docs/i18n.md 第五节） -->

@@ -34,6 +34,10 @@
     <string name="enum_widget_font_size_large">大</string>
     <string name="enum_widget_font_size_xlarge">特大</string>
 
+    <!-- StartPage -->
+    <string name="enum_start_page_today">今日</string>
+    <string name="enum_start_page_schedule">時間割</string>
+
     <!-- AppLanguage -->
     <string name="enum_app_language_system">システムに従う</string>
 

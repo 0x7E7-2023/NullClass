@@ -56,6 +56,7 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
+import com.nullclass.core.model.StartPage
 import com.nullclass.core.ui.layout.LocalWindowSize
 import com.nullclass.feature.edit.CourseEditScreen
 import com.nullclass.feature.edit.TermEditScreen
@@ -109,7 +110,7 @@ object Routes {
         "exam_edit?examId=${examId ?: ""}&courseId=${courseId ?: ""}"
 }
 
-/** 底部 Tab：今日 / 课表（start destination）/ 考试 / 我的。 */
+/** 底部 Tab：今日 / 课表 / 考试 / 我的。开屏落在今日还是课表由 [StartPage] 决定。 */
 private data class TopTab(
     val route: String,
     @StringRes val label: Int,
@@ -203,7 +204,9 @@ fun AppNavHost() {
     // 首次启动闸门：没有课表 → 整棵导航树不渲染，只渲染创建页（创建后流自动放行）
     val gateViewModel: AppGateViewModel = hiltViewModel()
     val gateOverviews = gateViewModel.overviews.collectAsState().value
-    val gated = gateOverviews == null || gateOverviews.isEmpty()
+    val startPage = gateViewModel.startPage.collectAsState().value
+    // 开屏页偏好读到之前 NavHost 也不能组合：startDestination 一经定下就不能再换
+    val gated = gateOverviews == null || gateOverviews.isEmpty() || startPage == null
     val showExamTab by gateViewModel.showExamTab.collectAsState()
 
     // 「用其他应用打开」.nullclass → 直达导入页。被首启引导闸住时**先不导航**：
@@ -278,7 +281,7 @@ fun AppNavHost() {
 
     if (gated) {
         // null = 首帧还没读到：什么都不画（外层已垫背景色）；空 = 全新安装，进引导
-        if (gateOverviews != null) {
+        if (gateOverviews != null && gateOverviews.isEmpty()) {
             TimetableCreateScreen(onDone = {}, standalone = true)
         }
         return
@@ -339,7 +342,10 @@ fun AppNavHost() {
     Box(Modifier.fillMaxSize()) {
         NavHost(
             navController = navController,
-            startDestination = Routes.SCHEDULE,
+            startDestination = when (startPage) {
+                StartPage.TODAY -> Routes.TODAY
+                StartPage.SCHEDULE, null -> Routes.SCHEDULE
+            },
             // 默认转场是 700ms 的 tween 淡入淡出（DefaultNavTransitions），退出
             // 转场尾部拖得越长，上面兜底注释里「返回手势落到系统手里」的竞态
             // 窗口就越宽。220ms 是 Compose 常规动效时长，观感不变、窗口缩到 1/3。

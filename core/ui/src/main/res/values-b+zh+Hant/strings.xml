@@ -37,6 +37,10 @@
     <string name="enum_widget_font_size_large">大</string>
     <string name="enum_widget_font_size_xlarge">特大</string>
 
+    <!-- 開啟頁面（StartPage） -->
+    <string name="enum_start_page_today">今日</string>
+    <string name="enum_start_page_schedule">課表</string>
+
     <!-- 介面語言（AppLanguage）。語言自稱不隨介面語言翻譯，不在譯文中出現 -->
     <string name="enum_app_language_system">跟隨系統</string>
 

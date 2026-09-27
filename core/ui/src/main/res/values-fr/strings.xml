@@ -35,6 +35,10 @@
     <string name="enum_widget_font_size_large">Grande</string>
     <string name="enum_widget_font_size_xlarge">Très grande</string>
 
+    <!-- StartPage -->
+    <string name="enum_start_page_today">Aujourd’hui</string>
+    <string name="enum_start_page_schedule">Planning</string>
+
     <!-- AppLanguage -->
     <string name="enum_app_language_system">Langue du système</string>
 

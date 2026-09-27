@@ -58,6 +58,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import com.nullclass.core.model.AppLanguage
+import com.nullclass.core.model.StartPage
 import com.nullclass.core.model.ThemeMode
 import com.nullclass.core.model.WidgetFontSize
 import com.nullclass.core.ui.i18n.label
@@ -87,6 +88,7 @@ fun SettingsScreen(
     val showOtherWeekCourses by viewModel.showOtherWeekCourses.collectAsState()
     val themeMode by viewModel.themeMode.collectAsState()
     val showExamTab by viewModel.showExamTab.collectAsState()
+    val startPage by viewModel.startPage.collectAsState()
     val appLanguage by viewModel.appLanguage.collectAsState()
 
     val context = LocalContext.current
@@ -370,6 +372,18 @@ fun SettingsScreen(
                     onCheckedChange = viewModel::setShowExamTab,
                 )
             }
+            Text(stringResource(R.string.settings_start_page))
+            Text(
+                stringResource(R.string.settings_start_page_desc),
+                style = MaterialTheme.typography.bodySmall,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+            )
+            SegmentedSelector(
+                options = StartPage.entries,
+                selected = startPage,
+                label = { stringResource(it.labelRes) },
+                onSelect = viewModel::setStartPage,
+            )
         }
     }
 }

@@ -54,6 +54,8 @@
     <string name="settings_show_other_week">Afficher les cours des autres semaines</string>
     <string name="settings_bottom_nav">Barre de navigation</string>
     <string name="settings_show_exam_tab">Afficher l’onglet «&#160;Examens&#160;»</string>
+    <string name="settings_start_page">Page affichée à l’ouverture</string>
+    <string name="settings_start_page_desc">Prend effet à la prochaine ouverture de l’application.</string>
 
     <!-- Profile -->
     <string name="settings_profile_title">Profil</string>

@@ -52,6 +52,8 @@
     <string name="settings_show_other_week">Show classes from other weeks</string>
     <string name="settings_bottom_nav">Bottom navigation</string>
     <string name="settings_show_exam_tab">Show the “Exams” tab</string>
+    <string name="settings_start_page">Show on launch</string>
+    <string name="settings_start_page_desc">Takes effect the next time you open the app.</string>
 
     <!-- Me -->
     <string name="settings_profile_title">Me</string>

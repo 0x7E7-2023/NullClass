@@ -5,6 +5,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.res.stringResource
 import com.nullclass.core.model.AppLanguage
 import com.nullclass.core.model.DataError
+import com.nullclass.core.model.StartPage
 import com.nullclass.core.model.ThemeMode
 import com.nullclass.core.model.WidgetFontSize
 import com.nullclass.core.ui.R
@@ -30,6 +31,13 @@ val WidgetFontSize.labelRes: Int
         WidgetFontSize.STANDARD -> R.string.enum_widget_font_size_standard
         WidgetFontSize.LARGE -> R.string.enum_widget_font_size_large
         WidgetFontSize.XLARGE -> R.string.enum_widget_font_size_xlarge
+    }
+
+@get:StringRes
+val StartPage.labelRes: Int
+    get() = when (this) {
+        StartPage.TODAY -> R.string.enum_start_page_today
+        StartPage.SCHEDULE -> R.string.enum_start_page_schedule
     }
 
 @get:StringRes
