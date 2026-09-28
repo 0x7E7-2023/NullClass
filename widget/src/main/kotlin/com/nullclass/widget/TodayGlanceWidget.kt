@@ -386,13 +386,12 @@ private fun CourseCard(
     }
 }
 
-/** 列表区的空状态：图标 + 标题 + 说明，太矮时只留标题。整块点击进应用。 */
+/** 列表区的空状态：图标 + 标题 + 说明，太矮时只留标题。整块点击进应用。不另铺底色，免得小组件出现两层背景。 */
 @Composable
 private fun WidgetEmptyState(@DrawableRes icon: Int, title: String, subtitle: String, fontSize: WidgetFontSize) {
     val roomy = LocalSize.current.height >= 150.dp
     Column(
-        GlanceModifier.fillMaxSize().roundedBackground(WidgetColors.card, WidgetCorner.Card)
-            .padding(12.dp).clickable(actionRunCallback<OpenAppAction>()),
+        GlanceModifier.fillMaxSize().padding(12.dp).clickable(actionRunCallback<OpenAppAction>()),
         verticalAlignment = Alignment.CenterVertically,
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {

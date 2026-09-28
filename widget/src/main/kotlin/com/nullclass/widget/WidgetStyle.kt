@@ -61,9 +61,6 @@ internal object WidgetColors {
     /** 小组件底色。 */
     val background: ColorProvider @Composable get() = GlanceTheme.colors.widgetBackground
 
-    /** 空状态卡片。课程卡片直接取课程色，见 [courseCardColor]。 */
-    val card: ColorProvider @Composable get() = GlanceTheme.colors.surface
-
     /** 强调文字：时间、剩余分钟、图标。 */
     val primary: ColorProvider @Composable get() = GlanceTheme.colors.primary
     val text: ColorProvider @Composable get() = GlanceTheme.colors.onSurface
