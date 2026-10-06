@@ -1,12 +1,15 @@
 package com.nullclass.widget
 
+import android.content.Context
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import com.nullclass.core.data.repository.CourseRepository
 import com.nullclass.core.data.repository.DayOverrideRepository
+import com.nullclass.core.data.repository.HolidayRepository
 import com.nullclass.core.data.repository.TermRepository
+import com.nullclass.core.model.SkipDate
 import com.nullclass.core.model.TodaySnapshot
 import com.nullclass.core.model.assembleTodaySnapshot
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -27,6 +30,7 @@ suspend fun buildTodaySnapshot(
     termRepository: TermRepository,
     courseRepository: CourseRepository,
     dayOverrideRepository: DayOverrideRepository,
+    holidayRepository: HolidayRepository,
 ): TodaySnapshot {
     val term = termRepository.getCurrent() ?: return TodaySnapshot.EMPTY
     val schedule = courseRepository.observeSchedule(term.id).first()
@@ -38,7 +42,16 @@ suspend fun buildTodaySnapshot(
         today = LocalDate.now(),
         // 串课（调休）：小组件与今日页必须取同一天的课，口径全在 core:model
         dayOverrides = dayOverrideRepository.indexNow(),
+        // 跳过日：提醒不发，小组件也不列课，改显示休假
+        skipDates = holidayRepository.skipDates.first(),
     )
+}
+
+/** 休假空状态的说明行：节假日带上节日名，手动跳过（或同步源没给名字）用通用说法。 */
+internal fun dayOffDescription(context: Context, dayOff: SkipDate): String {
+    val label = dayOff.label?.takeIf { it.isNotBlank() }
+        ?: return context.getString(R.string.widget_day_off_desc)
+    return context.getString(R.string.widget_day_off_holiday_desc, label)
 }
 
 /** 今日快照与当前时刻，小组件每一帧都按这一对渲染。 */
@@ -87,14 +100,16 @@ private fun observeTodaySnapshot(entryPoint: ScheduleWidgetEntryPoint): Flow<Tod
                 entryPoint.courseRepository().observeSchedule(term.id),
                 termRepository.observePeriodTimes(term.id),
                 entryPoint.dayOverrideRepository().index,
+                entryPoint.holidayRepository().skipDates,
                 dates,
-            ) { schedule, times, overrides, today ->
+            ) { schedule, times, overrides, skipDates, today ->
                 assembleTodaySnapshot(
                     term = term,
                     schedule = schedule,
                     periodTimes = times,
                     today = today,
                     dayOverrides = overrides,
+                    skipDates = skipDates,
                 )
             }
         }

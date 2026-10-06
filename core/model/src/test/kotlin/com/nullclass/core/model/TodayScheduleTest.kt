@@ -213,4 +213,51 @@ class TodayScheduleTest {
         assertNull(snapshot.weekNumber)
         assertNull(snapshot.swappedFrom)
     }
+
+    @Test
+    fun `跳过日 - 不列课，带上跳过记录，周次照报`() {
+        val today = LocalDate.of(2026, 9, 9)
+        val schedule = schedule(
+            ScheduleBlock(id = "b1", courseId = "c1", startWeek = 1, endWeek = 20, dayOfWeek = 3, startPeriod = 1, endPeriod = 2),
+        )
+        val skip = SkipDate(today.toEpochDay(), SkipDateType.HOLIDAY, "中秋节")
+
+        val snapshot = assembleTodaySnapshot(term, schedule, times, today, skipDates = listOf(skip))
+
+        assertTrue(snapshot.blocks.isEmpty())
+        assertEquals(skip, snapshot.dayOff)
+        assertEquals(1, snapshot.weekNumber)
+    }
+
+    @Test
+    fun `跳过日 - 补班日和别的日子不影响今天`() {
+        val today = LocalDate.of(2026, 9, 9)
+        val schedule = schedule(
+            ScheduleBlock(id = "b1", courseId = "c1", startWeek = 1, endWeek = 20, dayOfWeek = 3, startPeriod = 1, endPeriod = 2),
+        )
+        val skips = listOf(
+            SkipDate(today.toEpochDay(), SkipDateType.WORKDAY, "国庆节"),
+            SkipDate(today.toEpochDay() + 1, SkipDateType.MANUAL, null),
+        )
+
+        val snapshot = assembleTodaySnapshot(term, schedule, times, today, skipDates = skips)
+
+        assertEquals(listOf("b1"), snapshot.blocks.map { it.placed.block.id })
+        assertNull(snapshot.dayOff)
+    }
+
+    @Test
+    fun `跳过日 - 今天被串课也照样休`() {
+        val today = LocalDate.of(2026, 9, 12) // 周六，串周五的课
+        val schedule = schedule(
+            ScheduleBlock(id = "fri", courseId = "c1", startWeek = 1, endWeek = 20, dayOfWeek = 5, startPeriod = 1, endPeriod = 2),
+        )
+        val overrides = mapOf(today.toEpochDay() to LocalDate.of(2026, 9, 11).toEpochDay())
+        val skip = SkipDate(today.toEpochDay(), SkipDateType.MANUAL, null)
+
+        val snapshot = assembleTodaySnapshot(term, schedule, times, today, overrides, listOf(skip))
+
+        assertTrue(snapshot.blocks.isEmpty())
+        assertEquals(skip, snapshot.dayOff)
+    }
 }

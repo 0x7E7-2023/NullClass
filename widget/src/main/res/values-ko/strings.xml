@@ -17,6 +17,9 @@
     <string name="widget_empty_no_timetable_desc">여기를 눌러 학기를 만드세요</string>
     <string name="widget_empty_no_class">오늘은 수업이 없습니다</string>
     <string name="widget_empty_no_class_desc">다른 날짜는 앱에서 확인할 수 있습니다</string>
+    <string name="widget_day_off">휴일</string>
+    <string name="widget_day_off_holiday_desc">%1$s · 오늘은 수업 없음</string>
+    <string name="widget_day_off_desc">오늘은 수업 없는 날로 설정됨</string>
     <string name="widget_empty_finished">오늘 수업이 모두 끝났습니다</string>
     <string name="widget_empty_finished_desc">내일 일정은 앱에서 확인할 수 있습니다</string>
 

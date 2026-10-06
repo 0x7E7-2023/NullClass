@@ -18,6 +18,11 @@ data class TodaySnapshot(
      * [weekNumber] 仍是**今天**的周次——顶栏说的是今天在第几周，与课从哪天借来无关。
      */
     val swappedFrom: LocalDate? = null,
+    /**
+     * 今天是跳过日（节假日 / 手动跳过，补班日不算）时的那条记录，此时 [blocks] 为空。
+     * 只有桌面小组件传了跳过日期：今日 Tab 照常列课，另挂「今天不上课」提示条。
+     */
+    val dayOff: SkipDate? = null,
 ) {
     data class TodayEntry(
         val placed: PlacedBlock,
@@ -56,6 +61,9 @@ data class TodaySnapshot(
  *
  * [dayOverrides] 是串课表（date → source date，见 [DayOverrides.index]）：今天被串课时，
  * 课取自来源日那一格，但节次时间仍是今天的墙钟时间（调课换的是「上什么课」，不是作息）。
+ *
+ * [skipDates] 命中今天（补班日除外）→ 这天不上课：不列课，带上 [TodaySnapshot.dayOff]。
+ * 与课前提醒同一口径：提醒按墙钟日期跳过，串课也不例外。
  */
 fun assembleTodaySnapshot(
     term: Term,
@@ -63,8 +71,20 @@ fun assembleTodaySnapshot(
     periodTimes: List<PeriodTime>,
     today: LocalDate,
     dayOverrides: Map<Long, Long> = emptyMap(),
+    skipDates: List<SkipDate> = emptyList(),
 ): TodaySnapshot {
     val displayWeek = term.weekOf(today.toEpochDay())
+    val dayOff = skipDates.firstOrNull {
+        it.epochDay == today.toEpochDay() && it.type != SkipDateType.WORKDAY
+    }
+    if (dayOff != null) {
+        return TodaySnapshot(
+            termName = term.name,
+            weekNumber = displayWeek,
+            blocks = emptyList(),
+            dayOff = dayOff,
+        )
+    }
     val sourceEpochDay = DayOverrides.sourceOf(dayOverrides, today.toEpochDay())
     // 今天不在学期内时串课不生效（见 [DayOverrides.originOf]），横幅也不能出现：
     // 否则顶栏说「今天不在学期内」，下面却挂着「今天调课 · 上 X 月 X 日的课」

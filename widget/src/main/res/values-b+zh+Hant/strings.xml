@@ -18,6 +18,9 @@
     <string name="widget_empty_no_timetable_desc">點按此處建立學期</string>
     <string name="widget_empty_no_class">今日沒有課程安排</string>
     <string name="widget_empty_no_class_desc">可在空課中查看其他日期</string>
+    <string name="widget_day_off">休假中</string>
+    <string name="widget_day_off_holiday_desc">%1$s · 今日不用上課</string>
+    <string name="widget_day_off_desc">今日已設為不用上課</string>
     <string name="widget_empty_finished">今日的課程已全部結束</string>
     <string name="widget_empty_finished_desc">明日的安排可在空課中查看</string>
 

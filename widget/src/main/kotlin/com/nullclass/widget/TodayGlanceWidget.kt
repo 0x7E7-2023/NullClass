@@ -75,6 +75,7 @@ class TodayGlanceWidget : GlanceAppWidget() {
             entryPoint.termRepository(),
             entryPoint.courseRepository(),
             entryPoint.dayOverrideRepository(),
+            entryPoint.holidayRepository(),
         )
         val prefs = entryPoint.userPreferences()
         val initialFont = prefs.widgetFontSize.first()
@@ -123,6 +124,7 @@ internal fun TodayWidgetContent(
     val requestedPage = if (state[AgendaPageKey] == pageKey) state[AgendaPage] ?: 0 else 0
     val page = paginateWidgetAgenda(snapshot, nowMinuteOfDay, layout.rowsPerPage, requestedPage)
     val narrow = size.width < NARROW_WIDTH_DP.dp * fontSize.scale * fontScale
+    val dayOff = snapshot.dayOff
     Column(
         GlanceModifier.fillMaxSize().appWidgetBackground()
             .roundedBackground(WidgetColors.background, WidgetCorner.Root)
@@ -136,6 +138,12 @@ internal fun TodayWidgetContent(
                     R.drawable.ic_widget_add,
                     context.getString(R.string.widget_empty_no_timetable),
                     context.getString(R.string.widget_empty_no_timetable_desc),
+                    fontSize,
+                )
+                dayOff != null -> WidgetEmptyState(
+                    R.drawable.ic_widget_event_available,
+                    context.getString(R.string.widget_day_off),
+                    dayOffDescription(context, dayOff),
                     fontSize,
                 )
                 snapshot.blocks.isEmpty() -> WidgetEmptyState(

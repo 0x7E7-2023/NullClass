@@ -61,6 +61,7 @@ class NextClassGlanceWidget : GlanceAppWidget() {
             entryPoint.termRepository(),
             entryPoint.courseRepository(),
             entryPoint.dayOverrideRepository(),
+            entryPoint.holidayRepository(),
         )
         val prefs = entryPoint.userPreferences()
         val initialFont = prefs.widgetFontSize.first()
@@ -249,23 +250,29 @@ private fun NextClassCompact(
 private fun NextClassEmpty(snapshot: TodaySnapshot, layout: NextClassLayout, fontSize: WidgetFontSize) {
     val context = LocalContext.current
     @DrawableRes val icon: Int
-    val title: Int
-    val subtitle: Int
+    val title: String
+    val subtitle: String
+    val dayOff = snapshot.dayOff
     when {
         snapshot.termName.isEmpty() -> {
             icon = R.drawable.ic_widget_add
-            title = R.string.widget_empty_no_timetable
-            subtitle = R.string.widget_empty_no_timetable_desc
+            title = context.getString(R.string.widget_empty_no_timetable)
+            subtitle = context.getString(R.string.widget_empty_no_timetable_desc)
+        }
+        dayOff != null -> {
+            icon = R.drawable.ic_widget_event_available
+            title = context.getString(R.string.widget_day_off)
+            subtitle = dayOffDescription(context, dayOff)
         }
         snapshot.blocks.isEmpty() -> {
             icon = R.drawable.ic_widget_event_available
-            title = R.string.widget_empty_no_class
-            subtitle = R.string.widget_empty_no_class_desc
+            title = context.getString(R.string.widget_empty_no_class)
+            subtitle = context.getString(R.string.widget_empty_no_class_desc)
         }
         else -> {
             icon = R.drawable.ic_widget_event_available
-            title = R.string.widget_next_empty_finished
-            subtitle = R.string.widget_empty_finished_desc
+            title = context.getString(R.string.widget_next_empty_finished)
+            subtitle = context.getString(R.string.widget_empty_finished_desc)
         }
     }
     Column(
@@ -283,7 +290,7 @@ private fun NextClassEmpty(snapshot: TodaySnapshot, layout: NextClassLayout, fon
             Spacer(GlanceModifier.height(6.dp))
         }
         Text(
-            context.getString(title),
+            title,
             style = TextStyle(
                 color = WidgetColors.text,
                 fontSize = fontSize.sp(if (layout == NextClassLayout.Compact) 11 else 13),
@@ -295,7 +302,7 @@ private fun NextClassEmpty(snapshot: TodaySnapshot, layout: NextClassLayout, fon
         if (layout == NextClassLayout.Full) {
             Spacer(GlanceModifier.height(2.dp))
             Text(
-                context.getString(subtitle),
+                subtitle,
                 style = TextStyle(
                     color = WidgetColors.textVariant,
                     fontSize = fontSize.sp(11),

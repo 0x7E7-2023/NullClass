@@ -6,6 +6,7 @@ import androidx.glance.appwidget.updateAll
 import com.nullclass.core.data.prefs.UserPreferencesRepository
 import com.nullclass.core.data.repository.CourseRepository
 import com.nullclass.core.data.repository.DayOverrideRepository
+import com.nullclass.core.data.repository.HolidayRepository
 import com.nullclass.core.data.repository.TermRepository
 import com.nullclass.core.model.TodaySnapshot
 import com.nullclass.widget.NextClassGlanceWidget
@@ -47,6 +48,7 @@ class WidgetAutoUpdater @Inject constructor(
     private val termRepository: TermRepository,
     private val courseRepository: CourseRepository,
     private val dayOverrideRepository: DayOverrideRepository,
+    private val holidayRepository: HolidayRepository,
     private val userPreferences: UserPreferencesRepository,
     private val localeChanges: LocaleChanges,
 ) {
@@ -70,11 +72,12 @@ class WidgetAutoUpdater @Inject constructor(
                             if (term == null) {
                                 flowOf(null)
                             } else {
-                                // 串课（调休）改了也要立刻重画：小组件上的今日课程会整天不同
+                                // 串课（调休）、跳过日改了也要立刻重画：小组件上的今日课程会整天不同
                                 combine(
                                     courseRepository.observeSchedule(term.id),
                                     dayOverrideRepository.index,
-                                ) { _, _ -> term }
+                                    holidayRepository.skipDates,
+                                ) { _, _, _ -> term }
                             }
                         }
                         // 编辑保存连发多条通知，防抖合并
@@ -120,7 +123,12 @@ class WidgetAutoUpdater @Inject constructor(
                 try {
                     val now = LocalTime.now()
                     val nowMinute = now.hour * 60 + now.minute
-                    val snapshot = buildTodaySnapshot(termRepository, courseRepository, dayOverrideRepository)
+                    val snapshot = buildTodaySnapshot(
+                        termRepository,
+                        courseRepository,
+                        dayOverrideRepository,
+                        holidayRepository,
+                    )
                     val ongoing = snapshot.inProgress(nowMinute)
                     // key 变了才推：上课中随剩余分钟走拍，其余时段只在课节切换/跨天时动
                     val key = buildString {

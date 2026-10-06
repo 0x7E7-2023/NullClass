@@ -18,6 +18,9 @@
     <string name="widget_empty_no_timetable_desc">点击此处创建学期</string>
     <string name="widget_empty_no_class">今天没有课程安排</string>
     <string name="widget_empty_no_class_desc">可在应用内查看其他日期</string>
+    <string name="widget_day_off">休假中</string>
+    <string name="widget_day_off_holiday_desc">%1$s · 今天不上课</string>
+    <string name="widget_day_off_desc">今天已设为不上课</string>
     <string name="widget_empty_finished">今天的课程已全部结束</string>
     <string name="widget_empty_finished_desc">明天的安排可在应用内查看</string>
 

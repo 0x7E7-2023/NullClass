@@ -17,6 +17,9 @@
     <string name="widget_empty_no_timetable_desc">Touchez ici pour créer un semestre</string>
     <string name="widget_empty_no_class">Aucun cours aujourd’hui</string>
     <string name="widget_empty_no_class_desc">Ouvrez l’app pour voir les autres jours</string>
+    <string name="widget_day_off">Jour de repos</string>
+    <string name="widget_day_off_holiday_desc">%1$s · Pas de cours aujourd’hui</string>
+    <string name="widget_day_off_desc">Aujourd’hui est marqué sans cours</string>
     <string name="widget_empty_finished">Les cours du jour sont terminés</string>
     <string name="widget_empty_finished_desc">Ouvrez l’app pour voir demain</string>
 

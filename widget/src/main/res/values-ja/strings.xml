@@ -17,6 +17,9 @@
     <string name="widget_empty_no_timetable_desc">タップして学期を作成</string>
     <string name="widget_empty_no_class">今日の授業はありません</string>
     <string name="widget_empty_no_class_desc">他の日はアプリで確認できます</string>
+    <string name="widget_day_off">お休み</string>
+    <string name="widget_day_off_holiday_desc">%1$s・今日は授業なし</string>
+    <string name="widget_day_off_desc">今日は授業なしに設定されています</string>
     <string name="widget_empty_finished">今日の授業はすべて終了しました</string>
     <string name="widget_empty_finished_desc">明日の予定はアプリで確認できます</string>
 

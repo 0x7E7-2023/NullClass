@@ -17,6 +17,9 @@
     <string name="widget_empty_no_timetable_desc">Tap here to create a term</string>
     <string name="widget_empty_no_class">No classes today</string>
     <string name="widget_empty_no_class_desc">Open the app to see other days</string>
+    <string name="widget_day_off">Day off</string>
+    <string name="widget_day_off_holiday_desc">%1$s · No classes today</string>
+    <string name="widget_day_off_desc">Today is set as a day off</string>
     <string name="widget_empty_finished">All of today’s classes are over</string>
     <string name="widget_empty_finished_desc">Open the app to see tomorrow</string>
 
