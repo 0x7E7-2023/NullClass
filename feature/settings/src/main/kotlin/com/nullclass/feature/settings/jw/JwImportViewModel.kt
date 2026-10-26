@@ -5,6 +5,8 @@ import android.content.Context
 import android.net.Uri
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.webkit.Profile
+import com.nullclass.core.data.repository.TimetableRepository
 import com.nullclass.importer.jw.JwAdapter
 import com.nullclass.importer.jw.JwAdapterRepository
 import com.nullclass.importer.jw.JwBrokenAdapter
@@ -47,6 +49,7 @@ data class JwUiState(
     val lastAdapterKey: String? = null,
     val lastScheduleUrl: String? = null,
     val autoExtract: Boolean = true,
+    val profileName: String? = null,
 )
 
 /** SAF 源读不出内容。 */
@@ -64,6 +67,7 @@ class JwImportViewModel @Inject constructor(
     private val repository: JwAdapterRepository,
     private val libraryClient: JwLibraryClient,
     private val refreshStore: JwRefreshStore,
+    private val timetableRepository: TimetableRepository,
 ) : ViewModel() {
 
     private val _state = MutableStateFlow(JwUiState())
@@ -72,11 +76,14 @@ class JwImportViewModel @Inject constructor(
     init {
         refresh()
         viewModelScope.launch {
+            val timetableId = timetableRepository.getActiveId()
             _state.update {
                 it.copy(
                     lastAdapterKey = refreshStore.lastAdapterKey.first(),
                     lastScheduleUrl = refreshStore.lastScheduleUrl.first(),
                     autoExtract = refreshStore.autoExtract.first(),
+                    profileName = timetableId?.let { id -> refreshStore.profileName(id) }
+                        ?: Profile.DEFAULT_PROFILE_NAME,
                 )
             }
         }

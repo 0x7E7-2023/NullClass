@@ -2,6 +2,7 @@ package com.nullclass.feature.settings.jw
 
 import com.nullclass.feature.settings.R
 import android.content.Context
+import android.webkit.CookieManager
 import com.nullclass.feature.settings.toUiText
 import com.nullclass.importer.jw.JwScriptContract
 import com.nullclass.importer.jw.ocr.JwTableAligner
@@ -24,6 +25,7 @@ import java.util.concurrent.atomic.AtomicInteger
 class JwOcrBridge(
     private val context: Context,
     private val allowedHosts: List<String>,
+    private val cookieManager: CookieManager,
 ) {
 
     private val calls = AtomicInteger(0)
@@ -44,7 +46,7 @@ class JwOcrBridge(
         if (input.isEmpty()) throw JwScriptException("缺少图片输入")
         val page = try {
             withTimeout(JwScriptContract.OCR_TIMEOUT_MS) {
-                JwImageOcr.recognizeInput(context, input, allowedHosts)
+                JwImageOcr.recognizeInput(context, input, allowedHosts, cookieManager)
             }
         } catch (e: TimeoutCancellationException) {
             throw JwScriptException("识别超时")

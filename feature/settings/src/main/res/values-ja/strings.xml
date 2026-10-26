@@ -463,6 +463,7 @@
     <string name="settings_jw_extract_failed">取得できませんでした：%1$s</string>
     <string name="settings_jw_page_loaded">ページを読み込みました。自動で取得しています…</string>
     <string name="settings_jw_no_start_url">教務システムのアドレスがありません。前の画面に戻って、学校をもう一度選択してください。</string>
+    <string name="settings_jw_profile_unsupported">現在の Android System WebView では、時間割ごとにログイン状態を分けて保存できません。アカウントの混在を防ぐため、WebView を更新してからインポートしてください。</string>
     <string name="settings_jw_switch_mobile">モバイル版に切り替え</string>
     <string name="settings_jw_switch_desktop">PC 版に切り替え</string>
     <string name="settings_jw_network_frozen_short">取得中はページの通信を一時停止しています。</string>

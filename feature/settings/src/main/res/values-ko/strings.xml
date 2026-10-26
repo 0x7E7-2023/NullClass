@@ -460,6 +460,7 @@
     <string name="settings_jw_extract_failed">추출하지 못했습니다: %1$s</string>
     <string name="settings_jw_page_loaded">페이지를 불러왔습니다. 자동으로 추출하는 중…</string>
     <string name="settings_jw_no_start_url">학사 시스템 주소가 없습니다. 뒤로 돌아가 학교를 다시 선택하세요.</string>
+    <string name="settings_jw_profile_unsupported">현재 Android System WebView에서는 시간표별 로그인 상태를 분리해 저장할 수 없습니다. 계정이 섞이지 않도록 WebView를 업데이트한 후 가져오기를 진행하세요.</string>
     <string name="settings_jw_switch_mobile">모바일 버전</string>
     <string name="settings_jw_switch_desktop">PC 버전</string>
     <string name="settings_jw_network_frozen_short">추출하는 동안 웹페이지의 네트워크 연결을 일시 중지했습니다.</string>

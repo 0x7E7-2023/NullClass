@@ -151,12 +151,26 @@ private const val DESKTOP_USER_AGENT =
 @Composable
 fun JwWebViewStep(
     adapter: JwAdapter,
+    profileName: String,
     autoExtract: Boolean,
     preferredUrl: String?,
     /** [notes] 是适配器写的核对提示（原文）；[ocrAssisted] 为 true 时导入预览另补空课自己的核对提示。 */
     onExtracted: (documentJson: String, loadedUrl: String, notes: List<String>, ocrAssisted: Boolean) -> Unit,
     modifier: Modifier = Modifier,
 ) {
+    if (!isJwProfileSupported()) {
+        Column(
+            modifier = modifier.fillMaxSize().padding(24.dp),
+            verticalArrangement = Arrangement.Center,
+        ) {
+            Text(
+                text = stringResource(R.string.settings_jw_profile_unsupported),
+                style = MaterialTheme.typography.bodyMedium,
+                color = MaterialTheme.colorScheme.error,
+            )
+        }
+        return
+    }
     val context = LocalContext.current
     // 组合里取文字要经 LocalResources：它随配置变化失效重组，LocalContext 不会
     val resources = LocalResources.current
@@ -204,7 +218,7 @@ fun JwWebViewStep(
     }
     val startUrl = preferredUrl ?: adapter.manifest.scheduleUrlHint ?: adapter.manifest.loginUrl
 
-    /** 一键刷新要回到「刚才成功提取的那一页」，而不是重新登录一遍。 */
+    /** 一键刷新回到「刚才成功提取的那一页」；当前课表的 Profile 会保留自己的登录态。 */
     fun rememberableUrl(): String {
         val live = webView?.url
         return if (live != null && live.startsWith("http")) live else startUrl
@@ -266,7 +280,12 @@ fun JwWebViewStep(
                 when (payload.kind) {
                     JwSchedulePayload.KIND_IMAGE -> {
                         status = UiText.Res(R.string.settings_jw_ocr_running)
-                        val page = JwImageOcr.recognize(context, payload.images.first(), gate.allowedHosts)
+                        val page = JwImageOcr.recognize(
+                            context,
+                            payload.images.first(),
+                            gate.allowedHosts,
+                            view.jwCookieManager(),
+                        )
                         val table = JwTableAligner.align(page)
                         if (!table.reliable) {
                             val warnings = table.warnings.joined()
@@ -405,6 +424,7 @@ fun JwWebViewStep(
         AndroidView(
             factory = { ctx ->
                 WebView(ctx).apply {
+                    useJwProfile(profileName)
                     if (ctx.applicationInfo.flags and ApplicationInfo.FLAG_DEBUGGABLE != 0) {
                         WebView.setWebContentsDebuggingEnabled(true)
                     }

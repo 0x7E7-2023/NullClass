@@ -62,7 +62,7 @@ class JwScriptBridge(
     private val askState: MutableStateFlow<JwAskRequest?>,
 ) {
 
-    private val ocr = JwOcrBridge(context, allowedHosts)
+    private val ocr = JwOcrBridge(context, allowedHosts, webView.jwCookieManager())
     private val askCalls = AtomicInteger(0)
 
     /** 正在等待回答的那次桥调用 id（回填时用）。 */

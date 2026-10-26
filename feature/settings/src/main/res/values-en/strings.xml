@@ -486,6 +486,7 @@
     <string name="settings_jw_extract_failed">Extraction failed: %1$s</string>
     <string name="settings_jw_page_loaded">Page loaded, extracting automatically…</string>
     <string name="settings_jw_no_start_url">The academic system address is missing. Go back and choose your school again.</string>
+    <string name="settings_jw_profile_unsupported">Your Android System WebView cannot keep separate login sessions for each timetable. Update WebView before importing to prevent accounts from being shared between timetables.</string>
     <string name="settings_jw_switch_mobile">Mobile site</string>
     <string name="settings_jw_switch_desktop">Desktop site</string>
     <string name="settings_jw_network_frozen_short">Network access for the web page is paused during extraction.</string>

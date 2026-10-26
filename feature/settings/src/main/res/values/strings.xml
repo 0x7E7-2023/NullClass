@@ -465,6 +465,7 @@
     <string name="settings_jw_extract_failed">提取失败：%1$s</string>
     <string name="settings_jw_page_loaded">页面已加载，正在自动提取…</string>
     <string name="settings_jw_no_start_url">缺少教务系统地址，请返回重新选择学校。</string>
+    <string name="settings_jw_profile_unsupported">当前 Android System WebView 不支持按课表独立保存登录态。为避免账号串用，请更新 WebView 后再进行教务导入。</string>
     <string name="settings_jw_switch_mobile">切换手机版</string>
     <string name="settings_jw_switch_desktop">切换电脑版</string>
     <string name="settings_jw_network_frozen_short">提取期间已暂停网页联网。</string>

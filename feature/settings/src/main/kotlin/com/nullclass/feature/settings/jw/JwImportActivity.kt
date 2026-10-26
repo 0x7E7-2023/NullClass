@@ -202,6 +202,7 @@ private fun JwImportScreen(
         containerColor = MaterialTheme.colorScheme.background,
     ) { padding ->
         val adapter = selected
+        val profileName = state.profileName
         if (adapter == null) {
             if (restoringSelection) {
                 // 适配器列表还在加载：占位等它回来，别把用户打回学校列表
@@ -224,9 +225,17 @@ private fun JwImportScreen(
                     modifier = Modifier.padding(padding),
                 )
             }
+        } else if (profileName == null) {
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(padding),
+                contentAlignment = Alignment.Center,
+            ) { CircularProgressIndicator() }
         } else {
             JwWebViewStep(
                 adapter = adapter,
+                profileName = profileName,
                 // 通用适配器**不自动提取**：它的课表是页面自己渲染出来的，而页面加载完（onPageFinished）
                 // 不等于课表画好了。提取一开始就冻结网络，抢跑会把还在加载页面资源（常见于资源放在
                 // CDN 域上的教务系统）的 SPA 掐死在白屏上，用户连补救都无从下手——金智课表实测如此。

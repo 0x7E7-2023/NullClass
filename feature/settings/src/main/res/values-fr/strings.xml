@@ -514,6 +514,7 @@
     <string name="settings_jw_extract_failed">Échec de l’extraction&#160;: %1$s</string>
     <string name="settings_jw_page_loaded">Page chargée, extraction automatique…</string>
     <string name="settings_jw_no_start_url">L’adresse du système de scolarité est manquante. Revenez en arrière et choisissez à nouveau votre établissement.</string>
+    <string name="settings_jw_profile_unsupported">La version actuelle d’Android System WebView ne permet pas de conserver des sessions de connexion distinctes pour chaque emploi du temps. Mettez à jour WebView avant d’importer afin d’éviter tout mélange des comptes.</string>
     <string name="settings_jw_switch_mobile">Version mobile</string>
     <string name="settings_jw_switch_desktop">Version ordinateur</string>
     <string name="settings_jw_network_frozen_short">L’accès réseau de la page est suspendu pendant l’extraction.</string>

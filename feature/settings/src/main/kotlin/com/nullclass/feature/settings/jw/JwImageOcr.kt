@@ -48,23 +48,37 @@ object JwImageOcr {
             .build()
     }
 
-    suspend fun recognize(context: Context, image: JwImageRef, allowedHosts: List<String>): OcrPage {
-        val bitmap = loadBitmap(image, allowedHosts) ?: throw JwImageUnreadableException()
+    suspend fun recognize(
+        context: Context,
+        image: JwImageRef,
+        allowedHosts: List<String>,
+        cookieManager: CookieManager,
+    ): OcrPage {
+        val bitmap = loadBitmap(image, allowedHosts, cookieManager) ?: throw JwImageUnreadableException()
         return OcrEngines.default(context).recognize(bitmap)
     }
 
     /** 桥接口用：输入是 URL 或 data URL。 */
-    suspend fun recognizeInput(context: Context, input: String, allowedHosts: List<String>): OcrPage {
+    suspend fun recognizeInput(
+        context: Context,
+        input: String,
+        allowedHosts: List<String>,
+        cookieManager: CookieManager,
+    ): OcrPage {
         val image = if (input.startsWith("data:")) JwImageRef(data = input) else JwImageRef(url = input)
-        return recognize(context, image, allowedHosts)
+        return recognize(context, image, allowedHosts, cookieManager)
     }
 
-    suspend fun loadBitmap(image: JwImageRef, allowedHosts: List<String>): Bitmap? = withContext(Dispatchers.IO) {
+    suspend fun loadBitmap(
+        image: JwImageRef,
+        allowedHosts: List<String>,
+        cookieManager: CookieManager,
+    ): Bitmap? = withContext(Dispatchers.IO) {
         val data = image.data
         val url = image.url
         val bytes = when {
             !data.isNullOrBlank() -> decodeDataUrl(data)
-            !url.isNullOrBlank() -> download(url, allowedHosts)
+            !url.isNullOrBlank() -> download(url, allowedHosts, cookieManager)
             else -> null
         } ?: return@withContext null
         decodeWithCap(bytes)
@@ -80,14 +94,14 @@ object JwImageOcr {
         }?.takeIf { it.size <= MAX_IMAGE_BYTES }
     }
 
-    private fun download(url: String, allowedHosts: List<String>): ByteArray? {
+    private fun download(url: String, allowedHosts: List<String>, cookieManager: CookieManager): ByteArray? {
         val uri = runCatching { URI(url) }.getOrNull() ?: return null
         val scheme = uri.scheme?.lowercase()
         if (scheme != "http" && scheme != "https") return null
         val host = uri.host?.lowercase() ?: return null
         if (!JwHostAllowlist.matches(host, allowedHosts)) return null
 
-        val cookie = CookieManager.getInstance().getCookie(url)
+        val cookie = cookieManager.getCookie(url)
         val request = Request.Builder()
             .url(url)
             .apply { if (!cookie.isNullOrBlank()) header("Cookie", cookie) }

@@ -17,7 +17,7 @@ private val Context.jwPrefs by preferencesDataStore(name = "jw_prefs")
 /**
  * 一键刷新的记忆：上次用的适配器 + 上次成功的课表页地址。
  *
- * 登录态本身由 WebView 的数据目录保留（不杀进程、不清数据），这里只记「从哪继续」。
+ * 登录态按课表对应的 WebView Profile 隔离保存；这里只记「从哪继续」和默认 Profile 的归属。
  */
 @Singleton
 class JwRefreshStore @Inject constructor(
@@ -29,6 +29,7 @@ class JwRefreshStore @Inject constructor(
         val LAST_SCHEDULE_URL = stringPreferencesKey("last_schedule_url")
         val AUTO_EXTRACT = booleanPreferencesKey("auto_extract")
         val OFFICIAL_LAST_CHECK = longPreferencesKey("official_last_check")
+        val DEFAULT_PROFILE_OWNER = stringPreferencesKey("default_profile_owner")
     }
 
     val lastAdapterKey: Flow<String?> = context.jwPrefs.data.map { it[Keys.LAST_ADAPTER] }
@@ -37,6 +38,16 @@ class JwRefreshStore @Inject constructor(
 
     /** 进入导入页是否自动提取（默认开）。 */
     val autoExtract: Flow<Boolean> = context.jwPrefs.data.map { it[Keys.AUTO_EXTRACT] ?: true }
+
+    suspend fun profileName(timetableId: String): String {
+        var defaultOwner = timetableId
+        context.jwPrefs.edit { prefs ->
+            defaultOwner = prefs[Keys.DEFAULT_PROFILE_OWNER] ?: timetableId.also {
+                prefs[Keys.DEFAULT_PROFILE_OWNER] = it
+            }
+        }
+        return timetableProfileName(timetableId, defaultOwner)
+    }
 
     suspend fun remember(adapterKey: String, scheduleUrl: String?) {
         context.jwPrefs.edit { prefs ->
