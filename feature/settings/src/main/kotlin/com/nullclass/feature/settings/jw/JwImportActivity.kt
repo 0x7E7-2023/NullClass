@@ -40,7 +40,6 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
@@ -179,9 +178,8 @@ private fun JwImportScreen(
         }
     }
 
-    val appBarScrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior()
+    val appBarScrollBehavior = TopAppBarDefaults.pinnedScrollBehavior()
     Scaffold(
-        modifier = Modifier.nestedScroll(appBarScrollBehavior.nestedScrollConnection),
         topBar = {
             // 选学校时由 SchoolPicker 自带的搜索栏兼任顶栏
             if (selectedKey != null) TopAppBar(
