@@ -13,8 +13,8 @@ android {
         applicationId = "com.nullclass.app"
         minSdk = 26
         targetSdk = 36
-        versionCode = 41
-        versionName = "0.9.102"
+        versionCode = 42
+        versionName = "0.9.103"
     }
 
     /**
