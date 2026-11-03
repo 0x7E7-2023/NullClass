@@ -158,19 +158,6 @@ fun JwWebViewStep(
     onExtracted: (documentJson: String, loadedUrl: String, notes: List<String>, ocrAssisted: Boolean) -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    if (!isJwProfileSupported()) {
-        Column(
-            modifier = modifier.fillMaxSize().padding(24.dp),
-            verticalArrangement = Arrangement.Center,
-        ) {
-            Text(
-                text = stringResource(R.string.settings_jw_profile_unsupported),
-                style = MaterialTheme.typography.bodyMedium,
-                color = MaterialTheme.colorScheme.error,
-            )
-        }
-        return
-    }
     val context = LocalContext.current
     // 组合里取文字要经 LocalResources：它随配置变化失效重组，LocalContext 不会
     val resources = LocalResources.current

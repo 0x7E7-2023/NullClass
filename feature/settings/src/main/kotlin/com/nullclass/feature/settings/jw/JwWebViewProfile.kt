@@ -10,8 +10,6 @@ import androidx.webkit.WebViewFeature
 internal fun timetableProfileName(timetableId: String, defaultProfileOwnerId: String): String =
     if (timetableId == defaultProfileOwnerId) Profile.DEFAULT_PROFILE_NAME else "jw_timetable_$timetableId"
 
-internal fun isJwProfileSupported(): Boolean = WebViewFeature.isFeatureSupported(WebViewFeature.MULTI_PROFILE)
-
 internal fun WebView.useJwProfile(profileName: String) {
     if (!WebViewFeature.isFeatureSupported(WebViewFeature.MULTI_PROFILE)) return
     ProfileStore.getInstance().getOrCreateProfile(profileName)
