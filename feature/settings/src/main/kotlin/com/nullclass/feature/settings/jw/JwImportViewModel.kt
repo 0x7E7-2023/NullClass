@@ -6,6 +6,7 @@ import android.net.Uri
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.webkit.Profile
+import androidx.webkit.WebViewFeature
 import com.nullclass.core.data.repository.TimetableRepository
 import com.nullclass.importer.jw.JwAdapter
 import com.nullclass.importer.jw.JwAdapterRepository
@@ -77,13 +78,20 @@ class JwImportViewModel @Inject constructor(
         refresh()
         viewModelScope.launch {
             val timetableId = timetableRepository.getActiveId()
+            // 放在 update 外面：旧 WebView 上它会清登录态，update 冲突重试时不该再跑一遍
+            val profileName = timetableId?.let { id ->
+                refreshStore.profileName(
+                    id,
+                    multiProfile = WebViewFeature.isFeatureSupported(WebViewFeature.MULTI_PROFILE),
+                    clearShared = ::clearDefaultJwProfile,
+                )
+            } ?: Profile.DEFAULT_PROFILE_NAME
             _state.update {
                 it.copy(
                     lastAdapterKey = refreshStore.lastAdapterKey.first(),
                     lastScheduleUrl = refreshStore.lastScheduleUrl.first(),
                     autoExtract = refreshStore.autoExtract.first(),
-                    profileName = timetableId?.let { id -> refreshStore.profileName(id) }
-                        ?: Profile.DEFAULT_PROFILE_NAME,
+                    profileName = profileName,
                 )
             }
         }
