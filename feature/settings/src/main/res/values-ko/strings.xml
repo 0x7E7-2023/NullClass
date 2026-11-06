@@ -91,6 +91,18 @@
     <string name="settings_day_swap_upcoming">오늘 이후</string>
     <string name="settings_day_swap_empty">요일 대체 없음</string>
     <string name="settings_day_swap_source">%1$s 수업</string>
+    <string name="settings_class_move_title">한 번만 이동</string>
+    <string name="settings_class_move_desc">수업이 한 번만 변경되었을 때 그 회차만 다른 날이나 다른 교시로 옮길 수 있습니다. 원래 자리는 그날만 비고 다른 주는 그대로입니다. 오늘, 주간 보기, 위젯, 알림에도 함께 반영됩니다.</string>
+    <string name="settings_class_move_add">수업 옮기기</string>
+    <string name="settings_class_move_step1">1단계 · 원래 수업 날짜 선택</string>
+    <string name="settings_class_move_step2">2단계 · 옮길 수업 선택</string>
+    <string name="settings_class_move_step3">3단계 · \'%1$s\'을(를) 어느 날로 옮길까요</string>
+    <string name="settings_class_move_step4">4단계 · %1$s 몇 교시로 옮길까요</string>
+    <string name="settings_class_move_no_class">이날은 옮길 수 있는 수업이 없습니다.</string>
+    <string name="settings_class_move_no_room">이날은 교시가 부족해 이 수업을 넣을 수 없습니다.</string>
+    <string name="settings_class_move_overlap">\'%1$s\'과(와) 시간이 겹칩니다</string>
+    <string name="settings_class_move_row">%1$s %2$s → %3$s %4$s</string>
+    <string name="settings_class_move_empty">옮긴 수업이 없습니다</string>
 
     <!-- Quick actions -->
     <string name="settings_quick_actions_title">빠른 작업</string>

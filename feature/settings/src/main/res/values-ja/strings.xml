@@ -91,6 +91,18 @@
     <string name="settings_day_swap_upcoming">今日以降</string>
     <string name="settings_day_swap_empty">曜日振替はありません</string>
     <string name="settings_day_swap_source">%1$s の授業を実施</string>
+    <string name="settings_class_move_title">1 回だけ振替</string>
+    <string name="settings_class_move_desc">授業が 1 回だけ変更になったとき、その回だけを別の日や別の時限へ移せます。元の枠はその日だけ空き、他の週は変わりません。今日・週表示・ウィジェット・リマインダーにも反映されます。</string>
+    <string name="settings_class_move_add">授業を振り替える</string>
+    <string name="settings_class_move_step1">ステップ 1 · 元の日付を選択</string>
+    <string name="settings_class_move_step2">ステップ 2 · 振り替える授業を選択</string>
+    <string name="settings_class_move_step3">ステップ 3 · 「%1$s」をどの日に移しますか</string>
+    <string name="settings_class_move_step4">ステップ 4 · %1$s の何限に移しますか</string>
+    <string name="settings_class_move_no_class">この日は振り替えられる授業がありません。</string>
+    <string name="settings_class_move_no_room">この日の時限数ではこの授業を入れられません。</string>
+    <string name="settings_class_move_overlap">「%1$s」と時間が重なっています</string>
+    <string name="settings_class_move_row">%1$s %2$s → %3$s %4$s</string>
+    <string name="settings_class_move_empty">振替はありません</string>
 
     <!-- Quick actions -->
     <string name="settings_quick_actions_title">クイック操作</string>

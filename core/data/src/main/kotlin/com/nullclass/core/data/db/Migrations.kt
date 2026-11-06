@@ -121,3 +121,20 @@ val MIGRATION_6_7 = object : Migration(6, 7) {
         )
     }
 }
+
+/**
+ * v7 → v8：加入单次调课表（某一次课挪到别的日期/节次，纯本地、不同步）。
+ * 纯新增表，无存量数据迁移。
+ */
+val MIGRATION_7_8 = object : Migration(7, 8) {
+
+    override fun migrate(db: SupportSQLiteDatabase) {
+        db.execSQL(
+            "CREATE TABLE IF NOT EXISTS `class_moves` (" +
+                "`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `blockId` TEXT NOT NULL, " +
+                "`fromEpochDay` INTEGER NOT NULL, `toEpochDay` INTEGER NOT NULL, " +
+                "`toStartPeriod` INTEGER NOT NULL, `toEndPeriod` INTEGER NOT NULL, " +
+                "`updatedAt` INTEGER NOT NULL)",
+        )
+    }
+}

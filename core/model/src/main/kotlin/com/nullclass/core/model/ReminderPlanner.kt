@@ -26,6 +26,9 @@ object ReminderPlanner {
      */
     const val SENT_KEY_TOLERANCE_MS: Long = 24L * 3600 * 1000
 
+    /** 单次调课挪进来的那次课的提醒键后缀，见 [upcoming]。 */
+    const val MOVED_KEY_SUFFIX = "#moved"
+
     /**
      * 「这一节课」的提醒是否已经发过：同 blockId 且 startAt 相差在
      * [SENT_KEY_TOLERANCE_MS] 内的已发送键都算（同时覆盖时钟回拨场景——epoch 不变
@@ -76,6 +79,7 @@ object ReminderPlanner {
      * - [skipDates] 里的日期跳过（节假日/手动跳过：这天不上课）
      * - [dayOverrides] 串课表（date → source date，见 [DayOverrides]）：被串过的那天
      *   排来源日的课，时刻仍按这一天的墙钟算
+     * - [classMoves] 单次调课（见 [ClassMoves]）：挪走的那一次不排，挪进来的按新节次排
      * - 节次表缺该 block 起止节次对应行 → 静默跳过（用户改过节次表的防御）
      * - 今天已结束（endAt <= fromMillis）的课不出现；进行中/未开始的保留
      */
@@ -88,6 +92,7 @@ object ReminderPlanner {
         zone: java.time.ZoneId = java.time.ZoneId.systemDefault(),
         skipDates: Set<Long> = emptySet(),
         dayOverrides: Map<Long, Long> = emptyMap(),
+        classMoves: List<ClassMove> = emptyList(),
     ): List<UpcomingClass> {
         require(horizonDays >= 0) { "horizonDays must be >= 0" }
 
@@ -98,22 +103,24 @@ object ReminderPlanner {
         for (dayOffset in 0..horizonDays) {
             val day = fromDay.plusDays(dayOffset.toLong())
             if (day.toEpochDay() in skipDates) continue
-            // 串课：课取自来源日那一格，[dayStart] 仍是这一天的零点
-            val origin = DayOverrides.originOf(term, dayOverrides, day.toEpochDay()) ?: continue
-            val week = origin.week
+            // 学期外整天没课：串课和单次调课都不凭空造课（同 [DayOverrides.originOf] 口径）
+            if (term.weekOf(day.toEpochDay()) == null) continue
+            // 串课：课取自来源日那一格，[dayStart] 仍是这一天的零点；来源日在学期外时串来的课为空
+            val base = DayOverrides.blocksOn(term, schedule, dayOverrides, day.toEpochDay())
             val dayStart = day.atStartOfDay(zone).toInstant().toEpochMilli()
 
-            for (courseWithBlocks in schedule) {
-                for (block in courseWithBlocks.blocks) {
-                    if (!block.occursInWeek(week)) continue
-                    if (block.dayOfWeek != origin.dayOfWeek) continue
-                    val startTime = timesByIndex[block.startPeriod] ?: continue
-                    val endTime = timesByIndex[block.endPeriod] ?: continue
-                    val startAt = dayStart + startTime.startMinuteOfDay * 60_000L
-                    val endAt = dayStart + endTime.endMinuteOfDay * 60_000L
-                    if (endAt <= fromMillis) continue // 今天已结束的
-                    result.add(UpcomingClass(courseWithBlocks.course, block, startAt, endAt))
-                }
+            // 挪进来的那次换一个提醒键：同 block.id 会被 [isAlreadySent] 的 24h 容差当成原来那次
+            // （原时刻已提醒过、再挪到 24h 内时就静默不提醒了）。block.id 在提醒里只当键用。
+            val placedToday = ClassMoves.withoutMovedAway(base, classMoves, day.toEpochDay()) +
+                ClassMoves.movedIn(term, schedule, classMoves, day.toEpochDay())
+                    .map { it.copy(block = it.block.copy(id = it.block.id + MOVED_KEY_SUFFIX)) }
+            for (placed in placedToday) {
+                val startTime = timesByIndex[placed.block.startPeriod] ?: continue
+                val endTime = timesByIndex[placed.block.endPeriod] ?: continue
+                val startAt = dayStart + startTime.startMinuteOfDay * 60_000L
+                val endAt = dayStart + endTime.endMinuteOfDay * 60_000L
+                if (endAt <= fromMillis) continue // 今天已结束的
+                result.add(UpcomingClass(placed.course, placed.block, startAt, endAt))
             }
         }
         return result.sortedBy { it.startAtMillis }

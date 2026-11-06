@@ -9,6 +9,7 @@ import com.nullclass.core.data.repository.CourseRepository
 import com.nullclass.core.data.repository.DayOverrideRepository
 import com.nullclass.core.data.repository.TermRepository
 import com.nullclass.core.data.repository.TimetableRepository
+import com.nullclass.core.model.ClassMove
 import com.nullclass.core.model.CourseWithBlocks
 import com.nullclass.core.model.PeriodTime
 import com.nullclass.core.model.PlacedBlock
@@ -70,6 +71,8 @@ sealed interface ScheduleUiState {
          * 翻页器给别的周现算布局时也要它，所以整张表随状态一起发出去。
          */
         val dayOverrides: Map<Long, Long> = emptyMap(),
+        /** 单次调课（见 [com.nullclass.core.model.ClassMoves]），翻页器现算别的周时同样要用。 */
+        val classMoves: List<ClassMove> = emptyList(),
         /**
          * 当前课表名。**只有课表多于一张时才非 null**（顶栏第二行前缀「我的课表 · 第 3 周」）：
          * 单课表用户看到的界面一个字都不变。今天在这张课表里第几周，与课表名无关，
@@ -156,17 +159,17 @@ class ScheduleViewModel @Inject constructor(
                         courseRepository.observeSchedule(term.id),
                         termRepository.observePeriodTimes(term.id),
                         displayPrefs,
-                        dayOverrideRepository.index,
-                    ) { schedule, periodTimes, prefs, overrides ->
+                        dayOverrideRepository.adjustments,
+                    ) { schedule, periodTimes, prefs, (overrides, moves) ->
                         ScheduleUiState.Ready(
                             term = term,
                             todayWeek = todayWeek,
                             selectedWeek = week,
                             periodTimes = periodTimes,
                             schedule = schedule,
-                            layout = WeekLayout.layoutForWeek(schedule, week, term, overrides),
+                            layout = WeekLayout.layoutForWeek(schedule, week, term, overrides, moves),
                             otherWeekLayout = if (prefs.showOtherWeek) {
-                                WeekLayout.otherWeekLayout(schedule, week, term, overrides)
+                                WeekLayout.otherWeekLayout(schedule, week, term, overrides, moves)
                             } else {
                                 emptyMap()
                             },
@@ -177,6 +180,7 @@ class ScheduleViewModel @Inject constructor(
                             showGridLines = prefs.showGridLines,
                             showOtherWeek = prefs.showOtherWeek,
                             dayOverrides = overrides,
+                            classMoves = moves,
                             timetableName = timetableName,
                         )
                     }

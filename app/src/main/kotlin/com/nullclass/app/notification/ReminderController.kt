@@ -61,8 +61,8 @@ class ReminderController @Inject constructor(
                             examRepository.observeForTerm(term.id),
                             // 跳过日期变化（手动增删 / 节假日同步落库）触发重排
                             holidayRepository.skipDates,
-                            // 串课变化：那天要提醒的是另一天的课
-                            dayOverrideRepository.index,
+                            // 串课 / 单次调课变化：那天要提醒的课不一样了
+                            dayOverrideRepository.adjustments,
                         ) { _, _, _, _ -> Unit }
                     }
                 }

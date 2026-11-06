@@ -1,16 +1,19 @@
 package com.nullclass.core.data.repository
 
 import com.nullclass.core.data.db.dao.DayOverrideDao
+import com.nullclass.core.data.db.entity.ClassMoveEntity
 import com.nullclass.core.data.db.entity.DayOverrideEntity
+import com.nullclass.core.model.ClassMove
 import com.nullclass.core.model.DayOverride
 import com.nullclass.core.model.DayOverrides
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.map
 import javax.inject.Inject
 import javax.inject.Singleton
 
 /**
- * 串课（调休调课）的唯一读写入口：某天改上另一天的课。
+ * 调课的唯一读写入口：串课（某天改上另一天的课）与单次调课（某一次课挪到别处）。
  *
  * 取数口径全部经由 [com.nullclass.core.model.DayOverrides]，今日页 / 周视图 /
  * 小组件 / 提醒四处共用同一份解析规则。
@@ -47,6 +50,41 @@ class DayOverrideRepository @Inject constructor(
         dao.delete(epochDay)
     }
 
+    /** 全部单次调课，按原日期升序。 */
+    val moves: Flow<List<ClassMove>> =
+        dao.observeMoves().map { rows -> rows.map { it.toDomain() } }
+
+    /** 串课查表 + 单次调课一起观察：取课的四处（今日页 / 周视图 / 小组件 / 提醒）都要两样。 */
+    val adjustments: Flow<Pair<Map<Long, Long>, List<ClassMove>>> = combine(index, moves, ::Pair)
+
+    suspend fun movesNow(): List<ClassMove> = dao.getMoves().map { it.toDomain() }
+
+    suspend fun addMove(move: ClassMove) {
+        dao.insertMove(
+            ClassMoveEntity(
+                blockId = move.blockId,
+                fromEpochDay = move.fromEpochDay,
+                toEpochDay = move.toEpochDay,
+                toStartPeriod = move.toStartPeriod,
+                toEndPeriod = move.toEndPeriod,
+                updatedAt = System.currentTimeMillis(),
+            ),
+        )
+    }
+
+    suspend fun deleteMove(id: Long) {
+        dao.deleteMove(id)
+    }
+
     private fun DayOverrideEntity.toDomain() =
         DayOverride(epochDay = epochDay, sourceEpochDay = sourceEpochDay)
+
+    private fun ClassMoveEntity.toDomain() = ClassMove(
+        id = id,
+        blockId = blockId,
+        fromEpochDay = fromEpochDay,
+        toEpochDay = toEpochDay,
+        toStartPeriod = toStartPeriod,
+        toEndPeriod = toEndPeriod,
+    )
 }

@@ -102,13 +102,13 @@ class PersonalizationViewModel @Inject constructor(
                 combine(
                     courseRepository.observeSchedule(term.id),
                     termRepository.observePeriodTimes(term.id),
-                    dayOverrideRepository.index,
+                    dayOverrideRepository.adjustments,
                     preferences.showOtherWeekCourses,
-                ) { schedule, periodTimes, overrides, showOtherWeek ->
+                ) { schedule, periodTimes, (overrides, moves), showOtherWeek ->
                     val today = LocalDate.now()
                     val todayWeek = term.weekOf(today.toEpochDay())
                     val week = todayWeek ?: 1
-                    val layout = WeekLayout.layoutForWeek(schedule, week, term, overrides)
+                    val layout = WeekLayout.layoutForWeek(schedule, week, term, overrides, moves)
                     if (layout.values.all { it.isEmpty() }) {
                         null
                     } else {
@@ -118,7 +118,7 @@ class PersonalizationViewModel @Inject constructor(
                             periodTimes = periodTimes,
                             layout = layout,
                             otherWeekLayout = if (showOtherWeek) {
-                                WeekLayout.otherWeekLayout(schedule, week, term, overrides)
+                                WeekLayout.otherWeekLayout(schedule, week, term, overrides, moves)
                             } else {
                                 emptyMap()
                             },

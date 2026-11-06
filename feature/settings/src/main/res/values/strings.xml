@@ -92,6 +92,18 @@
     <string name="settings_day_swap_upcoming">今天及以后</string>
     <string name="settings_day_swap_empty">暂无调课</string>
     <string name="settings_day_swap_source">上 %1$s 的课</string>
+    <string name="settings_class_move_title">单次调课</string>
+    <string name="settings_class_move_desc">老师临时调课时，可把某一次课调整到另一天或另一节。原来那一次不再显示，其他周不受影响；今日页、周视图、桌面小组件与课前提醒会一并调整。</string>
+    <string name="settings_class_move_add">调整一次课</string>
+    <string name="settings_class_move_step1">第 1 步 · 选择原来上课的日期</string>
+    <string name="settings_class_move_step2">第 2 步 · 选择要调整的课程</string>
+    <string name="settings_class_move_step3">第 3 步 · 把「%1$s」调到哪一天</string>
+    <string name="settings_class_move_step4">第 4 步 · 调到 %1$s 的第几节</string>
+    <string name="settings_class_move_no_class">这一天没有可调整的课程。</string>
+    <string name="settings_class_move_no_room">这一天的节次不足以安排这节课。</string>
+    <string name="settings_class_move_overlap">与「%1$s」时间重叠</string>
+    <string name="settings_class_move_row">%1$s %2$s → %3$s %4$s</string>
+    <string name="settings_class_move_empty">暂无单次调课</string>
 
     <!-- 快捷操作 -->
     <string name="settings_quick_actions_title">快捷操作</string>

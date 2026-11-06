@@ -15,6 +15,7 @@ object WeekLayout {
     /**
      * [term] + [overrides] 一起给出串课表（date → source date，见 [DayOverrides]）：
      * 被串过的那一列改画来源日的课。两者留空（默认）时与串课功能上线前逐字节同构。
+     * [classMoves] 单次调课（见 [ClassMoves]）在串课之后套用，同样要求给出 [term]。
      *
      * @return dayOfWeek(1..7) → 按开始节次升序排列的课块列表；
      *         无课的天不出现在 Map 中
@@ -24,6 +25,7 @@ object WeekLayout {
         week: Int,
         term: Term? = null,
         overrides: Map<Long, Long> = emptyMap(),
+        classMoves: List<ClassMove> = emptyList(),
     ): Map<Int, List<PlacedBlock>> {
         require(week >= 1) { "week must be >= 1, was $week" }
         val origins = originsForWeek(term, week, overrides)
@@ -43,6 +45,12 @@ object WeekLayout {
                             .add(PlacedBlock(courseWithBlocks.course, block))
                     }
                 }
+            }
+        }
+        if (term != null && classMoves.isNotEmpty()) {
+            for (day in 1..7) {
+                val moved = ClassMoves.apply(term, schedule, classMoves, term.epochDayOf(week, day), result[day].orEmpty())
+                if (moved.isEmpty()) result.remove(day) else result[day] = moved.toMutableList()
             }
         }
         result.values.forEach { blocks -> blocks.sortBy { it.block.startPeriod } }
@@ -68,10 +76,11 @@ object WeekLayout {
         week: Int,
         term: Term? = null,
         overrides: Map<Long, Long> = emptyMap(),
+        classMoves: List<ClassMove> = emptyList(),
     ): Map<Int, List<PlacedBlock>> {
         require(week >= 1) { "week must be >= 1, was $week" }
         val origins = originsForWeek(term, week, overrides)
-        val thisWeek = layoutForWeek(schedule, week, term, overrides)
+        val thisWeek = layoutForWeek(schedule, week, term, overrides, classMoves)
         // 先定序再挑，结果不随课表里的记录顺序变
         val candidates = schedule
             .flatMap { courseWithBlocks ->

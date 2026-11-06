@@ -8,6 +8,7 @@ import com.nullclass.core.data.db.MIGRATION_3_4
 import com.nullclass.core.data.db.MIGRATION_4_5
 import com.nullclass.core.data.db.MIGRATION_5_6
 import com.nullclass.core.data.db.MIGRATION_6_7
+import com.nullclass.core.data.db.MIGRATION_7_8
 import com.nullclass.core.data.db.dao.CalendarEventDao
 import com.nullclass.core.data.db.dao.CourseDao
 import com.nullclass.core.data.db.dao.DayOverrideDao
@@ -52,6 +53,7 @@ internal object DataModule {
             .addMigrations(MIGRATION_4_5)
             .addMigrations(MIGRATION_5_6)
             .addMigrations(MIGRATION_6_7)
+            .addMigrations(MIGRATION_7_8)
             .build()
 
     @Provides

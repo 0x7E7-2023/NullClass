@@ -61,6 +61,16 @@ object DayOverrides {
         return DayOrigin(week = week, dayOfWeek = LocalDate.ofEpochDay(source).dayOfWeek.value)
     }
 
+    /** [epochDay] 这天按串课取到的课块（未套单次调课）；这天没课（见 [originOf]）为空表。 */
+    fun blocksOn(term: Term, schedule: List<CourseWithBlocks>, index: Map<Long, Long>, epochDay: Long): List<PlacedBlock> {
+        val origin = originOf(term, index, epochDay) ?: return emptyList()
+        return schedule.flatMap { courseWithBlocks ->
+            courseWithBlocks.blocks
+                .filter { it.occursInWeek(origin.week) && it.dayOfWeek == origin.dayOfWeek }
+                .map { PlacedBlock(courseWithBlocks.course, it) }
+        }
+    }
+
     /**
      * 第 [week] 周里**被串过**的那几列。
      *

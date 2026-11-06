@@ -78,11 +78,13 @@ class ReminderScheduler @Inject constructor(
             val times = termRepository.getPeriodTimes(term.id)
             val skipDates = holidayRepository.skipEpochDays()
             val dayOverrides = dayOverrideRepository.indexNow()
+            val classMoves = dayOverrideRepository.movesNow()
 
             val planned = ReminderPlanner.upcoming(
                 term, schedule, times, now,
                 horizonDays = HORIZON_DAYS, zone = zone, skipDates = skipDates,
                 dayOverrides = dayOverrides,
+                classMoves = classMoves,
             )
 
             if (exactAlarmScheduler.canUseExact()) {

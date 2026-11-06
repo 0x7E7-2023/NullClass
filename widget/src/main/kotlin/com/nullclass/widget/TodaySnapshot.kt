@@ -42,6 +42,7 @@ suspend fun buildTodaySnapshot(
         today = LocalDate.now(),
         // 串课（调休）：小组件与今日页必须取同一天的课，口径全在 core:model
         dayOverrides = dayOverrideRepository.indexNow(),
+        classMoves = dayOverrideRepository.movesNow(),
         // 跳过日：提醒不发，小组件也不列课，改显示休假
         skipDates = holidayRepository.skipDates.first(),
     )
@@ -99,10 +100,10 @@ private fun observeTodaySnapshot(entryPoint: ScheduleWidgetEntryPoint): Flow<Tod
             combine(
                 entryPoint.courseRepository().observeSchedule(term.id),
                 termRepository.observePeriodTimes(term.id),
-                entryPoint.dayOverrideRepository().index,
+                entryPoint.dayOverrideRepository().adjustments,
                 entryPoint.holidayRepository().skipDates,
                 dates,
-            ) { schedule, times, overrides, skipDates, today ->
+            ) { schedule, times, (overrides, moves), skipDates, today ->
                 assembleTodaySnapshot(
                     term = term,
                     schedule = schedule,
@@ -110,6 +111,7 @@ private fun observeTodaySnapshot(entryPoint: ScheduleWidgetEntryPoint): Flow<Tod
                     today = today,
                     dayOverrides = overrides,
                     skipDates = skipDates,
+                    classMoves = moves,
                 )
             }
         }

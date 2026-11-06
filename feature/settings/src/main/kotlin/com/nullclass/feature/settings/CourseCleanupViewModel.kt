@@ -5,11 +5,14 @@ import androidx.lifecycle.viewModelScope
 import com.nullclass.core.data.repository.CourseRepository
 import com.nullclass.core.data.repository.DayOverrideRepository
 import com.nullclass.core.data.repository.TermRepository
+import com.nullclass.core.model.ClassMoves
 import com.nullclass.core.model.Course
 import com.nullclass.core.model.CourseWithBlocks
 import com.nullclass.core.model.DayOverrides
+import com.nullclass.core.model.PlacedBlock
 import com.nullclass.core.model.ScheduleBlock
 import com.nullclass.core.model.Term
+import com.nullclass.core.model.WeekLayout
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -37,9 +40,12 @@ data class CleanupRow(
     val course: Course,
     /** 命中筛选的时间安排，按周内次序 + 节次排好。 */
     val matched: List<ScheduleBlock>,
-    /** 这门课一共有几条时间安排；> matched.size 时说明删掉会连带别的日子。 */
+    /** 这门课一共有几条时间安排。 */
     val totalBlocks: Int,
-)
+) {
+    /** 不在这次筛选里的安排条数；> 0 说明删掉会连带别的日子。按 id 去重：单次调课挪进来的那次与原安排同 id。 */
+    val otherBlocks: Int get() = totalBlocks - matched.distinctBy { it.id }.size
+}
 
 data class CourseCleanupUiState(
     val loading: Boolean = true,
@@ -89,11 +95,11 @@ class CourseCleanupViewModel @Inject constructor(
             } else {
                 combine(
                     courseRepository.observeSchedule(term.id),
-                    dayOverrideRepository.index,
+                    dayOverrideRepository.adjustments,
                     filter,
                     pickedWeek,
                     pickedDate,
-                ) { schedule, overrides, mode, week, date ->
+                ) { schedule, (overrides, moves), mode, week, date ->
                     val todayWeek = term.weekOf(today)
                     // 学期换短了之后，上一个学期翻到的周次可能越界，夹回来而不是让它空着
                     val visibleWeek = (week ?: todayWeek ?: 1).coerceIn(1, term.totalWeeks)
@@ -106,13 +112,22 @@ class CourseCleanupViewModel @Inject constructor(
                             week = visibleWeek,
                             date = visibleDate,
                             todayWeek = todayWeek,
-                            rows = rowsOfWeek(term, schedule, visibleWeek),
+                            // 与周视图同一口径（串课 + 单次调课）：单次调课记的是串课解析后的日期，
+                            // 只套单次调课不套串课的话，串过那天挪走的课在原周里删不掉
+                            rows = rowsOf(
+                                schedule,
+                                WeekLayout.layoutForWeek(schedule, visibleWeek, term, overrides, moves).values.flatten(),
+                                compareBy({ term.dayIndexInWeek(it.dayOfWeek) }, { it.startPeriod }),
+                            ),
                         )
 
                         CleanupFilter.DATE -> {
-                            // 调课后这天上的是别天的课，按今日页同一套解析取（只跟一跳）
+                            // 调课后这天上的是别天的课，按今日页同一套解析取（只跟一跳），再套单次调课
                             val source = DayOverrides.sourceOf(overrides, visibleDate)
-                            val origin = DayOverrides.originOf(term, overrides, visibleDate)
+                            val placed = ClassMoves.apply(
+                                term, schedule, moves, visibleDate,
+                                DayOverrides.blocksOn(term, schedule, overrides, visibleDate),
+                            )
                             CourseCleanupUiState(
                                 loading = false,
                                 term = term,
@@ -122,11 +137,7 @@ class CourseCleanupViewModel @Inject constructor(
                                 todayWeek = todayWeek,
                                 swappedFrom = source.takeIf { it != visibleDate },
                                 dateOutOfTerm = term.weekOf(visibleDate) == null,
-                                rows = if (origin == null) {
-                                    emptyList()
-                                } else {
-                                    rowsOfDay(term, schedule, origin.week, origin.dayOfWeek)
-                                },
+                                rows = rowsOf(schedule, placed, compareBy { it.startPeriod }),
                             )
                         }
                     }
@@ -156,47 +167,23 @@ class CourseCleanupViewModel @Inject constructor(
         }
     }
 
-    private fun rowsOfWeek(
-        term: Term,
+    /** 把这一周 / 这一天实际上的课块按课归组；行序与行内次序都按 [order]。 */
+    private fun rowsOf(
         schedule: List<CourseWithBlocks>,
-        week: Int,
-    ): List<CleanupRow> = schedule.mapNotNull { item ->
-        val matched = item.blocks.filter { it.occursInWeek(week) }
-        if (matched.isEmpty()) {
-            null
-        } else {
+        placed: List<PlacedBlock>,
+        order: Comparator<ScheduleBlock>,
+    ): List<CleanupRow> {
+        val byCourse = placed.groupBy { it.course.id }
+        return schedule.mapNotNull { item ->
+            val matched = byCourse[item.course.id] ?: return@mapNotNull null
             CleanupRow(
                 course = item.course,
-                matched = matched.sortedWith(
-                    compareBy({ term.dayIndexInWeek(it.dayOfWeek) }, { it.startPeriod }),
-                ),
+                // distinct：串课把同一条安排借到另一列时是同一个对象，列一次就够；挪进来的那次节次不同、照列
+                matched = matched.map { it.block }.distinct().sortedWith(order),
                 totalBlocks = item.blocks.size,
             )
-        }
-    }.sortedWith(
-        compareBy(
-            { term.dayIndexInWeek(it.matched.first().dayOfWeek) },
-            { it.matched.first().startPeriod },
-        ),
-    )
-
-    private fun rowsOfDay(
-        term: Term,
-        schedule: List<CourseWithBlocks>,
-        week: Int,
-        dayOfWeek: Int,
-    ): List<CleanupRow> = schedule.mapNotNull { item ->
-        val matched = item.blocks.filter { it.occursInWeek(week) && it.dayOfWeek == dayOfWeek }
-        if (matched.isEmpty()) {
-            null
-        } else {
-            CleanupRow(
-                course = item.course,
-                matched = matched.sortedBy { it.startPeriod },
-                totalBlocks = item.blocks.size,
-            )
-        }
-    }.sortedBy { it.matched.first().startPeriod }
+        }.sortedWith(compareBy(order) { it.matched.first() })
+    }
 
     /** 星期 [dayOfWeek] 排在这个学期的一周里第几格（学期可能从周日起算）。 */
     private fun Term.dayIndexInWeek(dayOfWeek: Int): Int = (dayOfWeek - weekStartDay + 7) % 7

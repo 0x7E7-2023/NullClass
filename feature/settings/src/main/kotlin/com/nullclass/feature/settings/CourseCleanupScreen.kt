@@ -419,9 +419,9 @@ private fun CleanupCourseRow(
                         color = MaterialTheme.colorScheme.onSurfaceVariant,
                     )
                 }
-                if (row.totalBlocks > row.matched.size) {
+                if (row.otherBlocks > 0) {
                     Text(
-                        (row.totalBlocks - row.matched.size).let { others ->
+                        row.otherBlocks.let { others ->
                             pluralStringResource(R.plurals.settings_cleanup_other_blocks, others, others)
                         },
                         style = MaterialTheme.typography.labelSmall,

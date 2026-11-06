@@ -75,7 +75,7 @@ class WidgetAutoUpdater @Inject constructor(
                                 // 串课（调休）、跳过日改了也要立刻重画：小组件上的今日课程会整天不同
                                 combine(
                                     courseRepository.observeSchedule(term.id),
-                                    dayOverrideRepository.index,
+                                    dayOverrideRepository.adjustments,
                                     holidayRepository.skipDates,
                                 ) { _, _, _ -> term }
                             }

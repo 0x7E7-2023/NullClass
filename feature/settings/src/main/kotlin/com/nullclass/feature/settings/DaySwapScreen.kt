@@ -62,6 +62,7 @@ fun DaySwapScreen(
 ) {
     val term by viewModel.currentTerm.collectAsState()
     val overrides by viewModel.dayOverrides.collectAsState()
+    val moveData by viewModel.moveData.collectAsState()
 
     val appBarScrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior()
     Scaffold(
@@ -94,6 +95,11 @@ fun DaySwapScreen(
                 overrides = overrides,
                 onSet = viewModel::setDayOverride,
                 onClear = viewModel::clearDayOverride,
+            )
+            ClassMoveSection(
+                data = moveData,
+                onAdd = viewModel::addMove,
+                onDelete = viewModel::deleteMove,
             )
         }
     }

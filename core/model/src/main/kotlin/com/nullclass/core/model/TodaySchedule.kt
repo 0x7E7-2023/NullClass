@@ -64,6 +64,8 @@ data class TodaySnapshot(
  *
  * [skipDates] 命中今天（补班日除外）→ 这天不上课：不列课，带上 [TodaySnapshot.dayOff]。
  * 与课前提醒同一口径：提醒按墙钟日期跳过，串课也不例外。
+ *
+ * [classMoves] 单次调课在串课之后套用（见 [ClassMoves]）：挪走的这一次不列，挪进来的按新节次列。
  */
 fun assembleTodaySnapshot(
     term: Term,
@@ -72,6 +74,7 @@ fun assembleTodaySnapshot(
     today: LocalDate,
     dayOverrides: Map<Long, Long> = emptyMap(),
     skipDates: List<SkipDate> = emptyList(),
+    classMoves: List<ClassMove> = emptyList(),
 ): TodaySnapshot {
     val displayWeek = term.weekOf(today.toEpochDay())
     val dayOff = skipDates.firstOrNull {
@@ -93,35 +96,25 @@ fun assembleTodaySnapshot(
     } else {
         LocalDate.ofEpochDay(sourceEpochDay)
     }
-    // 来源日不在学期内（串到了寒暑假里）→ 这天没课；周次仍报今天的，顶栏不受影响
-    val origin = DayOverrides.originOf(term, dayOverrides, today.toEpochDay())
-        ?: return TodaySnapshot(
-            termName = term.name,
-            weekNumber = displayWeek,
-            blocks = emptyList(),
-            swappedFrom = swappedFrom,
-        )
-    val week = origin.week
+    // 来源日不在学期内（串到了寒暑假里）→ 串来的课为空；周次仍报今天的，顶栏不受影响
+    val base = DayOverrides.blocksOn(term, schedule, dayOverrides, today.toEpochDay())
+    val placedToday = ClassMoves.apply(term, schedule, classMoves, today.toEpochDay(), base)
 
     val timesByIndex = periodTimes.associateBy { it.periodIndex }
     val entries = mutableListOf<TodaySnapshot.TodayEntry>()
-    for (courseWithBlocks in schedule) {
-        for (block in courseWithBlocks.blocks) {
-            if (!block.occursInWeek(week)) continue
-            if (block.dayOfWeek != origin.dayOfWeek) continue
-            val startTime = timesByIndex[block.startPeriod] ?: continue
-            val endTime = timesByIndex[block.endPeriod] ?: continue
-            entries.add(
-                TodaySnapshot.TodayEntry(
-                    placed = PlacedBlock(courseWithBlocks.course, block),
-                    startMinuteOfDay = startTime.startMinuteOfDay,
-                    endMinuteOfDay = endTime.endMinuteOfDay,
-                    startTime = ScheduleFormat.minuteLabel(startTime.startMinuteOfDay),
-                    endTime = ScheduleFormat.minuteLabel(endTime.endMinuteOfDay),
-                    session = startTime.session,
-                ),
-            )
-        }
+    for (placed in placedToday) {
+        val startTime = timesByIndex[placed.block.startPeriod] ?: continue
+        val endTime = timesByIndex[placed.block.endPeriod] ?: continue
+        entries.add(
+            TodaySnapshot.TodayEntry(
+                placed = placed,
+                startMinuteOfDay = startTime.startMinuteOfDay,
+                endMinuteOfDay = endTime.endMinuteOfDay,
+                startTime = ScheduleFormat.minuteLabel(startTime.startMinuteOfDay),
+                endTime = ScheduleFormat.minuteLabel(endTime.endMinuteOfDay),
+                session = startTime.session,
+            ),
+        )
     }
     entries.sortWith(compareBy({ it.startMinuteOfDay }, { it.placed.block.startPeriod }))
     return TodaySnapshot(

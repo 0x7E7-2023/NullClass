@@ -348,7 +348,7 @@ fun ScheduleScreen(
                                 val layout = if (week == ready.selectedWeek) {
                                     ready.layout
                                 } else {
-                                    WeekLayout.layoutForWeek(ready.schedule, week, ready.term, ready.dayOverrides)
+                                    WeekLayout.layoutForWeek(ready.schedule, week, ready.term, ready.dayOverrides, ready.classMoves)
                                 }
                                 // 灰块按「当前这一页的周」算：翻页动画里扫过的中间页也得各画各的
                                 val otherWeekLayout = when {
@@ -359,6 +359,7 @@ fun ScheduleScreen(
                                         week,
                                         ready.term,
                                         ready.dayOverrides,
+                                        ready.classMoves,
                                     )
                                 }
                                 Column(

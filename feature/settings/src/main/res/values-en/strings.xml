@@ -93,6 +93,18 @@
     <string name="settings_day_swap_upcoming">From today on</string>
     <string name="settings_day_swap_empty">No day swaps</string>
     <string name="settings_day_swap_source">Follows %1$s</string>
+    <string name="settings_class_move_title">Move a single class</string>
+    <string name="settings_class_move_desc">When a class is rescheduled once, move just that session to another day or period. The original slot is cleared for that day only; other weeks stay the same. Today, the week view, widgets and reminders all follow.</string>
+    <string name="settings_class_move_add">Move a class</string>
+    <string name="settings_class_move_step1">Step 1 · Pick the original date</string>
+    <string name="settings_class_move_step2">Step 2 · Pick the class to move</string>
+    <string name="settings_class_move_step3">Step 3 · Move %1$s to which day?</string>
+    <string name="settings_class_move_step4">Step 4 · Which periods on %1$s?</string>
+    <string name="settings_class_move_no_class">No classes on this day.</string>
+    <string name="settings_class_move_no_room">This day doesn\'t have enough periods for this class.</string>
+    <string name="settings_class_move_overlap">Overlaps with %1$s</string>
+    <string name="settings_class_move_row">%1$s %2$s → %3$s %4$s</string>
+    <string name="settings_class_move_empty">No moved classes</string>
 
     <!-- Quick actions -->
     <string name="settings_quick_actions_title">Quick actions</string>

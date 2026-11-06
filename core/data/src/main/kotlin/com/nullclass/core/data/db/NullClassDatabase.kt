@@ -12,6 +12,7 @@ import com.nullclass.core.data.db.dao.SyncStateDao
 import com.nullclass.core.data.db.dao.TermDao
 import com.nullclass.core.data.db.dao.TimetableDao
 import com.nullclass.core.data.db.entity.CalendarEventEntity
+import com.nullclass.core.data.db.entity.ClassMoveEntity
 import com.nullclass.core.data.db.entity.CourseEntity
 import com.nullclass.core.data.db.entity.DayOverrideEntity
 import com.nullclass.core.data.db.entity.ExamEntity
@@ -31,6 +32,7 @@ import com.nullclass.core.data.db.entity.TimetableEntity
  *  v5 — skip_dates 表（跳过日期：手动 + 节假日同步，纯本地）
  *  v6 — day_overrides 表（串课：某天改上另一天的课，纯本地）
  *  v7 — calendar_events 表（日程安排：个人事件 + 提醒，纯本地）
+ *  v8 — class_moves 表（单次调课：某一次课挪到别的日期/节次，纯本地）
  * v1→v2 无存量用户走破坏性迁移；v2 起任何改表必须提供 Migration + 测试（v3 的迁移见 [MIGRATION_2_3]）。
  */
 @Database(
@@ -45,8 +47,9 @@ import com.nullclass.core.data.db.entity.TimetableEntity
         SkipDateEntity::class,
         DayOverrideEntity::class,
         CalendarEventEntity::class,
+        ClassMoveEntity::class,
     ],
-    version = 7,
+    version = 8,
     exportSchema = true,
 )
 abstract class NullClassDatabase : RoomDatabase() {

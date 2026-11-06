@@ -69,9 +69,9 @@ class TodayViewModel @Inject constructor(
                 combine(
                     courseRepository.observeSchedule(term.id),
                     termRepository.observePeriodTimes(term.id),
-                    dayOverrideRepository.index,
+                    dayOverrideRepository.adjustments,
                     dayTicker,
-                ) { schedule, periodTimes, overrides, _ ->
+                ) { schedule, periodTimes, (overrides, moves), _ ->
                     TodayUiState.Ready(
                         term = term,
                         snapshot = assembleTodaySnapshot(
@@ -80,6 +80,7 @@ class TodayViewModel @Inject constructor(
                             periodTimes = periodTimes,
                             today = LocalDate.now(),
                             dayOverrides = overrides,
+                            classMoves = moves,
                         ),
                         schedule = schedule,
                     )
