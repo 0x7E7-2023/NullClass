@@ -15,7 +15,6 @@ class JwScriptContractTest {
     private fun runner(ocrEnabled: Boolean = true, askEnabled: Boolean = false): String = JwScriptContract.buildRunner(
         script = "(function(){ return '{}'; })()",
         inputJson = """{"a":1}""",
-        allowedHosts = listOf("jw.example.edu.cn"),
         ocrEnabled = ocrEnabled,
         askEnabled = askEnabled,
     )
@@ -86,19 +85,41 @@ class JwScriptContractTest {
     }
 
     @Test
-    fun `沙箱 preamble 含后缀通配且语法合法`() {
-        val js = JwScriptContract.buildRunner(
-            script = "(function(){ return '{}'; })()",
-            inputJson = null,
-            allowedHosts = listOf("*.ustc.edu.cn", "jw.ustc.edu.cn"),
-            ocrEnabled = false,
-        )
-        assertTrue(js.contains("pattern.charAt(0) === '*'"), "JS 沙箱必须实现 *.host 通配")
-        assertTrue(js.contains("*.ustc.edu.cn"), js)
+    fun `运行器不改写网页网络接口`() {
         val context = Context.enter()
         try {
             context.languageVersion = Context.VERSION_ES6
-            context.compileString(js, "wildcard-preamble", 1, null)
+            val scope = context.initStandardObjects()
+            context.evaluateString(scope, BRIDGE_STUBS, "stubs", 1, null)
+            context.evaluateString(
+                scope,
+                """
+                window.fetch = function () {};
+                window.WebSocket = function () {};
+                window.EventSource = function () {};
+                var originalFetch = window.fetch;
+                var originalOpen = XMLHttpRequest.prototype.open;
+                var originalWebSocket = window.WebSocket;
+                var originalEventSource = window.EventSource;
+                var originalBeacon = navigator.sendBeacon;
+                """.trimIndent(),
+                "network-stubs",
+                1,
+                null,
+            )
+            context.evaluateString(scope, runner(ocrEnabled = false), "runner", 1, null)
+            val unchanged = context.evaluateString(
+                scope,
+                "String(window.fetch === originalFetch && " +
+                    "XMLHttpRequest.prototype.open === originalOpen && " +
+                    "window.WebSocket === originalWebSocket && " +
+                    "window.EventSource === originalEventSource && " +
+                    "navigator.sendBeacon === originalBeacon)",
+                "network-check",
+                1,
+                null,
+            )
+            assertEquals("true", unchanged)
         } finally {
             Context.exit()
         }
@@ -110,7 +131,6 @@ class JwScriptContractTest {
         val js = JwScriptContract.buildRunner(
             script = "(function(){ return \"a\\\"b\"; })()",
             inputJson = null,
-            allowedHosts = emptyList(),
             ocrEnabled = false,
         )
         val context = Context.enter()
@@ -216,7 +236,7 @@ class JwScriptContractTest {
     }
 
     private companion object {
-        /** 让整段 runner 能在 Rhino 里跑起来的最小垫片（沙箱 preamble 要用到这几个全局）。 */
+        /** 让整段 runner 能在 Rhino 里跑起来的最小桥与网络接口垫片。 */
         val BRIDGE_STUBS = """
             var window = this;
             var messages = [];

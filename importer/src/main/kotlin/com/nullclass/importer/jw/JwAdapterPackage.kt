@@ -38,7 +38,7 @@ data class JwAdapter(
     /** 兜底适配器：列表置底展示。 */
     val isFallback: Boolean get() = manifest.fallback
 
-    /** 允许发请求的域名：同源主机 + 清单声明。 */
+    /** 桥注入与宿主图片下载可用的域名：登录页主机 + 清单声明。 */
     fun allowedHosts(loginHost: String?): List<String> =
         (listOfNotNull(loginHost) + manifest.allowHosts).map { it.lowercase() }.distinct()
 

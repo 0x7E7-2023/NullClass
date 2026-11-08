@@ -167,7 +167,7 @@ BASE：`93b6dc4`（0.9.93）
 - [x] 2.7（部分）`JwImportActivity`：`selected`/`pendingStartUrl` 改存 key + `rememberSaveable` 查回，`startUrl` 及两个对话框的 url 输入改 `rememberSaveable`
 - [x] **2.7 其余**：`DaySwapScreen` 两步流程步骤索引、`JwAskDialogs` 两处输入/选择、`TimetableListScreen` 重命名（`pendingRename` 一并改存 id 查回，否则单保存文本无意义）、`JwWebViewStep` 的 `isDesktopMode`
 - [x] ~~WebView `saveState`/`restoreState`~~ —— **评估后决定不做**，理由见下方「范围收缩决定」
-- [x] **阶段 3 横屏**：3.1 全部 16 个 Scaffold+TopAppBar 加 `enterAlwaysScrollBehavior`；3.2 `AppNavHost` 矮屏切 `NavigationRail`（`screen()` 的预留空间从 bottom padding 改 start padding，RTL 自动镜像）；3.3 `JwWebViewStep` 矮屏收紧操作栏、状态文字单行、冻结提示缩短文案
+- [x] **阶段 3 横屏**：3.1 全部 16 个 Scaffold+TopAppBar 加 `enterAlwaysScrollBehavior`；3.2 `AppNavHost` 矮屏切 `NavigationRail`（`screen()` 的预留空间从 bottom padding 改 start padding，RTL 自动镜像）；3.3 `JwWebViewStep` 矮屏收紧操作栏、状态文字单行（当时的冻结提示已随自动断网策略移除）
 - [x] **阶段 4 平板**：4.1 `WeekGrid` 格高改 `cellHeight` 参数、由 `ScheduleScreen` 在 `verticalScroll` 外层用 `BoxWithConstraints` 按 `max(56dp, 净高/节数)` 计算；4.2 16 屏套 `AdaptiveColumn`/`AdaptiveWidthWrapper` 限宽居中；4.3 课块 `maxLines` 改按可用高度推算（`sp.toDp()` 自带 fontScale，字体放大时自动减行而非被 clip 硬裁）；4.4 两个 widget 补 `description`
 - [x] **阶段 5 双栏**：5.1「我的」双栏（`ProfileTwoPane`）、5.2「考试」双栏（`ExamTwoPane`，嵌套 NavHost）。另外 3 组有理由不做，见下
 - [x] **阶段 6 审查**：reviewer（sonnet）报 3 条 → adversary（sonnet）**三条全部 CONFIRMED** → 已全部修复，见下
@@ -237,10 +237,10 @@ reviewer 另外逐一核对过但**未发现问题**的高风险点：`AdaptiveC
 原计划给 `JwWebViewStep.kt:164` 的 WebView 加 `saveState`/`restoreState`（或保存当前 URL 旋转后重新加载）。读完这段代码后决定**不做**：
 
 - **收益比预想小**：WebView 的 cookie 是进程级全局的，旋转后登录态本来就不丢。能省的只是「重新导航回课表页」的几次点击。
-- **风险明显更大**：这段是安全敏感区且踩坑密度极高（`JwNetworkGate` 白名单、`allowCurrentHost` 只对 `promptsForStartUrl` 适配器放行、提取期冻结网络、自动提取抢跑）。恢复 URL 时 `gate` 是 `remember(adapter.key)` 的、旋转后为全新实例，此时 `loadUrl(savedUrl)` 很可能撞上尚未 `allowCurrentHost` 的白名单而被静默拦截；`saveState` 路线则另有 `TransactionTooLargeException` 风险。
+- **当时风险明显更大**：旧版这段有 `JwNetworkGate` 白名单与提取期冻结网络，恢复 URL 可能撞上尚未 `allowCurrentHost` 的白名单而被静默拦截；`saveState` 路线则另有 `TransactionTooLargeException` 风险。**2026-11-09 起宿主已移除自动断网**，上述白名单拦截风险不再存在，但 `saveState` 的风险仍在。
 - 这类 bug 隐蔽、只在特定适配器上复现，不配真机验证不该盲改。
 
-同时**有意不保存**的还有：`frozen`/`extracting`（提取期运行时态，旋转后协程已死，恢复成 true 会让网络一直冻着、按钮一直转圈，比丢失更糟）、`ocrEnabled`（OCR 能力探测结果，`LaunchedEffect` 每次都会重写）、`autoTriggered`（防重复自动提取的哨兵，页面重载后本就该允许再触发）。这些理由已写进代码注释。
+同时**有意不保存**的还有：`extracting`（提取期运行时态，旋转后协程已死，恢复成 true 会让按钮一直转圈）、`ocrEnabled`（OCR 能力探测结果，`LaunchedEffect` 每次都会重写）、`autoTriggered`（防重复自动提取的哨兵，页面重载后本就该允许再触发）。这些理由已写进代码注释。
 
 **建议单独立项**，配合标准 AVD 真机逐适配器验证。
 

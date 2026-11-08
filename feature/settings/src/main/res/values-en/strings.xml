@@ -500,10 +500,6 @@
     <string name="settings_jw_no_start_url">The academic system address is missing. Go back and choose your school again.</string>
     <string name="settings_jw_switch_mobile">Mobile site</string>
     <string name="settings_jw_switch_desktop">Desktop site</string>
-    <string name="settings_jw_network_frozen_short">Network access for the web page is paused during extraction.</string>
-    <string name="settings_jw_network_frozen">Network access for the web page is paused during extraction, so page content can’t be sent to other sites.</string>
-    <string name="settings_jw_network_restored">Network access for the web page restored</string>
-    <string name="settings_jw_resume_browsing">Continue browsing</string>
     <string name="settings_jw_error_log_title">Error log</string>
     <string name="settings_jw_error_log_copy">Copy error log</string>
     <string name="settings_jw_error_log_copied">Error log copied</string>
@@ -588,11 +584,11 @@
     <string name="settings_jw_install_title_one">Add this adapter?</string>
     <string name="settings_jw_adapter_line">%1$s (%2$s v%3$s)</string>
     <string name="settings_jw_adapter_login_url">Login page: %1$s</string>
-    <string name="settings_jw_adapter_hosts">Sites it can access: %1$s</string>
+    <string name="settings_jw_adapter_hosts">Declared request hosts: %1$s</string>
     <string name="settings_jw_adapter_view_script">View code</string>
     <string name="settings_jw_adapter_source_url">Source: %1$s</string>
     <string name="settings_jw_adapter_source_file">Source file: %1$s</string>
-    <string name="settings_jw_adapter_untrusted">Third-party adapters are written by others and read the academic system pages you are signed in to. NullClass doesn’t review them. Make sure the source is trustworthy, or view the code first.</string>
+    <string name="settings_jw_adapter_untrusted">Third-party adapters are written by others and read the academic system pages you are signed in to. NullClass doesn’t review them. This list does not restrict network access by the page or its scripts. Make sure the source is trustworthy, or view the code first.</string>
     <string name="settings_jw_install_confirm">Add</string>
     <string name="settings_jw_library_dialog_title">Adapter library</string>
     <string name="settings_jw_library_empty">This library has no adapters yet.</string>

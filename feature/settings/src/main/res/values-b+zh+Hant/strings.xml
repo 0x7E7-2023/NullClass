@@ -478,10 +478,6 @@
     <string name="settings_jw_no_start_url">缺少教務系統網址，請返回重新選擇學校。</string>
     <string name="settings_jw_switch_mobile">切換手機版</string>
     <string name="settings_jw_switch_desktop">切換電腦版</string>
-    <string name="settings_jw_network_frozen_short">提取期間已暫停網頁連線。</string>
-    <string name="settings_jw_network_frozen">提取期間已暫停網頁連線，以防頁面內容被傳送到其他網站。</string>
-    <string name="settings_jw_network_restored">已恢復網頁連線</string>
-    <string name="settings_jw_resume_browsing">繼續瀏覽網頁</string>
     <string name="settings_jw_error_log_title">錯誤記錄</string>
     <string name="settings_jw_error_log_copy">複製錯誤記錄</string>
     <string name="settings_jw_error_log_copied">已複製錯誤記錄</string>
@@ -563,11 +559,11 @@
     <string name="settings_jw_install_title_one">新增這個適配器？</string>
     <string name="settings_jw_adapter_line">%1$s（%2$s v%3$s）</string>
     <string name="settings_jw_adapter_login_url">登入頁：%1$s</string>
-    <string name="settings_jw_adapter_hosts">可存取的網站：%1$s</string>
+    <string name="settings_jw_adapter_hosts">聲明的請求域名：%1$s</string>
     <string name="settings_jw_adapter_view_script">查看程式碼</string>
     <string name="settings_jw_adapter_source_url">來源：%1$s</string>
     <string name="settings_jw_adapter_source_file">來源檔案：%1$s</string>
-    <string name="settings_jw_adapter_untrusted">第三方適配器由他人編寫，提取時會讀取你已登入的教務網頁內容，空課不會對其進行審核。請確認來源可信，或先查看程式碼。</string>
+    <string name="settings_jw_adapter_untrusted">第三方適配器由他人編寫，提取時會讀取你已登入的教務網頁內容，空課不會對其進行審核。此列表不限制網頁或腳本連線。請確認來源可信，或先查看程式碼。</string>
     <string name="settings_jw_install_confirm">確認新增</string>
     <string name="settings_jw_library_dialog_title">適配器庫</string>
     <string name="settings_jw_library_empty">這個庫裏還沒有適配器。</string>

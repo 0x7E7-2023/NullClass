@@ -6,7 +6,7 @@ package com.nullclass.importer.jw
  * 精确主机名之外，允许 `*.ustc.edu.cn` 这种**后缀通配**：匹配该域本身及其所有子域
  * （`jw.ustc.edu.cn`、`a.b.ustc.edu.cn`）。通配后缀至少三段，挡住 `*.edu.cn` / `*.com`。
  *
- * JS 沙箱里有一份同语义的 ES5 实现（[JwScriptContract] 的 preamble）；改规则两边一起改。
+ * 宿主桥注入与课表图片下载共用这套匹配；它不控制 WebView 的网页请求或导航。
  */
 object JwHostAllowlist {
 

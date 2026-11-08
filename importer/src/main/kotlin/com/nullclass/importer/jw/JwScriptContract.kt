@@ -80,20 +80,10 @@ object JwScriptContract {
         return sb.toString()
     }
 
-    /**
-     * 网络白名单沙箱：包装 fetch / XHR / WebSocket / EventSource / sendBeacon，
-     * 只放行白名单主机。**这是纵深防御，不是安全边界**——真正的边界是宿主的请求拦截。
-     */
-    fun buildPreamble(allowedHosts: List<String>): String {
-        val hosts = allowedHosts.joinToString(", ") { jsStringLiteral(it.lowercase()) }
-        return PREAMBLE_TEMPLATE.replace("__NC_HOSTS__", hosts)
-    }
-
-    /** 完整的一次脚本执行包装（含沙箱、能力声明、OCR 桥、提问桥、结果收集）。 */
+    /** 完整的一次脚本执行包装（含能力声明、OCR 桥、提问桥、结果收集）。 */
     fun buildRunner(
         script: String,
         inputJson: String?,
-        allowedHosts: List<String>,
         ocrEnabled: Boolean,
         askEnabled: Boolean = false,
     ): String {
@@ -116,7 +106,6 @@ object JwScriptContract {
             .replace("__NC_OCR_MAX_PIXELS__", OCR_MAX_PIXELS.toString())
             .replace("__NC_OCR_MAX_CALLS__", OCR_MAX_CALLS.toString())
             .replace("__NC_ASK_MAX_CALLS__", JwAskLimits.MAX_CALLS.toString())
-            .replace("__NC_PREAMBLE__", buildPreamble(allowedHosts))
             .replace("__NC_OCR_BRIDGE__", ocrBridge)
             .replace("__NC_ASK_BRIDGE__", askBridge)
             .replace("__NC_SCRIPT__", jsStringLiteral(script))
@@ -141,75 +130,6 @@ object JwScriptContract {
      */
     fun buildAskReplyScript(id: String, ok: Boolean, payloadJson: String): String =
         "window.$GLOBAL_ASK_REPLY(${jsStringLiteral(id)}, $ok, ${jsStringLiteral(payloadJson)})"
-
-    private const val PREAMBLE_TEMPLATE = """
-(function () {
-  if (window.__ncSandboxInstalled) return;
-  window.__ncSandboxInstalled = true;
-  var __ncHosts = [__NC_HOSTS__];
-  function __ncHostOf(url) {
-    try {
-      var parsed = new URL(String(url), window.location.href);
-      return parsed.hostname.toLowerCase();
-    } catch (e) {
-      return null;
-    }
-  }
-  function __ncAllowed(url) {
-    var host = __ncHostOf(url);
-    if (host === null) return false;
-    for (var i = 0; i < __ncHosts.length; i++) {
-      var pattern = __ncHosts[i];
-      if (pattern.length >= 2 && pattern.charAt(0) === '*' && pattern.charAt(1) === '.') {
-        var suffix = pattern.slice(2);
-        if (host === suffix) return true;
-        if (suffix && host.length > suffix.length + 1 &&
-            host.slice(host.length - suffix.length - 1) === '.' + suffix) return true;
-      } else if (pattern === host) {
-        return true;
-      }
-    }
-    return false;
-  }
-  function __ncBlocked(url) {
-    return new Error('空课沙箱：禁止访问白名单之外的地址 ' + String(url));
-  }
-  var __ncRawFetch = window.fetch;
-  if (__ncRawFetch) {
-    window.fetch = function (input, init) {
-      var url = (typeof input === 'string') ? input : (input && input.url ? input.url : '');
-      if (!__ncAllowed(url)) return Promise.reject(__ncBlocked(url));
-      return __ncRawFetch.call(this, input, init);
-    };
-  }
-  var __ncRawOpen = XMLHttpRequest.prototype.open;
-  XMLHttpRequest.prototype.open = function (method, url) {
-    if (!__ncAllowed(url)) throw __ncBlocked(url);
-    return __ncRawOpen.apply(this, arguments);
-  };
-  var __ncRawWs = window.WebSocket;
-  if (__ncRawWs) {
-    window.WebSocket = function (url, protocols) {
-      if (!__ncAllowed(url)) throw __ncBlocked(url);
-      return new __ncRawWs(url, protocols);
-    };
-  }
-  var __ncRawEs = window.EventSource;
-  if (__ncRawEs) {
-    window.EventSource = function (url, config) {
-      if (!__ncAllowed(url)) throw __ncBlocked(url);
-      return new __ncRawEs(url, config);
-    };
-  }
-  if (navigator.sendBeacon) {
-    var __ncRawBeacon = navigator.sendBeacon.bind(navigator);
-    navigator.sendBeacon = function (url, data) {
-      if (!__ncAllowed(url)) return false;
-      return __ncRawBeacon(url, data);
-    };
-  }
-})();
-"""
 
     private const val OCR_BRIDGE_TEMPLATE = """
 (function () {
@@ -295,7 +215,6 @@ object JwScriptContract {
     window.$GLOBAL_ERROR = function (message) {
       window.$GLOBAL_ERROR_TEXT = String(message && message.message ? message.message : message);
     };
-__NC_PREAMBLE__
 __NC_OCR_BRIDGE__
 __NC_ASK_BRIDGE__
     // 能力位必须在桥的实现**定义之后**才算：ask 那条要查 __ncSelect 是不是真的可调用，

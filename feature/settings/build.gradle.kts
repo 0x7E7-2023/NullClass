@@ -73,6 +73,7 @@ dependencies {
     // 适配器搜索的匹配规则是纯函数，用 JVM 单测锁住（见 JwAdapterSearchTest）
     testImplementation(libs.junit)
     testImplementation(libs.kotlin.test)
+    testImplementation(libs.mockwebserver)
     testImplementation(libs.robolectric)
     androidTestImplementation(libs.androidx.test.junit)
     androidTestImplementation(libs.androidx.test.runner)

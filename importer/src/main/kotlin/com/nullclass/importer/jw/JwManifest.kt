@@ -41,6 +41,7 @@ data class JwManifest(
     val minAppVersionCode: Int = 0,
     val extract: String = DEFAULT_EXTRACT,
     val parse: String? = null,
+    /** 脚本请求目标声明；也用于桥注入与宿主图片下载，不控制 WebView 网络。 */
     val allowHosts: List<String> = emptyList(),
     val fixtures: List<JwFixture> = emptyList(),
 ) {

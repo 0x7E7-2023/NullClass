@@ -479,10 +479,6 @@
     <string name="settings_jw_no_start_url">缺少教务系统地址，请返回重新选择学校。</string>
     <string name="settings_jw_switch_mobile">切换手机版</string>
     <string name="settings_jw_switch_desktop">切换电脑版</string>
-    <string name="settings_jw_network_frozen_short">提取期间已暂停网页联网。</string>
-    <string name="settings_jw_network_frozen">提取期间已暂停网页联网，以防页面内容被发送到其他网站。</string>
-    <string name="settings_jw_network_restored">已恢复网页联网</string>
-    <string name="settings_jw_resume_browsing">继续浏览网页</string>
     <string name="settings_jw_error_log_title">错误日志</string>
     <string name="settings_jw_error_log_copy">复制错误日志</string>
     <string name="settings_jw_error_log_copied">已复制错误日志</string>
@@ -564,11 +560,11 @@
     <string name="settings_jw_install_title_one">添加这个适配器？</string>
     <string name="settings_jw_adapter_line">%1$s（%2$s v%3$s）</string>
     <string name="settings_jw_adapter_login_url">登录页：%1$s</string>
-    <string name="settings_jw_adapter_hosts">可访问的网站：%1$s</string>
+    <string name="settings_jw_adapter_hosts">声明的请求域名：%1$s</string>
     <string name="settings_jw_adapter_view_script">查看代码</string>
     <string name="settings_jw_adapter_source_url">来源：%1$s</string>
     <string name="settings_jw_adapter_source_file">来源文件：%1$s</string>
-    <string name="settings_jw_adapter_untrusted">第三方适配器由他人编写，提取时会读取你已登录的教务网页内容，空课不对其进行审核。请确认来源可信，或先查看代码。</string>
+    <string name="settings_jw_adapter_untrusted">第三方适配器由他人编写，提取时会读取你已登录的教务网页内容，空课不对其进行审核。该列表不限制网页或脚本联网。请确认来源可信，或先查看代码。</string>
     <string name="settings_jw_install_confirm">确认添加</string>
     <string name="settings_jw_library_dialog_title">适配器库</string>
     <string name="settings_jw_library_empty">这个库里还没有适配器。</string>

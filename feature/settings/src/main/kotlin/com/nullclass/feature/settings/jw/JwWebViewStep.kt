@@ -9,8 +9,6 @@ import android.content.pm.ApplicationInfo
 import android.net.Uri
 import android.webkit.ConsoleMessage
 import android.webkit.WebChromeClient
-import android.webkit.WebResourceRequest
-import android.webkit.WebResourceResponse
 import android.webkit.WebSettings
 import android.webkit.WebView
 import android.webkit.WebViewClient
@@ -74,7 +72,6 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import java.io.ByteArrayInputStream
 import java.text.SimpleDateFormat
 import java.time.DayOfWeek
 import java.time.LocalDate
@@ -85,60 +82,22 @@ import java.util.Locale
 import java.util.concurrent.CopyOnWriteArrayList
 
 /**
- * 提取期的网络闸门。
+ * 适配器的域名集合，只供桥注入与宿主图片下载使用。
  *
- * **这是白名单的真正执行点**（JS 层的包装只是纵深防御）：
- * 提取期间非白名单的**子资源**与**导航**一律拦掉，防止适配器把页面内容外发。
- * 提取结束后只保留 JS 层白名单（否则会打断教务页面自身的后续请求）。
+ * 网页请求与导航始终由 WebView 正常处理，宿主不在任何阶段自动拦截。
  */
-class JwNetworkGate {
-    @Volatile
-    var frozen: Boolean = false
-
+class JwNetworkHosts {
     /**
-     * 可变：通用适配器（[JwManifest.startUrlPrompt]）没有已知域名，用户实际打开的那个页面
-     * 就是「同源」，导航到哪里就把哪个域加进来——否则提取期间连课表页自己的子资源都会被拦掉。
-     * 第三方域照旧拦截。
-     *
-     * 必须线程安全：写入在 UI 线程（onPageFinished），读取在 WebView 的请求拦截线程
-     * （`shouldInterceptRequest`）与 IO 线程（图片下载按域名放行）。普通 ArrayList 在
-     * 提取进行中被追加会抛 ConcurrentModificationException，而拦截回调里没人接得住。
+     * 通用适配器（[JwManifest.startUrlPrompt]）没有已知域名，需要补充用户实际打开的主机。
+     * UI 线程写入、IO 线程读取，因此使用线程安全列表。
      */
     val allowedHosts: MutableList<String> = CopyOnWriteArrayList()
 
-    private val blockedHosts = Collections.synchronizedSet(mutableSetOf<String>())
-
-    fun allows(url: String?): Boolean {
-        val host = hostOf(url) ?: return false
-        return JwHostAllowlist.matches(host, allowedHosts)
-    }
-
-    /** 把当前页面的域补进白名单；已在白名单内则不动。 */
     fun allowCurrentHost(url: String?) {
         val host = hostOf(url) ?: return
         if (host.isBlank() || JwHostAllowlist.matches(host, allowedHosts)) return
         allowedHosts += host
     }
-
-    /** 提取开始时清掉上一轮拦截记录，避免重复刷屏。 */
-    fun resetBlockLog() {
-        blockedHosts.clear()
-    }
-
-    /**
-     * 冻结期内拦截非白名单请求。每个 host 只打一条日志（页面常有大量重复子资源）。
-     */
-    fun intercept(url: String?): WebResourceResponse? {
-        if (!frozen || allows(url)) return null
-        val host = hostOf(url) ?: "?"
-        if (blockedHosts.add(host)) {
-            JwExtractLog.w("闸门拦截 $host  $url") // i18n-exempt: 开发者日志
-        }
-        return blocked()
-    }
-
-    fun blocked(): WebResourceResponse =
-        WebResourceResponse("text/plain", "utf-8", ByteArrayInputStream(ByteArray(0)))
 
     private fun hostOf(url: String?): String? = runCatching { Uri.parse(url).host?.lowercase() }.getOrNull()
 }
@@ -178,8 +137,7 @@ fun JwWebViewStep(
     // rememberSaveable：这是用户显式点「切换手机版/电脑版」的选择（见下方按钮），
     // 旋转重建后 WebView 的 factory 会照它重设 UA，不保存的话用户的选择会被打回电脑版。
     // 注意本文件其余状态**有意不保存**，理由见下：
-    //   frozen / extracting —— 提取期的运行时态。旋转后协程已死，恢复成 true 会让
-    //     网络一直冻着、按钮一直转圈，比丢失更糟。
+    //   extracting —— 提取期的运行时态。旋转后协程已死，恢复成 true 会让按钮一直转圈。
     //   ocrEnabled —— 是 OCR 能力探测的结果，LaunchedEffect 每次都会重新写。
     //   autoTriggered —— 防重复自动提取的哨兵。页面重新加载后本就该允许再触发一次。
     //   webView / scriptBridge —— 实例，无法序列化。
@@ -187,7 +145,6 @@ fun JwWebViewStep(
     var defaultUserAgent by remember { mutableStateOf<String?>(null) }
     var lastErrorLog by remember { mutableStateOf<String?>(null) }
     val consoleLogs = remember { Collections.synchronizedList(mutableListOf<String>()) }
-    var frozen by remember { mutableStateOf(false) }
     var extracting by remember { mutableStateOf(false) }
     var webView by remember { mutableStateOf<WebView?>(null) }
     var autoTriggered by remember { mutableStateOf(false) }
@@ -198,8 +155,8 @@ fun JwWebViewStep(
     val askState = remember { MutableStateFlow<JwAskRequest?>(null) }
     val askRequest by askState.collectAsState()
 
-    val gate = remember(adapter.key) {
-        JwNetworkGate().apply {
+    val networkHosts = remember(adapter.key) {
+        JwNetworkHosts().apply {
             allowedHosts += adapter.allowedHosts(hostOf(adapter.manifest.loginUrl))
         }
     }
@@ -232,16 +189,13 @@ fun JwWebViewStep(
         val view = webView ?: return
         if (extracting) return
         extracting = true
-        frozen = true
-        gate.frozen = true
-        gate.resetBlockLog()
         lastErrorLog = null
         JwExtractLog.clearLastError(context)
         scriptBridge?.reset()
         status = UiText.Res(R.string.settings_jw_extracting)
         JwExtractLog.i(
             // 开发者日志：adb / logcat 用，不翻译
-            "开始提取 key=${adapter.key} url=${view.url} desktop=$isDesktopMode hosts=${gate.allowedHosts}", // i18n-exempt: 开发者日志
+            "开始提取 key=${adapter.key} url=${view.url} desktop=$isDesktopMode hosts=${networkHosts.allowedHosts}", // i18n-exempt: 开发者日志
         )
         scope.launch {
             try {
@@ -255,7 +209,6 @@ fun JwWebViewStep(
                 val bridge = scriptBridge
                 val runner = JwScriptRunner(
                     view,
-                    gate.allowedHosts,
                     ocrEnabled = ocrAvailable,
                     askEnabled = bridge != null,
                     // 等用户回答的时间不算脚本时间 —— 由宿主的账本说了算，不读页面全局
@@ -270,7 +223,7 @@ fun JwWebViewStep(
                         val page = JwImageOcr.recognize(
                             context,
                             payload.images.first(),
-                            gate.allowedHosts,
+                            networkHosts.allowedHosts,
                             view.jwCookieManager(),
                         )
                         val table = JwTableAligner.align(page)
@@ -454,8 +407,7 @@ fun JwWebViewStep(
                                     }
                                     consoleLogs.add(formatted)
                                 }
-                                // 「空课沙箱」是注入脚本自己写的标记，用于筛出沙箱告警：解析判据
-                                if (level == "ERROR" || level == "WARNING" || msg.contains("空课沙箱")) { // i18n-exempt: 解析关键词
+                                if (level == "ERROR" || level == "WARNING") {
                                     JwExtractLog.w("console $formatted")
                                 }
                             }
@@ -464,26 +416,10 @@ fun JwWebViewStep(
                     }
 
                     webViewClient = object : WebViewClient() {
-                        override fun shouldInterceptRequest(
-                            view: WebView?,
-                            request: WebResourceRequest?,
-                        ): WebResourceResponse? {
-                            return gate.intercept(request?.url?.toString())
-                        }
-
-                        override fun shouldOverrideUrlLoading(
-                            view: WebView?,
-                            request: WebResourceRequest?,
-                        ): Boolean {
-                            val url = request?.url?.toString()
-                            return gate.frozen && !gate.allows(url)
-                        }
-
                         override fun onPageFinished(view: WebView?, url: String?) {
                             super.onPageFinished(view, url)
-                            // 通用适配器没有已知域名：用户自己打开的页面就是同源，导航到哪就放行到哪。
-                            // 只在「地址由用户输入」的适配器上这么做，其余仍严格按 manifest 白名单。
-                            if (adapter.promptsForStartUrl) gate.allowCurrentHost(url)
+                            // 通用适配器把实际页面主机补进图片下载的域名集合；桥 origin 规则只在初始化时生成。
+                            if (adapter.promptsForStartUrl) networkHosts.allowCurrentHost(url)
                             if (autoExtract && !autoTriggered) {
                                 autoTriggered = true
                                 status = UiText.Res(R.string.settings_jw_page_loaded)
@@ -494,9 +430,9 @@ fun JwWebViewStep(
                     webView = this
                     // 桥在 loadUrl 之前注册（注册后才创建的文档才会注入对象）；
                     // 注入本身是异步的，自动提取还得再等它到位 —— 见 extract() 里的 awaitReady
-                    val rules = JwOriginRules.forAdapter(adapter.manifest, gate.allowedHosts)
+                    val rules = JwOriginRules.forAdapter(adapter.manifest, networkHosts.allowedHosts)
                     if (rules.isNotEmpty()) {
-                        val bridge = JwScriptBridge(context, this, gate.allowedHosts, scope, askState)
+                        val bridge = JwScriptBridge(context, this, networkHosts.allowedHosts, scope, askState)
                         bridge.attach(rules)
                         scriptBridge = bridge
                     }
@@ -523,7 +459,7 @@ fun JwWebViewStep(
         )
         // 手机横屏（约 400dp 高）下这条操作栏原本要吃掉约 130dp，减去 TopAppBar 后
         // WebView 只剩约 200dp，键盘一弹更是只剩约 100dp——而用户正要在里面输
-        // 账号、密码、验证码。矮屏收紧间距、状态文字压成一行、冻结提示缩短文案。
+        // 账号、密码、验证码。矮屏收紧间距、状态文字压成一行。
         val compactBar = LocalWindowSize.current.isCompactHeight
         Column(
             Modifier
@@ -558,22 +494,6 @@ fun JwWebViewStep(
                     )
                 }
             }
-            if (frozen) {
-                // 安全提示不能因为屏幕矮就不显示，只缩短文案
-                Text(
-                    stringResource(
-                        if (compactBar) {
-                            R.string.settings_jw_network_frozen_short
-                        } else {
-                            R.string.settings_jw_network_frozen
-                        },
-                    ),
-                    style = MaterialTheme.typography.bodySmall,
-                    color = MaterialTheme.colorScheme.tertiary,
-                    maxLines = if (compactBar) 1 else Int.MAX_VALUE,
-                    overflow = TextOverflow.Ellipsis,
-                )
-            }
             Row(horizontalArrangement = Arrangement.spacedBy(12.dp), modifier = Modifier.fillMaxWidth()) {
                 Button(
                     onClick = { extract() },
@@ -587,22 +507,10 @@ fun JwWebViewStep(
                     )
                 }
                 OutlinedButton(
-                    onClick = {
-                        if (frozen) {
-                            frozen = false
-                            gate.frozen = false
-                            status = UiText.Res(R.string.settings_jw_network_restored)
-                        } else {
-                            (context as? JwImportActivity)?.finish()
-                        }
-                    },
+                    onClick = { (context as? JwImportActivity)?.finish() },
                     modifier = Modifier.weight(1f),
                 ) {
-                    Text(
-                        stringResource(
-                            if (frozen) R.string.settings_jw_resume_browsing else CoreR.string.common_cancel,
-                        ),
-                    )
+                    Text(stringResource(CoreR.string.common_cancel))
                 }
             }
             if (lastErrorLog != null) {

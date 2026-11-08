@@ -23,7 +23,8 @@ import java.util.concurrent.TimeUnit
  * 图片可能是适配器给的 URL（用 WebView 的 Cookie 下载，教务多半要登录态），
  * 也可能是适配器直接从页面里取到的 data URL。
  *
- * **信任边界**：URL 只允许 https/http 且**主机必须在适配器白名单内**（同源或 `allowHosts`）——
+ * **信任边界**：初始 URL 与每次重定向都只允许 https/http，且主机必须在适配器白名单内
+ * （同源或 `allowHosts`）；每一跳都重新取当前地址的 Cookie，不把来源主机的 Cookie 带给其他主机。
  * 否则第三方适配器能把宿主的 Cookie 当成盲 SSRF 打内网。
  */
 object JwImageOcr {
@@ -45,6 +46,8 @@ object JwImageOcr {
         OkHttpClient.Builder()
             .connectTimeout(15, TimeUnit.SECONDS)
             .readTimeout(30, TimeUnit.SECONDS)
+            .followRedirects(false)
+            .followSslRedirects(false)
             .build()
     }
 
@@ -94,35 +97,53 @@ object JwImageOcr {
         }?.takeIf { it.size <= MAX_IMAGE_BYTES }
     }
 
-    private fun download(url: String, allowedHosts: List<String>, cookieManager: CookieManager): ByteArray? {
-        val uri = runCatching { URI(url) }.getOrNull() ?: return null
-        val scheme = uri.scheme?.lowercase()
-        if (scheme != "http" && scheme != "https") return null
-        val host = uri.host?.lowercase() ?: return null
-        if (!JwHostAllowlist.matches(host, allowedHosts)) return null
+    private const val MAX_REDIRECTS = 5
+    private val REDIRECT_CODES = setOf(300, 301, 302, 303, 307, 308)
 
-        val cookie = cookieManager.getCookie(url)
-        val request = Request.Builder()
-            .url(url)
-            .apply { if (!cookie.isNullOrBlank()) header("Cookie", cookie) }
-            .build()
+    private fun download(url: String, allowedHosts: List<String>, cookieManager: CookieManager): ByteArray? =
+        download(url, allowedHosts, cookieManager::getCookie)
+
+    internal fun download(url: String, allowedHosts: List<String>, cookieFor: (String) -> String?): ByteArray? {
+        var currentUrl = url
+        var redirectCount = 0
         return try {
-            http.newCall(request).execute().use { response ->
-                if (!response.isSuccessful) return null
-                val body = response.body ?: return null
-                if (body.contentLength() > MAX_IMAGE_BYTES) return null
-                val out = ByteArrayOutputStream()
-                val buffer = ByteArray(16 * 1024)
-                body.byteStream().use { input ->
-                    while (true) {
-                        val read = input.read(buffer)
-                        if (read < 0) break
-                        out.write(buffer, 0, read)
-                        if (out.size() > MAX_IMAGE_BYTES) return null
+            repeat(MAX_REDIRECTS + 1) {
+                val uri = runCatching { URI(currentUrl) }.getOrNull() ?: return null
+                val scheme = uri.scheme?.lowercase()
+                if (scheme != "http" && scheme != "https") return null
+                val host = uri.host?.lowercase() ?: return null
+                if (!JwHostAllowlist.matches(host, allowedHosts)) return null
+
+                val cookie = cookieFor(currentUrl)
+                val request = Request.Builder()
+                    .url(currentUrl)
+                    .apply { if (!cookie.isNullOrBlank()) header("Cookie", cookie) }
+                    .build()
+                http.newCall(request).execute().use { response ->
+                    if (response.code in REDIRECT_CODES) {
+                        val location = response.header("Location") ?: return null
+                        if (redirectCount >= MAX_REDIRECTS) return null
+                        currentUrl = uri.resolve(location).toString()
+                        redirectCount++
+                        return@use
                     }
+                    if (!response.isSuccessful) return null
+                    val body = response.body
+                    if (body.contentLength() > MAX_IMAGE_BYTES) return null
+                    val out = ByteArrayOutputStream()
+                    val buffer = ByteArray(16 * 1024)
+                    body.byteStream().use { input ->
+                        while (true) {
+                            val read = input.read(buffer)
+                            if (read < 0) break
+                            out.write(buffer, 0, read)
+                            if (out.size() > MAX_IMAGE_BYTES) return null
+                        }
+                    }
+                    return out.toByteArray()
                 }
-                out.toByteArray()
             }
+            null
         } catch (e: Exception) {
             null
         }

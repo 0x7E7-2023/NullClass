@@ -3,9 +3,9 @@
 日期：2026-09-08　BASE：`6ffdfc4`（点头后记录）　模式：完整模式 / 串行（含一个 OCR 决策门）
 
 > 本文取代同日早先的草案。相比草案的实质变更：① 解析改为第三方 JS 脚本（不再设计声明式 DSL）；
-> ② 脚本契约从「同步表达式」改为「异步回写」；③ 提取期不再冻结全部网络，改为同源/白名单放行；
+> ② 脚本契约从「同步表达式」改为「异步回写」；③ 初版提取期改为同源/白名单放行；
 > ④ 新增「保留登录态 + 一键刷新」；⑤ 新增图片课表 OCR 链路；⑥ 安全模型改为责任分层。
-> 变更依据见文末「证据」。
+> 变更依据见文末「证据」。**2026-11-09 策略更新**：所有阶段均不再自动拦截网页网络，详见 §5。
 
 ## Goal
 
@@ -170,28 +170,26 @@ example-univ/
   `onShowFileChooser` 返回 false；`setDownloadListener` 空实现；release 关闭 WebContentsDebugging。
   （现状只设了 `javaScriptEnabled` + `domStorageEnabled`，其余全是默认值。）
 
-**网络姿态（按你的决定：放开同源请求）**
+**网络姿态（2026-11-09 起：不自动断网）**
 
-- 允许：与 `loginUrl` 同源，以及 `allowHosts` 中声明的域。
-- 拦截：
-  - 提取窗口内：`shouldInterceptRequest` 对非白名单子资源返回空响应；`shouldOverrideUrlLoading` 拦非白名单导航。
-  - 提取后：JS 层的白名单包装继续生效（同源照常），子资源/导航不再拦截（否则会打断教务页面自身）。
-- JS 层在提取时安装白名单版 `fetch`/`XMLHttpRequest`/`WebSocket`/`EventSource`/`sendBeacon` 包装（纵深防御，非边界）。
+- 自动提取、手动提取及提取后浏览均不拦截网页子资源或导航，不再使用 `shouldInterceptRequest` / `shouldOverrideUrlLoading` 实现提取期闸门。
+- JS 层不再包装 `fetch`/`XMLHttpRequest`/`WebSocket`/`EventSource`/`sendBeacon`，避免改写页面接口后在任意阶段误断网。
+- `allowHosts` 仅声明脚本请求目标，并约束桥注入与宿主下载课表图片；它不是 WebView 的网络白名单。
+- 内置适配器继续逐个人工审计脚本和请求目标；自装适配器由用户在安装前查看并确认。
 
-**明确的残余风险（写进规范，不假装防住了）**
+**明确的安全边界（写进规范，不假装防住了）**
 
 | 通道 | 状态 |
 |---|---|
 | 同源读取（成绩/学籍/localStorage 令牌） | **防不住**。适配器在主世界运行，这是能力本身。已开 `domStorageEnabled`，令牌可直取。 |
-| DNS prefetch / preconnect 外发 | 防不住（不回调拦截器，WebView 无开关） |
-| WebSocket / Service Worker | 提取窗口内可拦，**存活期内防不住**；SW 可持久化在数据目录跨实例存活 |
-| WebRTC / STUN | 防不住（无开关） |
-| 302 / 开放重定向绕白名单 | **已确认防不住**：官方文档明写 `shouldInterceptRequest` 只对初始资源 URL 回调，重定向后续 URL 不再回调；Chromium 团队亦确认 WebSocket / Service Worker 从不经过该回调 |
+| 网页子资源、导航、fetch / XHR / WebSocket / Service Worker | **不自动拦截**。请求目标由脚本审计与安装确认约束，网页自身功能优先保持完整。 |
+| DNS prefetch / preconnect、WebRTC / STUN、重定向 | **不自动拦截**，没有宿主机网络隔离。 |
+| 宿主下载课表图片 | 仍按 `loginUrl` 主机 + `allowHosts` 校验；每一跳重定向都重新校验并取当前地址的 Cookie。这条主动下载链路不受网页保守策略影响。 |
 | 登录期表单劫持 | 保留登录态 = 同一 WebView 长期存活，风险存在 |
 | 运行时从同源 eval 攻击者可控内容 | 防不住；「查看脚本全文」只是可审计，不是安全承诺 |
 
-> 结论：网络闸门能挡住「直接外发」，挡不住「借白名单域的重定向外发」。真正要根治需要进程级网络管控
-> （VpnService / 只放行白名单 SNI 的本地代理），本轮不做。
+> 结论：旧网络闸门既无法构成完整安全边界，又会在登录、加载、提取及后续浏览中误伤正常请求，故移除。
+> 若将来需要真正的网络隔离，必须另行设计进程级方案（如 VpnService / 本地代理），不能恢复这种自动断网闸门。
 
 ### 6. 登录态与一键刷新
 
@@ -292,7 +290,7 @@ __ncOcrGrid(image, { rows, cols }).then(function (g) { /* g.cells[row][col] */ }
 - `jw/JwBuiltinLibrary.kt` — 从 resources 加载内置库
 - `jw/JwUserAdapterStore.kt` — 用户适配器落盘/列出/删除（`java.io.File` 根，可测）
 - `jw/JwRemoteFetcher.kt` — 远端取文本接口
-- `jw/JwScriptContract.kt` — 异步回写协议 / 沙箱前导 / 白名单包装 / 分块读取协议（运行器与测试共用）
+- `jw/JwScriptContract.kt` — 异步回写协议 / 能力桥 / 分块读取协议（运行器与测试共用，不改写网页网络接口）
 - `jw/ocr/OcrBox.kt`、`jw/ocr/JwTableAligner.kt`、`jw/ocr/JwTableValidator.kt` — 结构层（聚类/锚定/硬失败门）
 - 测试：`JwManifestTest`、`JwPackageReaderTest`、`JwLibraryIndexTest`、`JwSchedulePayloadTest`、
   `JwScheduleNormalizerTest`、`JwUserAdapterStoreTest`、`JwBuiltinLibraryTest`、`JwLibraryHarnessTest`（Rhino 跑 fixture）、
@@ -307,7 +305,7 @@ __ncOcrGrid(image, { rows, cols }).then(function (g) { /* g.cells[row][col] */ }
 
 **改写（`:feature:settings`）**
 - `jw/JwImportActivity.kt` — 分区列表（内置 / 用户添加）、导入 zip、从链接添加、详情/删除/查看脚本、安装确认、一键刷新
-- 新建 `jw/JwImportViewModel.kt`、`jw/JwScriptRunner.kt`（异步回写 + 分块 + 白名单沙箱）、`jw/JwRemoteFetcherOkHttp.kt`、
+- 新建 `jw/JwImportViewModel.kt`、`jw/JwScriptRunner.kt`（异步回写 + 分块，不改写网页网络接口）、`jw/JwRemoteFetcherOkHttp.kt`、
   `jw/JwAdapterSheets.kt`（详情/脚本全文/安装确认）、`jw/JwImageProofingScreen.kt`（叠图校对）、
   `jw/JwOcrBridge.kt`（`__ncOcr` / `__ncOcrGrid` 桥：origin 白名单、限额、能力发现）
 
@@ -330,7 +328,7 @@ __ncOcrGrid(image, { rows, cols }).then(function (g) { /* g.cells[row][col] */ }
 
 1. **引擎**：manifest / 包读取 / 载荷 / normalizer / 索引 / 用户库 / 契约常量 + 单测。
 2. **库种子 + 构建接线**：`jw-adapters/example-univ`（由现有 ExampleUniv 迁移）、`index.json`、Sync 任务、Rhino Harness。
-3. **Android 侧**：`JwScriptRunner`（异步 + 分块 + 白名单沙箱）、`JwImportViewModel`、`JwImportActivity` 改造、一键刷新、OkHttp fetcher。
+3. **Android 侧**：`JwScriptRunner`（异步 + 分块，不改写网页网络接口）、`JwImportViewModel`、`JwImportActivity` 改造、一键刷新、OkHttp fetcher。
 4. **OCR**：spike（决策门）→ `:ocr` 模块 + ORT + 模型 + 预处理 → `:importer` 结构层 →
    `JwOcrBridge`（暴露给适配器的 `__ncOcr` / `__ncOcrGrid` + 限额 + 能力发现）→ 叠图校对 UI → ABI splits。
 5. **文档与流程**：规范文档、README/CHANGELOG/CONTRIBUTING、PR/issue 模板、版本号。
@@ -353,7 +351,7 @@ __ncOcrGrid(image, { rows, cols }).then(function (g) { /* g.cells[row][col] */ }
 - `./gradlew :app:assembleDebug` 绿；release 能产出 arm64-v8a 与 x86_64 两个分包。
 - 模拟器手验：内置示例适配器走通 提取→解析→预览→合并；导入 zip 适配器后出现在「用户添加」且可删除；
   从本地 http 起一个 `index.json` 能列出并安装；一键刷新能复用登录态重新提取；
-  一张真实课表图片走通 OCR→叠图校对→合并；非白名单域在提取窗口内确实被拦；
+  一张真实课表图片走通 OCR→叠图校对→合并；自动/手动提取及提取后浏览均不影响网页自身请求与导航；
   第三方适配器脚本能调 `__ncOcr` 拿到文本框自建课表、`__ncCapabilities.ocr` 为 true、
   `reliable:false` 时适配器被正确阻断、超限额被 reject。
 - 规范文档可让没读过本项目代码的人独立写出并提交一个适配器包。
@@ -385,6 +383,9 @@ __ncOcrGrid(image, { rows, cols }).then(function (g) { /* g.cells[row][col] */ }
 - `lw.PPOCR.C`：GitHub 仓库与 Release 实存，README 自述 `Android ARM64 Native Preview`、experimental、v0.1.0-preview.2。
 
 ## 实机验证（2026-09-08 晚，雷电模拟器 x86_64 / Android 14 / WebView 146）
+
+> 本节是旧版网络闸门的当日实测记录，不代表当前行为。2026-11-09 起已按 §5 移除自动断网；
+> 当前验收应改为确认网页请求、导航及网络接口在提取前后均不受宿主干预。
 
 方法：本机起一个 Python 假教务站点（登录 + 课表 DOM + 课表图片 + 适配器库 `index.json`），
 `adb reverse tcp:8777` 给模拟器访问；另起 8778 当「外发收集器」，用来证明网络闸门。

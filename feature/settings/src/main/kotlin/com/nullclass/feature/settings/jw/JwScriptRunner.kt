@@ -34,7 +34,6 @@ class JwScriptLimitException(val kind: Kind, val value: Int, message: String) : 
  */
 class JwScriptRunner(
     private val webView: WebView,
-    private val allowedHosts: List<String>,
     private val ocrEnabled: Boolean = false,
     private val askEnabled: Boolean = false,
     /**
@@ -51,7 +50,7 @@ class JwScriptRunner(
         inputJson: String? = null,
         timeoutMs: Long = JwScriptContract.DEFAULT_TIMEOUT_MS,
     ): String {
-        evaluate(JwScriptContract.buildRunner(script, inputJson, allowedHosts, ocrEnabled, askEnabled))
+        evaluate(JwScriptContract.buildRunner(script, inputJson, ocrEnabled, askEnabled))
         val budget = JwRunBudget(timeoutMs)
         while (true) {
             val status = JSONObject(evaluate(JwScriptContract.buildPollScript()))

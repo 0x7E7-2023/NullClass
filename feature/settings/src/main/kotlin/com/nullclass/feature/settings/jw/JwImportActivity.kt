@@ -235,9 +235,7 @@ private fun JwImportScreen(
                 adapter = adapter,
                 profileName = profileName,
                 // 通用适配器**不自动提取**：它的课表是页面自己渲染出来的，而页面加载完（onPageFinished）
-                // 不等于课表画好了。提取一开始就冻结网络，抢跑会把还在加载页面资源（常见于资源放在
-                // CDN 域上的教务系统）的 SPA 掐死在白屏上，用户连补救都无从下手——金智课表实测如此。
-                // 它的文案本来写的就是「打开课表页后点提取课表」。
+                // 不等于课表画好了。由用户在课表实际显示后点「提取课表」，避免从尚未就绪的页面取数。
                 autoExtract = state.autoExtract && adapter.key == state.lastAdapterKey &&
                     !adapter.promptsForStartUrl,
                 preferredUrl = when {
