@@ -29,6 +29,7 @@
 - 变异测试：`gxcme` 11/11、`hhvtc` 7/7、`sany` 7/7、`sddfvc` 8/8、`zjbti` 12/12 被捕获（其中 2 处在浏览器侧），改坏后均已还原并按 SHA-256 复核原文件未变。
 - `./gradlew :importer:test --rerun-tasks`：BUILD SUCCESSFUL（206 个测试，0 失败），含「索引与目录一致」「manifest 合法且 key 唯一」「全部 fixture 实跑比对」三件库级回归门。
 - 索引共 201 件；无控制字节、无 ES5 违规；`allowHosts` 无通配。
+- 适配器库提交 `6efcc92`，CI（harness + release）通过，发布 `v2026.11.08.1`（release 正文「201 个适配器」；`nullclass-adapters.zip` 9,032,117 字节，SHA-256 `e22d3bf2aa491b487fda6c9a4daee58433a9e90b3acafd0d8178648f09f64389`，随附 `nullclass-adapters.zip.sig` 为 CI 用 `ADAPTERS_SIGNING_KEY` 对该 zip 做的 ECDSA P-256 签名；`latest.json` = `{"version":"2026.11.08.1"}`）。
 
 ## 未验证风险
 
