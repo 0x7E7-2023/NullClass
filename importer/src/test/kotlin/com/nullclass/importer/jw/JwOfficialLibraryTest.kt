@@ -38,11 +38,14 @@ class JwOfficialLibraryTest {
         ZipOutputStream(out).use { zip ->
             zip.putNextEntry(ZipEntry("index.json"))
             zip.write(JwLibraryIndexCodec.encode(index).toByteArray())
+            // 与发布 CI 的打包口径一致：适配器目录里除 AUDIT.md 之外的文件都进库
             index.adapters.forEach { entry ->
-                File(libraryDir, entry.path).walkTopDown().filter { it.isFile }.forEach { file ->
-                    zip.putNextEntry(ZipEntry("${entry.path}/${file.relativeTo(File(libraryDir, entry.path)).invariantSeparatorsPath}"))
-                    zip.write(file.readBytes())
-                }
+                File(libraryDir, entry.path).walkTopDown()
+                    .filter { it.isFile && it.name != "AUDIT.md" }
+                    .forEach { file ->
+                        zip.putNextEntry(ZipEntry("${entry.path}/${file.relativeTo(File(libraryDir, entry.path)).invariantSeparatorsPath}"))
+                        zip.write(file.readBytes())
+                    }
             }
         }
         return out.toByteArray()

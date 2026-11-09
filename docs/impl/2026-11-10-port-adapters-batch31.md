@@ -46,6 +46,7 @@
 - `./gradlew :importer:test --rerun-tasks`：BUILD SUCCESSFUL，含「索引与目录一致」「manifest 合法且 key 唯一」
   「全部 fixture 实跑比对」三件库级回归门。
 - 索引共 206 件；无控制字节、无 ES5 违规；`allowHosts` 无通配。
+- 适配器库提交 `afc40a5`，CI（harness + release）通过，发布 `v2026.11.10.1`（release 正文「206 个适配器」；`nullclass-adapters.zip` 9,251,406 字节，SHA-256 `f54d20cbec7bdf147f50a44d5ff6fdc61d895a80d439150f6c5aae73b6a8b3ff`，随附 `.sig` 为 CI 用 `ADAPTERS_SIGNING_KEY` 对该 zip 做的 ECDSA P-256 签名；`latest.json` = `{"version":"2026.11.10.1"}`）。
 
 ## 未验证风险
 

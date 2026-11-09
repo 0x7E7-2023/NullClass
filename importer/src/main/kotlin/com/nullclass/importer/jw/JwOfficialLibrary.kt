@@ -44,7 +44,8 @@ object JwOfficialLibrary {
     const val MAX_ZIP_BYTES = 16 * 1024 * 1024
     const val MAX_SIG_BYTES = 1024
     const val MAX_LATEST_BYTES = 4 * 1024
-    private const val MAX_ENTRIES = 4096
+    // 适配器库每批新增约 80 个文件（2026-11 已到 3.9k），留出翻倍余量；总字节上限仍是 64 MB
+    private const val MAX_ENTRIES = 8192
     private const val MAX_TOTAL_BYTES = 64L * 1024 * 1024
 
     /** 发布私钥对应的公钥（X.509 DER，base64）。私钥只在 NullClass-adapters 的 Actions secret 里。 */
