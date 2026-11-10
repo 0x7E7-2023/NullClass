@@ -3,6 +3,7 @@ package com.nullclass.app
 import android.content.Context
 import android.util.Log
 import androidx.glance.appwidget.updateAll
+import com.nullclass.app.notification.WidgetBoundaryAlarm
 import com.nullclass.core.data.prefs.UserPreferencesRepository
 import com.nullclass.core.data.repository.CourseRepository
 import com.nullclass.core.data.repository.DayOverrideRepository
@@ -51,6 +52,7 @@ class WidgetAutoUpdater @Inject constructor(
     private val holidayRepository: HolidayRepository,
     private val userPreferences: UserPreferencesRepository,
     private val localeChanges: LocaleChanges,
+    private val widgetBoundaryAlarm: WidgetBoundaryAlarm,
 ) {
 
     private val todayWidget = TodayGlanceWidget()
@@ -82,7 +84,11 @@ class WidgetAutoUpdater @Inject constructor(
                         }
                         // 编辑保存连发多条通知，防抖合并
                         .debounce(500)
-                        .collect { pushBoth() }
+                        .collect {
+                            pushBoth()
+                            // 进程启动和课表变动都走这里：边界时刻可能变了，重排
+                            widgetBoundaryAlarm.schedule()
+                        }
                 } catch (e: CancellationException) {
                     throw e
                 } catch (e: Exception) {

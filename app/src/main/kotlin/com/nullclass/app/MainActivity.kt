@@ -21,6 +21,8 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import com.nullclass.app.navigation.AppNavHost
+import com.nullclass.app.navigation.PendingScheduleJump
+import com.nullclass.widget.OpenAppAction
 import com.nullclass.core.data.locale.AppLocale
 import com.nullclass.core.data.prefs.UserPreferencesRepository
 import com.nullclass.core.model.AppLanguage
@@ -127,6 +129,11 @@ class MainActivity : ComponentActivity() {
      * 消费后清掉 data 防止重复弹预览；onNewIntent 每次是新 Intent 实例，不受影响。
      */
     private fun handleImportIntent(intent: Intent?) {
+        // 小组件点进来：交给 AppNavHost 跳周课表。消费后改回 MAIN，重建时不重复跳
+        if (intent?.action == OpenAppAction.ACTION_OPEN_SCHEDULE) {
+            PendingScheduleJump.requested.value = true
+            intent.setAction(Intent.ACTION_MAIN)
+        }
         val uri = intent?.data ?: return
         if (intent.action == Intent.ACTION_VIEW && (uri.scheme == "content" || uri.scheme == "file")) {
             PendingImport.uri.value = uri

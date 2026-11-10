@@ -27,9 +27,11 @@ import javax.inject.Inject
 class SystemEventReceiver : BroadcastReceiver() {
 
     @Inject lateinit var reminderScheduler: ReminderScheduler
+    @Inject lateinit var widgetBoundaryAlarm: WidgetBoundaryAlarm
 
     override fun onReceive(context: Context, intent: Intent) {
         when (intent.action) {
+            WidgetBoundaryAlarm.ACTION_WIDGET_BOUNDARY,
             Intent.ACTION_BOOT_COMPLETED,
             Intent.ACTION_MY_PACKAGE_REPLACED,
             Intent.ACTION_TIME_CHANGED,
@@ -45,7 +47,11 @@ class SystemEventReceiver : BroadcastReceiver() {
             try {
                 TodayGlanceWidget().updateAll(appContext)
                 NextClassGlanceWidget().updateAll(appContext)
-                reminderScheduler.reschedule()
+                widgetBoundaryAlarm.schedule()
+                // 边界闹钟一天十来次，只为刷小组件，不必每次重排提醒
+                if (intent.action != WidgetBoundaryAlarm.ACTION_WIDGET_BOUNDARY) {
+                    reminderScheduler.reschedule()
+                }
             } catch (e: Exception) {
                 Log.w(TAG, "system event reconcile failed (${intent.action})", e)
             } finally {

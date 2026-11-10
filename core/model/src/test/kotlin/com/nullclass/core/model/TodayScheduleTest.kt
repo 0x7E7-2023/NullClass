@@ -63,6 +63,22 @@ class TodayScheduleTest {
     }
 
     @Test
+    fun `nextBoundaryMinute - 最近的上下课时刻，没有了就是零点`() {
+        val today = LocalDate.of(2026, 9, 9)
+        val schedule = schedule(
+            ScheduleBlock(id = "b1", courseId = "c1", startWeek = 1, endWeek = 20, dayOfWeek = 3, startPeriod = 1, endPeriod = 2), // 8:00-9:40
+            ScheduleBlock(id = "b2", courseId = "c1", startWeek = 1, endWeek = 20, dayOfWeek = 3, startPeriod = 3, endPeriod = 3), // 14:00-14:45
+        )
+        val snapshot = assembleTodaySnapshot(term, schedule, times, today)
+        assertEquals(8 * 60, snapshot.nextBoundaryMinute(7 * 60))
+        // 正好踩在边界上要取下一个，否则闹钟会原地自触发
+        assertEquals(9 * 60 + 40, snapshot.nextBoundaryMinute(8 * 60))
+        assertEquals(14 * 60, snapshot.nextBoundaryMinute(9 * 60 + 40))
+        assertEquals(1440, snapshot.nextBoundaryMinute(14 * 60 + 45))
+        assertEquals(1440, TodaySnapshot.EMPTY.nextBoundaryMinute(600))
+    }
+
+    @Test
     fun `inProgress - 返回正在上的课，课间与跨度外为 null`() {
         val today = LocalDate.of(2026, 9, 9)
         val schedule = schedule(

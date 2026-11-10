@@ -50,8 +50,18 @@ data class TodaySnapshot(
     fun remainingMinutes(entry: TodayEntry, nowMinuteOfDay: Int): Int =
         (entry.endMinuteOfDay - nowMinuteOfDay).coerceIn(0, entry.endMinuteOfDay - entry.startMinuteOfDay)
 
+    /**
+     * [nowMinuteOfDay] 之后小组件画面下一次该变的时刻：最近的上课/下课分钟；
+     * 今天再没有了就是 1440（零点换新一天）。
+     */
+    fun nextBoundaryMinute(nowMinuteOfDay: Int): Int =
+        blocks.asSequence()
+            .flatMap { sequenceOf(it.startMinuteOfDay, it.endMinuteOfDay) }
+            .filter { it > nowMinuteOfDay }
+            .minOrNull() ?: 1440
+
     companion object {
-        val EMPTY = TodaySnapshot(termName = "", weekNumber = null, blocks = emptyList())
+        val EMPTY =TodaySnapshot(termName = "", weekNumber = null, blocks = emptyList())
     }
 }
 

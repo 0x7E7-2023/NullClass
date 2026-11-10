@@ -196,6 +196,11 @@ private fun NavGraphBuilder.screen(
     }
 }
 
+/** 小组件点击后待处理的「跳到周课表」请求：MainActivity 置位，[AppNavHost] 消费。 */
+object PendingScheduleJump {
+    val requested = kotlinx.coroutines.flow.MutableStateFlow(false)
+}
+
 @Composable
 fun AppNavHost() {
     val navController = rememberNavController()
@@ -218,6 +223,21 @@ fun AppNavHost() {
             navController.currentDestination?.route != Routes.TRANSFER
         ) {
             navController.navigate(Routes.TRANSFER)
+        }
+    }
+
+    // 小组件点进来 → 周课表。闸门期间同样先不导航，理由同上；走底栏切 Tab 的同一套参数
+    val scheduleJump by PendingScheduleJump.requested.collectAsState()
+    LaunchedEffect(scheduleJump, gated) {
+        if (scheduleJump && !gated) {
+            PendingScheduleJump.requested.value = false
+            if (navController.currentDestination?.route != Routes.SCHEDULE) {
+                navController.navigate(Routes.SCHEDULE) {
+                    popUpTo(navController.graph.findStartDestination().id) { saveState = true }
+                    launchSingleTop = true
+                    restoreState = true
+                }
+            }
         }
     }
 
